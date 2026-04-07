@@ -11,7 +11,7 @@ import * as fs from "fs";
 import * as path from "path";
 import matter from "gray-matter";
 
-const SOURCE_DIR = path.resolve(__dirname, "../../PM_Frameworks");
+const SOURCE_DIR = path.resolve(__dirname, "../PM_Frameworks");
 const TARGET_DIR = path.resolve(__dirname, "../content/en/frameworks");
 const MANIFEST_PATH = path.join(SOURCE_DIR, "framework_manifest.json");
 

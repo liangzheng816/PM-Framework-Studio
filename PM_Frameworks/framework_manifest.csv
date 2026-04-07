@@ -1,0 +1,101 @@
+order,framework,group,filename,confidence
+1,Design Thinking,User insights,001_design-thinking.md,High
+2,User Journey Map,User insights,002_user-journey-map.md,Moderate
+3,Empathy Map,User insights,003_empathy-map.md,Moderate
+4,JTBD,User insights,004_jtbd.md,High
+5,Five-Layer User Interview,User insights,005_five-layer-user-interview.md,Moderate
+6,Kano Model,User insights,006_kano-model.md,High
+7,Service Blueprint,User insights,007_service-blueprint.md,High
+8,Contextual Inquiry,User insights,008_contextual-inquiry.md,High
+9,Affinity Diagram,User insights,009_affinity-diagram.md,High
+10,Diary Study,User insights,010_diary-study.md,Moderate
+11,Empathy Roadmap,User insights,011_empathy-roadmap.md,Moderate
+12,Persona,User insights,012_persona.md,High
+13,Musk’s Five-Step Method,Problem framing,013_musks-five-step-method.md,Moderate
+14,5 Whys,Problem framing,014_5-whys.md,High
+15,HMW Problem Frame,Problem framing,015_hmw-problem-frame.md,Moderate
+16,POV Statement,Problem framing,016_pov-statement.md,High
+17,Problem Tree,Problem framing,017_problem-tree.md,Moderate
+18,Iceberg Model,Problem framing,018_iceberg-model.md,Moderate
+19,Double Diamond,Problem framing,019_double-diamond.md,High
+20,Root Cause Analysis,Problem framing,020_root-cause-analysis.md,Moderate
+21,Cynefin Framework,Problem framing,021_cynefin-framework.md,High
+22,Task Framing,Problem framing,022_task-framing.md,Moderate
+23,Mental Models,Problem framing,023_mental-models.md,Moderate
+24,CIRCLES Method,Problem framing,024_circles-method.md,High
+25,Working Backwards,Problem framing,025_working-backwards.md,High
+26,Event Storming,Problem framing,026_event-storming.md,High
+27,PESTLE Analysis,Problem framing,027_pestle-analysis.md,Moderate
+28,SWOT,Problem framing,028_swot.md,High
+29,Competitor Analysis,Problem framing,029_competitor-analysis.md,Moderate
+30,SCAMPER,Ideation,030_scamper.md,High
+31,Six Thinking Hats,Ideation,031_six-thinking-hats.md,High
+32,Reverse Brainstorming,Ideation,032_reverse-brainstorming.md,Moderate
+33,Crazy 8s,Ideation,033_crazy-8s.md,High
+34,Analogical Thinking,Ideation,034_analogical-thinking.md,Moderate
+35,Value Proposition Canvas,Ideation,035_value-proposition-canvas.md,High
+36,How-Now-Wow Matrix,Ideation,036_how-now-wow-matrix.md,Moderate
+37,Opportunity Solution Tree,Ideation,037_opportunity-solution-tree.md,High
+38,Story Spine,Ideation,038_story-spine.md,High
+39,TRIZ Innovation Matrix,Ideation,039_triz-innovation-matrix.md,High
+40,Pain-Solution Matrix,Ideation,040_pain-solution-matrix.md,Moderate
+41,Morphological Analysis,Ideation,041_morphological-analysis.md,High
+42,Innovation Diffusion Curve,Ideation,042_innovation-diffusion-curve.md,High
+43,Elevator Pitch Template,Ideation,043_elevator-pitch-template.md,Moderate
+44,Lean Startup MVP,Validation,044_lean-startup-mvp.md,High
+45,A/B Testing,Validation,045_a-b-testing.md,High
+46,Hypothesis Board,Validation,046_hypothesis-board.md,Moderate
+47,5-User Testing Rule,Validation,047_5-user-testing-rule.md,Moderate
+48,Wizard of Oz Test,Validation,048_wizard-of-oz-test.md,High
+49,North Star Metric,Validation,049_north-star-metric.md,Moderate
+50,Validation Learning Loop,Validation,050_validation-learning-loop.md,High
+51,Lean Canvas,Validation,051_lean-canvas.md,High
+52,Problem-Solution Fit,Validation,052_problem-solution-fit.md,High
+53,Task Completion Rate Test,Validation,053_task-completion-rate-test.md,High
+54,Idea Feasibility Threshold,Validation,054_idea-feasibility-threshold.md,Moderate
+55,HEART Framework,Validation,055_heart-framework.md,High
+56,PURE Usability Evaluation,Validation,056_pure-usability-evaluation.md,Moderate
+57,Lean UX Canvas,Validation,057_lean-ux-canvas.md,Moderate
+58,User Story Map,Execution,058_user-story-map.md,High
+59,RICE,Execution,059_rice.md,High
+60,MoSCoW,Execution,060_moscow.md,High
+61,Impact–Effort Matrix,Execution,061_impact-effort-matrix.md,Moderate
+62,Sprint Framework,Execution,062_sprint-framework.md,High
+63,Google Design Sprint,Execution,063_google-design-sprint.md,High
+64,Shape Up,Execution,064_shape-up.md,High
+65,Now–Next–Later,Execution,065_now-next-later.md,Moderate
+66,DACI,Execution,066_daci.md,Moderate
+67,ICE Scoring,Execution,067_ice-scoring.md,Moderate
+68,OGSM,Execution,068_ogsm.md,Moderate
+69,SNAP Decision Framework,Execution,069_snap-decision-framework.md,Moderate
+70,Feature Priority Pyramid,Execution,070_feature-priority-pyramid.md,Moderate
+71,Requirements Priority Quadrants,Execution,071_requirements-priority-quadrants.md,Moderate
+72,User Feedback Loop,Execution,072_user-feedback-loop.md,High
+73,AARRR Pirates,Growth,073_aarrr-pirates.md,High
+74,Growth Flywheel,Growth,074_growth-flywheel.md,High
+75,Hook Model,Growth,075_hook-model.md,High
+76,PMF,Growth,076_pmf.md,High
+77,Competitive Positioning Map,Growth,077_competitive-positioning-map.md,Moderate
+78,Blue Ocean Strategy,Growth,078_blue-ocean-strategy.md,High
+79,LTV/CAC,Growth,079_ltv-cac.md,High
+80,Go-to-Market Strategy,Growth,080_go-to-market-strategy.md,High
+81,Network Effects,Growth,081_network-effects.md,High
+82,StoryBrand,Growth,082_storybrand.md,High
+83,STP,Growth,083_stp.md,High
+84,Fogg Behavior Model,Growth,084_fogg-behavior-model.md,High
+85,JTBD Growth Matrix,Growth,085_jtbd-growth-matrix.md,Moderate
+86,Four Actions Framework,Growth,086_four-actions-framework.md,High
+87,Ansoff Matrix,Growth,087_ansoff-matrix.md,High
+88,First Principles,Systems thinking,088_first-principles.md,Moderate
+89,Wardley Mapping,Systems thinking,089_wardley-mapping.md,High
+90,Three Horizons,Systems thinking,090_three-horizons.md,High
+91,Platform Ecosystem Canvas,Systems thinking,091_platform-ecosystem-canvas.md,Moderate
+92,Business Model Canvas,Systems thinking,092_business-model-canvas.md,High
+93,Product Lifecycle Management,Systems thinking,093_product-lifecycle-management.md,Moderate
+94,Antifragile Design,Systems thinking,094_antifragile-design.md,Moderate
+95,Theory of Constraints,Systems thinking,095_theory-of-constraints.md,High
+96,System Archetypes,Systems thinking,096_system-archetypes.md,High
+97,Innovation Portfolio Balance,Systems thinking,097_innovation-portfolio-balance.md,Moderate
+98,Porter Five Forces,Systems thinking,098_porter-five-forces.md,High
+99,Value Chain Analysis,Systems thinking,099_value-chain-analysis.md,High
+100,Pre-mortem,Appendix,100_pre-mortem.md,Moderate

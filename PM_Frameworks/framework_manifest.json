@@ -1,0 +1,702 @@
+[
+  {
+    "order": 1,
+    "framework": "Design Thinking",
+    "group": "User insights",
+    "filename": "001_design-thinking.md",
+    "confidence": "High"
+  },
+  {
+    "order": 2,
+    "framework": "User Journey Map",
+    "group": "User insights",
+    "filename": "002_user-journey-map.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 3,
+    "framework": "Empathy Map",
+    "group": "User insights",
+    "filename": "003_empathy-map.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 4,
+    "framework": "JTBD",
+    "group": "User insights",
+    "filename": "004_jtbd.md",
+    "confidence": "High"
+  },
+  {
+    "order": 5,
+    "framework": "Five-Layer User Interview",
+    "group": "User insights",
+    "filename": "005_five-layer-user-interview.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 6,
+    "framework": "Kano Model",
+    "group": "User insights",
+    "filename": "006_kano-model.md",
+    "confidence": "High"
+  },
+  {
+    "order": 7,
+    "framework": "Service Blueprint",
+    "group": "User insights",
+    "filename": "007_service-blueprint.md",
+    "confidence": "High"
+  },
+  {
+    "order": 8,
+    "framework": "Contextual Inquiry",
+    "group": "User insights",
+    "filename": "008_contextual-inquiry.md",
+    "confidence": "High"
+  },
+  {
+    "order": 9,
+    "framework": "Affinity Diagram",
+    "group": "User insights",
+    "filename": "009_affinity-diagram.md",
+    "confidence": "High"
+  },
+  {
+    "order": 10,
+    "framework": "Diary Study",
+    "group": "User insights",
+    "filename": "010_diary-study.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 11,
+    "framework": "Empathy Roadmap",
+    "group": "User insights",
+    "filename": "011_empathy-roadmap.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 12,
+    "framework": "Persona",
+    "group": "User insights",
+    "filename": "012_persona.md",
+    "confidence": "High"
+  },
+  {
+    "order": 13,
+    "framework": "Musk’s Five-Step Method",
+    "group": "Problem framing",
+    "filename": "013_musks-five-step-method.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 14,
+    "framework": "5 Whys",
+    "group": "Problem framing",
+    "filename": "014_5-whys.md",
+    "confidence": "High"
+  },
+  {
+    "order": 15,
+    "framework": "HMW Problem Frame",
+    "group": "Problem framing",
+    "filename": "015_hmw-problem-frame.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 16,
+    "framework": "POV Statement",
+    "group": "Problem framing",
+    "filename": "016_pov-statement.md",
+    "confidence": "High"
+  },
+  {
+    "order": 17,
+    "framework": "Problem Tree",
+    "group": "Problem framing",
+    "filename": "017_problem-tree.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 18,
+    "framework": "Iceberg Model",
+    "group": "Problem framing",
+    "filename": "018_iceberg-model.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 19,
+    "framework": "Double Diamond",
+    "group": "Problem framing",
+    "filename": "019_double-diamond.md",
+    "confidence": "High"
+  },
+  {
+    "order": 20,
+    "framework": "Root Cause Analysis",
+    "group": "Problem framing",
+    "filename": "020_root-cause-analysis.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 21,
+    "framework": "Cynefin Framework",
+    "group": "Problem framing",
+    "filename": "021_cynefin-framework.md",
+    "confidence": "High"
+  },
+  {
+    "order": 22,
+    "framework": "Task Framing",
+    "group": "Problem framing",
+    "filename": "022_task-framing.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 23,
+    "framework": "Mental Models",
+    "group": "Problem framing",
+    "filename": "023_mental-models.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 24,
+    "framework": "CIRCLES Method",
+    "group": "Problem framing",
+    "filename": "024_circles-method.md",
+    "confidence": "High"
+  },
+  {
+    "order": 25,
+    "framework": "Working Backwards",
+    "group": "Problem framing",
+    "filename": "025_working-backwards.md",
+    "confidence": "High"
+  },
+  {
+    "order": 26,
+    "framework": "Event Storming",
+    "group": "Problem framing",
+    "filename": "026_event-storming.md",
+    "confidence": "High"
+  },
+  {
+    "order": 27,
+    "framework": "PESTLE Analysis",
+    "group": "Problem framing",
+    "filename": "027_pestle-analysis.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 28,
+    "framework": "SWOT",
+    "group": "Problem framing",
+    "filename": "028_swot.md",
+    "confidence": "High"
+  },
+  {
+    "order": 29,
+    "framework": "Competitor Analysis",
+    "group": "Problem framing",
+    "filename": "029_competitor-analysis.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 30,
+    "framework": "SCAMPER",
+    "group": "Ideation",
+    "filename": "030_scamper.md",
+    "confidence": "High"
+  },
+  {
+    "order": 31,
+    "framework": "Six Thinking Hats",
+    "group": "Ideation",
+    "filename": "031_six-thinking-hats.md",
+    "confidence": "High"
+  },
+  {
+    "order": 32,
+    "framework": "Reverse Brainstorming",
+    "group": "Ideation",
+    "filename": "032_reverse-brainstorming.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 33,
+    "framework": "Crazy 8s",
+    "group": "Ideation",
+    "filename": "033_crazy-8s.md",
+    "confidence": "High"
+  },
+  {
+    "order": 34,
+    "framework": "Analogical Thinking",
+    "group": "Ideation",
+    "filename": "034_analogical-thinking.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 35,
+    "framework": "Value Proposition Canvas",
+    "group": "Ideation",
+    "filename": "035_value-proposition-canvas.md",
+    "confidence": "High"
+  },
+  {
+    "order": 36,
+    "framework": "How-Now-Wow Matrix",
+    "group": "Ideation",
+    "filename": "036_how-now-wow-matrix.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 37,
+    "framework": "Opportunity Solution Tree",
+    "group": "Ideation",
+    "filename": "037_opportunity-solution-tree.md",
+    "confidence": "High"
+  },
+  {
+    "order": 38,
+    "framework": "Story Spine",
+    "group": "Ideation",
+    "filename": "038_story-spine.md",
+    "confidence": "High"
+  },
+  {
+    "order": 39,
+    "framework": "TRIZ Innovation Matrix",
+    "group": "Ideation",
+    "filename": "039_triz-innovation-matrix.md",
+    "confidence": "High"
+  },
+  {
+    "order": 40,
+    "framework": "Pain-Solution Matrix",
+    "group": "Ideation",
+    "filename": "040_pain-solution-matrix.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 41,
+    "framework": "Morphological Analysis",
+    "group": "Ideation",
+    "filename": "041_morphological-analysis.md",
+    "confidence": "High"
+  },
+  {
+    "order": 42,
+    "framework": "Innovation Diffusion Curve",
+    "group": "Ideation",
+    "filename": "042_innovation-diffusion-curve.md",
+    "confidence": "High"
+  },
+  {
+    "order": 43,
+    "framework": "Elevator Pitch Template",
+    "group": "Ideation",
+    "filename": "043_elevator-pitch-template.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 44,
+    "framework": "Lean Startup MVP",
+    "group": "Validation",
+    "filename": "044_lean-startup-mvp.md",
+    "confidence": "High"
+  },
+  {
+    "order": 45,
+    "framework": "A/B Testing",
+    "group": "Validation",
+    "filename": "045_a-b-testing.md",
+    "confidence": "High"
+  },
+  {
+    "order": 46,
+    "framework": "Hypothesis Board",
+    "group": "Validation",
+    "filename": "046_hypothesis-board.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 47,
+    "framework": "5-User Testing Rule",
+    "group": "Validation",
+    "filename": "047_5-user-testing-rule.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 48,
+    "framework": "Wizard of Oz Test",
+    "group": "Validation",
+    "filename": "048_wizard-of-oz-test.md",
+    "confidence": "High"
+  },
+  {
+    "order": 49,
+    "framework": "North Star Metric",
+    "group": "Validation",
+    "filename": "049_north-star-metric.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 50,
+    "framework": "Validation Learning Loop",
+    "group": "Validation",
+    "filename": "050_validation-learning-loop.md",
+    "confidence": "High"
+  },
+  {
+    "order": 51,
+    "framework": "Lean Canvas",
+    "group": "Validation",
+    "filename": "051_lean-canvas.md",
+    "confidence": "High"
+  },
+  {
+    "order": 52,
+    "framework": "Problem-Solution Fit",
+    "group": "Validation",
+    "filename": "052_problem-solution-fit.md",
+    "confidence": "High"
+  },
+  {
+    "order": 53,
+    "framework": "Task Completion Rate Test",
+    "group": "Validation",
+    "filename": "053_task-completion-rate-test.md",
+    "confidence": "High"
+  },
+  {
+    "order": 54,
+    "framework": "Idea Feasibility Threshold",
+    "group": "Validation",
+    "filename": "054_idea-feasibility-threshold.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 55,
+    "framework": "HEART Framework",
+    "group": "Validation",
+    "filename": "055_heart-framework.md",
+    "confidence": "High"
+  },
+  {
+    "order": 56,
+    "framework": "PURE Usability Evaluation",
+    "group": "Validation",
+    "filename": "056_pure-usability-evaluation.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 57,
+    "framework": "Lean UX Canvas",
+    "group": "Validation",
+    "filename": "057_lean-ux-canvas.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 58,
+    "framework": "User Story Map",
+    "group": "Execution",
+    "filename": "058_user-story-map.md",
+    "confidence": "High"
+  },
+  {
+    "order": 59,
+    "framework": "RICE",
+    "group": "Execution",
+    "filename": "059_rice.md",
+    "confidence": "High"
+  },
+  {
+    "order": 60,
+    "framework": "MoSCoW",
+    "group": "Execution",
+    "filename": "060_moscow.md",
+    "confidence": "High"
+  },
+  {
+    "order": 61,
+    "framework": "Impact–Effort Matrix",
+    "group": "Execution",
+    "filename": "061_impact-effort-matrix.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 62,
+    "framework": "Sprint Framework",
+    "group": "Execution",
+    "filename": "062_sprint-framework.md",
+    "confidence": "High"
+  },
+  {
+    "order": 63,
+    "framework": "Google Design Sprint",
+    "group": "Execution",
+    "filename": "063_google-design-sprint.md",
+    "confidence": "High"
+  },
+  {
+    "order": 64,
+    "framework": "Shape Up",
+    "group": "Execution",
+    "filename": "064_shape-up.md",
+    "confidence": "High"
+  },
+  {
+    "order": 65,
+    "framework": "Now–Next–Later",
+    "group": "Execution",
+    "filename": "065_now-next-later.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 66,
+    "framework": "DACI",
+    "group": "Execution",
+    "filename": "066_daci.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 67,
+    "framework": "ICE Scoring",
+    "group": "Execution",
+    "filename": "067_ice-scoring.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 68,
+    "framework": "OGSM",
+    "group": "Execution",
+    "filename": "068_ogsm.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 69,
+    "framework": "SNAP Decision Framework",
+    "group": "Execution",
+    "filename": "069_snap-decision-framework.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 70,
+    "framework": "Feature Priority Pyramid",
+    "group": "Execution",
+    "filename": "070_feature-priority-pyramid.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 71,
+    "framework": "Requirements Priority Quadrants",
+    "group": "Execution",
+    "filename": "071_requirements-priority-quadrants.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 72,
+    "framework": "User Feedback Loop",
+    "group": "Execution",
+    "filename": "072_user-feedback-loop.md",
+    "confidence": "High"
+  },
+  {
+    "order": 73,
+    "framework": "AARRR Pirates",
+    "group": "Growth",
+    "filename": "073_aarrr-pirates.md",
+    "confidence": "High"
+  },
+  {
+    "order": 74,
+    "framework": "Growth Flywheel",
+    "group": "Growth",
+    "filename": "074_growth-flywheel.md",
+    "confidence": "High"
+  },
+  {
+    "order": 75,
+    "framework": "Hook Model",
+    "group": "Growth",
+    "filename": "075_hook-model.md",
+    "confidence": "High"
+  },
+  {
+    "order": 76,
+    "framework": "PMF",
+    "group": "Growth",
+    "filename": "076_pmf.md",
+    "confidence": "High"
+  },
+  {
+    "order": 77,
+    "framework": "Competitive Positioning Map",
+    "group": "Growth",
+    "filename": "077_competitive-positioning-map.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 78,
+    "framework": "Blue Ocean Strategy",
+    "group": "Growth",
+    "filename": "078_blue-ocean-strategy.md",
+    "confidence": "High"
+  },
+  {
+    "order": 79,
+    "framework": "LTV/CAC",
+    "group": "Growth",
+    "filename": "079_ltv-cac.md",
+    "confidence": "High"
+  },
+  {
+    "order": 80,
+    "framework": "Go-to-Market Strategy",
+    "group": "Growth",
+    "filename": "080_go-to-market-strategy.md",
+    "confidence": "High"
+  },
+  {
+    "order": 81,
+    "framework": "Network Effects",
+    "group": "Growth",
+    "filename": "081_network-effects.md",
+    "confidence": "High"
+  },
+  {
+    "order": 82,
+    "framework": "StoryBrand",
+    "group": "Growth",
+    "filename": "082_storybrand.md",
+    "confidence": "High"
+  },
+  {
+    "order": 83,
+    "framework": "STP",
+    "group": "Growth",
+    "filename": "083_stp.md",
+    "confidence": "High"
+  },
+  {
+    "order": 84,
+    "framework": "Fogg Behavior Model",
+    "group": "Growth",
+    "filename": "084_fogg-behavior-model.md",
+    "confidence": "High"
+  },
+  {
+    "order": 85,
+    "framework": "JTBD Growth Matrix",
+    "group": "Growth",
+    "filename": "085_jtbd-growth-matrix.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 86,
+    "framework": "Four Actions Framework",
+    "group": "Growth",
+    "filename": "086_four-actions-framework.md",
+    "confidence": "High"
+  },
+  {
+    "order": 87,
+    "framework": "Ansoff Matrix",
+    "group": "Growth",
+    "filename": "087_ansoff-matrix.md",
+    "confidence": "High"
+  },
+  {
+    "order": 88,
+    "framework": "First Principles",
+    "group": "Systems thinking",
+    "filename": "088_first-principles.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 89,
+    "framework": "Wardley Mapping",
+    "group": "Systems thinking",
+    "filename": "089_wardley-mapping.md",
+    "confidence": "High"
+  },
+  {
+    "order": 90,
+    "framework": "Three Horizons",
+    "group": "Systems thinking",
+    "filename": "090_three-horizons.md",
+    "confidence": "High"
+  },
+  {
+    "order": 91,
+    "framework": "Platform Ecosystem Canvas",
+    "group": "Systems thinking",
+    "filename": "091_platform-ecosystem-canvas.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 92,
+    "framework": "Business Model Canvas",
+    "group": "Systems thinking",
+    "filename": "092_business-model-canvas.md",
+    "confidence": "High"
+  },
+  {
+    "order": 93,
+    "framework": "Product Lifecycle Management",
+    "group": "Systems thinking",
+    "filename": "093_product-lifecycle-management.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 94,
+    "framework": "Antifragile Design",
+    "group": "Systems thinking",
+    "filename": "094_antifragile-design.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 95,
+    "framework": "Theory of Constraints",
+    "group": "Systems thinking",
+    "filename": "095_theory-of-constraints.md",
+    "confidence": "High"
+  },
+  {
+    "order": 96,
+    "framework": "System Archetypes",
+    "group": "Systems thinking",
+    "filename": "096_system-archetypes.md",
+    "confidence": "High"
+  },
+  {
+    "order": 97,
+    "framework": "Innovation Portfolio Balance",
+    "group": "Systems thinking",
+    "filename": "097_innovation-portfolio-balance.md",
+    "confidence": "Moderate"
+  },
+  {
+    "order": 98,
+    "framework": "Porter Five Forces",
+    "group": "Systems thinking",
+    "filename": "098_porter-five-forces.md",
+    "confidence": "High"
+  },
+  {
+    "order": 99,
+    "framework": "Value Chain Analysis",
+    "group": "Systems thinking",
+    "filename": "099_value-chain-analysis.md",
+    "confidence": "High"
+  },
+  {
+    "order": 100,
+    "framework": "Pre-mortem",
+    "group": "Appendix",
+    "filename": "100_pre-mortem.md",
+    "confidence": "Moderate"
+  }
+]
