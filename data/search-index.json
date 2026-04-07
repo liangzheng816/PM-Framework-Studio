@@ -1,0 +1,1301 @@
+[
+  {
+    "slug": "design-thinking",
+    "title": "Design Thinking",
+    "aliases": [],
+    "category": "user-insights",
+    "categoryLabel": "User insights",
+    "summary": "Design Thinking is a **user insights** framework used to turn ambiguous user evidence into a sharper picture of behavior, motivation, and unmet needs.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "research"
+    ]
+  },
+  {
+    "slug": "user-journey-map",
+    "title": "User Journey Map",
+    "aliases": [],
+    "category": "user-insights",
+    "categoryLabel": "User insights",
+    "summary": "User Journey Map is a **user insights** framework used to turn ambiguous user evidence into a sharper picture of behavior, motivation, and unmet needs.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "research"
+    ]
+  },
+  {
+    "slug": "empathy-map",
+    "title": "Empathy Map",
+    "aliases": [],
+    "category": "user-insights",
+    "categoryLabel": "User insights",
+    "summary": "Empathy Map is a **user insights** framework used to turn ambiguous user evidence into a sharper picture of behavior, motivation, and unmet needs.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "research"
+    ]
+  },
+  {
+    "slug": "jtbd",
+    "title": "JTBD",
+    "aliases": [],
+    "category": "user-insights",
+    "categoryLabel": "User insights",
+    "summary": "JTBD is a **user insights** framework used to turn ambiguous user evidence into a sharper picture of behavior, motivation, and unmet needs.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "research"
+    ]
+  },
+  {
+    "slug": "five-layer-user-interview",
+    "title": "Five-Layer User Interview",
+    "aliases": [],
+    "category": "user-insights",
+    "categoryLabel": "User insights",
+    "summary": "Five-Layer User Interview is a **user insights** framework used to turn ambiguous user evidence into a sharper picture of behavior, motivation, and unmet needs.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "research"
+    ]
+  },
+  {
+    "slug": "kano-model",
+    "title": "Kano Model",
+    "aliases": [],
+    "category": "user-insights",
+    "categoryLabel": "User insights",
+    "summary": "Kano Model is a **user insights** framework used to turn ambiguous user evidence into a sharper picture of behavior, motivation, and unmet needs.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "research"
+    ]
+  },
+  {
+    "slug": "service-blueprint",
+    "title": "Service Blueprint",
+    "aliases": [],
+    "category": "user-insights",
+    "categoryLabel": "User insights",
+    "summary": "Service Blueprint is a **user insights** framework used to turn ambiguous user evidence into a sharper picture of behavior, motivation, and unmet needs.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "research"
+    ]
+  },
+  {
+    "slug": "contextual-inquiry",
+    "title": "Contextual Inquiry",
+    "aliases": [],
+    "category": "user-insights",
+    "categoryLabel": "User insights",
+    "summary": "Contextual Inquiry is a **user insights** framework used to turn ambiguous user evidence into a sharper picture of behavior, motivation, and unmet needs.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "research"
+    ]
+  },
+  {
+    "slug": "affinity-diagram",
+    "title": "Affinity Diagram",
+    "aliases": [],
+    "category": "user-insights",
+    "categoryLabel": "User insights",
+    "summary": "Affinity Diagram is a **user insights** framework used to turn ambiguous user evidence into a sharper picture of behavior, motivation, and unmet needs.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "research"
+    ]
+  },
+  {
+    "slug": "diary-study",
+    "title": "Diary Study",
+    "aliases": [],
+    "category": "user-insights",
+    "categoryLabel": "User insights",
+    "summary": "Diary Study is a **user insights** framework used to turn ambiguous user evidence into a sharper picture of behavior, motivation, and unmet needs.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "research"
+    ]
+  },
+  {
+    "slug": "empathy-roadmap",
+    "title": "Empathy Roadmap",
+    "aliases": [],
+    "category": "user-insights",
+    "categoryLabel": "User insights",
+    "summary": "Empathy Roadmap is a **user insights** framework used to turn ambiguous user evidence into a sharper picture of behavior, motivation, and unmet needs.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "research"
+    ]
+  },
+  {
+    "slug": "persona",
+    "title": "Persona",
+    "aliases": [],
+    "category": "user-insights",
+    "categoryLabel": "User insights",
+    "summary": "Persona is a **user insights** framework used to turn ambiguous user evidence into a sharper picture of behavior, motivation, and unmet needs.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "research"
+    ]
+  },
+  {
+    "slug": "musks-five-step-method",
+    "title": "Musk’s Five-Step Method",
+    "aliases": [],
+    "category": "problem-framing",
+    "categoryLabel": "Problem framing",
+    "summary": "Musk’s Five-Step Method is a **problem framing** framework used to separate the real problem from noise, symptoms, assumptions, and premature solution ideas.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "definition"
+    ]
+  },
+  {
+    "slug": "5-whys",
+    "title": "5 Whys",
+    "aliases": [],
+    "category": "problem-framing",
+    "categoryLabel": "Problem framing",
+    "summary": "5 Whys is a **problem framing** framework used to separate the real problem from noise, symptoms, assumptions, and premature solution ideas.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "definition"
+    ]
+  },
+  {
+    "slug": "hmw-problem-frame",
+    "title": "HMW Problem Frame",
+    "aliases": [],
+    "category": "problem-framing",
+    "categoryLabel": "Problem framing",
+    "summary": "HMW Problem Frame is a **problem framing** framework used to separate the real problem from noise, symptoms, assumptions, and premature solution ideas.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "definition"
+    ]
+  },
+  {
+    "slug": "pov-statement",
+    "title": "POV Statement",
+    "aliases": [],
+    "category": "problem-framing",
+    "categoryLabel": "Problem framing",
+    "summary": "POV Statement is a **problem framing** framework used to separate the real problem from noise, symptoms, assumptions, and premature solution ideas.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "definition"
+    ]
+  },
+  {
+    "slug": "problem-tree",
+    "title": "Problem Tree",
+    "aliases": [],
+    "category": "problem-framing",
+    "categoryLabel": "Problem framing",
+    "summary": "Problem Tree is a **problem framing** framework used to separate the real problem from noise, symptoms, assumptions, and premature solution ideas.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "definition"
+    ]
+  },
+  {
+    "slug": "iceberg-model",
+    "title": "Iceberg Model",
+    "aliases": [],
+    "category": "problem-framing",
+    "categoryLabel": "Problem framing",
+    "summary": "Iceberg Model is a **problem framing** framework used to separate the real problem from noise, symptoms, assumptions, and premature solution ideas.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "definition"
+    ]
+  },
+  {
+    "slug": "double-diamond",
+    "title": "Double Diamond",
+    "aliases": [],
+    "category": "problem-framing",
+    "categoryLabel": "Problem framing",
+    "summary": "Double Diamond is a **problem framing** framework used to separate the real problem from noise, symptoms, assumptions, and premature solution ideas.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "definition"
+    ]
+  },
+  {
+    "slug": "root-cause-analysis",
+    "title": "Root Cause Analysis",
+    "aliases": [],
+    "category": "problem-framing",
+    "categoryLabel": "Problem framing",
+    "summary": "Root Cause Analysis is a **problem framing** framework used to separate the real problem from noise, symptoms, assumptions, and premature solution ideas.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "definition"
+    ]
+  },
+  {
+    "slug": "cynefin-framework",
+    "title": "Cynefin Framework",
+    "aliases": [],
+    "category": "problem-framing",
+    "categoryLabel": "Problem framing",
+    "summary": "Cynefin Framework is a **problem framing** framework used to separate the real problem from noise, symptoms, assumptions, and premature solution ideas.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "definition"
+    ]
+  },
+  {
+    "slug": "task-framing",
+    "title": "Task Framing",
+    "aliases": [],
+    "category": "problem-framing",
+    "categoryLabel": "Problem framing",
+    "summary": "Task Framing is a **problem framing** framework used to separate the real problem from noise, symptoms, assumptions, and premature solution ideas.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "definition"
+    ]
+  },
+  {
+    "slug": "mental-models",
+    "title": "Mental Models",
+    "aliases": [],
+    "category": "problem-framing",
+    "categoryLabel": "Problem framing",
+    "summary": "Mental Models is a **problem framing** framework used to separate the real problem from noise, symptoms, assumptions, and premature solution ideas.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "definition"
+    ]
+  },
+  {
+    "slug": "circles-method",
+    "title": "CIRCLES Method",
+    "aliases": [],
+    "category": "problem-framing",
+    "categoryLabel": "Problem framing",
+    "summary": "CIRCLES Method is a **problem framing** framework used to separate the real problem from noise, symptoms, assumptions, and premature solution ideas.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "definition"
+    ]
+  },
+  {
+    "slug": "working-backwards",
+    "title": "Working Backwards",
+    "aliases": [],
+    "category": "problem-framing",
+    "categoryLabel": "Problem framing",
+    "summary": "Working Backwards is a **problem framing** framework used to separate the real problem from noise, symptoms, assumptions, and premature solution ideas.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "definition"
+    ]
+  },
+  {
+    "slug": "event-storming",
+    "title": "Event Storming",
+    "aliases": [],
+    "category": "problem-framing",
+    "categoryLabel": "Problem framing",
+    "summary": "Event Storming is a **problem framing** framework used to separate the real problem from noise, symptoms, assumptions, and premature solution ideas.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "definition"
+    ]
+  },
+  {
+    "slug": "pestle-analysis",
+    "title": "PESTLE Analysis",
+    "aliases": [],
+    "category": "problem-framing",
+    "categoryLabel": "Problem framing",
+    "summary": "PESTLE Analysis is a **problem framing** framework used to separate the real problem from noise, symptoms, assumptions, and premature solution ideas.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "definition"
+    ]
+  },
+  {
+    "slug": "swot",
+    "title": "SWOT",
+    "aliases": [],
+    "category": "problem-framing",
+    "categoryLabel": "Problem framing",
+    "summary": "SWOT is a **problem framing** framework used to separate the real problem from noise, symptoms, assumptions, and premature solution ideas.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "definition"
+    ]
+  },
+  {
+    "slug": "competitor-analysis",
+    "title": "Competitor Analysis",
+    "aliases": [],
+    "category": "problem-framing",
+    "categoryLabel": "Problem framing",
+    "summary": "Competitor Analysis is a **problem framing** framework used to separate the real problem from noise, symptoms, assumptions, and premature solution ideas.",
+    "best_for": [],
+    "stage": [
+      "discovery",
+      "definition"
+    ]
+  },
+  {
+    "slug": "scamper",
+    "title": "SCAMPER",
+    "aliases": [],
+    "category": "ideation",
+    "categoryLabel": "Ideation",
+    "summary": "SCAMPER is a **ideation** framework used to expand the option space before the team commits too early to one direction.",
+    "best_for": [],
+    "stage": [
+      "ideation",
+      "concept"
+    ]
+  },
+  {
+    "slug": "six-thinking-hats",
+    "title": "Six Thinking Hats",
+    "aliases": [],
+    "category": "ideation",
+    "categoryLabel": "Ideation",
+    "summary": "Six Thinking Hats is a **ideation** framework used to expand the option space before the team commits too early to one direction.",
+    "best_for": [],
+    "stage": [
+      "ideation",
+      "concept"
+    ]
+  },
+  {
+    "slug": "reverse-brainstorming",
+    "title": "Reverse Brainstorming",
+    "aliases": [],
+    "category": "ideation",
+    "categoryLabel": "Ideation",
+    "summary": "Reverse Brainstorming is a **ideation** framework used to expand the option space before the team commits too early to one direction.",
+    "best_for": [],
+    "stage": [
+      "ideation",
+      "concept"
+    ]
+  },
+  {
+    "slug": "crazy-8s",
+    "title": "Crazy 8s",
+    "aliases": [],
+    "category": "ideation",
+    "categoryLabel": "Ideation",
+    "summary": "Crazy 8s is a **ideation** framework used to expand the option space before the team commits too early to one direction.",
+    "best_for": [],
+    "stage": [
+      "ideation",
+      "concept"
+    ]
+  },
+  {
+    "slug": "analogical-thinking",
+    "title": "Analogical Thinking",
+    "aliases": [],
+    "category": "ideation",
+    "categoryLabel": "Ideation",
+    "summary": "Analogical Thinking is a **ideation** framework used to expand the option space before the team commits too early to one direction.",
+    "best_for": [],
+    "stage": [
+      "ideation",
+      "concept"
+    ]
+  },
+  {
+    "slug": "value-proposition-canvas",
+    "title": "Value Proposition Canvas",
+    "aliases": [],
+    "category": "ideation",
+    "categoryLabel": "Ideation",
+    "summary": "Value Proposition Canvas is a **ideation** framework used to expand the option space before the team commits too early to one direction.",
+    "best_for": [],
+    "stage": [
+      "ideation",
+      "concept"
+    ]
+  },
+  {
+    "slug": "how-now-wow-matrix",
+    "title": "How-Now-Wow Matrix",
+    "aliases": [],
+    "category": "ideation",
+    "categoryLabel": "Ideation",
+    "summary": "How-Now-Wow Matrix is a **ideation** framework used to expand the option space before the team commits too early to one direction.",
+    "best_for": [],
+    "stage": [
+      "ideation",
+      "concept"
+    ]
+  },
+  {
+    "slug": "opportunity-solution-tree",
+    "title": "Opportunity Solution Tree",
+    "aliases": [],
+    "category": "ideation",
+    "categoryLabel": "Ideation",
+    "summary": "Opportunity Solution Tree is a **ideation** framework used to expand the option space before the team commits too early to one direction.",
+    "best_for": [],
+    "stage": [
+      "ideation",
+      "concept"
+    ]
+  },
+  {
+    "slug": "story-spine",
+    "title": "Story Spine",
+    "aliases": [],
+    "category": "ideation",
+    "categoryLabel": "Ideation",
+    "summary": "Story Spine is a **ideation** framework used to expand the option space before the team commits too early to one direction.",
+    "best_for": [],
+    "stage": [
+      "ideation",
+      "concept"
+    ]
+  },
+  {
+    "slug": "triz-innovation-matrix",
+    "title": "TRIZ Innovation Matrix",
+    "aliases": [],
+    "category": "ideation",
+    "categoryLabel": "Ideation",
+    "summary": "TRIZ Innovation Matrix is a **ideation** framework used to expand the option space before the team commits too early to one direction.",
+    "best_for": [],
+    "stage": [
+      "ideation",
+      "concept"
+    ]
+  },
+  {
+    "slug": "pain-solution-matrix",
+    "title": "Pain-Solution Matrix",
+    "aliases": [],
+    "category": "ideation",
+    "categoryLabel": "Ideation",
+    "summary": "Pain-Solution Matrix is a **ideation** framework used to expand the option space before the team commits too early to one direction.",
+    "best_for": [],
+    "stage": [
+      "ideation",
+      "concept"
+    ]
+  },
+  {
+    "slug": "morphological-analysis",
+    "title": "Morphological Analysis",
+    "aliases": [],
+    "category": "ideation",
+    "categoryLabel": "Ideation",
+    "summary": "Morphological Analysis is a **ideation** framework used to expand the option space before the team commits too early to one direction.",
+    "best_for": [],
+    "stage": [
+      "ideation",
+      "concept"
+    ]
+  },
+  {
+    "slug": "innovation-diffusion-curve",
+    "title": "Innovation Diffusion Curve",
+    "aliases": [],
+    "category": "ideation",
+    "categoryLabel": "Ideation",
+    "summary": "Innovation Diffusion Curve is a **ideation** framework used to expand the option space before the team commits too early to one direction.",
+    "best_for": [],
+    "stage": [
+      "ideation",
+      "concept"
+    ]
+  },
+  {
+    "slug": "elevator-pitch-template",
+    "title": "Elevator Pitch Template",
+    "aliases": [],
+    "category": "ideation",
+    "categoryLabel": "Ideation",
+    "summary": "Elevator Pitch Template is a **ideation** framework used to expand the option space before the team commits too early to one direction.",
+    "best_for": [],
+    "stage": [
+      "ideation",
+      "concept"
+    ]
+  },
+  {
+    "slug": "lean-startup-mvp",
+    "title": "Lean Startup MVP",
+    "aliases": [],
+    "category": "validation",
+    "categoryLabel": "Validation",
+    "summary": "Lean Startup MVP is a **validation** framework used to reduce uncertainty by turning product beliefs into tests, metrics, and evidence-backed decisions.",
+    "best_for": [],
+    "stage": [
+      "validation",
+      "testing"
+    ]
+  },
+  {
+    "slug": "a-b-testing",
+    "title": "A/B Testing",
+    "aliases": [],
+    "category": "validation",
+    "categoryLabel": "Validation",
+    "summary": "A/B Testing is a **validation** framework used to reduce uncertainty by turning product beliefs into tests, metrics, and evidence-backed decisions.",
+    "best_for": [],
+    "stage": [
+      "validation",
+      "testing"
+    ]
+  },
+  {
+    "slug": "hypothesis-board",
+    "title": "Hypothesis Board",
+    "aliases": [],
+    "category": "validation",
+    "categoryLabel": "Validation",
+    "summary": "Hypothesis Board is a **validation** framework used to reduce uncertainty by turning product beliefs into tests, metrics, and evidence-backed decisions.",
+    "best_for": [],
+    "stage": [
+      "validation",
+      "testing"
+    ]
+  },
+  {
+    "slug": "5-user-testing-rule",
+    "title": "5-User Testing Rule",
+    "aliases": [],
+    "category": "validation",
+    "categoryLabel": "Validation",
+    "summary": "5-User Testing Rule is a **validation** framework used to reduce uncertainty by turning product beliefs into tests, metrics, and evidence-backed decisions.",
+    "best_for": [],
+    "stage": [
+      "validation",
+      "testing"
+    ]
+  },
+  {
+    "slug": "wizard-of-oz-test",
+    "title": "Wizard of Oz Test",
+    "aliases": [],
+    "category": "validation",
+    "categoryLabel": "Validation",
+    "summary": "Wizard of Oz Test is a **validation** framework used to reduce uncertainty by turning product beliefs into tests, metrics, and evidence-backed decisions.",
+    "best_for": [],
+    "stage": [
+      "validation",
+      "testing"
+    ]
+  },
+  {
+    "slug": "north-star-metric",
+    "title": "North Star Metric",
+    "aliases": [],
+    "category": "validation",
+    "categoryLabel": "Validation",
+    "summary": "North Star Metric is a **validation** framework used to reduce uncertainty by turning product beliefs into tests, metrics, and evidence-backed decisions.",
+    "best_for": [],
+    "stage": [
+      "validation",
+      "testing"
+    ]
+  },
+  {
+    "slug": "validation-learning-loop",
+    "title": "Validation Learning Loop",
+    "aliases": [],
+    "category": "validation",
+    "categoryLabel": "Validation",
+    "summary": "Validation Learning Loop is a **validation** framework used to reduce uncertainty by turning product beliefs into tests, metrics, and evidence-backed decisions.",
+    "best_for": [],
+    "stage": [
+      "validation",
+      "testing"
+    ]
+  },
+  {
+    "slug": "lean-canvas",
+    "title": "Lean Canvas",
+    "aliases": [],
+    "category": "validation",
+    "categoryLabel": "Validation",
+    "summary": "Lean Canvas is a **validation** framework used to reduce uncertainty by turning product beliefs into tests, metrics, and evidence-backed decisions.",
+    "best_for": [],
+    "stage": [
+      "validation",
+      "testing"
+    ]
+  },
+  {
+    "slug": "problem-solution-fit",
+    "title": "Problem-Solution Fit",
+    "aliases": [],
+    "category": "validation",
+    "categoryLabel": "Validation",
+    "summary": "Problem-Solution Fit is a **validation** framework used to reduce uncertainty by turning product beliefs into tests, metrics, and evidence-backed decisions.",
+    "best_for": [],
+    "stage": [
+      "validation",
+      "testing"
+    ]
+  },
+  {
+    "slug": "task-completion-rate-test",
+    "title": "Task Completion Rate Test",
+    "aliases": [],
+    "category": "validation",
+    "categoryLabel": "Validation",
+    "summary": "Task Completion Rate Test is a **validation** framework used to reduce uncertainty by turning product beliefs into tests, metrics, and evidence-backed decisions.",
+    "best_for": [],
+    "stage": [
+      "validation",
+      "testing"
+    ]
+  },
+  {
+    "slug": "idea-feasibility-threshold",
+    "title": "Idea Feasibility Threshold",
+    "aliases": [],
+    "category": "validation",
+    "categoryLabel": "Validation",
+    "summary": "Idea Feasibility Threshold is a **validation** framework used to reduce uncertainty by turning product beliefs into tests, metrics, and evidence-backed decisions.",
+    "best_for": [],
+    "stage": [
+      "validation",
+      "testing"
+    ]
+  },
+  {
+    "slug": "heart-framework",
+    "title": "HEART Framework",
+    "aliases": [],
+    "category": "validation",
+    "categoryLabel": "Validation",
+    "summary": "HEART Framework is a **validation** framework used to reduce uncertainty by turning product beliefs into tests, metrics, and evidence-backed decisions.",
+    "best_for": [],
+    "stage": [
+      "validation",
+      "testing"
+    ]
+  },
+  {
+    "slug": "pure-usability-evaluation",
+    "title": "PURE Usability Evaluation",
+    "aliases": [],
+    "category": "validation",
+    "categoryLabel": "Validation",
+    "summary": "PURE Usability Evaluation is a **validation** framework used to reduce uncertainty by turning product beliefs into tests, metrics, and evidence-backed decisions.",
+    "best_for": [],
+    "stage": [
+      "validation",
+      "testing"
+    ]
+  },
+  {
+    "slug": "lean-ux-canvas",
+    "title": "Lean UX Canvas",
+    "aliases": [],
+    "category": "validation",
+    "categoryLabel": "Validation",
+    "summary": "Lean UX Canvas is a **validation** framework used to reduce uncertainty by turning product beliefs into tests, metrics, and evidence-backed decisions.",
+    "best_for": [],
+    "stage": [
+      "validation",
+      "testing"
+    ]
+  },
+  {
+    "slug": "user-story-map",
+    "title": "User Story Map",
+    "aliases": [],
+    "category": "execution",
+    "categoryLabel": "Execution",
+    "summary": "User Story Map is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions.",
+    "best_for": [],
+    "stage": [
+      "execution",
+      "delivery"
+    ]
+  },
+  {
+    "slug": "rice",
+    "title": "RICE",
+    "aliases": [],
+    "category": "execution",
+    "categoryLabel": "Execution",
+    "summary": "RICE is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions.",
+    "best_for": [],
+    "stage": [
+      "execution",
+      "delivery"
+    ]
+  },
+  {
+    "slug": "moscow",
+    "title": "MoSCoW",
+    "aliases": [],
+    "category": "execution",
+    "categoryLabel": "Execution",
+    "summary": "MoSCoW is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions.",
+    "best_for": [],
+    "stage": [
+      "execution",
+      "delivery"
+    ]
+  },
+  {
+    "slug": "impact-effort-matrix",
+    "title": "Impact–Effort Matrix",
+    "aliases": [],
+    "category": "execution",
+    "categoryLabel": "Execution",
+    "summary": "Impact–Effort Matrix is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions.",
+    "best_for": [],
+    "stage": [
+      "execution",
+      "delivery"
+    ]
+  },
+  {
+    "slug": "sprint-framework",
+    "title": "Sprint Framework",
+    "aliases": [],
+    "category": "execution",
+    "categoryLabel": "Execution",
+    "summary": "Sprint Framework is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions.",
+    "best_for": [],
+    "stage": [
+      "execution",
+      "delivery"
+    ]
+  },
+  {
+    "slug": "google-design-sprint",
+    "title": "Google Design Sprint",
+    "aliases": [],
+    "category": "execution",
+    "categoryLabel": "Execution",
+    "summary": "Google Design Sprint is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions.",
+    "best_for": [],
+    "stage": [
+      "execution",
+      "delivery"
+    ]
+  },
+  {
+    "slug": "shape-up",
+    "title": "Shape Up",
+    "aliases": [],
+    "category": "execution",
+    "categoryLabel": "Execution",
+    "summary": "Shape Up is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions.",
+    "best_for": [],
+    "stage": [
+      "execution",
+      "delivery"
+    ]
+  },
+  {
+    "slug": "now-next-later",
+    "title": "Now–Next–Later",
+    "aliases": [],
+    "category": "execution",
+    "categoryLabel": "Execution",
+    "summary": "Now–Next–Later is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions.",
+    "best_for": [],
+    "stage": [
+      "execution",
+      "delivery"
+    ]
+  },
+  {
+    "slug": "daci",
+    "title": "DACI",
+    "aliases": [],
+    "category": "execution",
+    "categoryLabel": "Execution",
+    "summary": "DACI is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions.",
+    "best_for": [],
+    "stage": [
+      "execution",
+      "delivery"
+    ]
+  },
+  {
+    "slug": "ice-scoring",
+    "title": "ICE Scoring",
+    "aliases": [],
+    "category": "execution",
+    "categoryLabel": "Execution",
+    "summary": "ICE Scoring is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions.",
+    "best_for": [],
+    "stage": [
+      "execution",
+      "delivery"
+    ]
+  },
+  {
+    "slug": "ogsm",
+    "title": "OGSM",
+    "aliases": [],
+    "category": "execution",
+    "categoryLabel": "Execution",
+    "summary": "OGSM is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions.",
+    "best_for": [],
+    "stage": [
+      "execution",
+      "delivery"
+    ]
+  },
+  {
+    "slug": "snap-decision-framework",
+    "title": "SNAP Decision Framework",
+    "aliases": [],
+    "category": "execution",
+    "categoryLabel": "Execution",
+    "summary": "SNAP Decision Framework is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions.",
+    "best_for": [],
+    "stage": [
+      "execution",
+      "delivery"
+    ]
+  },
+  {
+    "slug": "feature-priority-pyramid",
+    "title": "Feature Priority Pyramid",
+    "aliases": [],
+    "category": "execution",
+    "categoryLabel": "Execution",
+    "summary": "Feature Priority Pyramid is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions.",
+    "best_for": [],
+    "stage": [
+      "execution",
+      "delivery"
+    ]
+  },
+  {
+    "slug": "requirements-priority-quadrants",
+    "title": "Requirements Priority Quadrants",
+    "aliases": [],
+    "category": "execution",
+    "categoryLabel": "Execution",
+    "summary": "Requirements Priority Quadrants is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions.",
+    "best_for": [],
+    "stage": [
+      "execution",
+      "delivery"
+    ]
+  },
+  {
+    "slug": "user-feedback-loop",
+    "title": "User Feedback Loop",
+    "aliases": [],
+    "category": "execution",
+    "categoryLabel": "Execution",
+    "summary": "User Feedback Loop is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions.",
+    "best_for": [],
+    "stage": [
+      "execution",
+      "delivery"
+    ]
+  },
+  {
+    "slug": "aarrr-pirates",
+    "title": "AARRR Pirates",
+    "aliases": [],
+    "category": "growth",
+    "categoryLabel": "Growth",
+    "summary": "AARRR Pirates is a **growth** framework used to identify where demand, retention, messaging, or economics can improve compounding growth.",
+    "best_for": [],
+    "stage": [
+      "growth",
+      "scaling"
+    ]
+  },
+  {
+    "slug": "growth-flywheel",
+    "title": "Growth Flywheel",
+    "aliases": [],
+    "category": "growth",
+    "categoryLabel": "Growth",
+    "summary": "Growth Flywheel is a **growth** framework used to identify where demand, retention, messaging, or economics can improve compounding growth.",
+    "best_for": [],
+    "stage": [
+      "growth",
+      "scaling"
+    ]
+  },
+  {
+    "slug": "hook-model",
+    "title": "Hook Model",
+    "aliases": [],
+    "category": "growth",
+    "categoryLabel": "Growth",
+    "summary": "Hook Model is a **growth** framework used to identify where demand, retention, messaging, or economics can improve compounding growth.",
+    "best_for": [],
+    "stage": [
+      "growth",
+      "scaling"
+    ]
+  },
+  {
+    "slug": "pmf",
+    "title": "PMF",
+    "aliases": [],
+    "category": "growth",
+    "categoryLabel": "Growth",
+    "summary": "PMF is a **growth** framework used to identify where demand, retention, messaging, or economics can improve compounding growth.",
+    "best_for": [],
+    "stage": [
+      "growth",
+      "scaling"
+    ]
+  },
+  {
+    "slug": "competitive-positioning-map",
+    "title": "Competitive Positioning Map",
+    "aliases": [],
+    "category": "growth",
+    "categoryLabel": "Growth",
+    "summary": "Competitive Positioning Map is a **growth** framework used to identify where demand, retention, messaging, or economics can improve compounding growth.",
+    "best_for": [],
+    "stage": [
+      "growth",
+      "scaling"
+    ]
+  },
+  {
+    "slug": "blue-ocean-strategy",
+    "title": "Blue Ocean Strategy",
+    "aliases": [],
+    "category": "growth",
+    "categoryLabel": "Growth",
+    "summary": "Blue Ocean Strategy is a **growth** framework used to identify where demand, retention, messaging, or economics can improve compounding growth.",
+    "best_for": [],
+    "stage": [
+      "growth",
+      "scaling"
+    ]
+  },
+  {
+    "slug": "ltv-cac",
+    "title": "LTV/CAC",
+    "aliases": [],
+    "category": "growth",
+    "categoryLabel": "Growth",
+    "summary": "LTV/CAC is a **growth** framework used to identify where demand, retention, messaging, or economics can improve compounding growth.",
+    "best_for": [],
+    "stage": [
+      "growth",
+      "scaling"
+    ]
+  },
+  {
+    "slug": "go-to-market-strategy",
+    "title": "Go-to-Market Strategy",
+    "aliases": [],
+    "category": "growth",
+    "categoryLabel": "Growth",
+    "summary": "Go-to-Market Strategy is a **growth** framework used to identify where demand, retention, messaging, or economics can improve compounding growth.",
+    "best_for": [],
+    "stage": [
+      "growth",
+      "scaling"
+    ]
+  },
+  {
+    "slug": "network-effects",
+    "title": "Network Effects",
+    "aliases": [],
+    "category": "growth",
+    "categoryLabel": "Growth",
+    "summary": "Network Effects is a **growth** framework used to identify where demand, retention, messaging, or economics can improve compounding growth.",
+    "best_for": [],
+    "stage": [
+      "growth",
+      "scaling"
+    ]
+  },
+  {
+    "slug": "storybrand",
+    "title": "StoryBrand",
+    "aliases": [],
+    "category": "growth",
+    "categoryLabel": "Growth",
+    "summary": "StoryBrand is a **growth** framework used to identify where demand, retention, messaging, or economics can improve compounding growth.",
+    "best_for": [],
+    "stage": [
+      "growth",
+      "scaling"
+    ]
+  },
+  {
+    "slug": "stp",
+    "title": "STP",
+    "aliases": [],
+    "category": "growth",
+    "categoryLabel": "Growth",
+    "summary": "STP is a **growth** framework used to identify where demand, retention, messaging, or economics can improve compounding growth.",
+    "best_for": [],
+    "stage": [
+      "growth",
+      "scaling"
+    ]
+  },
+  {
+    "slug": "fogg-behavior-model",
+    "title": "Fogg Behavior Model",
+    "aliases": [],
+    "category": "growth",
+    "categoryLabel": "Growth",
+    "summary": "Fogg Behavior Model is a **growth** framework used to identify where demand, retention, messaging, or economics can improve compounding growth.",
+    "best_for": [],
+    "stage": [
+      "growth",
+      "scaling"
+    ]
+  },
+  {
+    "slug": "jtbd-growth-matrix",
+    "title": "JTBD Growth Matrix",
+    "aliases": [],
+    "category": "growth",
+    "categoryLabel": "Growth",
+    "summary": "JTBD Growth Matrix is a **growth** framework used to identify where demand, retention, messaging, or economics can improve compounding growth.",
+    "best_for": [],
+    "stage": [
+      "growth",
+      "scaling"
+    ]
+  },
+  {
+    "slug": "four-actions-framework",
+    "title": "Four Actions Framework",
+    "aliases": [],
+    "category": "growth",
+    "categoryLabel": "Growth",
+    "summary": "Four Actions Framework is a **growth** framework used to identify where demand, retention, messaging, or economics can improve compounding growth.",
+    "best_for": [],
+    "stage": [
+      "growth",
+      "scaling"
+    ]
+  },
+  {
+    "slug": "ansoff-matrix",
+    "title": "Ansoff Matrix",
+    "aliases": [],
+    "category": "growth",
+    "categoryLabel": "Growth",
+    "summary": "Ansoff Matrix is a **growth** framework used to identify where demand, retention, messaging, or economics can improve compounding growth.",
+    "best_for": [],
+    "stage": [
+      "growth",
+      "scaling"
+    ]
+  },
+  {
+    "slug": "first-principles",
+    "title": "First Principles",
+    "aliases": [],
+    "category": "systems-thinking",
+    "categoryLabel": "Systems thinking",
+    "summary": "First Principles is a **systems thinking** framework used to understand the broader structure around the product, including dependencies, incentives, constraints, and feedback loops.",
+    "best_for": [],
+    "stage": [
+      "strategy",
+      "planning"
+    ]
+  },
+  {
+    "slug": "wardley-mapping",
+    "title": "Wardley Mapping",
+    "aliases": [],
+    "category": "systems-thinking",
+    "categoryLabel": "Systems thinking",
+    "summary": "Wardley Mapping is a **systems thinking** framework used to understand the broader structure around the product, including dependencies, incentives, constraints, and feedback loops.",
+    "best_for": [],
+    "stage": [
+      "strategy",
+      "planning"
+    ]
+  },
+  {
+    "slug": "three-horizons",
+    "title": "Three Horizons",
+    "aliases": [],
+    "category": "systems-thinking",
+    "categoryLabel": "Systems thinking",
+    "summary": "Three Horizons is a **systems thinking** framework used to understand the broader structure around the product, including dependencies, incentives, constraints, and feedback loops.",
+    "best_for": [],
+    "stage": [
+      "strategy",
+      "planning"
+    ]
+  },
+  {
+    "slug": "platform-ecosystem-canvas",
+    "title": "Platform Ecosystem Canvas",
+    "aliases": [],
+    "category": "systems-thinking",
+    "categoryLabel": "Systems thinking",
+    "summary": "Platform Ecosystem Canvas is a **systems thinking** framework used to understand the broader structure around the product, including dependencies, incentives, constraints, and feedback loops.",
+    "best_for": [],
+    "stage": [
+      "strategy",
+      "planning"
+    ]
+  },
+  {
+    "slug": "business-model-canvas",
+    "title": "Business Model Canvas",
+    "aliases": [],
+    "category": "systems-thinking",
+    "categoryLabel": "Systems thinking",
+    "summary": "Business Model Canvas is a **systems thinking** framework used to understand the broader structure around the product, including dependencies, incentives, constraints, and feedback loops.",
+    "best_for": [],
+    "stage": [
+      "strategy",
+      "planning"
+    ]
+  },
+  {
+    "slug": "product-lifecycle-management",
+    "title": "Product Lifecycle Management",
+    "aliases": [],
+    "category": "systems-thinking",
+    "categoryLabel": "Systems thinking",
+    "summary": "Product Lifecycle Management is a **systems thinking** framework used to understand the broader structure around the product, including dependencies, incentives, constraints, and feedback loops.",
+    "best_for": [],
+    "stage": [
+      "strategy",
+      "planning"
+    ]
+  },
+  {
+    "slug": "antifragile-design",
+    "title": "Antifragile Design",
+    "aliases": [],
+    "category": "systems-thinking",
+    "categoryLabel": "Systems thinking",
+    "summary": "Antifragile Design is a **systems thinking** framework used to understand the broader structure around the product, including dependencies, incentives, constraints, and feedback loops.",
+    "best_for": [],
+    "stage": [
+      "strategy",
+      "planning"
+    ]
+  },
+  {
+    "slug": "theory-of-constraints",
+    "title": "Theory of Constraints",
+    "aliases": [],
+    "category": "systems-thinking",
+    "categoryLabel": "Systems thinking",
+    "summary": "Theory of Constraints is a **systems thinking** framework used to understand the broader structure around the product, including dependencies, incentives, constraints, and feedback loops.",
+    "best_for": [],
+    "stage": [
+      "strategy",
+      "planning"
+    ]
+  },
+  {
+    "slug": "system-archetypes",
+    "title": "System Archetypes",
+    "aliases": [],
+    "category": "systems-thinking",
+    "categoryLabel": "Systems thinking",
+    "summary": "System Archetypes is a **systems thinking** framework used to understand the broader structure around the product, including dependencies, incentives, constraints, and feedback loops.",
+    "best_for": [],
+    "stage": [
+      "strategy",
+      "planning"
+    ]
+  },
+  {
+    "slug": "innovation-portfolio-balance",
+    "title": "Innovation Portfolio Balance",
+    "aliases": [],
+    "category": "systems-thinking",
+    "categoryLabel": "Systems thinking",
+    "summary": "Innovation Portfolio Balance is a **systems thinking** framework used to understand the broader structure around the product, including dependencies, incentives, constraints, and feedback loops.",
+    "best_for": [],
+    "stage": [
+      "strategy",
+      "planning"
+    ]
+  },
+  {
+    "slug": "porter-five-forces",
+    "title": "Porter Five Forces",
+    "aliases": [],
+    "category": "systems-thinking",
+    "categoryLabel": "Systems thinking",
+    "summary": "Porter Five Forces is a **systems thinking** framework used to understand the broader structure around the product, including dependencies, incentives, constraints, and feedback loops.",
+    "best_for": [],
+    "stage": [
+      "strategy",
+      "planning"
+    ]
+  },
+  {
+    "slug": "value-chain-analysis",
+    "title": "Value Chain Analysis",
+    "aliases": [],
+    "category": "systems-thinking",
+    "categoryLabel": "Systems thinking",
+    "summary": "Value Chain Analysis is a **systems thinking** framework used to understand the broader structure around the product, including dependencies, incentives, constraints, and feedback loops.",
+    "best_for": [],
+    "stage": [
+      "strategy",
+      "planning"
+    ]
+  },
+  {
+    "slug": "pre-mortem",
+    "title": "Pre-mortem",
+    "aliases": [],
+    "category": "appendix",
+    "categoryLabel": "Appendix",
+    "summary": "Pre-mortem is a **appendix** framework used to anticipate failure modes early enough to reduce preventable risk.",
+    "best_for": [],
+    "stage": [
+      "planning"
+    ]
+  }
+]
