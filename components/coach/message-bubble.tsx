@@ -3,11 +3,12 @@
 import { useState } from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkBreaks from "remark-breaks";
 import { remarkFrameworkLinks } from "@/lib/remark-framework-links";
 import type { Message } from "@/lib/coach-types";
 
 // Module-level constants avoid ReactMarkdown re-initialising its pipeline every render
-const REMARK_PLUGINS = [remarkGfm, remarkFrameworkLinks];
+const REMARK_PLUGINS = [remarkGfm, remarkBreaks, remarkFrameworkLinks];
 
 const MD_COMPONENTS: Components = {
   a: ({ href, children, ...props }) => {
