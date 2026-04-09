@@ -20,7 +20,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ├── content/en/frameworks/      # 100 migrated MDX files with enriched frontmatter
 ├── data/                       # categories.ts, search-index.json, map-positions.json
 ├── lib/                        # Core modules: frameworks.ts, types.ts, collections.ts, coach-types.ts
-├── scripts/                    # migrate-content.ts, generate-map-positions.ts, copy-skills.ts
+├── scripts/                    # migrate-content.ts, generate-map-positions.ts
 ├── public/                     # robots.txt, static assets
 └── .github/workflows/          # Azure Static Web Apps CI/CD
 ```
@@ -41,10 +41,9 @@ cd api
 npm run build            # TypeScript compile → dist/
 npm run start            # func start (requires Azure Functions Core Tools + local.settings.json with ANTHROPIC_API_KEY)
 
-# Content & skill pipeline
+# Content pipeline
 npx tsx scripts/migrate-content.ts          # PM_Frameworks/*.md → content/en/frameworks/*.mdx + search-index.json
 npx tsx scripts/generate-map-positions.ts   # Regenerate SVG scatter map positions
-npx tsx scripts/copy-skills.ts              # pm-skills/*.md → api/skills/ (required before API can serve skills)
 ```
 
 ## Deployment
@@ -52,7 +51,7 @@ npx tsx scripts/copy-skills.ts              # pm-skills/*.md → api/skills/ (re
 Hosted on **Azure Static Web Apps** via GitHub Actions (`pmframeworkstudio` resource, West US 2). On every push to `main`, the workflow (`.github/workflows/azure-static-web-apps-*.yml`) runs:
 
 1. **Validate** — lint + typecheck for frontend and API (gates deployment)
-2. **Build and Deploy** — copies skills, then deploys via `Azure/static-web-apps-deploy@v1` (`app_location: "/"`, `api_location: "api"`, `output_location: "out"`)
+2. **Build and Deploy** — deploys via `Azure/static-web-apps-deploy@v1` (`app_location: "/"`, `api_location: "api"`, `output_location: "out"`)
 
 The app uses `output: "export"` in `next.config.ts` for fully static HTML generation. **Static export constraints**: no SSR, no Next.js API routes, no middleware, no ISR.
 
@@ -111,6 +110,15 @@ The home page (`/`) is an AI coaching chat. User selects a skill → frontend se
 Source markdown in `PM_Frameworks/` → `scripts/migrate-content.ts` → enriched MDX in `content/en/frameworks/` + `data/search-index.json`. Map positions generated separately by `scripts/generate-map-positions.ts` → `data/map-positions.json`.
 
 To update content: edit source files in `PM_Frameworks/`, then re-run both scripts and rebuild.
+
+## Key Conventions
+
+- **Next.js 16 breaking changes**: `params` and `searchParams` are async Promises — always `await params` in page components. **Read `node_modules/next/dist/docs/` before writing any Next.js code** — APIs, conventions, and file structure may differ from training data.
+- **Category colors**: `lib/category-colors.ts` maps category slugs to Tailwind-safe color classes — use these, don't invent new color schemes
+- **Motion**: `lib/motion.ts` exports shared Framer Motion variants (fadeInUp, staggerContainer, etc.) — reuse them instead of writing inline animations
+- **Coach types**: `lib/coach-types.ts` defines all skill IDs, metadata, and the `resolveSkillForApi()` mapping — update this when adding skills
+- **Confidence labeling**: Frontmatter `confidence: "high" | "moderate"` drives trust badges ("Canonical" / "Adapted")
+- **API env vars**: `ANTHROPIC_API_KEY` (required), `COACH_MODEL` (default: `claude-sonnet-4-6`), `COACH_MAX_TOKENS` (default: 4096, debate auto-bumps to 16384)
 
 ## Design System
 

@@ -731,7 +731,7 @@ AI PM Coach needs two artifacts from PM Studio at **build time** (not runtime):
 | `search-index.json` (~40 KB) | `../data/search-index.json` (parent framework-studio) | Framework name → slug lookup for auto-linking | `scripts/sync-search-index.ts` copies at build time |
 | `categories.ts` | `../data/categories.ts` (parent framework-studio) | Category colors for skill selector pills | Duplicated into coach's `data/` directory |
 
-These are static, rarely-changing files. Since the coach lives inside the `framework-studio/` git repo, the build scripts simply read from sibling directories (`../data/`, `../../pm-skills/`). No cross-repo or runtime API calls between the two applications are required.
+These are static, rarely-changing files. Since the coach lives inside the `framework-studio/` git repo, the build scripts simply read from sibling directories (`../data/`). Skill prompts are tracked directly in `api/skills/`. No cross-repo or runtime API calls between the two applications are required.
 
 ### 11.2 API endpoints
 
@@ -779,12 +779,12 @@ POST /api/chat/debate:
 
 ### 11.3 Skill prompt management
 
-The 9 skill `.md` files are copied from the `pm-skills/` directory (at the PMModels root, i.e., `../../pm-skills/` relative to the coach) into the coach's API project at build time:
+The 9 skill `.md` files are tracked directly in `api/skills/` and committed to git:
 
 ```
-framework-studio/ai-pm-coach/
+framework-studio/
   api/
-    skills/                        # Copied from ../../pm-skills/ at build time
+    skills/                        # Tracked directly in git
       advise-frameworks.md
       discover-users.md
       frame-problems.md
@@ -795,24 +795,11 @@ framework-studio/ai-pm-coach/
       think-systems.md
       pm-debate.md
     src/
-      load-skill.ts                # Reads .md files, caches in memory
-      build-messages.ts            # Constructs Claude API message arrays
-      stream-response.ts           # SSE streaming helper
-      classify.ts                  # POST /api/classify handler
-      chat.ts                      # POST /api/chat handler
-      debate.ts                    # POST /api/chat/debate handler
-  app/                             # Next.js pages (coach UI)
-  components/                      # Coach-specific components
-  data/
-    search-index.json              # Copied from ../data/search-index.json at build time
-    skills.ts                      # Skill metadata
-    coach-prompts.ts               # Quick-start prompts
-  scripts/
-    copy-skills.ts                 # Copies ../../pm-skills/*.md → api/skills/
-    sync-search-index.ts           # Copies ../data/search-index.json → data/
+      lib/skills.ts                # Reads .md files, caches in memory
+      functions/chat.ts            # POST /api/chat handler
 ```
 
-Build scripts copy files from sibling directories within the same git repo: `../../pm-skills/` for skill prompts and `../data/` for PM Studio's search index. No cross-repo or runtime dependencies.
+Skill files are available after `git checkout` with no build-time copy step needed.
 
 ### 11.4 Streaming protocol
 
@@ -1115,7 +1102,6 @@ The 9 skill prompts represent significant intellectual property and should not b
 
 ### Phase 1 — Foundation (Weeks 1–3)
 - Scaffold standalone Next.js application (`framework-studio/ai-pm-coach/`) with API routes
-- Build scripts: `copy-skills.ts` (pm-skills → api/skills), `sync-search-index.ts` (PM Studio → coach data)
 - Implement skill prompt loader and caching (`load-skill.ts`)
 - Build `POST /api/chat` endpoint with SSE streaming
 - Build `POST /api/classify` endpoint for auto-routing
@@ -1178,23 +1164,22 @@ The 9 skill prompts represent significant intellectual property and should not b
 
 ### Suggested implementation sequence
 1. Scaffold `framework-studio/ai-pm-coach/` Next.js app with API routes
-2. Build scripts: `copy-skills.ts`, `sync-search-index.ts`
-3. Skill prompt loader (`load-skill.ts`)
-4. SSE streaming helper (`stream-response.ts`)
-5. `POST /api/chat` endpoint (single skill, streaming)
-6. `ChatInput` component
-7. `MessageBubble` component with markdown rendering + external framework links
-8. `CoachShell` layout with basic chat flow
-9. Coach navbar with external PM Studio links
-10. `SkillSelector` component
-11. `POST /api/classify` endpoint + auto-routing flow
-12. File upload components and API integration
-13. `POST /api/chat/debate` endpoint
-14. `DebateSynthesis` renderer
-15. Conversation sidebar and localStorage persistence
-16. Framework auto-linking (search-index-based, external URLs)
-17. Responsive polish and accessibility
-18. Azure deployment pipeline (CI/CD)
+2. Skill prompt loader (`load-skill.ts`)
+3. SSE streaming helper (`stream-response.ts`)
+4. `POST /api/chat` endpoint (single skill, streaming)
+5. `ChatInput` component
+6. `MessageBubble` component with markdown rendering + external framework links
+7. `CoachShell` layout with basic chat flow
+8. Coach navbar with external PM Studio links
+9. `SkillSelector` component
+10. `POST /api/classify` endpoint + auto-routing flow
+11. File upload components and API integration
+12. `POST /api/chat/debate` endpoint
+13. `DebateSynthesis` renderer
+14. Conversation sidebar and localStorage persistence
+15. Framework auto-linking (search-index-based, external URLs)
+16. Responsive polish and accessibility
+17. Azure deployment pipeline (CI/CD)
 
 ---
 
@@ -1203,7 +1188,7 @@ The 9 skill prompts represent significant intellectual property and should not b
 1. **Model selection**: Should debate synthesis use a higher-tier model (higher quality, higher cost, slower) or the same model as expert calls? Needs cost/quality testing.
 2. **Conversation context window**: How many prior messages should be included in each API call? Sending full history for long conversations will hit token limits. Recommend: sliding window of the most recent 10 messages.
 3. **Azure Functions cold start**: Cold start on the Consumption plan can add 2–5 seconds. Should we use a Premium plan for warm instances, or accept the latency for MVP?
-4. **Skill prompt versioning**: When skill `.md` files are updated in the repo, how are they synced to the API service? Recommend: copy at build time via `scripts/copy-skills.ts`, deployed with the Functions app.
+4. **Skill prompt versioning**: Skill `.md` files are tracked directly in `api/skills/` and deployed with the Functions app. Updates are made by editing the files in-place and committing.
 5. **Framework name disambiguation**: Some framework names are common English words (e.g., "Persona", "Sprint"). How aggressively should auto-linking match? Recommend: only match exact title case or full multi-word titles.
 6. **Rate limiting scope**: Per-IP rate limiting may be too restrictive for teams sharing an office IP. Should we use browser fingerprinting, or accept the limitation for MVP?
 7. **Fallback when API is down**: Should the coach page show graceful degradation (e.g., link to PM Studio's guided finder), or just an error message?

@@ -20,8 +20,6 @@ jobs:
     name: Validate
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
 
       - uses: actions/setup-node@v4
         with:
@@ -52,11 +50,6 @@ jobs:
     name: Build and Deploy Job
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
-
-      - name: Copy skill prompts to API
-        run: npx tsx scripts/copy-skills.ts
 
       - name: Build And Deploy
         id: builddeploy

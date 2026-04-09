@@ -418,15 +418,14 @@ GitHub Actions trigger
         │
         ▼
 Job 1: validate
-  - actions/checkout@v4 (submodules: true)
+  - actions/checkout@v4
   - actions/setup-node@v4 (node 20, npm cache)
   - npm ci + npm run lint + tsc --noEmit (frontend)
   - npm ci + tsc --noEmit (api/)
         │ (gates deployment via needs:)
         ▼
 Job 2: build_and_deploy_job
-  - actions/checkout@v4 (submodules: true)
-  - npx tsx scripts/copy-skills.ts (pm-skills/*.md → api/skills/)
+  - actions/checkout@v4
   - Azure/static-web-apps-deploy@v1
       app_location: "/"
       api_location: "api"          (Azure Functions backend)
@@ -491,10 +490,9 @@ npm run build            # TypeScript compile → dist/
 npm run watch            # TypeScript compile in watch mode
 npm run start            # func start (auto-runs build via prestart)
 
-# Content & skill pipeline
+# Content pipeline
 npx tsx scripts/migrate-content.ts          # PM_Frameworks/*.md → content/en/frameworks/*.mdx + search-index.json
 npx tsx scripts/generate-map-positions.ts   # Generate data/map-positions.json for SVG scatter
-npx tsx scripts/copy-skills.ts              # pm-skills/*.md → api/skills/ (required before API can serve skills)
 ```
 
 **Content update workflow:**

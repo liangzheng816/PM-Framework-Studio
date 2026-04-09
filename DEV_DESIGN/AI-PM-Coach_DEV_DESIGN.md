@@ -105,7 +105,7 @@ framework-studio/                    # Existing repo root
 │   │   └── lib/
 │   │       ├── skills.ts            # Load & cache skill .md files
 │   │       └── stream.ts            # SSE response helpers
-│   ├── skills/                      # Skill prompts (copied from pm-skills/ at build)
+│   ├── skills/                      # Skill prompts (tracked directly in git)
 │   │   ├── advise-frameworks.md
 │   │   ├── discover-users.md
 │   │   └── ... (9 files total)
@@ -113,14 +113,12 @@ framework-studio/                    # Existing repo root
 │   ├── tsconfig.json
 │   └── host.json                    # Azure Functions host config
 ├── scripts/
-│   ├── copy-skills.ts               # NEW — copies pm-skills/*.md → api/skills/
 │   ├── migrate-content.ts           # Existing — UNCHANGED
 │   └── generate-map-positions.ts    # Existing — UNCHANGED
 ├── package.json                     # MODIFIED — add react-markdown, remark-gfm
 ├── next.config.ts                   # UNCHANGED — stays output: "export"
-├── .github/workflows/
-│   └── azure-static-web-apps-*.yml  # MODIFIED — api_location: "api"
-└── pm-skills/                       # Existing (at PMModels root, via ../../pm-skills/)
+└── .github/workflows/
+    └── azure-static-web-apps-*.yml  # MODIFIED — api_location: "api"
 ```
 
 ## 4. Key technical decisions
@@ -206,10 +204,7 @@ export function linkifyFrameworks(html: string): string {
 
 ### 4.4 Skill prompt loading (Azure Functions)
 
-Skill `.md` files are copied from `../../pm-skills/` into `api/skills/` at build time via `scripts/copy-skills.ts`. The Azure Functions read them from disk and cache in memory.
-
-**Local dev:** `npm run sync` copies skills before dev server starts.
-**CI:** The GitHub Actions workflow runs `npm run sync` as a pre-build step.
+Skill `.md` files are tracked directly in `api/skills/` and committed to git. The Azure Functions read them from disk and cache in memory. No build-time copy step is needed.
 
 ### 4.5 No separate package.json for coach UI
 
@@ -242,7 +237,7 @@ The API has its own `api/package.json` for server-side deps (`@anthropic-ai/sdk`
 The workflow at `.github/workflows/azure-static-web-apps-salmon-moss-07f46dd1e.yml` has two jobs:
 
 1. **Validate** — runs `npm ci` + `npm run lint` + `tsc --noEmit` for both frontend and API. Gates deployment via `needs:` dependency.
-2. **Build and Deploy** — checks out with `submodules: true`, copies skills, then deploys via `Azure/static-web-apps-deploy@v1`.
+2. **Build and Deploy** — deploys via `Azure/static-web-apps-deploy@v1`.
 
 ```yaml
 name: Azure Static Web Apps CI/CD
@@ -265,8 +260,6 @@ jobs:
     name: Validate
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -286,10 +279,6 @@ jobs:
     name: Build and Deploy Job
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - name: Copy skill prompts to API
-        run: npx tsx scripts/copy-skills.ts
       - name: Build And Deploy
         uses: Azure/static-web-apps-deploy@v1
         with:
@@ -373,7 +362,7 @@ User visits /coach → types a question → API calls Claude → response stream
 | 0.3 | Azure Functions scaffold | `api/package.json`, `api/host.json`, `api/tsconfig.json` |
 | 0.4 | Skill loader (Functions) | `api/src/lib/skills.ts` (read .md, cache) |
 | 0.5 | Chat function | `api/src/functions/chat.ts` (load skill, call Claude, stream SSE) |
-| 0.6 | Copy-skills script | `scripts/copy-skills.ts` (pm-skills → api/skills/) |
+| 0.6 | Skill prompts | `api/skills/*.md` (9 skill files tracked directly in git) |
 | 0.7 | Chat input component | `components/coach/chat-input.tsx` (textarea, send button) |
 | 0.8 | Message bubble | `components/coach/message-bubble.tsx` (react-markdown rendering) |
 | 0.9 | Coach shell | `components/coach/coach-shell.tsx` (wire input → API → message list) |
@@ -574,9 +563,6 @@ Azure Static Web Apps CLI (`swa`) runs both the static frontend and Azure Functi
 # Install SWA CLI (one-time)
 npm install -g @azure/static-web-apps-cli
 
-# Copy skill prompts
-npx tsx scripts/copy-skills.ts
-
 # Install API dependencies
 cd api && npm install && cd ..
 
@@ -611,7 +597,7 @@ Access the app at `http://localhost:4280`. Both `/coach` and `/framework/*` page
 | Azure Functions 230s timeout on Standard plan | Single-skill responses complete in <30s. Debate mode (7 parallel + synthesis) may approach 45s. Well within limits. |
 | Adding `react-markdown` increases PM Studio bundle | Only imported by coach components; Next.js tree-shakes it from non-coach pages. Verify with `next build` bundle analysis. |
 | `api/` directory confuses existing PM Studio build | Azure SWA builds the `api/` directory separately. Next.js `output: "export"` ignores it. The `api/` folder has its own `package.json` — completely independent build. |
-| Skill prompt copy step forgotten | `scripts/copy-skills.ts` runs in CI workflow as pre-build step. For local dev, `swa start` instructions include it explicitly. |
+| Skill prompts missing at runtime | Skill `.md` files are tracked directly in `api/skills/` — available after `git checkout` with no build step needed. |
 | SWA Free plan has limited Functions | Upgrade to Standard plan ($9/month) for 230s timeout and production-grade Functions. Free plan has 45s timeout which may be tight for debate mode. |
 
 ## 13. Hosting comparison: before and after
