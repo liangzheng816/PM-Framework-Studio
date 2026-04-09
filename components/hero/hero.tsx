@@ -57,7 +57,7 @@ export function Hero({ compact }: HeroProps) {
             transition={{ duration: 0.6, delay: 0.2, ease }}
             className="text-lg sm:text-xl text-[var(--color-text-muted)] leading-relaxed mb-10 max-w-2xl"
           >
-            A beautifully crafted library of product management frameworks — source-verified, confidence-labeled, and ready to apply. Explore by category, compare side by side, or find exactly what you need.
+            100 proven frameworks and methodologies to help you think clearer, decide faster, and build better products. Browse by category, compare side by side, or find the right model for any challenge.
           </motion.p>
 
           {/* CTAs — hidden in compact mode */}

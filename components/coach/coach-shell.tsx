@@ -191,16 +191,16 @@ export function CoachShell() {
       {messages.length === 0 ? (
         /* Empty state — hero + input + pills all centered as a group */
         <div className="flex flex-1 flex-col items-center justify-center">
-          <div className="flex flex-col items-center text-center mb-6">
-            <h1 className="font-[var(--font-heading)] text-3xl text-[var(--color-text)] mb-3">
+          <div className="flex flex-col items-center text-center mb-10">
+            <h1 className="font-[var(--font-heading)] text-3xl text-[var(--color-text)] mb-4">
               What product challenge are you working on?
             </h1>
             <p className="text-[var(--color-text-muted)] max-w-md">
-              Describe your situation and get expert PM framework guidance,
-              powered by 100 source-verified frameworks.
+              7 expert AI coaches to sharpen your strategy,
+              pressure-test your plans, and ship with confidence.
             </p>
           </div>
-          <div className="w-full space-y-2">
+          <div className="w-full space-y-4">
             <ChatInput
               onSend={handleSend}
               onStop={handleStop}

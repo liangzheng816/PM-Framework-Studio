@@ -86,7 +86,7 @@ export function SkillSelector({
             ? "Select PM expert skill"
             : "Select experts for debate"
         }
-        className={`flex flex-wrap gap-1 py-1 ${
+        className={`flex flex-wrap gap-1.5 py-2 ${
           disabled ? "opacity-50 pointer-events-none" : ""
         }`}
       >
