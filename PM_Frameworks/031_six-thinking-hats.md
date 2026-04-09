@@ -11,7 +11,7 @@ canonical_status: "Canonical lateral-thinking method."
 
 ## One-paragraph summary
 
-Six Thinking Hats is a **ideation** framework used to expand the option space before the team commits too early to one direction. In the uploaded PMFrame workbook, it is described as: **Makes a group evaluate an idea through shared lenses like facts, risks, creativity, and emotion. Best for meetings that otherwise devolve into mixed-mode arguing.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Six Thinking Hats is a **ideation** framework used to expand the option space before the team commits too early to one direction. The framework is best described as: **Makes a group evaluate an idea through shared lenses like facts, risks, creativity, and emotion. Best for meetings that otherwise devolve into mixed-mode arguing.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

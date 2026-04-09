@@ -11,7 +11,7 @@ canonical_status: "Canonical prioritization framework."
 
 ## One-paragraph summary
 
-MoSCoW is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions. In the uploaded PMFrame workbook, it is described as: **Sorts scope into Must, Should, Could, and Won’t. Best for fast alignment on release boundaries.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+MoSCoW is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions. The framework is best described as: **Sorts scope into Must, Should, Could, and Won’t. Best for fast alignment on release boundaries.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

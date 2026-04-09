@@ -11,7 +11,7 @@ canonical_status: "Canonical design-sprint ideation exercise."
 
 ## One-paragraph summary
 
-Crazy 8s is a **ideation** framework used to expand the option space before the team commits too early to one direction. In the uploaded PMFrame workbook, it is described as: **Forces eight sketches in eight minutes to unlock range before convergence. Best for UI/UX concept exploration.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Crazy 8s is a **ideation** framework used to expand the option space before the team commits too early to one direction. The framework is best described as: **Forces eight sketches in eight minutes to unlock range before convergence. Best for UI/UX concept exploration.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

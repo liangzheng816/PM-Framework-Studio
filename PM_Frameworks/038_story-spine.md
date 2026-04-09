@@ -11,7 +11,7 @@ canonical_status: "Canonical storytelling scaffold in creative practice."
 
 ## One-paragraph summary
 
-Story Spine is a **ideation** framework used to expand the option space before the team commits too early to one direction. In the uploaded PMFrame workbook, it is described as: **Uses narrative structure to make ideas easier to explain, align around, and remember. Best for pitches, concept communication, and onboarding stakeholders.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Story Spine is a **ideation** framework used to expand the option space before the team commits too early to one direction. The framework is best described as: **Uses narrative structure to make ideas easier to explain, align around, and remember. Best for pitches, concept communication, and onboarding stakeholders.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

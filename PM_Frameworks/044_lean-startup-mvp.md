@@ -11,7 +11,7 @@ canonical_status: "Canonical lean experimentation method."
 
 ## One-paragraph summary
 
-Lean Startup MVP is a **validation** framework used to reduce uncertainty by turning product beliefs into tests, metrics, and evidence-backed decisions. In the uploaded PMFrame workbook, it is described as: **Uses the smallest viable product or experiment to test the riskiest assumption fast. Best when conviction is low and waste would be expensive.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Lean Startup MVP is a **validation** framework used to reduce uncertainty by turning product beliefs into tests, metrics, and evidence-backed decisions. The framework is best described as: **Uses the smallest viable product or experiment to test the riskiest assumption fast. Best when conviction is low and waste would be expensive.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

@@ -11,7 +11,7 @@ canonical_status: "Canonical concept; implementations vary."
 
 ## One-paragraph summary
 
-User Feedback Loop is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions. In the uploaded PMFrame workbook, it is described as: **Connects capture → categorization → prioritization → action → user communication. Best for making feedback operations actually improve retention and trust.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+User Feedback Loop is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions. The framework is best described as: **Connects capture → categorization → prioritization → action → user communication. Best for making feedback operations actually improve retention and trust.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

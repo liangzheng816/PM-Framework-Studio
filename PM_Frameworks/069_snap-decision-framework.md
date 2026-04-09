@@ -11,7 +11,7 @@ canonical_status: "Practitioner decision screen; not a universally canonical mod
 
 ## One-paragraph summary
 
-SNAP Decision Framework is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions. In the uploaded PMFrame workbook, it is described as: **A lightweight decision screen emphasizing simplicity, value, alignment, and priority. Best for sales/product choices that need a fast, practical check.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+SNAP Decision Framework is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions. The framework is best described as: **A lightweight decision screen emphasizing simplicity, value, alignment, and priority. Best for sales/product choices that need a fast, practical check.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

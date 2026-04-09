@@ -11,7 +11,7 @@ canonical_status: "Established risk-anticipation technique."
 
 ## One-paragraph summary
 
-Pre-mortem is a **appendix** framework used to anticipate failure modes early enough to reduce preventable risk. In the uploaded PMFrame workbook, it is described as: **A team imagines the project has already failed, then works backward to identify likely causes before launch. Present on the TW mirror, but I could not verify it on the original homepage.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Pre-mortem is a **appendix** framework used to anticipate failure modes early enough to reduce preventable risk. The framework is best described as: **A team imagines the project has already failed, then works backward to identify likely causes before launch. Present on the TW mirror, but I could not verify it on the original homepage.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

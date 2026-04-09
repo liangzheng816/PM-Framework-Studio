@@ -11,7 +11,7 @@ canonical_status: "Canonical service-design artifact."
 
 ## One-paragraph summary
 
-Service Blueprint is a **user insights** framework used to turn ambiguous user evidence into a sharper picture of behavior, motivation, and unmet needs. In the uploaded PMFrame workbook, it is described as: **Connects frontstage user experience with backstage processes, systems, and handoffs. Best for services or multi-team workflows where the visible journey depends on hidden operations.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Service Blueprint is a **user insights** framework used to turn ambiguous user evidence into a sharper picture of behavior, motivation, and unmet needs. The framework is best described as: **Connects frontstage user experience with backstage processes, systems, and handoffs. Best for services or multi-team workflows where the visible journey depends on hidden operations.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

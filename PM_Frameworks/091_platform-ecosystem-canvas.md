@@ -11,7 +11,7 @@ canonical_status: "Practitioner ecosystem-design canvas; variants exist."
 
 ## One-paragraph summary
 
-Platform Ecosystem Canvas is a **systems thinking** framework used to understand the broader structure around the product, including dependencies, incentives, constraints, and feedback loops. In the uploaded PMFrame workbook, it is described as: **Defines participants, exchanges, incentives, rules, and health of a multi-sided platform. Best for marketplace or ecosystem design.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Platform Ecosystem Canvas is a **systems thinking** framework used to understand the broader structure around the product, including dependencies, incentives, constraints, and feedback loops. The framework is best described as: **Defines participants, exchanges, incentives, rules, and health of a multi-sided platform. Best for marketplace or ecosystem design.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

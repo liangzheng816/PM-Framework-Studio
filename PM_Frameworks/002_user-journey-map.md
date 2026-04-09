@@ -11,7 +11,7 @@ canonical_status: "Established UX mapping technique; no single owner, but strong
 
 ## One-paragraph summary
 
-User Journey Map is a **user insights** framework used to turn ambiguous user evidence into a sharper picture of behavior, motivation, and unmet needs. In the uploaded PMFrame workbook, it is described as: **Maps the end-to-end user experience across stages, touchpoints, emotions, and friction points. Best for seeing where experience breaks and where redesign will matter most.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+User Journey Map is a **user insights** framework used to turn ambiguous user evidence into a sharper picture of behavior, motivation, and unmet needs. The framework is best described as: **Maps the end-to-end user experience across stages, touchpoints, emotions, and friction points. Best for seeing where experience breaks and where redesign will matter most.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

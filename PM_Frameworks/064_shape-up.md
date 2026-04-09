@@ -11,7 +11,7 @@ canonical_status: "Canonical within Basecamp’s delivery model."
 
 ## One-paragraph summary
 
-Shape Up is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions. In the uploaded PMFrame workbook, it is described as: **Basecamp’s fixed-time, variable-scope delivery model built around shaped bets. Best for product teams that want fewer endless backlogs and more bounded bets.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Shape Up is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions. The framework is best described as: **Basecamp’s fixed-time, variable-scope delivery model built around shaped bets. Best for product teams that want fewer endless backlogs and more bounded bets.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

@@ -11,7 +11,7 @@ canonical_status: "Canonical industry-structure framework."
 
 ## One-paragraph summary
 
-Porter Five Forces is a **systems thinking** framework used to understand the broader structure around the product, including dependencies, incentives, constraints, and feedback loops. In the uploaded PMFrame workbook, it is described as: **Assesses structural profitability through supplier power, buyer power, rivalry, substitution, and new-entry threat. Best for industry attractiveness analysis.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Porter Five Forces is a **systems thinking** framework used to understand the broader structure around the product, including dependencies, incentives, constraints, and feedback loops. The framework is best described as: **Assesses structural profitability through supplier power, buyer power, rivalry, substitution, and new-entry threat. Best for industry attractiveness analysis.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

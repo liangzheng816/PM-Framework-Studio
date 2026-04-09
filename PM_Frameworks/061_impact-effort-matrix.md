@@ -11,7 +11,7 @@ canonical_status: "Common prioritization tool; many variants exist."
 
 ## One-paragraph summary
 
-Impact–Effort Matrix is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions. In the uploaded PMFrame workbook, it is described as: **Visualizes quick wins versus expensive low-return work. Best for rough-cut prioritization.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Impact–Effort Matrix is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions. The framework is best described as: **Visualizes quick wins versus expensive low-return work. Best for rough-cut prioritization.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

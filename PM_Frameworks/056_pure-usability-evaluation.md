@@ -11,7 +11,7 @@ canonical_status: "Practitioner heuristic review method; variants exist."
 
 ## One-paragraph summary
 
-PURE Usability Evaluation is a **validation** framework used to reduce uncertainty by turning product beliefs into tests, metrics, and evidence-backed decisions. In the uploaded PMFrame workbook, it is described as: **Expert review lens for utility, usability, reliability, and experience. Best for fast heuristic quality checks when user testing is not yet practical.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+PURE Usability Evaluation is a **validation** framework used to reduce uncertainty by turning product beliefs into tests, metrics, and evidence-backed decisions. The framework is best described as: **Expert review lens for utility, usability, reliability, and experience. Best for fast heuristic quality checks when user testing is not yet practical.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

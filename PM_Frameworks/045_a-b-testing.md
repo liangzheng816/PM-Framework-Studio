@@ -11,7 +11,7 @@ canonical_status: "Canonical controlled-experiment method."
 
 ## One-paragraph summary
 
-A/B Testing is a **validation** framework used to reduce uncertainty by turning product beliefs into tests, metrics, and evidence-backed decisions. In the uploaded PMFrame workbook, it is described as: **Tests alternative variants with controlled experiments and statistical comparison. Best for tuning product decisions where behavior can be measured at scale.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+A/B Testing is a **validation** framework used to reduce uncertainty by turning product beliefs into tests, metrics, and evidence-backed decisions. The framework is best described as: **Tests alternative variants with controlled experiments and statistical comparison. Best for tuning product decisions where behavior can be measured at scale.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

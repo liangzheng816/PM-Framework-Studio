@@ -11,7 +11,7 @@ canonical_status: "Canonical lean-learning pattern in spirit; names vary."
 
 ## One-paragraph summary
 
-Validation Learning Loop is a **validation** framework used to reduce uncertainty by turning product beliefs into tests, metrics, and evidence-backed decisions. In the uploaded PMFrame workbook, it is described as: **Runs build → measure → learn loops and explicitly decides whether to persevere or pivot. Best for disciplined discovery rather than ad hoc experimentation.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Validation Learning Loop is a **validation** framework used to reduce uncertainty by turning product beliefs into tests, metrics, and evidence-backed decisions. The framework is best described as: **Runs build → measure → learn loops and explicitly decides whether to persevere or pivot. Best for disciplined discovery rather than ad hoc experimentation.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

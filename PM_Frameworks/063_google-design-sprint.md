@@ -11,7 +11,7 @@ canonical_status: "Canonical fast-decision workshop format."
 
 ## One-paragraph summary
 
-Google Design Sprint is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions. In the uploaded PMFrame workbook, it is described as: **A compressed multi-day flow for framing, sketching, prototyping, and testing ideas. Best when a big bet needs an answer fast.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Google Design Sprint is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions. The framework is best described as: **A compressed multi-day flow for framing, sketching, prototyping, and testing ideas. Best when a big bet needs an answer fast.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

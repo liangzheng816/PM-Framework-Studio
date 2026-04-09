@@ -11,7 +11,7 @@ canonical_status: "Canonical strategic analysis tool."
 
 ## One-paragraph summary
 
-Value Chain Analysis is a **systems thinking** framework used to understand the broader structure around the product, including dependencies, incentives, constraints, and feedback loops. In the uploaded PMFrame workbook, it is described as: **Breaks the business into primary and support activities to locate where value and differentiation are created. Best for cost, strategy, and moat analysis.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Value Chain Analysis is a **systems thinking** framework used to understand the broader structure around the product, including dependencies, incentives, constraints, and feedback loops. The framework is best described as: **Breaks the business into primary and support activities to locate where value and differentiation are created. Best for cost, strategy, and moat analysis.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

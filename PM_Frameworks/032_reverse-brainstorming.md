@@ -11,7 +11,7 @@ canonical_status: "Established ideation variant; no single owner."
 
 ## One-paragraph summary
 
-Reverse Brainstorming is a **ideation** framework used to expand the option space before the team commits too early to one direction. In the uploaded PMFrame workbook, it is described as: **Starts from ‘how could we make this fail?’ and flips the answers into improvements. Best for surfacing hidden risks and blind spots.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Reverse Brainstorming is a **ideation** framework used to expand the option space before the team commits too early to one direction. The framework is best described as: **Starts from ‘how could we make this fail?’ and flips the answers into improvements. Best for surfacing hidden risks and blind spots.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

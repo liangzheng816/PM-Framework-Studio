@@ -11,7 +11,7 @@ canonical_status: "Canonical method with broadly accepted stages; exact variants
 
 ## One-paragraph summary
 
-Design Thinking is a **user insights** framework used to turn ambiguous user evidence into a sharper picture of behavior, motivation, and unmet needs. In the uploaded PMFrame workbook, it is described as: **Human-centered cycle of empathize → define → ideate → prototype → test. Best for starting with messy user problems and iterating toward a promising concept.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Design Thinking is a **user insights** framework used to turn ambiguous user evidence into a sharper picture of behavior, motivation, and unmet needs. The framework is best described as: **Human-centered cycle of empathize → define → ideate → prototype → test. Best for starting with messy user problems and iterating toward a promising concept.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

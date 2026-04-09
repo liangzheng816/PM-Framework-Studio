@@ -11,7 +11,7 @@ canonical_status: "Canonical modern discovery artifact."
 
 ## One-paragraph summary
 
-Opportunity Solution Tree is a **ideation** framework used to expand the option space before the team commits too early to one direction. In the uploaded PMFrame workbook, it is described as: **Links desired outcomes to opportunities and then to solution ideas and tests. Best for keeping experimentation tied to a measurable objective.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Opportunity Solution Tree is a **ideation** framework used to expand the option space before the team commits too early to one direction. The framework is best described as: **Links desired outcomes to opportunities and then to solution ideas and tests. Best for keeping experimentation tied to a measurable objective.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

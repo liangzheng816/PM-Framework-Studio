@@ -11,7 +11,7 @@ canonical_status: "Established creativity principle rather than one rigid framew
 
 ## One-paragraph summary
 
-Analogical Thinking is a **ideation** framework used to expand the option space before the team commits too early to one direction. In the uploaded PMFrame workbook, it is described as: **Borrows patterns from other industries or domains and adapts them back to the current problem. Best for getting beyond same-industry clichés.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Analogical Thinking is a **ideation** framework used to expand the option space before the team commits too early to one direction. The framework is best described as: **Borrows patterns from other industries or domains and adapts them back to the current problem. Best for getting beyond same-industry clichés.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

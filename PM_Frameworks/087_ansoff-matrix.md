@@ -11,7 +11,7 @@ canonical_status: "Canonical strategic growth model."
 
 ## One-paragraph summary
 
-Ansoff Matrix is a **growth** framework used to identify where demand, retention, messaging, or economics can improve compounding growth. In the uploaded PMFrame workbook, it is described as: **Frames growth through market penetration, market development, product development, and diversification. Best for strategic growth-option comparison.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Ansoff Matrix is a **growth** framework used to identify where demand, retention, messaging, or economics can improve compounding growth. The framework is best described as: **Frames growth through market penetration, market development, product development, and diversification. Best for strategic growth-option comparison.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

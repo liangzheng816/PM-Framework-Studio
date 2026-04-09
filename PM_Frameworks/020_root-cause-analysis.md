@@ -11,7 +11,7 @@ canonical_status: "Broad family of methods rather than one single template."
 
 ## One-paragraph summary
 
-Root Cause Analysis is a **problem framing** framework used to separate the real problem from noise, symptoms, assumptions, and premature solution ideas. In the uploaded PMFrame workbook, it is described as: **Systematic family of methods for isolating underlying causes rather than patching symptoms. Best when a problem has multiple interacting drivers.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Root Cause Analysis is a **problem framing** framework used to separate the real problem from noise, symptoms, assumptions, and premature solution ideas. The framework is best described as: **Systematic family of methods for isolating underlying causes rather than patching symptoms. Best when a problem has multiple interacting drivers.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

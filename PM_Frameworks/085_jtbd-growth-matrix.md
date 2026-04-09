@@ -11,7 +11,7 @@ canonical_status: "Practitioner synthesis, not a single canonical academic matri
 
 ## One-paragraph summary
 
-JTBD Growth Matrix is a **growth** framework used to identify where demand, retention, messaging, or economics can improve compounding growth. In the uploaded PMFrame workbook, it is described as: **Maps jobs by importance and current satisfaction to find under-served demand pockets. Best for pinpointing where growth opportunities are most compelling.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+JTBD Growth Matrix is a **growth** framework used to identify where demand, retention, messaging, or economics can improve compounding growth. The framework is best described as: **Maps jobs by importance and current satisfaction to find under-served demand pockets. Best for pinpointing where growth opportunities are most compelling.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

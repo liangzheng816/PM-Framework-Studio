@@ -11,7 +11,7 @@ canonical_status: "Established strategic practice, not a single canonical templa
 
 ## One-paragraph summary
 
-Competitor Analysis is a **problem framing** framework used to separate the real problem from noise, symptoms, assumptions, and premature solution ideas. In the uploaded PMFrame workbook, it is described as: **Compares direct, indirect, and substitute competitors across positioning, features, business model, and gaps. Best for differentiation and market narrative work.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Competitor Analysis is a **problem framing** framework used to separate the real problem from noise, symptoms, assumptions, and premature solution ideas. The framework is best described as: **Compares direct, indirect, and substitute competitors across positioning, features, business model, and gaps. Best for differentiation and market narrative work.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

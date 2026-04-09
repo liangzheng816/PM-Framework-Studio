@@ -11,7 +11,7 @@ canonical_status: "Canonical user research method."
 
 ## One-paragraph summary
 
-Contextual Inquiry is a **user insights** framework used to turn ambiguous user evidence into a sharper picture of behavior, motivation, and unmet needs. In the uploaded PMFrame workbook, it is described as: **Observes users in their real environment instead of relying only on recalled stories. Best for understanding workarounds, context, and tacit behavior.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Contextual Inquiry is a **user insights** framework used to turn ambiguous user evidence into a sharper picture of behavior, motivation, and unmet needs. The framework is best described as: **Observes users in their real environment instead of relying only on recalled stories. Best for understanding workarounds, context, and tacit behavior.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

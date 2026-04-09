@@ -11,7 +11,7 @@ canonical_status: "Canonical product and UX artifact when grounded in research."
 
 ## One-paragraph summary
 
-Persona is a **user insights** framework used to turn ambiguous user evidence into a sharper picture of behavior, motivation, and unmet needs. In the uploaded PMFrame workbook, it is described as: **Turns research patterns into a concrete archetype with goals, constraints, and context. Best for aligning teams on who the product is really for.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Persona is a **user insights** framework used to turn ambiguous user evidence into a sharper picture of behavior, motivation, and unmet needs. The framework is best described as: **Turns research patterns into a concrete archetype with goals, constraints, and context. Best for aligning teams on who the product is really for.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

@@ -11,7 +11,7 @@ canonical_status: "Conceptual strategy lens; application is practitioner-driven.
 
 ## One-paragraph summary
 
-Antifragile Design is a **systems thinking** framework used to understand the broader structure around the product, including dependencies, incentives, constraints, and feedback loops. In the uploaded PMFrame workbook, it is described as: **Builds systems that get stronger under stress instead of merely surviving it. Best for resilient product architecture and risk strategy.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Antifragile Design is a **systems thinking** framework used to understand the broader structure around the product, including dependencies, incentives, constraints, and feedback loops. The framework is best described as: **Builds systems that get stronger under stress instead of merely surviving it. Best for resilient product architecture and risk strategy.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

@@ -11,7 +11,7 @@ canonical_status: "Canonical within PM interview practice."
 
 ## One-paragraph summary
 
-CIRCLES Method is a **problem framing** framework used to separate the real problem from noise, symptoms, assumptions, and premature solution ideas. In the uploaded PMFrame workbook, it is described as: **A structured product-design answer format for clarifying users, problems, priorities, and tradeoffs. Best for interview-style product reasoning or rapid concept evaluation.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+CIRCLES Method is a **problem framing** framework used to separate the real problem from noise, symptoms, assumptions, and premature solution ideas. The framework is best described as: **A structured product-design answer format for clarifying users, problems, priorities, and tradeoffs. Best for interview-style product reasoning or rapid concept evaluation.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

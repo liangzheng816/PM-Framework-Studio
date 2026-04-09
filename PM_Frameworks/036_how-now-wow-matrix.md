@@ -11,7 +11,7 @@ canonical_status: "Practitioner ideation-sort method."
 
 ## One-paragraph summary
 
-How-Now-Wow Matrix is a **ideation** framework used to expand the option space before the team commits too early to one direction. In the uploaded PMFrame workbook, it is described as: **Sorts ideas by originality and feasibility into safe, creative, and breakthrough buckets. Best after ideation when deciding which concepts to mature.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+How-Now-Wow Matrix is a **ideation** framework used to expand the option space before the team commits too early to one direction. The framework is best described as: **Sorts ideas by originality and feasibility into safe, creative, and breakthrough buckets. Best after ideation when deciding which concepts to mature.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

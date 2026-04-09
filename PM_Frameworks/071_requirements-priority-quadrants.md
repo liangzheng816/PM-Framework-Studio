@@ -11,7 +11,7 @@ canonical_status: "Practitioner workload-prioritization matrix."
 
 ## One-paragraph summary
 
-Requirements Priority Quadrants is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions. In the uploaded PMFrame workbook, it is described as: **Sorts items by importance and urgency to distinguish immediate, planned, delegated, and deprioritized work. Best for taming noisy stakeholder demand.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Requirements Priority Quadrants is a **execution** framework used to translate intent into scope, sequence, ownership, and repeatable delivery decisions. The framework is best described as: **Sorts items by importance and urgency to distinguish immediate, planned, delegated, and deprioritized work. Best for taming noisy stakeholder demand.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

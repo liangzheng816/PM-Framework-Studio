@@ -11,7 +11,7 @@ canonical_status: "Canonical platform strategy concept."
 
 ## One-paragraph summary
 
-Network Effects is a **growth** framework used to identify where demand, retention, messaging, or economics can improve compounding growth. In the uploaded PMFrame workbook, it is described as: **Each added user increases value for others, strengthening defensibility if the loop is real. Best for marketplace, platform, and social products.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Network Effects is a **growth** framework used to identify where demand, retention, messaging, or economics can improve compounding growth. The framework is best described as: **Each added user increases value for others, strengthening defensibility if the loop is real. Best for marketplace, platform, and social products.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

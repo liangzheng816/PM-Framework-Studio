@@ -11,7 +11,7 @@ canonical_status: "Canonical systems-thinking teaching model."
 
 ## One-paragraph summary
 
-System Archetypes is a **systems thinking** framework used to understand the broader structure around the product, including dependencies, incentives, constraints, and feedback loops. In the uploaded PMFrame workbook, it is described as: **Uses recurring structural patterns—like fixes that fail or tragedy of the commons—to spot predictable system traps. Best for diagnosing repeating organizational dysfunction.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+System Archetypes is a **systems thinking** framework used to understand the broader structure around the product, including dependencies, incentives, constraints, and feedback loops. The framework is best described as: **Uses recurring structural patterns—like fixes that fail or tragedy of the commons—to spot predictable system traps. Best for diagnosing repeating organizational dysfunction.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

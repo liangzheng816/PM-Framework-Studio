@@ -11,7 +11,7 @@ canonical_status: "Lean product artifact; variants exist."
 
 ## One-paragraph summary
 
-Hypothesis Board is a **validation** framework used to reduce uncertainty by turning product beliefs into tests, metrics, and evidence-backed decisions. In the uploaded PMFrame workbook, it is described as: **Turns beliefs into explicit hypotheses, tests, and outcomes. Best for making product bets legible and reviewable.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Hypothesis Board is a **validation** framework used to reduce uncertainty by turning product beliefs into tests, metrics, and evidence-backed decisions. The framework is best described as: **Turns beliefs into explicit hypotheses, tests, and outcomes. Best for making product bets legible and reviewable.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

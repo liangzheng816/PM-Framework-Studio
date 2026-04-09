@@ -11,7 +11,7 @@ canonical_status: "Canonical strategic framework."
 
 ## One-paragraph summary
 
-Blue Ocean Strategy is a **growth** framework used to identify where demand, retention, messaging, or economics can improve compounding growth. In the uploaded PMFrame workbook, it is described as: **Escapes head-to-head competition by eliminating, reducing, raising, and creating value factors. Best for category redesign and strategic repositioning.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Blue Ocean Strategy is a **growth** framework used to identify where demand, retention, messaging, or economics can improve compounding growth. The framework is best described as: **Escapes head-to-head competition by eliminating, reducing, raising, and creating value factors. Best for category redesign and strategic repositioning.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

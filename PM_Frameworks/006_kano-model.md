@@ -11,7 +11,7 @@ canonical_status: "Canonical quality and satisfaction model."
 
 ## One-paragraph summary
 
-Kano Model is a **user insights** framework used to turn ambiguous user evidence into a sharper picture of behavior, motivation, and unmet needs. In the uploaded PMFrame workbook, it is described as: **Classifies features into must-haves, performance needs, and delighters. Best for feature prioritization when not all improvements create equal user value.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+Kano Model is a **user insights** framework used to turn ambiguous user evidence into a sharper picture of behavior, motivation, and unmet needs. The framework is best described as: **Classifies features into must-haves, performance needs, and delighters. Best for feature prioritization when not all improvements create equal user value.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 

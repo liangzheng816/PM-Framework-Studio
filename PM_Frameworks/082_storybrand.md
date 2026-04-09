@@ -11,7 +11,7 @@ canonical_status: "Canonical messaging framework in brand practice."
 
 ## One-paragraph summary
 
-StoryBrand is a **growth** framework used to identify where demand, retention, messaging, or economics can improve compounding growth. In the uploaded PMFrame workbook, it is described as: **Uses a story structure where the customer is the hero and the brand is the guide. Best for simplifying product messaging and conversion copy.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
+StoryBrand is a **growth** framework used to identify where demand, retention, messaging, or economics can improve compounding growth. The framework is best described as: **Uses a story structure where the customer is the hero and the brand is the guide. Best for simplifying product messaging and conversion copy.**. In practical product work, its value is that it gives teams a repeatable way to move from ambiguity to a clearer decision, artifact, or next experiment without pretending there is more certainty than the evidence actually supports.
 
 ## What problem it solves
 
