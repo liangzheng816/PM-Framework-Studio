@@ -54,7 +54,7 @@ export function CollectionsClient({ frameworks }: CollectionsClientProps) {
             Click the heart icon on any framework to save it here
           </p>
           <Link
-            href="/explore"
+            href="/discover"
             className="inline-flex items-center gap-2 text-sm text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] transition-colors"
           >
             Explore frameworks

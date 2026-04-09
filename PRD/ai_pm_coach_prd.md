@@ -3,9 +3,9 @@
 ## 1. Document status
 - Version: v0.1 (Draft)
 - Date: 2026-04-08
-- Parent PRD: `PRD/pmframe_inspired_prd.md` (Framework Studio v1.0)
+- Parent PRD: `PRD/pmframe_inspired_prd.md` (PM Studio v1.0)
 - Audience: Claude Code, full-stack product/design/engineering teams
-- Purpose: Build a standalone AI-powered PM coaching web application that translates the 9 existing PM Skills (currently Claude Code slash commands) into an interactive web-based consultancy experience, with deep cross-links to Framework Studio for methodology and framework reference detail.
+- Purpose: Build a standalone AI-powered PM coaching web application that translates the 9 existing PM Skills (currently Claude Code slash commands) into an interactive web-based consultancy experience, with deep cross-links to PM Studio for methodology and framework reference detail.
 
 ---
 
@@ -15,25 +15,25 @@
 **AI PM Coach**
 
 ### 2.2 One-line pitch
-A ChatGPT-style conversational interface that gives product teams on-demand access to 9 domain-expert PM consultants and a multi-expert debate mode, all powered by the same 100-framework knowledge base that drives Framework Studio.
+A ChatGPT-style conversational interface that gives product teams on-demand access to 9 domain-expert PM consultants and a multi-expert debate mode, all powered by the same 100-framework knowledge base that drives PM Studio.
 
 ### 2.3 Product vision
-Complement Framework Studio's reference library with an active coaching product. Users describe their situation in natural language, optionally upload context documents, and receive expert-level PM guidance grounded in 100 source-verified frameworks — with every recommended framework linking out to its deep-dive page on Framework Studio.
+Complement PM Studio's reference library with an active coaching product. Users describe their situation in natural language, optionally upload context documents, and receive expert-level PM guidance grounded in 100 source-verified frameworks — with every recommended framework linking out to its deep-dive page on PM Studio.
 
 ### 2.4 Why now
 1. The 9 PM Skills already encode deep domain expertise (~125 KB of structured prompts) but are only accessible via Claude Code CLI — a developer-only surface.
-2. Framework Studio v1.0 established the content and design foundation; "In-product AI tutor" was explicitly deferred as a non-goal for MVP (§3.3 of parent PRD).
+2. PM Studio v1.0 established the content and design foundation; "In-product AI tutor" was explicitly deferred as a non-goal for MVP (§3.3 of parent PRD).
 3. LLM API costs and streaming infrastructure have matured enough to support a web-based inference product at acceptable latency and cost.
-4. User feedback on Framework Studio's Guided Finder (§12.7 of parent PRD) indicates demand for conversational discovery that goes beyond a 4-question wizard.
+4. User feedback on PM Studio's Guided Finder (§12.7 of parent PRD) indicates demand for conversational discovery that goes beyond a 4-question wizard.
 
-### 2.5 Relationship to Framework Studio v1.0
-AI PM Coach is a **separate web application** deployed independently from Framework Studio. Framework Studio remains an unmodified static site hosted on Azure Static Web Apps at its existing domain. AI PM Coach is deployed to its own Azure resource (e.g., Azure App Service or a separate Azure Static Web App + Functions) at a different origin.
+### 2.5 Relationship to PM Studio v1.0
+AI PM Coach is a **separate web application** deployed independently from PM Studio. PM Studio remains an unmodified static site hosted on Azure Static Web Apps at its existing domain. AI PM Coach is deployed to its own Azure resource (e.g., Azure App Service or a separate Azure Static Web App + Functions) at a different origin.
 
-The two products are connected through **cross-origin framework deep-links**: every framework name mentioned in a coach response links to `{FRAMEWORK_STUDIO_BASE_URL}/framework/{slug}` on Framework Studio. This keeps Framework Studio as the authoritative reference layer while AI PM Coach serves as the interactive consultancy layer.
+The two products are connected through **cross-origin framework deep-links**: every framework name mentioned in a coach response links to `{FRAMEWORK_STUDIO_BASE_URL}/framework/{slug}` on PM Studio. This keeps PM Studio as the authoritative reference layer while AI PM Coach serves as the interactive consultancy layer.
 
 ```
 ┌──────────────────────┐          ┌──────────────────────────┐
-│   AI PM Coach        │          │   Framework Studio       │
+│   AI PM Coach        │          │   PM Studio       │
 │   (coach.example.com)│  links → │   (studio.example.com)   │
 │                      │          │                          │
 │   Chat interface     │          │   /framework/[slug]      │
@@ -46,7 +46,7 @@ The two products are connected through **cross-origin framework deep-links**: ev
 ```
 
 **Key implications of separate deployment:**
-- Framework Studio requires zero code changes — no new routes, no nav updates, no homepage relocation
+- PM Studio requires zero code changes — no new routes, no nav updates, no homepage relocation
 - AI PM Coach owns its own domain, deployment pipeline, and scaling configuration
 - Framework links open in a new tab (`target="_blank"`) since they navigate to a different origin
 - The coach must be configured with `FRAMEWORK_STUDIO_BASE_URL` to construct correct deep-links
@@ -61,7 +61,7 @@ The two products are connected through **cross-origin framework deep-links**: ev
 2. Provide streaming, multi-turn conversational PM coaching with framework-aware responses.
 3. Allow users to select specific skills or invoke debate mode for multi-expert analysis.
 4. Support markdown file uploads so users can provide context (PRDs, research notes, strategy docs).
-5. Cross-link every recommended framework to its deep-dive page on Framework Studio (external links to the separate static site).
+5. Cross-link every recommended framework to its deep-dive page on PM Studio (external links to the separate static site).
 
 ### 3.2 Business/product goals
 1. Increase average session duration by 3× through conversational engagement.
@@ -118,8 +118,8 @@ Inherits all 7 principles from §5 of the parent PRD, plus:
 8. **Conversation is the interface** — the primary interaction is typing a question and getting expert guidance, not clicking through menus.
 9. **Expert, not generic** — responses must demonstrate deep framework knowledge, not generic consulting advice. Every recommendation must name specific frameworks and explain WHY.
 10. **Transparent routing** — when the system selects a skill or invokes debate mode, the user can see which expert(s) are responding and why.
-11. **Connected, not siloed** — every framework mentioned in a coach response should link to its deep-dive page on Framework Studio, creating a bridge between conversational and reference modes.
-12. **Visually cohesive across sites** — AI PM Coach adopts Framework Studio's Midnight Editorial design system (same CSS tokens, typography, colors) so that navigating between the two products feels like a single experience despite separate deployments.
+11. **Connected, not siloed** — every framework mentioned in a coach response should link to its deep-dive page on PM Studio, creating a bridge between conversational and reference modes.
+12. **Visually cohesive across sites** — AI PM Coach adopts PM Studio's Midnight Editorial design system (same CSS tokens, typography, colors) so that navigating between the two products feels like a single experience despite separate deployments.
 
 ---
 
@@ -127,11 +127,11 @@ Inherits all 7 principles from §5 of the parent PRD, plus:
 
 ### 6.1 Deployment topology
 
-AI PM Coach is a **standalone application** deployed separately from Framework Studio. Framework Studio requires **zero modifications** — no route changes, no navigation updates, no homepage relocation.
+AI PM Coach is a **standalone application** deployed separately from PM Studio. PM Studio requires **zero modifications** — no route changes, no navigation updates, no homepage relocation.
 
 | Application | Domain (example) | Hosting | Changes required |
 |-------------|-----------------|---------|-----------------|
-| Framework Studio | `studio.example.com` | Azure Static Web Apps | None |
+| PM Studio | `studio.example.com` | Azure Static Web Apps | None |
 | AI PM Coach | `coach.example.com` | Azure App Service or Azure Static Web App + linked Functions | New application |
 
 ### 6.2 AI PM Coach routes
@@ -139,7 +139,7 @@ AI PM Coach is a **standalone application** deployed separately from Framework S
 | Route | Description |
 |-------|-------------|
 | `/` | Coach interface (chat, skill selector, debate mode) |
-| `/about` | About page explaining AI PM Coach, linking to Framework Studio |
+| `/about` | About page explaining AI PM Coach, linking to PM Studio |
 
 ### 6.3 AI PM Coach navigation
 
@@ -148,11 +148,11 @@ The coach app has its own navbar:
 | Link | Target |
 |------|--------|
 | "Coach" | `/` (internal — coach homepage) |
-| "Framework Library" | `{FRAMEWORK_STUDIO_BASE_URL}/explore` (external — opens Framework Studio in new tab) |
-| "Framework Map" | `{FRAMEWORK_STUDIO_BASE_URL}/map` (external — opens Framework Studio in new tab) |
+| "Framework Library" | `{FRAMEWORK_STUDIO_BASE_URL}/explore` (external — opens PM Studio in new tab) |
+| "Framework Map" | `{FRAMEWORK_STUDIO_BASE_URL}/map` (external — opens PM Studio in new tab) |
 | "About" | `/about` (internal) |
 
-This provides a seamless bridge to Framework Studio for users who want to browse the reference library directly.
+This provides a seamless bridge to PM Studio for users who want to browse the reference library directly.
 
 ### 6.4 Cross-origin framework linking
 
@@ -202,8 +202,8 @@ Every framework name mentioned in a coach response links to `{FRAMEWORK_STUDIO_B
 
 ### Flow I — Cross-link exploration
 1. During a coach conversation, the response mentions "RICE Scoring" and "MoSCoW"
-2. Each framework name renders as an inline link to Framework Studio (e.g., `studio.example.com/framework/rice-scoring`)
-3. User clicks a link — it opens the Framework Studio deep-dive page in a new tab
+2. Each framework name renders as an inline link to PM Studio (e.g., `studio.example.com/framework/rice-scoring`)
+3. User clicks a link — it opens the PM Studio deep-dive page in a new tab
 4. The coach conversation persists in the original tab; user switches back to continue
 
 ---
@@ -217,7 +217,7 @@ The coach interface must:
 - Support multi-turn conversation with full message history visible
 - Stream assistant responses token-by-token (not wait for completion)
 - Render assistant responses as rich markdown (headings, lists, tables, code blocks, bold/italic)
-- Auto-link framework names in responses to their deep-dive pages on Framework Studio (external links, new tab)
+- Auto-link framework names in responses to their deep-dive pages on PM Studio (external links, new tab)
 - Support keyboard shortcuts: `Enter` to send, `Shift+Enter` for newline
 - Auto-resize the input textarea up to 6 lines, then scroll internally
 - Show a loading/thinking indicator during inference
@@ -295,23 +295,23 @@ Acceptance criteria:
 Responses must:
 - Render full markdown with the existing design system typography
 - Use `--font-heading` for h2/h3, `--font-body` for body text, `--font-mono` for code blocks
-- Auto-detect framework names and convert to external links pointing to Framework Studio (match against the 100 slugs bundled from `data/search-index.json`)
+- Auto-detect framework names and convert to external links pointing to PM Studio (match against the 100 slugs bundled from `data/search-index.json`)
 - Render debate synthesis sections with distinct visual containers
 - Support copy-to-clipboard for individual messages or the full conversation
 
 Framework auto-linking algorithm:
-1. At build time, bundle a copy of Framework Studio's `search-index.json` (`slug` → `title`, `aliases`) into the coach app
+1. At build time, bundle a copy of PM Studio's `search-index.json` (`slug` → `title`, `aliases`) into the coach app
 2. Build a lookup map: `title` → `slug`, `alias` → `slug` (case-insensitive)
 3. Sort keys by length descending (match longest first to avoid partial matches)
 4. After markdown rendering, scan text nodes for exact matches
 5. Replace matches with `<a href="{FRAMEWORK_STUDIO_BASE_URL}/framework/{slug}" target="_blank" rel="noopener noreferrer">` styled with `--color-accent` and an external-link icon
 6. Skip matches inside code blocks, headings, or already-linked text
 
-The search index is a static JSON file (~40 KB) copied from Framework Studio at build time via `scripts/sync-search-index.ts`. It does not require a runtime dependency on Framework Studio.
+The search index is a static JSON file (~40 KB) copied from PM Studio at build time via `scripts/sync-search-index.ts`. It does not require a runtime dependency on PM Studio.
 
 Acceptance criteria:
 - At least 90% of framework names mentioned in responses are correctly auto-linked
-- Framework links open Framework Studio in a new tab (external navigation)
+- Framework links open PM Studio in a new tab (external navigation)
 - Links display a subtle external-link icon (↗) to signal cross-site navigation
 - Markdown tables render with proper alignment and borders
 - Code blocks use JetBrains Mono with syntax highlighting
@@ -381,10 +381,10 @@ messages:
     content: |
       {full content of the skill .md file}
 
-      ## Context: Framework Studio Integration
+      ## Context: PM Studio Integration
       When you mention a framework, use its exact canonical title as listed in
       your toolkit table. The web interface will auto-link these to deep-dive
-      pages on Framework Studio (a separate reference site). Use exact titles
+      pages on PM Studio (a separate reference site). Use exact titles
       so the auto-linker can match them reliably.
 
       ## Uploaded Documents
@@ -425,7 +425,7 @@ messages:
 |                |  +--------------------------------------+        |
 |                                                                    |
 +------------------------------------------------------------------+
-|  Footer (with link to Framework Studio)                           |
+|  Footer (with link to PM Studio)                           |
 +------------------------------------------------------------------+
 ```
 
@@ -595,7 +595,7 @@ elements:
   - relative timestamp
 acceptance:
   - streaming messages show blinking cursor at end of content
-  - framework names are clickable external links to Framework Studio (new tab)
+  - framework names are clickable external links to PM Studio (new tab)
   - copy button copies raw markdown to clipboard
   - user messages right-aligned, assistant messages left-aligned
 ```
@@ -674,7 +674,7 @@ acceptance:
 
 ### 11.1 Architecture: separate application with cross-site framework links
 
-AI PM Coach is deployed as its own application, **completely independent** from Framework Studio. Framework Studio remains an unmodified static site on Azure Static Web Apps. The two applications are connected only by cross-origin hyperlinks: the coach links out to Framework Studio's `/framework/{slug}` pages for deep-dive reference content.
+AI PM Coach is deployed as its own application, **completely independent** from PM Studio. PM Studio remains an unmodified static site on Azure Static Web Apps. The two applications are connected only by cross-origin hyperlinks: the coach links out to PM Studio's `/framework/{slug}` pages for deep-dive reference content.
 
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -695,7 +695,7 @@ AI PM Coach is deployed as its own application, **completely independent** from 
                            │ (target="_blank")
                            ▼
 ┌─────────────────────────────────────────────────────┐
-│  Framework Studio (studio.example.com)              │
+│  PM Studio (studio.example.com)              │
 │                                                     │
 │  Azure Static Web Apps (unchanged)                  │
 │  /framework/{slug}  — deep-dive pages               │
@@ -706,14 +706,14 @@ AI PM Coach is deployed as its own application, **completely independent** from 
 ```
 
 **Why separate deployment:**
-- Framework Studio remains a zero-change, zero-risk static site — no code modifications, no redeployment
+- PM Studio remains a zero-change, zero-risk static site — no code modifications, no redeployment
 - AI PM Coach can use a different hosting tier (Azure App Service, or Azure Static Web App with linked Functions) sized for LLM API workloads
-- Independent scaling: coach API scales on demand; Framework Studio's CDN-served pages are unaffected
+- Independent scaling: coach API scales on demand; PM Studio's CDN-served pages are unaffected
 - Independent release cycles: coach features ship without touching the reference library
 - Skill prompts remain server-side (not exposed to the client)
 
-**Why NOT embed coach inside Framework Studio:**
-- Framework Studio uses `output: "export"` (fully static) — adding API routes would require removing this and fundamentally changing the deployment model
+**Why NOT embed coach inside PM Studio:**
+- PM Studio uses `output: "export"` (fully static) — adding API routes would require removing this and fundamentally changing the deployment model
 - Cold-start latency for LLM endpoints would degrade the currently instant static pages
 - Higher blast radius: a coach deployment failure could take down the reference library
 
@@ -724,7 +724,7 @@ AI PM Coach is deployed as its own application, **completely independent** from 
 
 ### 11.1.1 Cross-site data dependencies
 
-AI PM Coach needs two artifacts from Framework Studio at **build time** (not runtime):
+AI PM Coach needs two artifacts from PM Studio at **build time** (not runtime):
 
 | Artifact | Source | Purpose | Sync mechanism |
 |----------|--------|---------|----------------|
@@ -812,7 +812,7 @@ framework-studio/ai-pm-coach/
     sync-search-index.ts           # Copies ../data/search-index.json → data/
 ```
 
-Build scripts copy files from sibling directories within the same git repo: `../../pm-skills/` for skill prompts and `../data/` for Framework Studio's search index. No cross-repo or runtime dependencies.
+Build scripts copy files from sibling directories within the same git repo: `../../pm-skills/` for skill prompts and `../data/` for PM Studio's search index. No cross-repo or runtime dependencies.
 
 ### 11.4 Streaming protocol
 
@@ -885,7 +885,7 @@ Storage: `localStorage` key `fs:coach:conversations` containing JSON-serialized 
 ```yaml
 required:
   ANTHROPIC_API_KEY: string              # Claude API key (server-side only, never exposed to client)
-  FRAMEWORK_STUDIO_BASE_URL: string      # Base URL for Framework Studio deep-links
+  FRAMEWORK_STUDIO_BASE_URL: string      # Base URL for PM Studio deep-links
                                          # e.g., "https://studio.example.com"
                                          # Used client-side for framework auto-links
                                          # Exposed as NEXT_PUBLIC_FRAMEWORK_STUDIO_BASE_URL
@@ -984,9 +984,9 @@ Inherits all requirements from §15 of the parent PRD, plus:
 - Debate mode with all 7 experts
 - Markdown file upload (max 10 files, max 100 KB each)
 - Multi-turn conversation (current session only)
-- Framework auto-linking with external links to Framework Studio (new tab)
+- Framework auto-linking with external links to PM Studio (new tab)
 - Responsive layout (desktop + mobile)
-- Coach navbar with external links to Framework Studio (Explore, Map)
+- Coach navbar with external links to PM Studio (Explore, Map)
 
 ### Phase 2 — History & polish
 - Conversation sidebar with history (up to 50 conversations)
@@ -1030,8 +1030,8 @@ Inherits all requirements from §15 of the parent PRD, plus:
 - File upload usage rate
 
 ### Cross-site referral
-- Framework Studio deep-dive page visits originating from coach response links (target: >30% of sessions include at least one framework click-through to Framework Studio)
-- Framework Studio Explore / Map / Compare visits referred from coach navbar links
+- PM Studio deep-dive page visits originating from coach response links (target: >30% of sessions include at least one framework click-through to PM Studio)
+- PM Studio Explore / Map / Compare visits referred from coach navbar links
 
 ### Quality
 - Time to first token (target: <2s p50, <5s p95 for single-skill; <8s p50 for debate)
@@ -1055,7 +1055,7 @@ The skill prompts were designed for Claude Code (which has tool use, file readin
 **Mitigation:**
 - Test each skill prompt via the API in isolation before integration
 - Create a minimal adaptation layer: strip Claude Code-specific instructions (file reading paths, agent spawning syntax) from the web-served versions of the prompts
-- Add a "Context: Framework Studio Integration" appendix to each system prompt (§8.7)
+- Add a "Context: PM Studio Integration" appendix to each system prompt (§8.7)
 - Monitor response quality through user feedback signals (copy rate, follow-up questions vs. abandonment)
 
 ### Risk 2 — Debate mode latency
@@ -1070,14 +1070,14 @@ Dispatching 7 parallel LLM calls and then a synthesis call will be slow (potenti
 
 ### Risk 3 — Cross-site navigation feels disjointed
 
-Users clicking framework links in coach responses will be navigated to a different domain (Framework Studio). This context switch may feel jarring if the visual identity differs too much, or confusing if users don't understand they've left the coach.
+Users clicking framework links in coach responses will be navigated to a different domain (PM Studio). This context switch may feel jarring if the visual identity differs too much, or confusing if users don't understand they've left the coach.
 
 **Mitigation:**
-- AI PM Coach adopts the same Midnight Editorial design system (same CSS tokens, fonts, colors) as Framework Studio for visual continuity
+- AI PM Coach adopts the same Midnight Editorial design system (same CSS tokens, fonts, colors) as PM Studio for visual continuity
 - External framework links display a small ↗ icon and open in a new tab (the coach conversation remains in the original tab)
 - The coach navbar includes prominent "Framework Library ↗" and "Map ↗" links so users understand the two products are connected but separate
-- The coach empty state includes a callout: "Every framework recommended here links to its full deep-dive on Framework Studio."
-- Future: optionally embed a framework summary card inline in the coach response (Phase 3), reducing the need to navigate to Framework Studio for quick reference
+- The coach empty state includes a callout: "Every framework recommended here links to its full deep-dive on PM Studio."
+- Future: optionally embed a framework summary card inline in the coach response (Phase 3), reducing the need to navigate to PM Studio for quick reference
 
 ### Risk 4 — Cost overruns from LLM API usage
 
@@ -1115,14 +1115,14 @@ The 9 skill prompts represent significant intellectual property and should not b
 
 ### Phase 1 — Foundation (Weeks 1–3)
 - Scaffold standalone Next.js application (`framework-studio/ai-pm-coach/`) with API routes
-- Build scripts: `copy-skills.ts` (pm-skills → api/skills), `sync-search-index.ts` (Framework Studio → coach data)
+- Build scripts: `copy-skills.ts` (pm-skills → api/skills), `sync-search-index.ts` (PM Studio → coach data)
 - Implement skill prompt loader and caching (`load-skill.ts`)
 - Build `POST /api/chat` endpoint with SSE streaming
 - Build `POST /api/classify` endpoint for auto-routing
 - Create `CoachShell`, `ChatInput`, `MessageBubble` components
 - Implement basic single-skill mode (manual selection + auto-routing)
-- Framework auto-linking with external links to Framework Studio
-- Coach navbar with external links to Framework Studio (Explore ↗, Map ↗)
+- Framework auto-linking with external links to PM Studio
+- Coach navbar with external links to PM Studio (Explore ↗, Map ↗)
 - Mobile-responsive layout
 - Deploy to Azure (App Service or Static Web App + linked Functions)
 
@@ -1185,7 +1185,7 @@ The 9 skill prompts represent significant intellectual property and should not b
 6. `ChatInput` component
 7. `MessageBubble` component with markdown rendering + external framework links
 8. `CoachShell` layout with basic chat flow
-9. Coach navbar with external Framework Studio links
+9. Coach navbar with external PM Studio links
 10. `SkillSelector` component
 11. `POST /api/classify` endpoint + auto-routing flow
 12. File upload components and API integration
@@ -1206,10 +1206,10 @@ The 9 skill prompts represent significant intellectual property and should not b
 4. **Skill prompt versioning**: When skill `.md` files are updated in the repo, how are they synced to the API service? Recommend: copy at build time via `scripts/copy-skills.ts`, deployed with the Functions app.
 5. **Framework name disambiguation**: Some framework names are common English words (e.g., "Persona", "Sprint"). How aggressively should auto-linking match? Recommend: only match exact title case or full multi-word titles.
 6. **Rate limiting scope**: Per-IP rate limiting may be too restrictive for teams sharing an office IP. Should we use browser fingerprinting, or accept the limitation for MVP?
-7. **Fallback when API is down**: Should the coach page show graceful degradation (e.g., link to Framework Studio's guided finder), or just an error message?
-8. **Framework Studio URL stability**: The coach depends on Framework Studio's URL structure (`/framework/{slug}`). Should we add a URL health check at build time to verify that all 100 slugs resolve, or trust the static contract?
-9. **Search index freshness**: If Framework Studio adds new frameworks, the coach's bundled `search-index.json` becomes stale. Should the coach fetch a fresh index from Framework Studio at runtime (adds cross-site dependency), or accept build-time sync with a CI trigger when Framework Studio deploys?
-10. **Custom domain and branding**: Should the coach share a subdomain with Framework Studio (e.g., `coach.frameworkstudio.com` / `library.frameworkstudio.com`) or use an entirely separate domain? Subdomain sharing improves brand coherence but requires DNS coordination.
+7. **Fallback when API is down**: Should the coach page show graceful degradation (e.g., link to PM Studio's guided finder), or just an error message?
+8. **PM Studio URL stability**: The coach depends on PM Studio's URL structure (`/framework/{slug}`). Should we add a URL health check at build time to verify that all 100 slugs resolve, or trust the static contract?
+9. **Search index freshness**: If PM Studio adds new frameworks, the coach's bundled `search-index.json` becomes stale. Should the coach fetch a fresh index from PM Studio at runtime (adds cross-site dependency), or accept build-time sync with a CI trigger when PM Studio deploys?
+10. **Custom domain and branding**: Should the coach share a subdomain with PM Studio (e.g., `coach.frameworkstudio.com` / `library.frameworkstudio.com`) or use an entirely separate domain? Subdomain sharing improves brand coherence but requires DNS coordination.
 
 ---
 
@@ -1219,6 +1219,6 @@ If AI PM Coach launches well, a user should be able to say:
 
 - "I described my product challenge and got genuinely useful, specific framework recommendations — not generic advice."
 - "The debate mode showed me blind spots I never would have found on my own."
-- "Every framework the coach mentioned was a clickable link that opened the full deep-dive on Framework Studio."
+- "Every framework the coach mentioned was a clickable link that opened the full deep-dive on PM Studio."
 - "It felt like talking to a team of expert PM consultants, not a chatbot."
 - "I uploaded my PRD and got a structured analysis in under 30 seconds."

@@ -2,7 +2,7 @@
  * Content Migration Script
  *
  * Transforms PM_Frameworks/*.md into content/en/frameworks/*.mdx
- * with enriched frontmatter matching the Framework Studio content model.
+ * with enriched frontmatter matching the PM Studio content model.
  *
  * Usage: npx tsx scripts/migrate-content.ts
  */

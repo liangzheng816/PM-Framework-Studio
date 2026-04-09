@@ -4,19 +4,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Framework Studio** — a premium web product that teaches product management frameworks through a beautiful, interactive learning experience. This repo contains 100 PM framework source markdown files, a PRD, and the fully built Next.js web application.
+**PM Studio** — a premium web product that teaches product management frameworks through a beautiful, interactive learning experience. This repo contains 100 PM framework source markdown files, a PRD, and the fully built Next.js web application.
 
 ## Repository Structure
 
 ```
+├── api/                        # Azure Functions API backend (Anthropic SDK, SSE streaming)
+│   ├── src/functions/chat.ts   # POST /api/chat — skill-based Claude streaming endpoint
+│   └── src/lib/skills.ts      # Loads skill .md files as system prompts (with cache)
 ├── PM_Frameworks/              # 100 source markdown files (001_*.md – 100_*.md) + manifest JSON/CSV
 ├── PRD/                        # Product spec (pmframe_inspired_prd.md) + research summary
-├── app/                        # Next.js App Router pages
-├── components/                 # UI components by domain (ui/, layout/, hero/, search/, deep-dive/, etc.)
+├── DEV_DESIGN/                 # Design specs for Coach and Framework Studio features
+├── app/                        # Next.js App Router pages (root = Coach chat UI)
+├── components/                 # UI components by domain (coach/, search/, deep-dive/, etc.)
 ├── content/en/frameworks/      # 100 migrated MDX files with enriched frontmatter
 ├── data/                       # categories.ts, search-index.json, map-positions.json
-├── lib/                        # Core modules: frameworks.ts, types.ts, collections.ts, etc.
-├── scripts/                    # migrate-content.ts, generate-map-positions.ts
+├── lib/                        # Core modules: frameworks.ts, types.ts, collections.ts, coach-types.ts
+├── scripts/                    # migrate-content.ts, generate-map-positions.ts, copy-skills.ts
 ├── public/                     # robots.txt, static assets
 └── .github/workflows/          # Azure Static Web Apps CI/CD
 ```
@@ -24,12 +28,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Build & Dev Commands
 
 ```bash
-npm run dev          # Start dev server (Turbopack, http://localhost:3000)
-npm run build        # Production static export → out/ folder (118 pages)
-npm run start        # Serve production build locally
-npm run lint         # ESLint
-npx tsx scripts/migrate-content.ts        # Re-run content migration (PM_Frameworks/*.md → content/en/frameworks/*.mdx)
-npx tsx scripts/generate-map-positions.ts # Regenerate map positions for SVG scatter map
+# Frontend (static site)
+npm run dev              # Turbopack dev server (http://localhost:3000)
+npm run build            # Production static export → out/ (118 pages)
+npm run start            # Serve production build locally
+npm run lint             # ESLint
+
+# API backend (Azure Functions) — run from api/
+cd api
+npm run build            # TypeScript compile → dist/
+npm run start            # func start (requires Azure Functions Core Tools + local.settings.json with ANTHROPIC_API_KEY)
+
+# Content & skill pipeline
+npx tsx scripts/migrate-content.ts          # PM_Frameworks/*.md → content/en/frameworks/*.mdx + search-index.json
+npx tsx scripts/generate-map-positions.ts   # Regenerate SVG scatter map positions
+npx tsx scripts/copy-skills.ts              # pm-skills/*.md → api/skills/ (required before API can serve skills)
 ```
 
 ## Deployment
@@ -56,8 +69,8 @@ User Insights (12) · Problem Framing (17) · Ideation (14) · Validation (14) �
 
 | Route | Description |
 |-------|-------------|
-| `/` | Homepage: animated hero, category ribbons, featured frameworks, trust section |
-| `/explore` | Browse + search: Fuse.js fuzzy search, category filters, grid/list toggle |
+| `/` | Coach: AI PM coaching chat interface with skill selector |
+| `/discover` | Browse + search: compact hero, Fuse.js fuzzy search, category filters, featured frameworks, trust section |
 | `/framework/[slug]` | Deep-dive: parsed sections, sticky sidebar nav, related frameworks, collapsible source notes, save button, JSON-LD schema, mobile action bar |
 | `/category/[slug]` | Category landing: hero + framework grid (8 categories) |
 | `/map` | Interactive SVG scatter map (x: stage, y: qual/quant), category filters, hover tooltips, mobile fallback |
@@ -72,12 +85,23 @@ User Insights (12) · Problem Framing (17) · Ideation (14) · Validation (14) �
 |--------|---------|
 | `lib/frameworks.ts` | Content loader: reads MDX, parses frontmatter, caches. Exports: `getAllFrameworks()`, `getFrameworkBySlug()`, `getFrameworksByCategory()`, `getRelatedFrameworks()`, `getFeaturedFrameworks()`, `getCategoriesWithCounts()` |
 | `lib/types.ts` | Core interfaces: `Framework`, `Category`, `Collection`, `CategorySlug`, `SearchableFramework` |
+| `lib/coach-types.ts` | Skill IDs, metadata, `resolveSkillForApi()`, `buildDebateMessage()`, `Message`, `Conversation` types |
 | `lib/collections.ts` | localStorage CRUD for saved frameworks |
 | `lib/category-colors.ts` | Tailwind-safe category color class mappings |
+| `lib/motion.ts` | Shared Framer Motion variants (fadeInUp, staggerContainer, scaleIn) — reuse instead of inline |
+| `components/coach/coach-shell.tsx` | Root Coach chat UI (home page): skill selector, message list, streaming responses |
 | `components/search/command-palette.tsx` | Global Cmd+K / `/` or navbar click → search overlay with ARIA combobox. Listens for `fs:open-search` custom event. |
-| `components/framework-map/interactive-map.tsx` | SVG scatter with category-colored nodes + Framer Motion tooltips |
-| `components/deep-dive/source-notes.tsx` | Collapsible source & lineage panel |
-| `components/deep-dive/mobile-action-bar.tsx` | Sticky bottom bar (save, compare, share via Web Share API) |
+| `api/src/functions/chat.ts` | POST /api/chat — loads skill as system prompt, streams Claude response via SSE. Debate mode injects all domain expert files. |
+| `api/src/lib/skills.ts` | Loads skill `.md` files from `api/skills/`, caches in memory. `loadDomainSkills()` for debate mode. |
+
+## Coach Chat Architecture
+
+The home page (`/`) is an AI coaching chat. User selects a skill → frontend sends `{ messages, skill, files? }` to `/api/chat` → API loads the skill `.md` as a system prompt → streams Claude's response via SSE.
+
+- **"Auto" mode** maps to `advise-frameworks` (triage agent)
+- **Debate mode** (`pm-debate`): API injects all 7 domain expert skill files into the system prompt with a web-specific override that replaces Claude Code's Agent tool with internal role-playing
+- **File uploads**: Appended to the last user message as markdown blocks so skills ground analysis in uploaded docs
+- **API env vars**: `ANTHROPIC_API_KEY` (required), `COACH_MODEL` (default: `claude-sonnet-4-6`), `COACH_MAX_TOKENS` (default: 4096, debate auto-bumps to 16384)
 
 ## Content Pipeline
 

@@ -5,13 +5,51 @@ import {
   InvocationContext,
 } from "@azure/functions";
 import Anthropic from "@anthropic-ai/sdk";
-import { loadSkill } from "../lib/skills";
+import { loadSkill, loadDomainSkills } from "../lib/skills";
 
 const INTEGRATION_CONTEXT = `
-## Context: Framework Studio Integration
+## Context: PM Studio Integration
 When you mention a framework, use its exact canonical title as listed in
 your toolkit table. The web interface will auto-link these to deep-dive pages.
 `;
+
+const WEB_DEBATE_OVERRIDE = `
+
+## Web Integration — Phase 2 Adaptation
+
+In this environment you do NOT have the Read tool or Agent tool.
+The domain expert skill files are embedded directly below in this system prompt.
+
+**Replace Phase 2 with this internal process:**
+1. Identify which experts participate (from scope modifiers, or all embedded experts if none specified).
+2. For each participating expert, adopt their perspective using their embedded knowledge below. Each expert's full toolkit, frameworks, and domain guidance are provided.
+3. Internally produce each expert's structured Debate Mode Response (Domain, Position, Key Diagnosis, Recommended Frameworks, Evidence & Reasoning, Risks If Ignored, Points of Likely Disagreement, Handoff Conditions).
+4. Proceed directly to Phase 3 — output ONLY the final synthesis report.
+
+All other instructions (Phase 1 intake, Phase 3 synthesis format, --versus adversarial format, quality guidelines) apply exactly as written above.
+
+## Embedded Domain Expert Knowledge
+`;
+
+/**
+ * Parse --skills or --versus modifiers from the last user message
+ * to determine which domain experts should participate in the debate.
+ */
+function parseDebateSkills(
+  messages: { role: string; content: string }[]
+): string[] {
+  const lastUserMsg = [...messages].reverse().find((m) => m.role === "user");
+  if (!lastUserMsg) return [];
+
+  const text = lastUserMsg.content;
+  const versusMatch = text.match(/^--versus\s+([\w,-]+)/);
+  if (versusMatch) return versusMatch[1].split(",").filter(Boolean);
+
+  const skillsMatch = text.match(/^--skills\s+([\w,-]+)/);
+  if (skillsMatch) return skillsMatch[1].split(",").filter(Boolean);
+
+  return []; // empty = all 7 experts
+}
 
 app.http("chat", {
   methods: ["POST"],
@@ -42,66 +80,109 @@ app.http("chat", {
         return { status: 400, body: `Unknown skill: ${skillId}` };
       }
 
-      // Append integration context
-      systemPrompt += "\n\n" + INTEGRATION_CONTEXT;
+      // For debate mode: inject all domain expert knowledge into the prompt
+      // so Claude can role-play each expert with full framework context
+      const isDebate = skillId === "pm-debate";
+      if (isDebate) {
+        const requestedSkills = parseDebateSkills(messages);
+        const domainSkills = loadDomainSkills(
+          requestedSkills.length > 0 ? requestedSkills : undefined
+        );
 
-      // Append uploaded file contents if any
-      if (files && files.length > 0) {
-        systemPrompt += "\n\n## Uploaded Documents\n";
-        for (const file of files) {
-          systemPrompt += `\n### ${file.name}\n\`\`\`\n${file.content}\n\`\`\`\n`;
+        systemPrompt += WEB_DEBATE_OVERRIDE;
+        for (const [id, content] of Object.entries(domainSkills)) {
+          systemPrompt += `\n---\n### Domain Expert: \`${id}\`\n\n${content}\n`;
         }
       }
 
-      const anthropic = new Anthropic();
-      const model = process.env.COACH_MODEL || "claude-sonnet-4-20250514";
-      const maxTokens = parseInt(process.env.COACH_MAX_TOKENS || "4096", 10);
+      // Append integration context
+      systemPrompt += "\n\n" + INTEGRATION_CONTEXT;
 
-      const stream = await anthropic.messages.stream({
+      // Inject uploaded file contents into the last user message so they're
+      // always visible as conversation context (not buried in the system prompt).
+      // This ensures all skills — including pm-debate — ground their analysis
+      // in the uploaded documents.
+      const enrichedMessages = messages.map((m, i) => {
+        if (
+          files &&
+          files.length > 0 &&
+          m.role === "user" &&
+          i === messages.length - 1
+        ) {
+          let docBlock =
+            "\n\n---\n**Uploaded context documents — ground your analysis in these:**\n";
+          for (const file of files) {
+            docBlock += `\n### ${file.name}\n\`\`\`markdown\n${file.content}\n\`\`\`\n`;
+          }
+          return { role: m.role, content: m.content + docBlock };
+        }
+        return { role: m.role, content: m.content };
+      });
+
+      const anthropic = new Anthropic();
+      const model = process.env.COACH_MODEL || "claude-sonnet-4-6";
+      const defaultMaxTokens = parseInt(
+        process.env.COACH_MAX_TOKENS || "4096",
+        10
+      );
+      // Debate synthesis needs much more output space than single-skill responses
+      const maxTokens = isDebate
+        ? Math.max(defaultMaxTokens, 16384)
+        : defaultMaxTokens;
+
+      const stream = anthropic.messages.stream({
         model,
         max_tokens: maxTokens,
         system: systemPrompt,
-        messages: messages.map((m) => ({
-          role: m.role,
-          content: m.content,
-        })),
+        messages: enrichedMessages,
       });
 
       // Build SSE response body
       const encoder = new TextEncoder();
       const readable = new ReadableStream({
         async start(controller) {
-          // Send skill info event
-          controller.enqueue(
-            encoder.encode(
-              `data: ${JSON.stringify({ type: "skill", skillId, skillLabel: skillId })}\n\n`
-            )
-          );
+          try {
+            // Send skill info event
+            controller.enqueue(
+              encoder.encode(
+                `data: ${JSON.stringify({ type: "skill", skillId, skillLabel: skillId })}\n\n`
+              )
+            );
 
-          for await (const event of stream) {
-            if (
-              event.type === "content_block_delta" &&
-              event.delta.type === "text_delta"
-            ) {
-              controller.enqueue(
-                encoder.encode(
-                  `data: ${JSON.stringify({ type: "token", text: event.delta.text })}\n\n`
-                )
-              );
+            for await (const event of stream) {
+              if (
+                event.type === "content_block_delta" &&
+                event.delta.type === "text_delta"
+              ) {
+                controller.enqueue(
+                  encoder.encode(
+                    `data: ${JSON.stringify({ type: "token", text: event.delta.text })}\n\n`
+                  )
+                );
+              }
             }
-          }
 
-          // Send done event
-          const finalMessage = await stream.finalMessage();
-          controller.enqueue(
-            encoder.encode(
-              `data: ${JSON.stringify({
-                type: "done",
-                usage: finalMessage.usage,
-              })}\n\n`
-            )
-          );
-          controller.close();
+            // Send done event
+            const finalMessage = await stream.finalMessage();
+            controller.enqueue(
+              encoder.encode(
+                `data: ${JSON.stringify({
+                  type: "done",
+                  usage: finalMessage.usage,
+                })}\n\n`
+              )
+            );
+          } catch (streamErr: unknown) {
+            const msg =
+              streamErr instanceof Error ? streamErr.message : "Stream error";
+            controller.enqueue(
+              encoder.encode(
+                `data: ${JSON.stringify({ type: "error", message: msg })}\n\n`
+              )
+            );
+          } finally {
+            controller.close();
+          }
         },
       });
 

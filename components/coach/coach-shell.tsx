@@ -1,12 +1,18 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import type { Message } from "@/lib/coach-types";
+import type { Message, SelectableSkillId, UploadedFile } from "@/lib/coach-types";
+import { SKILL_META, resolveSkillForApi, buildDebateMessage } from "@/lib/coach-types";
 import { ChatInput } from "./chat-input";
 import { MessageBubble } from "./message-bubble";
+import { SkillSelector } from "./skill-selector";
 
 export function CoachShell() {
   const [messages, setMessages] = useState<Message[]>([]);
+  const [selectedSkill, setSelectedSkill] = useState<SelectableSkillId>("auto");
+  const [isDebateMode, setIsDebateMode] = useState(false);
+  const [selectedDebateSkills, setSelectedDebateSkills] = useState<SelectableSkillId[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -18,8 +24,32 @@ export function CoachShell() {
     }
   }, [messages]);
 
+  const handleAddFiles = useCallback((newFiles: UploadedFile[]) => {
+    setUploadedFiles((prev) => [...prev, ...newFiles].slice(0, 10));
+  }, []);
+
+  const handleRemoveFile = useCallback((id: string) => {
+    setUploadedFiles((prev) => prev.filter((f) => f.id !== id));
+  }, []);
+
+  const handleToggleDebateSkill = useCallback(
+    (skill: SelectableSkillId) => {
+      setSelectedDebateSkills((prev) =>
+        prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill]
+      );
+    },
+    []
+  );
+
   const handleSend = useCallback(
     async (text: string) => {
+      const apiSkill = isDebateMode
+        ? "pm-debate"
+        : resolveSkillForApi(selectedSkill);
+      const apiText = isDebateMode
+        ? buildDebateMessage(text, selectedDebateSkills)
+        : text;
+
       const userMessage: Message = {
         id: `msg-${Date.now()}`,
         role: "user",
@@ -31,7 +61,8 @@ export function CoachShell() {
         id: `msg-${Date.now() + 1}`,
         role: "assistant",
         content: "",
-        skill: "advise-frameworks",
+        skill: apiSkill as Message["skill"],
+        isDebate: isDebateMode,
         timestamp: Date.now(),
       };
 
@@ -43,17 +74,23 @@ export function CoachShell() {
 
       try {
         // Build messages array for API (exclude the empty assistant message)
-        const apiMessages = [...messages, userMessage].map((m) => ({
+        const apiMessages = [...messages, userMessage].map((m, i, arr) => ({
           role: m.role,
-          content: m.content,
+          // Only transform the last user message with debate prefix
+          content:
+            isDebateMode && i === arr.length - 1 && m.role === "user"
+              ? apiText
+              : m.content,
         }));
 
-        const res = await fetch("/api/chat", {
+        const apiBase = process.env.NEXT_PUBLIC_API_BASE || "";
+        const res = await fetch(`${apiBase}/api/chat`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             messages: apiMessages,
-            skill: "advise-frameworks",
+            skill: apiSkill,
+            files: uploadedFiles.map((f) => ({ name: f.name, content: f.content })),
           }),
           signal: controller.signal,
         });
@@ -107,8 +144,14 @@ export function CoachShell() {
                   }
                   return updated;
                 });
+              } else if (event.type === "error") {
+                throw new Error(event.message || "API stream error");
               }
-            } catch {
+            } catch (parseErr) {
+              // Re-throw explicit errors from the API
+              if (parseErr instanceof Error && parseErr.message !== "Unexpected end of JSON input") {
+                throw parseErr;
+              }
               // skip malformed events
             }
           }
@@ -136,7 +179,7 @@ export function CoachShell() {
         abortRef.current = null;
       }
     },
-    [messages]
+    [messages, selectedSkill, isDebateMode, selectedDebateSkills, uploadedFiles]
   );
 
   const handleStop = useCallback(() => {
@@ -144,11 +187,11 @@ export function CoachShell() {
   }, []);
 
   return (
-    <div className="mx-auto flex h-[calc(100vh-4rem-4rem)] max-w-3xl flex-col px-4 sm:px-6">
-      {/* Message list */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto py-6 space-y-4">
-        {messages.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-full text-center">
+    <div className="mx-auto flex h-[calc(100dvh-4rem)] max-w-3xl flex-col px-4 sm:px-6 overflow-hidden">
+      {messages.length === 0 ? (
+        /* Empty state — hero + input + pills all centered as a group */
+        <div className="flex flex-1 flex-col items-center justify-center">
+          <div className="flex flex-col items-center text-center mb-6">
             <h1 className="font-[var(--font-heading)] text-3xl text-[var(--color-text)] mb-3">
               What product challenge are you working on?
             </h1>
@@ -157,27 +200,78 @@ export function CoachShell() {
               powered by 100 source-verified frameworks.
             </p>
           </div>
-        )}
-        {messages.map((msg, i) => (
-          <MessageBubble
-            key={msg.id}
-            message={msg}
-            isStreaming={
-              isStreaming && i === messages.length - 1 && msg.role === "assistant"
-            }
-          />
-        ))}
-      </div>
-
-      {/* Input area */}
-      <div className="shrink-0 pb-4 pt-2">
-        <ChatInput
-          onSend={handleSend}
-          onStop={handleStop}
-          isStreaming={isStreaming}
-          disabled={false}
-        />
-      </div>
+          <div className="w-full space-y-2">
+            <ChatInput
+              onSend={handleSend}
+              onStop={handleStop}
+              isStreaming={isStreaming}
+              disabled={false}
+              placeholder={
+                isDebateMode
+                  ? "Describe the challenge for the expert panel..."
+                  : SKILL_META[selectedSkill].placeholder
+              }
+              files={uploadedFiles}
+              onAddFiles={handleAddFiles}
+              onRemoveFile={handleRemoveFile}
+            />
+            <SkillSelector
+              mode={isDebateMode ? "multi" : "single"}
+              selectedSkill={selectedSkill}
+              onSelect={setSelectedSkill}
+              selectedSkills={selectedDebateSkills}
+              onToggleSkill={handleToggleDebateSkill}
+              disabled={isStreaming}
+              debateActive={isDebateMode}
+              onDebateToggle={() => setIsDebateMode((prev) => !prev)}
+            />
+          </div>
+        </div>
+      ) : (
+        /* Conversation — scrollable message list + input pinned to bottom */
+        <>
+          <div
+            ref={scrollRef}
+            className="min-h-0 flex-1 overflow-y-auto py-6 space-y-4"
+          >
+            {messages.map((msg, i) => (
+              <MessageBubble
+                key={msg.id}
+                message={msg}
+                isStreaming={
+                  isStreaming && i === messages.length - 1 && msg.role === "assistant"
+                }
+              />
+            ))}
+          </div>
+          <div className="shrink-0 pb-4 pt-2 space-y-2">
+            <ChatInput
+              onSend={handleSend}
+              onStop={handleStop}
+              isStreaming={isStreaming}
+              disabled={false}
+              placeholder={
+                isDebateMode
+                  ? "Describe the challenge for the expert panel..."
+                  : SKILL_META[selectedSkill].placeholder
+              }
+              files={uploadedFiles}
+              onAddFiles={handleAddFiles}
+              onRemoveFile={handleRemoveFile}
+            />
+            <SkillSelector
+              mode={isDebateMode ? "multi" : "single"}
+              selectedSkill={selectedSkill}
+              onSelect={setSelectedSkill}
+              selectedSkills={selectedDebateSkills}
+              onToggleSkill={handleToggleDebateSkill}
+              disabled={isStreaming}
+              debateActive={isDebateMode}
+              onDebateToggle={() => setIsDebateMode((prev) => !prev)}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 }

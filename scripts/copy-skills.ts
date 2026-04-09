@@ -7,7 +7,7 @@
 import * as fs from "fs";
 import * as path from "path";
 
-const SOURCE_DIR = path.resolve(__dirname, "../../pm-skills");
+const SOURCE_DIR = path.resolve(__dirname, "../pm-skills");
 const TARGET_DIR = path.resolve(__dirname, "../api/skills");
 
 if (!fs.existsSync(SOURCE_DIR)) {

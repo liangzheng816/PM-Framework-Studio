@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "About & Methodology",
-  description: "How Framework Studio sources, verifies, and presents 100 product management frameworks.",
+  description: "How PM Studio sources, verifies, and presents 100 product management frameworks.",
 };
 
 export default function AboutPage() {
@@ -15,10 +15,10 @@ export default function AboutPage() {
       <div className="space-y-8 text-[var(--color-text-muted)] leading-relaxed">
         <section>
           <h2 className="font-[var(--font-heading)] text-xl text-[var(--color-text)] mb-3">
-            What is Framework Studio?
+            What is PM Studio?
           </h2>
           <p>
-            Framework Studio is a curated library of 100 product management frameworks,
+            PM Studio is a curated library of 100 product management frameworks,
             organized into 7 categories that mirror the product development lifecycle:
             User Insights, Problem Framing, Ideation, Validation, Execution, Growth,
             and Systems Thinking.

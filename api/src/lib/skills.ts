@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 
-const SKILLS_DIR = path.resolve(__dirname, "../../skills");
+const SKILLS_DIR = path.join(process.cwd(), "skills");
 
 const cache = new Map<string, string>();
 
@@ -26,4 +26,35 @@ export function getAvailableSkills(): string[] {
     .readdirSync(SKILLS_DIR)
     .filter((f) => f.endsWith(".md"))
     .map((f) => f.replace(/\.md$/, ""));
+}
+
+/** The 7 domain-expert skill IDs used by pm-debate. */
+export const DOMAIN_SKILL_IDS = [
+  "discover-users",
+  "frame-problems",
+  "generate-ideas",
+  "validate-bets",
+  "ship-decisions",
+  "grow-product",
+  "think-systems",
+];
+
+/**
+ * Load domain expert skill files by ID.
+ * If skillIds is empty/undefined, loads all 7 domain experts.
+ */
+export function loadDomainSkills(
+  skillIds?: string[]
+): Record<string, string> {
+  const ids =
+    skillIds && skillIds.length > 0 ? skillIds : DOMAIN_SKILL_IDS;
+  const result: Record<string, string> = {};
+  for (const id of ids) {
+    try {
+      result[id] = loadSkill(id);
+    } catch {
+      // skip missing skill files
+    }
+  }
+  return result;
 }

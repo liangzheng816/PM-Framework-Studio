@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Instrument_Serif, JetBrains_Mono } from "next/font/google";
 import { NavBar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
+import { FooterGuard } from "@/components/layout/footer-guard";
 import { ClientShell } from "@/components/layout/client-shell";
 import { SkipNav } from "@/components/layout/skip-nav";
 import searchIndexRaw from "@/data/search-index.json";
@@ -31,8 +31,8 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Framework Studio — PM Framework Learning Platform",
-    template: "%s | Framework Studio",
+    default: "PM Studio — PM Framework Learning Platform",
+    template: "%s | PM Studio",
   },
   description:
     "Discover, compare, and apply 100 product management frameworks. Source-verified, confidence-labeled, beautifully presented.",
@@ -57,7 +57,7 @@ export default function RootLayout({
         <SkipNav />
         <NavBar />
         <main id="main-content" className="flex-1">{children}</main>
-        <Footer />
+        <FooterGuard />
         <ClientShell searchIndex={searchIndex} />
       </body>
     </html>

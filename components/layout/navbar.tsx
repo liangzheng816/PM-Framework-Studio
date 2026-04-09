@@ -5,9 +5,8 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 const NAV_LINKS = [
-  { href: "/", label: "Home" },
-  { href: "/coach", label: "Coach" },
-  { href: "/explore", label: "Explore" },
+  { href: "/", label: "Coach" },
+  { href: "/discover", label: "Discover" },
   { href: "/map", label: "Map" },
   { href: "/compare", label: "Compare" },
   { href: "/collections", label: "Saved" },
@@ -24,10 +23,10 @@ export function NavBar() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5">
           <div className="flex h-8 w-8 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)]">
-            <span className="text-sm font-bold text-white">FS</span>
+            <span className="text-sm font-bold text-white">PM</span>
           </div>
           <span className="font-[var(--font-heading)] text-lg text-[var(--color-text)]">
-            Framework Studio
+            PM Studio
           </span>
         </Link>
 

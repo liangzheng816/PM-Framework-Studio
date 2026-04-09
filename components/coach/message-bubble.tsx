@@ -22,8 +22,14 @@ export function MessageBubble({ message, isStreaming }: MessageBubbleProps) {
         }`}
       >
         {!isUser && message.skill && (
-          <span className="mb-2 inline-block rounded-[var(--radius-full)] bg-[var(--color-accent)]/15 px-2.5 py-0.5 text-xs font-medium text-[var(--color-accent)]">
-            {message.skill}
+          <span
+            className={`mb-2 inline-block rounded-[var(--radius-full)] px-2.5 py-0.5 text-xs font-medium ${
+              message.isDebate
+                ? "bg-[var(--color-accent-2)]/15 text-[var(--color-accent-2)]"
+                : "bg-[var(--color-accent)]/15 text-[var(--color-accent)]"
+            }`}
+          >
+            {message.isDebate ? "Debate" : message.skill}
           </span>
         )}
         {isUser ? (

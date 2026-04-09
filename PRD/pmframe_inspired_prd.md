@@ -1,4 +1,4 @@
-# PRD — Framework Studio
+# PRD — PM Studio
 
 ## 1. Document status
 - Version: v1.0
@@ -10,7 +10,7 @@
 ## 2. Product summary
 
 ### 2.1 Working title
-**Framework Studio**
+**PM Studio**
 
 ### 2.2 One-line pitch
 A visually elegant, interactive framework-learning platform that helps product managers, designers, founders, and operators discover, compare, and apply the right framework at the right moment.
@@ -28,7 +28,7 @@ Framework content is abundant, but most products in this category have one or mo
 - poor mobile reading experience
 - low actionability after the user learns a framework
 
-Framework Studio should solve all of these with a modern product experience.
+PM Studio should solve all of these with a modern product experience.
 
 ---
 
@@ -109,7 +109,7 @@ The reference product pattern to emulate at a high level is:
 - quick movement from one framework to the next
 - downloadable framework artifacts
 
-Framework Studio should preserve the strengths of this pattern while improving:
+PM Studio should preserve the strengths of this pattern while improving:
 - visual sophistication
 - content consistency in English
 - search/filter quality

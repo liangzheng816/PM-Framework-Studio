@@ -1,10 +1,10 @@
-# Dev Design — Framework Studio (Retroactive)
+# Dev Design — PM Studio (Retroactive)
 
-Written retroactively to document the technical architecture, implementation patterns, and deployment pipeline of Framework Studio v1.0.
+Written retroactively to document the technical architecture, implementation patterns, and deployment pipeline of PM Studio v1.0.
 
 ## 1. Product overview
 
-Framework Studio is a premium web application teaching 100 product management frameworks through interactive browsing, comparison, and discovery. It is a fully static site (no server runtime) deployed to Azure Static Web Apps.
+PM Studio is a premium web application teaching 100 product management frameworks through interactive browsing, comparison, and discovery. It is a fully static site (no server runtime) deployed to Azure Static Web Apps.
 
 - **Live URL:** https://salmon-moss-07f46dd1e.2.azurestaticapps.net/
 - **Source repo:** https://github.com/liangzheng816/framework_studio
@@ -517,7 +517,7 @@ npx tsx scripts/generate-map-positions.ts   # Generate data/map-positions.json f
 
 `components/layout/navbar.tsx`:
 - Sticky header with backdrop blur (`backdrop-blur-xl`)
-- Logo: "FS" badge + "Framework Studio" text
+- Logo: "FS" badge + "PM Studio" text
 - 6 nav links: Home, Explore, Map, Compare, Saved, About
 - Search button that dispatches `fs:open-search` custom event → triggers CommandPalette
 - Mobile: hamburger menu with slide-in overlay

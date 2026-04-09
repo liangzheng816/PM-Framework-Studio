@@ -46,8 +46,8 @@ export default async function CategoryPage({
           Home
         </Link>
         <span>/</span>
-        <Link href="/explore" className="hover:text-[var(--color-text)] transition-colors">
-          Explore
+        <Link href="/discover" className="hover:text-[var(--color-text)] transition-colors">
+          Discover
         </Link>
         <span>/</span>
         <span className="text-[var(--color-text)]">{meta.label}</span>

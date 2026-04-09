@@ -4,7 +4,7 @@ const FOOTER_LINKS = [
   {
     heading: "Discover",
     links: [
-      { href: "/explore", label: "Explore All" },
+      { href: "/discover", label: "Discover All" },
       { href: "/map", label: "Framework Map" },
       { href: "/compare", label: "Compare" },
       { href: "/finder", label: "Framework Finder" },
@@ -40,10 +40,10 @@ export function Footer() {
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2.5 mb-4">
               <div className="flex h-8 w-8 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-accent)]">
-                <span className="text-sm font-bold text-white">FS</span>
+                <span className="text-sm font-bold text-white">PM</span>
               </div>
               <span className="font-[var(--font-heading)] text-lg text-[var(--color-text)]">
-                Framework Studio
+                PM Studio
               </span>
             </div>
             <p className="text-sm text-[var(--color-text-muted)] leading-relaxed max-w-xs">
@@ -74,7 +74,7 @@ export function Footer() {
 
         <div className="mt-10 pt-6 border-t border-[var(--color-border)]">
           <p className="text-xs text-[var(--color-text-subtle)]">
-            Framework Studio — Built with care for product people.
+            PM Studio — Built with care for product people.
           </p>
         </div>
       </div>

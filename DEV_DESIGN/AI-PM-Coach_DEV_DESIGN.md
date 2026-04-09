@@ -3,20 +3,20 @@
 ## 0. Project identity
 
 - **Source repo:** https://github.com/liangzheng816/framework_studio
-- **Live URL:** https://salmon-moss-07f46dd1e.2.azurestaticapps.net/ (same domain as Framework Studio)
+- **Live URL:** https://salmon-moss-07f46dd1e.2.azurestaticapps.net/ (same domain as PM Studio)
 - **Coach page:** https://salmon-moss-07f46dd1e.2.azurestaticapps.net/coach
 - **API endpoints:** https://salmon-moss-07f46dd1e.2.azurestaticapps.net/api/*
 
 ## 1. Architecture: single domain, single deployment
 
-AI PM Coach is integrated into the existing Framework Studio deployment on Azure Static Web Apps — **same domain, same repo, same CI workflow.** No separate Azure resource needed.
+AI PM Coach is integrated into the existing PM Studio deployment on Azure Static Web Apps — **same domain, same repo, same CI workflow.** No separate Azure resource needed.
 
 ```
 salmon-moss-07f46dd1e.2.azurestaticapps.net
-├── /                        # Framework Studio homepage (existing)
-├── /explore                 # Framework Studio explore (existing)
-├── /framework/{slug}        # Framework Studio deep-dives (existing, 100 pages)
-├── /map, /compare, ...      # Framework Studio pages (existing)
+├── /                        # PM Studio homepage (existing)
+├── /explore                 # PM Studio explore (existing)
+├── /framework/{slug}        # PM Studio deep-dives (existing, 100 pages)
+├── /map, /compare, ...      # PM Studio pages (existing)
 │
 ├── /coach                   # AI PM Coach UI (NEW — client-side SPA)
 │
@@ -38,7 +38,7 @@ salmon-moss-07f46dd1e.2.azurestaticapps.net
 - Zero CORS — API calls from `/coach` to `/api/*` are same-origin
 - Zero cost increase — Azure Static Web Apps Standard plan includes managed Functions
 
-## 2. Changes to existing Framework Studio
+## 2. Changes to existing PM Studio
 
 The following changes are needed in the existing codebase. All are **additive** — no existing pages, components, or behavior are modified.
 
@@ -123,7 +123,7 @@ framework-studio/                    # Existing repo root
 
 ### 4.1 Static export preserved — coach is a client-side SPA
 
-Framework Studio stays on `output: "export"`. The `/coach` page is a `"use client"` component — Next.js exports it as a static HTML shell, and all interactivity (chat, streaming, skill selection) runs client-side in the browser. The page calls `/api/*` endpoints for LLM inference.
+PM Studio stays on `output: "export"`. The `/coach` page is a `"use client"` component — Next.js exports it as a static HTML shell, and all interactivity (chat, streaming, skill selection) runs client-side in the browser. The page calls `/api/*` endpoints for LLM inference.
 
 ```typescript
 // app/coach/page.tsx
@@ -340,7 +340,7 @@ User visits /coach → types a question → API calls Claude → response stream
 - Static export + Azure Functions streaming works on the same domain
 - Skill prompts load and produce quality responses
 - Framework auto-linking works with same-origin links
-- Coach page shares Framework Studio's design system natively
+- Coach page shares PM Studio's design system natively
 
 ## 7. Implementation milestones
 
@@ -538,7 +538,7 @@ Implementation:
 
 | Milestone | How to verify |
 |-----------|---------------|
-| M0 | Visit `localhost:4280/coach` (SWA CLI). Type "How do I prioritize my backlog?" → see streaming markdown response. All existing Framework Studio pages still work at same origin. |
+| M0 | Visit `localhost:4280/coach` (SWA CLI). Type "How do I prioritize my backlog?" → see streaming markdown response. All existing PM Studio pages still work at same origin. |
 | M1 | Select "Validation" pill → response uses validate-bets skill. Select "Auto" → response shows correct auto-routed skill badge. |
 | M2 | Response mentions "RICE Scoring" → renders as a clickable link to `/framework/rice-scoring` (same-origin, no new tab). Click it → opens the deep-dive page. |
 | M3 | Toggle debate mode → submit question → see progress indicator (1/7, 2/7...) → see structured synthesis with Consensus/Tensions/Blind Spots. |
@@ -589,14 +589,14 @@ Access the app at `http://localhost:4280`. Both `/coach` and `/framework/*` page
 |------|-----------|
 | Azure Functions managed by SWA may buffer SSE responses | Test streaming early in Milestone 0. Fallback: use SWA "Bring Your Own Backend" to link an Azure Functions Premium app (still same domain). |
 | Azure Functions 230s timeout on Standard plan | Single-skill responses complete in <30s. Debate mode (7 parallel + synthesis) may approach 45s. Well within limits. |
-| Adding `react-markdown` increases Framework Studio bundle | Only imported by coach components; Next.js tree-shakes it from non-coach pages. Verify with `next build` bundle analysis. |
-| `api/` directory confuses existing Framework Studio build | Azure SWA builds the `api/` directory separately. Next.js `output: "export"` ignores it. The `api/` folder has its own `package.json` — completely independent build. |
+| Adding `react-markdown` increases PM Studio bundle | Only imported by coach components; Next.js tree-shakes it from non-coach pages. Verify with `next build` bundle analysis. |
+| `api/` directory confuses existing PM Studio build | Azure SWA builds the `api/` directory separately. Next.js `output: "export"` ignores it. The `api/` folder has its own `package.json` — completely independent build. |
 | Skill prompt copy step forgotten | `scripts/copy-skills.ts` runs in CI workflow as pre-build step. For local dev, `swa start` instructions include it explicitly. |
 | SWA Free plan has limited Functions | Upgrade to Standard plan ($9/month) for 230s timeout and production-grade Functions. Free plan has 45s timeout which may be tight for debate mode. |
 
 ## 13. Hosting comparison: before and after
 
-| Aspect | Before (Framework Studio only) | After (Framework Studio + Coach) |
+| Aspect | Before (PM Studio only) | After (PM Studio + Coach) |
 |--------|-------------------------------|----------------------------------|
 | **Azure resource** | Azure Static Web Apps (salmon-moss) | Same resource — no new Azure resource |
 | **Domain** | salmon-moss-07f46dd1e.2.azurestaticapps.net | Same domain |
