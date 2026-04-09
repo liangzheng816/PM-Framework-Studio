@@ -1,9 +1,26 @@
 "use client";
 
 import { useState } from "react";
-import ReactMarkdown from "react-markdown";
+import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { remarkFrameworkLinks } from "@/lib/remark-framework-links";
 import type { Message } from "@/lib/coach-types";
+
+// Module-level constants avoid ReactMarkdown re-initialising its pipeline every render
+const REMARK_PLUGINS = [remarkGfm, remarkFrameworkLinks];
+
+const MD_COMPONENTS: Components = {
+  a: ({ href, children, ...props }) => {
+    if (href?.startsWith("/framework/")) {
+      return (
+        <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
+          {children}
+        </a>
+      );
+    }
+    return <a href={href} {...props}>{children}</a>;
+  },
+};
 
 interface MessageBubbleProps {
   message: Message;
@@ -63,7 +80,7 @@ export function MessageBubble({ message, isStreaming }: MessageBubbleProps) {
           </p>
         ) : (
           <div className="prose-coach text-[var(--color-text)] text-sm leading-relaxed overflow-x-auto">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            <ReactMarkdown remarkPlugins={REMARK_PLUGINS} components={MD_COMPONENTS}>
               {message.content}
             </ReactMarkdown>
             {isStreaming && (
