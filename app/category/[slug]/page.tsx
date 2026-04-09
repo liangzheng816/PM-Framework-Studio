@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getFrameworksByCategory, getCategoriesWithCounts } from "@/lib/frameworks";
+import { getFrameworksByCategory } from "@/lib/frameworks";
 import { CATEGORY_META, CATEGORY_ORDER } from "@/data/categories";
 import { CATEGORY_COLORS } from "@/lib/category-colors";
 import { FrameworkCard } from "@/components/framework-card/framework-card";

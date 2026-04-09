@@ -94,9 +94,8 @@ export function CommandPalette({ searchIndex }: CommandPaletteProps) {
   }, [open]);
 
   // Reset active index when results change
-  useEffect(() => {
-    setActiveIndex(0);
-  }, [results]);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: reset derived state on dependency change
+  useEffect(() => { setActiveIndex(0); }, [results]);
 
   function handleKeyDown(e: React.KeyboardEvent) {
     if (e.key === "ArrowDown") {

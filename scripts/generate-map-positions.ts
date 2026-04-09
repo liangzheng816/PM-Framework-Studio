@@ -106,7 +106,7 @@ function generatePositions() {
     const count = catCounts[cat];
     const spread = 0.12;
     const offsetX = count > 1 ? ((idx / (count - 1)) - 0.5) * spread : 0;
-    let x = baseX + offsetX;
+    const x = baseX + offsetX;
 
     // Y: quantitative override or heuristic spread
     let y: number;

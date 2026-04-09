@@ -12,14 +12,13 @@ interface CollectionsClientProps {
 }
 
 export function CollectionsClient({ frameworks }: CollectionsClientProps) {
-  const [collections, setCollections] = useState<Collection[]>([]);
+  const [collections, setCollections] = useState<Collection[]>(() => getCollections());
 
   const refresh = useCallback(() => {
     setCollections(getCollections());
   }, []);
 
   useEffect(() => {
-    refresh();
     window.addEventListener("fs:collection-change", refresh);
     return () => window.removeEventListener("fs:collection-change", refresh);
   }, [refresh]);
