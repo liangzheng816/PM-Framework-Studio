@@ -187,7 +187,7 @@ export function CoachShell() {
   }, []);
 
   return (
-    <div className="mx-auto flex h-[calc(100dvh-4rem)] max-w-3xl flex-col px-4 sm:px-6 overflow-hidden">
+    <div className="mx-auto flex h-[calc(100dvh-4rem)] max-w-3xl flex-col px-4 sm:px-6">
       {messages.length === 0 ? (
         /* Empty state — hero + input + pills all centered as a group */
         <div className="flex flex-1 flex-col items-center justify-center">

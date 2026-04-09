@@ -18,7 +18,7 @@ export function MessageBubble({ message, isStreaming }: MessageBubbleProps) {
         className={`${
           isUser
             ? "max-w-[80%] rounded-[var(--radius-lg)] bg-[var(--color-accent)]/10 px-4 py-3"
-            : "max-w-[90%] rounded-[var(--radius-lg)] bg-[var(--color-surface)] px-5 py-4"
+            : "max-w-full rounded-[var(--radius-lg)] bg-[var(--color-surface)] px-5 py-4"
         }`}
       >
         {!isUser && message.skill && (
@@ -37,7 +37,7 @@ export function MessageBubble({ message, isStreaming }: MessageBubbleProps) {
             {message.content}
           </p>
         ) : (
-          <div className="prose-coach text-[var(--color-text)] text-sm leading-relaxed">
+          <div className="prose-coach text-[var(--color-text)] text-sm leading-relaxed overflow-x-auto">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {message.content}
             </ReactMarkdown>

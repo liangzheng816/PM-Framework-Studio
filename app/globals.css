@@ -143,6 +143,7 @@ body {
 }
 
 /* Coach markdown prose */
+.prose-coach { overflow-wrap: break-word; word-break: break-word; }
 .prose-coach h2 { font-family: var(--font-heading); font-size: 1.25rem; margin-top: 1.5em; margin-bottom: 0.5em; color: var(--color-text); }
 .prose-coach h3 { font-family: var(--font-heading); font-size: 1.1rem; margin-top: 1.25em; margin-bottom: 0.4em; color: var(--color-text); }
 .prose-coach h4 { font-weight: 600; font-size: 0.95rem; margin-top: 1em; margin-bottom: 0.3em; color: var(--color-text); }
