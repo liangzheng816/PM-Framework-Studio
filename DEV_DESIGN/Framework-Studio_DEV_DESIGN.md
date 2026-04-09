@@ -1,6 +1,8 @@
 # Dev Design — PM Studio (Retroactive)
 
-Written retroactively to document the technical architecture, implementation patterns, and deployment pipeline of PM Studio v1.0.
+Written retroactively to document the technical architecture, implementation patterns, and deployment pipeline of PM Studio.
+
+> **Updated 2026-04-09:** Homepage (`/`) is now the AI PM Coach chat UI (see `AI-PM-Coach_DEV_DESIGN.md`). CI/CD now includes a validate job, actions pinned to v4, API backend at `api/`, Bicep IaC at `infra/`, and runtime app settings configured on the SWA resource.
 
 ## 1. Product overview
 
@@ -391,7 +393,7 @@ lib/collections.ts
 
 | Route | Type | Key behavior |
 |-------|------|-------------|
-| `/` | Server | Hero, category ribbons, 6 featured frameworks, trust section, CTA |
+| `/` | Client | AI PM Coach chat UI (`CoachShell` — skill selector, streaming chat, debate mode) |
 | `/explore` | Hybrid | Server loads all frameworks; client handles Fuse.js search + category filters + grid/list |
 | `/framework/[slug]` | Server (SSG) | 100 pre-rendered deep-dive pages with sections, sidebar, related, JSON-LD |
 | `/category/[slug]` | Server | Category hero + filtered framework grid (8 categories) |
@@ -403,6 +405,8 @@ lib/collections.ts
 
 ## 9. Deployment pipeline
 
+Azure resource: `pmframeworkstudio` (resource group: `pmframeworkstudio_group`, West US 2).
+
 ### 9.1 GitHub → Azure Static Web Apps
 
 ```
@@ -413,76 +417,57 @@ GitHub Actions trigger
   .github/workflows/azure-static-web-apps-salmon-moss-07f46dd1e.yml
         │
         ▼
-Job: build_and_deploy_job
-  1. actions/checkout@v3
-  2. Azure/static-web-apps-deploy@v1
-     - app_location: "/"           (repo root)
-     - api_location: ""            (no API)
-     - output_location: "out"      (Next.js static export)
+Job 1: validate
+  - actions/checkout@v4 (submodules: true)
+  - actions/setup-node@v4 (node 20, npm cache)
+  - npm ci + npm run lint + tsc --noEmit (frontend)
+  - npm ci + tsc --noEmit (api/)
+        │ (gates deployment via needs:)
+        ▼
+Job 2: build_and_deploy_job
+  - actions/checkout@v4 (submodules: true)
+  - npx tsx scripts/copy-skills.ts (pm-skills/*.md → api/skills/)
+  - Azure/static-web-apps-deploy@v1
+      app_location: "/"
+      api_location: "api"          (Azure Functions backend)
+      output_location: "out"       (Next.js static export)
+    env: ANTHROPIC_API_KEY (build-time only)
         │
         ▼
 Azure Static Web Apps
-  - Builds: npm install → npm run build (next build → static export to out/)
-  - Deploys: uploads out/ to Azure CDN
+  - Builds: frontend (next build → out/) + API (tsc → api/dist/)
+  - Deploys: static pages to CDN + Functions to managed runtime
   - URL: https://salmon-moss-07f46dd1e.2.azurestaticapps.net/
-        │
-        ▼
-Users access the site
-  - All pages served as static HTML from CDN
-  - No server runtime, no API endpoints
-  - Client-side JS handles search, collections, compare, finder
 ```
 
-### 9.2 Workflow file
+### 9.2 Runtime app settings (critical)
 
-```yaml
-name: Azure Static Web Apps CI/CD
+The workflow `env:` block only provides `ANTHROPIC_API_KEY` at **build time**. Azure Functions need it as a **runtime** application setting on the SWA resource:
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches: [main]
-
-jobs:
-  build_and_deploy_job:
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: true
-          lfs: false
-      - name: Build And Deploy
-        uses: Azure/static-web-apps-deploy@v1
-        with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_SALMON_MOSS_07F46DD1E }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          action: "upload"
-          app_location: "/"
-          api_location: ""
-          output_location: "out"
-
-  close_pull_request_job:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Close Pull Request
-        uses: Azure/static-web-apps-deploy@v1
-        with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_SALMON_MOSS_07F46DD1E }}
-          action: "close"
+```bash
+az staticwebapp appsettings set --name pmframeworkstudio \
+  --setting-names "ANTHROPIC_API_KEY=<key>" "COACH_MODEL=claude-sonnet-4-6" "COACH_MAX_TOKENS=4096"
 ```
 
-### 9.3 Secrets required
+### 9.3 Infrastructure as Code
+
+`infra/main.bicep` + `infra/main.bicepparam` define the SWA resource and all app settings declaratively:
+
+```bash
+az deployment group create --resource-group pmframeworkstudio_group \
+  --template-file infra/main.bicep --parameters infra/main.bicepparam \
+  --parameters anthropicApiKey='<key>'
+```
+
+### 9.4 Secrets required
 
 | Secret | Purpose |
 |--------|---------|
 | `AZURE_STATIC_WEB_APPS_API_TOKEN_SALMON_MOSS_07F46DD1E` | Deployment token for Azure Static Web Apps resource |
+| `ANTHROPIC_API_KEY` | Claude API key (build-time env + must also be set as SWA runtime app setting) |
 | `GITHUB_TOKEN` | Auto-provided by GitHub Actions for PR comments |
 
-### 9.4 PR preview environments
+### 9.5 PR preview environments
 
 Azure Static Web Apps automatically creates preview environments for pull requests. Each open PR gets a temporary staging URL. The `close_pull_request_job` cleans up the preview when the PR is closed.
 
@@ -494,14 +479,22 @@ npm run dev              # Turbopack dev server (http://localhost:3000)
 
 # Production
 npm run build            # Static export → out/ (118 pages)
-npm run start            # Serve production build locally
 
-# Linting
-npm run lint             # ESLint (eslint-config-next, core-web-vitals, typescript)
+# Quality checks
+npm run lint             # ESLint (api/dist/ excluded via eslint.config.mjs)
+npm run typecheck        # tsc --noEmit
+npm run validate         # lint + typecheck (matches CI validate job)
 
-# Content pipeline
+# API backend (run from api/)
+cd api
+npm run build            # TypeScript compile → dist/
+npm run watch            # TypeScript compile in watch mode
+npm run start            # func start (auto-runs build via prestart)
+
+# Content & skill pipeline
 npx tsx scripts/migrate-content.ts          # PM_Frameworks/*.md → content/en/frameworks/*.mdx + search-index.json
 npx tsx scripts/generate-map-positions.ts   # Generate data/map-positions.json for SVG scatter
+npx tsx scripts/copy-skills.ts              # pm-skills/*.md → api/skills/ (required before API can serve skills)
 ```
 
 **Content update workflow:**
@@ -509,7 +502,7 @@ npx tsx scripts/generate-map-positions.ts   # Generate data/map-positions.json f
 2. Run `npx tsx scripts/migrate-content.ts` (regenerates MDX + search index)
 3. Run `npx tsx scripts/generate-map-positions.ts` (if stages changed)
 4. Run `npm run build` to verify
-5. Push to `main` → auto-deploy to Azure
+5. Push to `main` → validate job runs lint + typecheck → deploy to Azure
 
 ## 11. Component patterns
 

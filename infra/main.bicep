@@ -1,10 +1,10 @@
 targetScope = 'resourceGroup'
 
 @description('Name of the Static Web App')
-param staticWebAppName string = 'frameworkstudio'
+param staticWebAppName string = 'pmframeworkstudio'
 
 @description('Location for the Static Web App')
-param location string = 'eastus2'
+param location string = 'westus2'
 
 @description('SKU for the Static Web App')
 @allowed(['Free', 'Standard'])

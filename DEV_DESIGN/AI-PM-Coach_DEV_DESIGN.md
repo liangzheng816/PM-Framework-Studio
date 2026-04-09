@@ -1,11 +1,19 @@
 # Dev Design — AI PM Coach
 
+> **Implementation status (updated 2026-04-09):** Coach is fully shipped. Key divergences from original spec:
+> - Coach lives at `/` (root), not `/coach` — it replaced the original homepage
+> - Single API endpoint `POST /api/chat` handles all modes (single-skill, debate, file upload) — `/api/classify` and `/api/chat-debate` were never built
+> - Planned files `lib/framework-links.ts`, `data/skills-meta.ts`, `data/coach-prompts.ts`, `api/src/lib/stream.ts` were not created — skill metadata lives in `lib/coach-types.ts`
+> - CI/CD now includes a validate job (lint + typecheck) gating deployment, actions pinned to v4, and Bicep IaC for Azure resource management
+> - Runtime app settings must be configured on the SWA resource separately from the build-time workflow `env:` block
+
 ## 0. Project identity
 
 - **Source repo:** https://github.com/liangzheng816/framework_studio
-- **Live URL:** https://salmon-moss-07f46dd1e.2.azurestaticapps.net/ (same domain as PM Studio)
-- **Coach page:** https://salmon-moss-07f46dd1e.2.azurestaticapps.net/coach
-- **API endpoints:** https://salmon-moss-07f46dd1e.2.azurestaticapps.net/api/*
+- **Live URL:** https://salmon-moss-07f46dd1e.2.azurestaticapps.net/
+- **Coach page:** https://salmon-moss-07f46dd1e.2.azurestaticapps.net/ (root — replaced original homepage)
+- **API endpoint:** https://salmon-moss-07f46dd1e.2.azurestaticapps.net/api/chat
+- **Azure resource:** `pmframeworkstudio` (resource group: `pmframeworkstudio_group`, West US 2)
 
 ## 1. Architecture: single domain, single deployment
 
@@ -13,17 +21,13 @@ AI PM Coach is integrated into the existing PM Studio deployment on Azure Static
 
 ```
 salmon-moss-07f46dd1e.2.azurestaticapps.net
-├── /                        # PM Studio homepage (existing)
-├── /explore                 # PM Studio explore (existing)
+├── /                        # AI PM Coach UI (client-side SPA, replaced original homepage)
+├── /discover                # PM Studio browse + search (existing)
 ├── /framework/{slug}        # PM Studio deep-dives (existing, 100 pages)
 ├── /map, /compare, ...      # PM Studio pages (existing)
 │
-├── /coach                   # AI PM Coach UI (NEW — client-side SPA)
-│
-└── /api/                    # Azure Functions backend (NEW)
-    ├── /api/chat            # Single-skill streaming
-    ├── /api/classify        # Skill triage (non-streaming)
-    └── /api/chat-debate     # Multi-expert debate
+└── /api/                    # Azure Functions backend
+    └── /api/chat            # Single endpoint: handles single-skill, debate, and file upload
 ```
 
 **How this works:**
@@ -155,7 +159,7 @@ app.http("chat", {
     const anthropic = new Anthropic();
 
     const stream = anthropic.messages.stream({
-      model: process.env.COACH_MODEL || "claude-sonnet-4-20250514",
+      model: process.env.COACH_MODEL || "claude-sonnet-4-6",
       max_tokens: 4096,
       system: systemPrompt,
       messages,
@@ -225,7 +229,7 @@ The API has its own `api/package.json` for server-side deps (`@anthropic-ai/sdk`
     "FUNCTIONS_WORKER_RUNTIME": "node",
     "AzureWebJobsStorage": "",
     "ANTHROPIC_API_KEY": "sk-ant-...",
-    "COACH_MODEL": "claude-sonnet-4-20250514",
+    "COACH_MODEL": "claude-sonnet-4-6",
     "COACH_MAX_TOKENS": "4096"
   }
 }
@@ -233,37 +237,12 @@ The API has its own `api/package.json` for server-side deps (`@anthropic-ai/sdk`
 
 **No `FRAMEWORK_STUDIO_BASE_URL` needed** — framework links are same-origin (`/framework/{slug}`).
 
-## 5. CI/CD workflow changes
+## 5. CI/CD workflow (current state)
 
-Only one change to the existing workflow:
+The workflow at `.github/workflows/azure-static-web-apps-salmon-moss-07f46dd1e.yml` has two jobs:
 
-```yaml
-# .github/workflows/azure-static-web-apps-salmon-moss-07f46dd1e.yml
-# BEFORE:
-          app_location: "/"
-          api_location: ""              # ← empty
-          output_location: "out"
-
-# AFTER:
-          app_location: "/"
-          api_location: "api"           # ← points to Azure Functions directory
-          output_location: "out"
-```
-
-This tells Azure Static Web Apps to build and deploy the `api/` directory as linked Azure Functions. The static app (`out/`) and Functions deploy together in one step.
-
-Add a pre-build step to copy skills:
-
-```yaml
-      - name: Copy skill prompts
-        run: npx tsx scripts/copy-skills.ts
-
-      - name: Build And Deploy
-        uses: Azure/static-web-apps-deploy@v1
-        # ...
-```
-
-**Full updated workflow:**
+1. **Validate** — runs `npm ci` + `npm run lint` + `tsc --noEmit` for both frontend and API. Gates deployment via `needs:` dependency.
+2. **Build and Deploy** — checks out with `submodules: true`, copies skills, then deploys via `Azure/static-web-apps-deploy@v1`.
 
 ```yaml
 name: Azure Static Web Apps CI/CD
@@ -275,22 +254,43 @@ on:
     types: [opened, synchronize, reopened, closed]
     branches: [main]
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
+  validate:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    runs-on: ubuntu-latest
+    name: Validate
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run lint
+      - run: npx tsc --noEmit
+      - run: npm ci
+        working-directory: api
+      - run: npx tsc --noEmit
+        working-directory: api
+
   build_and_deploy_job:
+    needs: validate
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: true
-          lfs: false
-
       - name: Copy skill prompts to API
         run: npx tsx scripts/copy-skills.ts
-
       - name: Build And Deploy
-        id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_SALMON_MOSS_07F46DD1E }}
@@ -314,13 +314,33 @@ jobs:
           action: "close"
 ```
 
-### Secrets to add in GitHub
+### Runtime app settings (critical)
+
+The workflow `env:` block only provides `ANTHROPIC_API_KEY` at **build time** (Oryx). Azure Functions need it as a **runtime** application setting on the SWA resource. Manage via:
+
+```bash
+az staticwebapp appsettings set --name pmframeworkstudio \
+  --setting-names "ANTHROPIC_API_KEY=<key>" "COACH_MODEL=claude-sonnet-4-6" "COACH_MAX_TOKENS=4096"
+```
+
+Or via the Bicep template at `infra/main.bicep` which defines the SWA resource and all app settings declaratively.
+
+### Infrastructure as Code
+
+`infra/main.bicep` + `infra/main.bicepparam` define the Azure SWA resource, build properties, and application settings. Deploy with:
+
+```bash
+az deployment group create --resource-group pmframeworkstudio_group \
+  --template-file infra/main.bicep --parameters infra/main.bicepparam \
+  --parameters anthropicApiKey='<key>'
+```
+
+### Secrets in GitHub
 
 | Secret | Purpose |
 |--------|---------|
-| `ANTHROPIC_API_KEY` | Claude API key (passed to Azure Functions at deploy time) |
-
-Existing secret `AZURE_STATIC_WEB_APPS_API_TOKEN_SALMON_MOSS_07F46DD1E` stays the same.
+| `ANTHROPIC_API_KEY` | Claude API key (build-time env for Oryx + must also be set as SWA runtime app setting) |
+| `AZURE_STATIC_WEB_APPS_API_TOKEN_SALMON_MOSS_07F46DD1E` | Deployment token for Azure Static Web Apps resource |
 
 ## 6. End-to-end slice (Milestone 0)
 

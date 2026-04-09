@@ -32,7 +32,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm run dev              # Turbopack dev server (http://localhost:3000)
 npm run build            # Production static export → out/ (118 pages)
 npm run start            # Serve production build locally
-npm run lint             # ESLint
+npm run lint             # ESLint (api/dist/ excluded via eslint.config.mjs)
+npm run typecheck        # tsc --noEmit
+npm run validate         # lint + typecheck (matches CI)
 
 # API backend (Azure Functions) — run from api/
 cd api
@@ -47,13 +49,14 @@ npx tsx scripts/copy-skills.ts              # pm-skills/*.md → api/skills/ (re
 
 ## Deployment
 
-Hosted on **Azure Static Web Apps** via GitHub Actions. On every push to `main`, the workflow (`.github/workflows/azure-static-web-apps-*.yml`) builds and deploys automatically.
+Hosted on **Azure Static Web Apps** via GitHub Actions (`pmframeworkstudio` resource, West US 2). On every push to `main`, the workflow (`.github/workflows/azure-static-web-apps-*.yml`) runs:
 
-Key workflow settings:
-- `app_location: "/"` — repo root
-- `output_location: "out"` — Next.js static export directory
+1. **Validate** — lint + typecheck for frontend and API (gates deployment)
+2. **Build and Deploy** — copies skills, then deploys via `Azure/static-web-apps-deploy@v1` (`app_location: "/"`, `api_location: "api"`, `output_location: "out"`)
 
-The app uses `output: "export"` in `next.config.ts` for fully static HTML generation.
+The app uses `output: "export"` in `next.config.ts` for fully static HTML generation. **Static export constraints**: no SSR, no Next.js API routes, no middleware, no ISR.
+
+**Runtime app settings** (ANTHROPIC_API_KEY, COACH_MODEL, COACH_MAX_TOKENS) must be configured on the SWA resource — the workflow `env:` block only provides them at build time. Manage via `az staticwebapp appsettings set` or the Bicep template at `infra/main.bicep`.
 
 ## Tech Stack
 

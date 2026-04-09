@@ -1,7 +1,7 @@
 using './main.bicep'
 
-param staticWebAppName = 'frameworkstudio'
-param location = 'eastus2'
+param staticWebAppName = 'pmframeworkstudio'
+param location = 'westus2'
 param sku = 'Free'
 param coachModel = 'claude-sonnet-4-6'
 param coachMaxTokens = '4096'
