@@ -57,7 +57,7 @@ app.http("chat", {
   route: "chat",
   handler: async (
     req: HttpRequest,
-    _context: InvocationContext
+    context: InvocationContext
   ): Promise<HttpResponseInit> => {
     try {
       const body = (await req.json()) as {
@@ -119,6 +119,8 @@ app.http("chat", {
         return { role: m.role, content: m.content };
       });
 
+      context.log(`Chat request: skill=${skillId}, messages=${messages.length}, files=${files?.length ?? 0}, debate=${isDebate}`);
+
       const anthropic = new Anthropic();
       const model = process.env.COACH_MODEL || "claude-sonnet-4-6";
       const defaultMaxTokens = parseInt(
@@ -164,6 +166,7 @@ app.http("chat", {
 
             // Send done event
             const finalMessage = await stream.finalMessage();
+            context.log(`Chat response: skill=${skillId}, model=${model}, inputTokens=${finalMessage.usage.input_tokens}, outputTokens=${finalMessage.usage.output_tokens}`);
             controller.enqueue(
               encoder.encode(
                 `data: ${JSON.stringify({
@@ -175,6 +178,7 @@ app.http("chat", {
           } catch (streamErr: unknown) {
             const msg =
               streamErr instanceof Error ? streamErr.message : "Stream error";
+            context.error(`Chat stream error: skill=${skillId}, error=${msg}`);
             controller.enqueue(
               encoder.encode(
                 `data: ${JSON.stringify({ type: "error", message: msg })}\n\n`
@@ -197,6 +201,7 @@ app.http("chat", {
       };
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Internal error";
+      context.error(`Chat handler error: ${message}`);
       return { status: 500, body: message };
     }
   },
