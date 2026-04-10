@@ -185,87 +185,40 @@ app.http("chat", {
         ? Math.max(defaultMaxTokens, 16384)
         : defaultMaxTokens;
 
-      const stream = anthropic.messages.stream({
+      // Use a non-streaming (buffered) Anthropic call.  Azure SWA managed
+      // functions don't reliably support ReadableStream bodies for responses
+      // that take longer than ~15s, returning "Backend call failure".  The
+      // full response is collected and returned as SSE events in a single
+      // string body — the frontend SSE parser handles it identically.
+      const response = await anthropic.messages.create({
         model,
         max_tokens: maxTokens,
         system: systemPrompt,
         messages: enrichedMessages,
       });
-      // Absorb the internal rejection so it doesn't crash the process;
-      // the real error still propagates via the async iterator.
-      stream.on("error", () => {});
 
-      // Build SSE response body
-      const encoder = new TextEncoder();
-      const readable = new ReadableStream({
-        async start(controller) {
-          // SSE keepalive: send comments every 10s to prevent the Azure SWA
-          // reverse proxy from timing out while waiting for Anthropic's first
-          // token (debate mode's ~100KB system prompt can cause 30s+ delays).
-          const keepalive = setInterval(() => {
-            try {
-              controller.enqueue(encoder.encode(": keepalive\n\n"));
-            } catch {
-              clearInterval(keepalive);
-            }
-          }, 10_000);
+      const text =
+        response.content[0]?.type === "text" ? response.content[0].text : "";
+      context.log(
+        `Chat response: skill=${skillId}, model=${model}, ` +
+          `inputTokens=${response.usage.input_tokens}, outputTokens=${response.usage.output_tokens}`
+      );
 
-          try {
-            // Send skill info event immediately (first byte for SWA proxy)
-            controller.enqueue(
-              encoder.encode(
-                `data: ${JSON.stringify({ type: "skill", skillId, skillLabel: skillId })}\n\n`
-              )
-            );
-
-            for await (const event of stream) {
-              if (
-                event.type === "content_block_delta" &&
-                event.delta.type === "text_delta"
-              ) {
-                controller.enqueue(
-                  encoder.encode(
-                    `data: ${JSON.stringify({ type: "token", text: event.delta.text })}\n\n`
-                  )
-                );
-              }
-            }
-
-            // Send done event
-            const finalMessage = await stream.finalMessage();
-            context.log(`Chat response: skill=${skillId}, model=${model}, inputTokens=${finalMessage.usage.input_tokens}, outputTokens=${finalMessage.usage.output_tokens}`);
-            controller.enqueue(
-              encoder.encode(
-                `data: ${JSON.stringify({
-                  type: "done",
-                  usage: finalMessage.usage,
-                })}\n\n`
-              )
-            );
-          } catch (streamErr: unknown) {
-            const msg =
-              streamErr instanceof Error ? streamErr.message : "Stream error";
-            context.error(`Chat stream error: skill=${skillId}, error=${msg}`);
-            controller.enqueue(
-              encoder.encode(
-                `data: ${JSON.stringify({ type: "error", message: msg })}\n\n`
-              )
-            );
-          } finally {
-            clearInterval(keepalive);
-            controller.close();
-          }
-        },
-      });
+      const sseBody = [
+        `data: ${JSON.stringify({ type: "skill", skillId, skillLabel: skillId })}`,
+        `data: ${JSON.stringify({ type: "token", text })}`,
+        `data: ${JSON.stringify({ type: "done", usage: response.usage })}`,
+      ]
+        .map((line) => line + "\n\n")
+        .join("");
 
       return {
         status: 200,
         headers: {
           "Content-Type": "text/event-stream",
           "Cache-Control": "no-cache",
-          Connection: "keep-alive",
         },
-        body: readable,
+        body: sseBody,
       };
     } catch (err: unknown) {
       // Surface Anthropic API errors with their actual status and message
