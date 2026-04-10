@@ -98,6 +98,12 @@ app.http("chat", {
       // Append integration context
       systemPrompt += "\n\n" + INTEGRATION_CONTEXT;
 
+      // Strip lone surrogates that can appear when the browser reads
+      // binary-encoded files via FileReader.readAsText(). These produce
+      // invalid JSON and cause the Anthropic API to reject the request.
+      const sanitize = (s: string) =>
+        s.replace(/[\uD800-\uDFFF]/g, "\uFFFD");
+
       // Inject uploaded file contents into the last user message so they're
       // always visible as conversation context (not buried in the system prompt).
       // This ensures all skills — including pm-debate — ground their analysis
@@ -112,7 +118,7 @@ app.http("chat", {
           let docBlock =
             "\n\n---\n**Uploaded context documents — ground your analysis in these:**\n";
           for (const file of files) {
-            docBlock += `\n### ${file.name}\n\`\`\`markdown\n${file.content}\n\`\`\`\n`;
+            docBlock += `\n### ${file.name}\n\`\`\`markdown\n${sanitize(file.content)}\n\`\`\`\n`;
           }
           return { role: m.role, content: m.content + docBlock };
         }
