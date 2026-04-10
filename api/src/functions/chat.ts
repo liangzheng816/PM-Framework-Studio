@@ -134,13 +134,17 @@ app.http("chat", {
         return { status: 400, body: `Unknown skill: ${skillId}` };
       }
 
-      // For debate mode: inject all domain expert knowledge into the prompt
-      // so Claude can role-play each expert with full framework context
+      // For debate mode: inject domain expert knowledge into the prompt
+      // so Claude can role-play each expert with full framework context.
+      // Cap at 4 experts to keep execution time under the Azure SWA ~50s
+      // request timeout (7 experts → ~23K tokens → ~50-60s; 4 → ~13K → ~30s).
+      const MAX_DEBATE_EXPERTS = 4;
       const isDebate = skillId === "pm-debate";
       if (isDebate) {
-        const requestedSkills = parseDebateSkills(messages);
+        let requestedSkills = parseDebateSkills(messages);
         const domainSkills = loadDomainSkills(
-          requestedSkills.length > 0 ? requestedSkills : undefined
+          requestedSkills.length > 0 ? requestedSkills : undefined,
+          MAX_DEBATE_EXPERTS
         );
 
         systemPrompt += WEB_DEBATE_OVERRIDE;
@@ -187,45 +191,90 @@ app.http("chat", {
         process.env.COACH_MAX_TOKENS || "4096",
         10
       );
-      // Debate synthesis needs much more output space than single-skill responses
+      // Debate synthesis needs more output space than single-skill responses
       const maxTokens = isDebate
-        ? Math.max(defaultMaxTokens, 16384)
+        ? Math.max(defaultMaxTokens, 8192)
         : defaultMaxTokens;
 
-      // Use a non-streaming (buffered) Anthropic call.  Azure SWA managed
-      // functions don't reliably support ReadableStream bodies for responses
-      // that take longer than ~15s, returning "Backend call failure".  The
-      // full response is collected and returned as SSE events in a single
-      // string body — the frontend SSE parser handles it identically.
-      const response = await anthropic.messages.create({
+      const stream = anthropic.messages.stream({
         model,
         max_tokens: maxTokens,
         system: systemPrompt,
         messages: enrichedMessages,
       });
+      // Absorb the internal rejection so it doesn't crash the process;
+      // the real error still propagates via the async iterator.
+      stream.on("error", () => {});
 
-      const text =
-        response.content[0]?.type === "text" ? response.content[0].text : "";
-      context.log(
-        `Chat response: skill=${skillId}, model=${model}, ` +
-          `inputTokens=${response.usage.input_tokens}, outputTokens=${response.usage.output_tokens}`
-      );
+      // Build SSE response body via ReadableStream so the function returns
+      // the 200 + headers immediately (no handler timeout).  Keepalive
+      // comments every 10s keep the connection alive during Anthropic's
+      // processing of the large debate system prompt.
+      const encoder = new TextEncoder();
+      const readable = new ReadableStream({
+        async start(controller) {
+          const keepalive = setInterval(() => {
+            try {
+              controller.enqueue(encoder.encode(": keepalive\n\n"));
+            } catch {
+              clearInterval(keepalive);
+            }
+          }, 10_000);
 
-      const sseBody = [
-        `data: ${JSON.stringify({ type: "skill", skillId, skillLabel: skillId })}`,
-        `data: ${JSON.stringify({ type: "token", text })}`,
-        `data: ${JSON.stringify({ type: "done", usage: response.usage })}`,
-      ]
-        .map((line) => line + "\n\n")
-        .join("");
+          try {
+            controller.enqueue(
+              encoder.encode(
+                `data: ${JSON.stringify({ type: "skill", skillId, skillLabel: skillId })}\n\n`
+              )
+            );
+
+            for await (const event of stream) {
+              if (
+                event.type === "content_block_delta" &&
+                event.delta.type === "text_delta"
+              ) {
+                controller.enqueue(
+                  encoder.encode(
+                    `data: ${JSON.stringify({ type: "token", text: event.delta.text })}\n\n`
+                  )
+                );
+              }
+            }
+
+            const finalMessage = await stream.finalMessage();
+            context.log(
+              `Chat response: skill=${skillId}, model=${model}, ` +
+                `inputTokens=${finalMessage.usage.input_tokens}, outputTokens=${finalMessage.usage.output_tokens}`
+            );
+            controller.enqueue(
+              encoder.encode(
+                `data: ${JSON.stringify({ type: "done", usage: finalMessage.usage })}\n\n`
+              )
+            );
+          } catch (streamErr: unknown) {
+            const msg =
+              streamErr instanceof Error ? streamErr.message : "Stream error";
+            context.error(`Chat stream error: skill=${skillId}, error=${msg}`);
+            controller.enqueue(
+              encoder.encode(
+                `data: ${JSON.stringify({ type: "error", message: msg })}\n\n`
+              )
+            );
+          } finally {
+            clearInterval(keepalive);
+            controller.close();
+          }
+        },
+      });
 
       return {
         status: 200,
         headers: {
           "Content-Type": "text/event-stream",
           "Cache-Control": "no-cache",
+          Connection: "keep-alive",
         },
-        body: sseBody,
+        body: readable,
       };
     } catch (err: unknown) {
       // Surface Anthropic API errors with their actual status and message

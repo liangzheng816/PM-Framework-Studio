@@ -41,13 +41,18 @@ export const DOMAIN_SKILL_IDS = [
 
 /**
  * Load domain expert skill files by ID.
- * If skillIds is empty/undefined, loads all 7 domain experts.
+ * If skillIds is empty/undefined, loads the default set.
+ * Pass maxExperts to cap the number loaded (for timeout constraints).
  */
 export function loadDomainSkills(
-  skillIds?: string[]
+  skillIds?: string[],
+  maxExperts?: number
 ): Record<string, string> {
-  const ids =
+  let ids =
     skillIds && skillIds.length > 0 ? skillIds : DOMAIN_SKILL_IDS;
+  if (maxExperts && ids.length > maxExperts) {
+    ids = ids.slice(0, maxExperts);
+  }
   const result: Record<string, string> = {};
   for (const id of ids) {
     try {
