@@ -149,6 +149,18 @@ app.http("chat", {
       const encoder = new TextEncoder();
       const readable = new ReadableStream({
         async start(controller) {
+          // SSE keepalive: send comments every 10s to prevent the Azure SWA
+          // reverse proxy from timing out while waiting for Anthropic's first
+          // token (debate mode's ~100KB system prompt can cause 30s+ delays).
+          const keepalive = setInterval(() => {
+            try {
+              controller.enqueue(encoder.encode(": keepalive\n\n"));
+            } catch {
+              // controller already closed
+              clearInterval(keepalive);
+            }
+          }, 10_000);
+
           try {
             // Send skill info event
             controller.enqueue(
@@ -191,6 +203,7 @@ app.http("chat", {
               )
             );
           } finally {
+            clearInterval(keepalive);
             controller.close();
           }
         },
