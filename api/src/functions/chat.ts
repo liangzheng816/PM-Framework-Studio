@@ -206,9 +206,25 @@ app.http("chat", {
         body: readable,
       };
     } catch (err: unknown) {
+      // Surface Anthropic API errors with their actual status and message
+      if (err instanceof Anthropic.APIError) {
+        const detail = err.error && typeof err.error === "object" && "error" in err.error
+          ? (err.error as { error?: { message?: string } }).error?.message ?? err.message
+          : err.message;
+        context.error(`Chat Anthropic API error: status=${err.status}, message=${detail}`);
+        return {
+          status: err.status >= 400 && err.status < 600 ? err.status : 502,
+          body: JSON.stringify({ error: detail }),
+          headers: { "Content-Type": "application/json" },
+        };
+      }
       const message = err instanceof Error ? err.message : "Internal error";
       context.error(`Chat handler error: ${message}`);
-      return { status: 500, body: message };
+      return {
+        status: 500,
+        body: JSON.stringify({ error: message }),
+        headers: { "Content-Type": "application/json" },
+      };
     }
   },
 });

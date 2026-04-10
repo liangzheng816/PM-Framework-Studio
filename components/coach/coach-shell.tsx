@@ -96,7 +96,14 @@ export function CoachShell() {
         });
 
         if (!res.ok) {
-          throw new Error(`API error: ${res.status}`);
+          let detail = `API error: ${res.status}`;
+          try {
+            const errBody = await res.json();
+            if (errBody.error) detail = errBody.error;
+          } catch {
+            // body wasn't JSON, use status text
+          }
+          throw new Error(detail);
         }
 
         const reader = res.body?.getReader();
