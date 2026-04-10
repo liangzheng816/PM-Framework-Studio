@@ -63,6 +63,7 @@ jobs:
           output_location: "out"
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          NEXT_PUBLIC_API_BASE: https://pmstudio-api.bluecliff-2f3ceb96.westus2.azurecontainerapps.io
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
