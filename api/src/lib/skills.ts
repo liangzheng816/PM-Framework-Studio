@@ -58,3 +58,56 @@ export function loadDomainSkills(
   }
   return result;
 }
+
+/**
+ * Load condensed domain expert skill files for debate mode.
+ * Extracts only the framework table and key sections to keep the
+ * system prompt under ~25KB, ensuring Anthropic responds within
+ * the Azure SWA 45s timeout.
+ */
+export function loadDomainSkillsCondensed(
+  skillIds?: string[]
+): Record<string, string> {
+  const full = loadDomainSkills(skillIds);
+  const result: Record<string, string> = {};
+
+  for (const [id, content] of Object.entries(full)) {
+    // Keep everything up to and including the framework table,
+    // plus the first major instruction section after it.
+    // Skill files follow a consistent structure:
+    //   1. Title + intro paragraph
+    //   2. Framework table (| # | Framework | ...)
+    //   3. Detailed workflow instructions
+    // For debate, we keep sections 1-2 and a brief excerpt of 3.
+    const lines = content.split("\n");
+    const condensed: string[] = [];
+    let inTable = false;
+    let tableEnded = false;
+    let postTableLines = 0;
+    const POST_TABLE_LIMIT = 30; // keep ~30 lines after the table
+
+    for (const line of lines) {
+      if (!tableEnded) {
+        condensed.push(line);
+        if (line.startsWith("|")) {
+          inTable = true;
+        } else if (inTable && !line.startsWith("|") && line.trim() !== "") {
+          tableEnded = true;
+          postTableLines = 1;
+        }
+      } else {
+        postTableLines++;
+        if (postTableLines <= POST_TABLE_LIMIT) {
+          condensed.push(line);
+        } else {
+          condensed.push("\n[Remaining detailed instructions omitted for brevity]");
+          break;
+        }
+      }
+    }
+
+    result[id] = condensed.join("\n");
+  }
+
+  return result;
+}

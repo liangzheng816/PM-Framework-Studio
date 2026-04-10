@@ -5,7 +5,7 @@ import {
   InvocationContext,
 } from "@azure/functions";
 import Anthropic from "@anthropic-ai/sdk";
-import { loadSkill, loadDomainSkills } from "../lib/skills";
+import { loadSkill, loadDomainSkillsCondensed } from "../lib/skills";
 
 const INTEGRATION_CONTEXT = `
 ## Context: PM Studio Integration
@@ -85,7 +85,7 @@ app.http("chat", {
       const isDebate = skillId === "pm-debate";
       if (isDebate) {
         const requestedSkills = parseDebateSkills(messages);
-        const domainSkills = loadDomainSkills(
+        const domainSkills = loadDomainSkillsCondensed(
           requestedSkills.length > 0 ? requestedSkills : undefined
         );
 
@@ -138,10 +138,24 @@ app.http("chat", {
         ? Math.max(defaultMaxTokens, 16384)
         : defaultMaxTokens;
 
+      // Use prompt caching for the large system prompt (especially debate
+      // mode which injects ~88KB of skill files). The first call pays the
+      // full prefill cost, but subsequent calls within the cache TTL (~5min)
+      // are much faster, avoiding the Azure SWA 45s timeout.
+      const systemPayload: Anthropic.MessageCreateParams["system"] = isDebate
+        ? [
+            {
+              type: "text" as const,
+              text: systemPrompt,
+              cache_control: { type: "ephemeral" as const },
+            },
+          ]
+        : systemPrompt;
+
       const stream = anthropic.messages.stream({
         model,
         max_tokens: maxTokens,
-        system: systemPrompt,
+        system: systemPayload,
         messages: enrichedMessages,
       });
 
