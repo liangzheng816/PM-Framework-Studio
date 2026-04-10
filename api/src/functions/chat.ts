@@ -7,6 +7,23 @@ import {
 import Anthropic from "@anthropic-ai/sdk";
 import { loadSkill, loadDomainSkills } from "../lib/skills";
 
+// Diagnostic endpoint — GET /api/health
+app.http("health", {
+  methods: ["GET"],
+  authLevel: "anonymous",
+  route: "health",
+  handler: async (): Promise<HttpResponseInit> => ({
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      status: "ok",
+      node: process.version,
+      hasApiKey: !!process.env.ANTHROPIC_API_KEY,
+      model: process.env.COACH_MODEL || "claude-sonnet-4-6 (default)",
+    }),
+  }),
+});
+
 const INTEGRATION_CONTEXT = `
 ## Context: PM Studio Integration
 When you mention a framework, use its exact canonical title as listed in

@@ -98,10 +98,18 @@ export function CoachShell() {
         if (!res.ok) {
           let detail = `API error: ${res.status}`;
           try {
-            const errBody = await res.json();
-            if (errBody.error) detail = errBody.error;
+            const text = await res.text();
+            if (text) {
+              try {
+                const json = JSON.parse(text);
+                if (json.error) detail = json.error;
+              } catch {
+                // Not JSON — show raw response (e.g. SWA proxy error)
+                detail = text.slice(0, 300);
+              }
+            }
           } catch {
-            // body wasn't JSON, use status text
+            // couldn't read body at all
           }
           throw new Error(detail);
         }
