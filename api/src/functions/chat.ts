@@ -177,20 +177,20 @@ app.http("chat", {
         ? Math.max(defaultMaxTokens, 16384)
         : defaultMaxTokens;
 
-      const stream = anthropic.messages.stream({
+      // Use the low-level streaming API: `await create({stream:true})`
+      // awaits the HTTP connection upfront (errors surface here, not as
+      // unhandled rejections that crash the process in Azure SWA).
+      const stream = await anthropic.messages.create({
         model,
         max_tokens: maxTokens,
         system: systemPrompt,
         messages: enrichedMessages,
+        stream: true,
       });
-      // SDK 0.87+ fires an internal rejection when the API errors before
-      // iteration starts.  Without this listener the process crashes with
-      // an unhandled-rejection, which Azure SWA surfaces as "Backend call
-      // failure".  The real error still propagates via the async iterator.
-      stream.on("error", () => {});
 
       // Build SSE response body
       const encoder = new TextEncoder();
+      let usage: { input_tokens?: number; output_tokens?: number } = {};
       const readable = new ReadableStream({
         async start(controller) {
           // SSE keepalive: send comments every 10s to prevent the Azure SWA
@@ -200,7 +200,6 @@ app.http("chat", {
             try {
               controller.enqueue(encoder.encode(": keepalive\n\n"));
             } catch {
-              // controller already closed
               clearInterval(keepalive);
             }
           }, 10_000);
@@ -223,18 +222,18 @@ app.http("chat", {
                     `data: ${JSON.stringify({ type: "token", text: event.delta.text })}\n\n`
                   )
                 );
+              } else if (event.type === "message_start" && event.message.usage) {
+                usage = { ...usage, input_tokens: event.message.usage.input_tokens };
+              } else if (event.type === "message_delta" && event.usage) {
+                usage = { ...usage, output_tokens: event.usage.output_tokens };
               }
             }
 
             // Send done event
-            const finalMessage = await stream.finalMessage();
-            context.log(`Chat response: skill=${skillId}, model=${model}, inputTokens=${finalMessage.usage.input_tokens}, outputTokens=${finalMessage.usage.output_tokens}`);
+            context.log(`Chat response: skill=${skillId}, model=${model}, inputTokens=${usage.input_tokens}, outputTokens=${usage.output_tokens}`);
             controller.enqueue(
               encoder.encode(
-                `data: ${JSON.stringify({
-                  type: "done",
-                  usage: finalMessage.usage,
-                })}\n\n`
+                `data: ${JSON.stringify({ type: "done", usage })}\n\n`
               )
             );
           } catch (streamErr: unknown) {
