@@ -17,7 +17,7 @@ param coachModel string = 'claude-sonnet-4-6'
 param coachMaxTokens string = '4096'
 
 @description('CORS allowed origins (comma-separated)')
-param corsOrigins string = 'https://salmon-moss-07f46dd1e.2.azurestaticapps.net,http://localhost:3000'
+param corsOrigins string = 'https://salmon-moss-07f46dd1e.2.azurestaticapps.net,https://pmstudio.bestleon.cc,http://localhost:3000'
 
 @description('Container image tag (e.g. git SHA)')
 param imageTag string = 'latest'
