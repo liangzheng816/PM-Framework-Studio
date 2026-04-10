@@ -150,24 +150,36 @@ app.http("chat", {
       const readable = new ReadableStream({
         async start(controller) {
           try {
-            // Send skill info event
+            // Send skill info event immediately to establish the SSE connection.
+            // For debate mode the Anthropic API can take 30-60s before the first
+            // token arrives (large system prompt). A periodic keepalive comment
+            // prevents the Azure SWA reverse proxy from timing out the request.
             controller.enqueue(
               encoder.encode(
                 `data: ${JSON.stringify({ type: "skill", skillId, skillLabel: skillId })}\n\n`
               )
             );
 
-            for await (const event of stream) {
-              if (
-                event.type === "content_block_delta" &&
-                event.delta.type === "text_delta"
-              ) {
-                controller.enqueue(
-                  encoder.encode(
-                    `data: ${JSON.stringify({ type: "token", text: event.delta.text })}\n\n`
-                  )
-                );
+            // Send SSE comments as keepalive while waiting for tokens
+            const keepalive = setInterval(() => {
+              controller.enqueue(encoder.encode(": keepalive\n\n"));
+            }, 10_000);
+
+            try {
+              for await (const event of stream) {
+                if (
+                  event.type === "content_block_delta" &&
+                  event.delta.type === "text_delta"
+                ) {
+                  controller.enqueue(
+                    encoder.encode(
+                      `data: ${JSON.stringify({ type: "token", text: event.delta.text })}\n\n`
+                    )
+                  );
+                }
               }
+            } finally {
+              clearInterval(keepalive);
             }
 
             // Send done event
