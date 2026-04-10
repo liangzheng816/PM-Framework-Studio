@@ -141,7 +141,7 @@ app.http("chat", {
       const MAX_DEBATE_EXPERTS = 4;
       const isDebate = skillId === "pm-debate";
       if (isDebate) {
-        let requestedSkills = parseDebateSkills(messages);
+        const requestedSkills = parseDebateSkills(messages);
         const domainSkills = loadDomainSkills(
           requestedSkills.length > 0 ? requestedSkills : undefined,
           MAX_DEBATE_EXPERTS
