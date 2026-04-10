@@ -9,12 +9,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Repository Structure
 
 ```
-├── api/                        # Azure Functions API backend (Anthropic SDK, SSE streaming)
+├── api/                        # Azure Functions API backend (SWA managed, legacy)
 │   ├── src/functions/chat.ts   # POST /api/chat — skill-based Claude streaming endpoint
-│   └── src/lib/skills.ts      # Loads skill .md files as system prompts (with cache)
-├── PM_Frameworks/              # 100 source markdown files (001_*.md – 100_*.md) + manifest JSON/CSV
-├── PRD/                        # Product spec (pmframe_inspired_prd.md) + research summary
-├── DEV_DESIGN/                 # Design specs for Coach and Framework Studio features
+│   ├── src/lib/skills.ts       # Loads skill .md files as system prompts (with cache)
+│   └── skills/                 # 9 skill .md files (single source of truth)
+├── container-api/              # Express API backend (Azure Container Apps, primary)
+│   ├── src/server.ts           # Express app with CORS, routes
+│   ├── src/routes/chat.ts      # POST /api/chat — SSE streaming via res.write()
+│   ├── src/routes/health.ts    # GET /api/health — diagnostics
+│   ├── src/lib/skills.ts       # Skill loader (same logic, different path resolution)
+│   └── Dockerfile              # Multi-stage Node 22 build
+├── infra/                      # Bicep IaC templates
+│   ├── main.bicep              # SWA resource
+│   └── container-api.bicep     # ACR + Container Apps Environment + Container App
 ├── app/                        # Next.js App Router pages (root = Coach chat UI)
 ├── components/                 # UI components by domain (coach/, search/, deep-dive/, etc.)
 ├── content/en/frameworks/      # 100 migrated MDX files with enriched frontmatter
@@ -22,7 +29,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ├── lib/                        # Core modules: frameworks.ts, types.ts, collections.ts, coach-types.ts
 ├── scripts/                    # migrate-content.ts, generate-map-positions.ts
 ├── public/                     # robots.txt, static assets
-└── .github/workflows/          # Azure Static Web Apps CI/CD
+└── .github/workflows/          # CI/CD (SWA deploy + Container API deploy)
 ```
 
 ## Build & Dev Commands
@@ -32,14 +39,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm run dev              # Turbopack dev server (http://localhost:3000)
 npm run build            # Production static export → out/ (118 pages)
 npm run start            # Serve production build locally
-npm run lint             # ESLint (api/dist/ excluded via eslint.config.mjs)
-npm run typecheck        # tsc --noEmit
+npm run lint             # ESLint (api/dist/, container-api/ excluded)
+npm run typecheck        # tsc --noEmit (container-api/ excluded via tsconfig.json)
 npm run validate         # lint + typecheck (matches CI)
 
-# API backend (Azure Functions) — run from api/
-cd api
+# Container API (primary backend) — from container-api/
+cd container-api
+npm run dev              # tsx dev server (http://localhost:8080)
 npm run build            # TypeScript compile → dist/
-npm run start            # func start (requires Azure Functions Core Tools + local.settings.json with ANTHROPIC_API_KEY)
+npm run start            # node dist/src/server.js
+
+# SWA API (legacy) — from api/, requires Azure Functions Core Tools
+cd api
+npm run build && npm run start   # func start on port 7071
 
 # Content pipeline
 npx tsx scripts/migrate-content.ts          # PM_Frameworks/*.md → content/en/frameworks/*.mdx + search-index.json
@@ -48,14 +60,23 @@ npx tsx scripts/generate-map-positions.ts   # Regenerate SVG scatter map positio
 
 ## Deployment
 
-Hosted on **Azure Static Web Apps** via GitHub Actions (`pmframeworkstudio` resource, West US 2). On every push to `main`, the workflow (`.github/workflows/azure-static-web-apps-*.yml`) runs:
+Two deployment pipelines, both triggered on push to `main`:
 
-1. **Validate** — lint + typecheck for frontend and API (gates deployment)
-2. **Build and Deploy** — deploys via `Azure/static-web-apps-deploy@v1` (`app_location: "/"`, `api_location: "api"`, `output_location: "out"`)
+**Frontend (Azure Static Web Apps)** — `azure-static-web-apps-*.yml`
 
-The app uses `output: "export"` in `next.config.ts` for fully static HTML generation. **Static export constraints**: no SSR, no Next.js API routes, no middleware, no ISR.
+- Validates (lint + typecheck), then deploys via `Azure/static-web-apps-deploy@v1`
+- Static export: `output: "export"` in `next.config.ts`. No SSR, no API routes, no middleware, no ISR.
+- `NEXT_PUBLIC_API_BASE` set in `.env.production` points frontend to the Container App API
+- Bicep: `infra/main.bicep`
 
-**Runtime app settings** (ANTHROPIC_API_KEY, COACH_MODEL, COACH_MAX_TOKENS) must be configured on the SWA resource — the workflow `env:` block only provides them at build time. Manage via `az staticwebapp appsettings set` or the Bicep template at `infra/main.bicep`.
+**Container API (Azure Container Apps)** — `deploy-container-api.yml`
+
+- Triggers on changes to `container-api/**`, `api/skills/**`, `infra/container-api.*`
+- Builds Docker image → pushes to ACR (`pmstudioacr`) → deploys to Container App (`pmstudio-api`)
+- Skill `.md` files copied from `api/skills/` into image at build time
+- No timeout constraint (240s default vs SWA's ~50s)
+- Bicep: `infra/container-api.bicep` (ACR + managed environment + container app)
+- Env vars: `ANTHROPIC_API_KEY` (secret), `COACH_MODEL`, `COACH_MAX_TOKENS`, `CORS_ORIGINS`
 
 ## Tech Stack
 
@@ -93,17 +114,19 @@ User Insights (12) · Problem Framing (17) · Ideation (14) · Validation (14) �
 | `lib/motion.ts` | Shared Framer Motion variants (fadeInUp, staggerContainer, scaleIn) — reuse instead of inline |
 | `components/coach/coach-shell.tsx` | Root Coach chat UI (home page): skill selector, message list, streaming responses |
 | `components/search/command-palette.tsx` | Global Cmd+K / `/` or navbar click → search overlay with ARIA combobox. Listens for `fs:open-search` custom event. |
-| `api/src/functions/chat.ts` | POST /api/chat — loads skill as system prompt, streams Claude response via SSE. Debate mode injects all domain expert files. |
-| `api/src/lib/skills.ts` | Loads skill `.md` files from `api/skills/`, caches in memory. `loadDomainSkills()` for debate mode. |
+| `container-api/src/routes/chat.ts` | POST /api/chat — loads skill as system prompt, streams Claude response via SSE (`res.write()`). Debate mode injects all domain expert files. |
+| `container-api/src/lib/skills.ts` | Loads skill `.md` files, caches in memory. `loadDomainSkills()` for debate mode. |
+| `api/src/functions/chat.ts` | Legacy SWA version of chat endpoint (same logic, Azure Functions wrapper, 4-expert cap). |
 
 ## Coach Chat Architecture
 
 The home page (`/`) is an AI coaching chat. User selects a skill → frontend sends `{ messages, skill, files? }` to `/api/chat` → API loads the skill `.md` as a system prompt → streams Claude's response via SSE.
 
 - **"Auto" mode** maps to `advise-frameworks` (triage agent)
-- **Debate mode** (`pm-debate`): API injects all 7 domain expert skill files into the system prompt with a web-specific override that replaces Claude Code's Agent tool with internal role-playing
+- **Debate mode** (`pm-debate`): API injects domain expert skill files into the system prompt with a web-specific override that replaces Claude Code's Agent tool with internal role-playing. Container API uses all 7 experts; SWA legacy API caps at 4 due to timeout.
 - **File uploads**: Appended to the last user message as markdown blocks so skills ground analysis in uploaded docs
-- **API env vars**: `ANTHROPIC_API_KEY` (required), `COACH_MODEL` (default: `claude-sonnet-4-6`), `COACH_MAX_TOKENS` (default: 4096, debate auto-bumps to 16384)
+- **API env vars**: `ANTHROPIC_API_KEY` (required), `COACH_MODEL` (default: `claude-sonnet-4-6`), `COACH_MAX_TOKENS` (default: 4096, debate auto-bumps to 16384 on container-api, 8192 on SWA)
+- **Dual API backends**: `container-api/` (Express, primary) and `api/` (Azure Functions, legacy). Frontend selects via `NEXT_PUBLIC_API_BASE` in `.env.local` (dev) or `.env.production` (prod)
 
 ## Content Pipeline
 
