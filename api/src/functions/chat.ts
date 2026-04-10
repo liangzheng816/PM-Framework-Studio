@@ -7,6 +7,14 @@ import {
 import Anthropic from "@anthropic-ai/sdk";
 import { loadSkill, loadDomainSkills } from "../lib/skills";
 
+// Prevent unhandled Promise rejections from crashing the Azure SWA
+// managed function process.  Both SDK 0.39 and 0.87 fire internal
+// rejections from messages.stream() when the Anthropic API errors
+// before the async iterator is consumed.
+process.on("unhandledRejection", (err) => {
+  console.error("unhandledRejection (caught):", err);
+});
+
 // Diagnostic endpoint — GET /api/health?deep=1 to test Anthropic API call
 app.http("health", {
   methods: ["GET"],
@@ -183,6 +191,9 @@ app.http("chat", {
         system: systemPrompt,
         messages: enrichedMessages,
       });
+      // Absorb the internal rejection so it doesn't crash the process;
+      // the real error still propagates via the async iterator.
+      stream.on("error", () => {});
 
       // Build SSE response body
       const encoder = new TextEncoder();
