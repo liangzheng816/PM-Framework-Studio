@@ -7,21 +7,43 @@ import {
 import Anthropic from "@anthropic-ai/sdk";
 import { loadSkill, loadDomainSkills } from "../lib/skills";
 
-// Diagnostic endpoint — GET /api/health
+// Diagnostic endpoint — GET /api/health?deep=1 to test Anthropic API call
 app.http("health", {
   methods: ["GET"],
   authLevel: "anonymous",
   route: "health",
-  handler: async (): Promise<HttpResponseInit> => ({
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
+  handler: async (req: HttpRequest): Promise<HttpResponseInit> => {
+    const info: Record<string, unknown> = {
       status: "ok",
       node: process.version,
       hasApiKey: !!process.env.ANTHROPIC_API_KEY,
       model: process.env.COACH_MODEL || "claude-sonnet-4-6 (default)",
-    }),
-  }),
+    };
+
+    // ?deep=1 → make a minimal Anthropic API call to test connectivity
+    if (req.query.get("deep") === "1") {
+      try {
+        const anthropic = new Anthropic();
+        const res = await anthropic.messages.create({
+          model: process.env.COACH_MODEL || "claude-sonnet-4-6",
+          max_tokens: 16,
+          messages: [{ role: "user", content: "Say OK" }],
+        });
+        info.anthropic = "ok";
+        info.responseId = res.id;
+      } catch (err: unknown) {
+        info.anthropic = "error";
+        info.anthropicError =
+          err instanceof Error ? err.message.slice(0, 300) : String(err);
+      }
+    }
+
+    return {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(info),
+    };
+  },
 });
 
 const INTEGRATION_CONTEXT = `
