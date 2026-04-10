@@ -28,6 +28,13 @@ app.http("health", {
       model: process.env.COACH_MODEL || "claude-sonnet-4-6 (default)",
     };
 
+    // ?delay=30000 → sleep N ms to find SWA proxy timeout
+    const delayMs = parseInt(req.query.get("delay") || "0", 10);
+    if (delayMs > 0) {
+      await new Promise((r) => setTimeout(r, delayMs));
+      info.delayMs = delayMs;
+    }
+
     // ?deep=1 → make a minimal Anthropic API call to test connectivity
     if (req.query.get("deep") === "1") {
       try {
