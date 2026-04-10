@@ -161,6 +161,11 @@ app.http("chat", {
         system: systemPrompt,
         messages: enrichedMessages,
       });
+      // SDK 0.87+ fires an internal rejection when the API errors before
+      // iteration starts.  Without this listener the process crashes with
+      // an unhandled-rejection, which Azure SWA surfaces as "Backend call
+      // failure".  The real error still propagates via the async iterator.
+      stream.on("error", () => {});
 
       // Build SSE response body
       const encoder = new TextEncoder();
