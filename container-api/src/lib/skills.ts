@@ -1,7 +1,8 @@
 import * as fs from "fs";
 import * as path from "path";
 
-const SKILLS_DIR = path.join(__dirname, "../../skills");
+// In the container: __dirname = /app/dist/src/lib, skills at /app/skills
+const SKILLS_DIR = path.join(__dirname, "../../../skills");
 
 const cache = new Map<string, string>();
 

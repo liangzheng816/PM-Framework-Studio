@@ -1,0 +1,21 @@
+# Only container-api/ and api/skills/ are needed for the Docker build
+node_modules/
+.next/
+out/
+.git/
+app/
+components/
+content/
+data/
+lib/
+public/
+scripts/
+PM_Frameworks/
+PRD/
+DEV_DESIGN/
+Tests/
+*.md
+*.mjs
+*.ts
+!container-api/**
+!api/skills/**
