@@ -177,20 +177,15 @@ app.http("chat", {
         ? Math.max(defaultMaxTokens, 16384)
         : defaultMaxTokens;
 
-      // Use the low-level streaming API: `await create({stream:true})`
-      // awaits the HTTP connection upfront (errors surface here, not as
-      // unhandled rejections that crash the process in Azure SWA).
-      const stream = await anthropic.messages.create({
+      const stream = anthropic.messages.stream({
         model,
         max_tokens: maxTokens,
         system: systemPrompt,
         messages: enrichedMessages,
-        stream: true,
       });
 
       // Build SSE response body
       const encoder = new TextEncoder();
-      let usage: { input_tokens?: number; output_tokens?: number } = {};
       const readable = new ReadableStream({
         async start(controller) {
           // SSE keepalive: send comments every 10s to prevent the Azure SWA
@@ -205,7 +200,7 @@ app.http("chat", {
           }, 10_000);
 
           try {
-            // Send skill info event
+            // Send skill info event immediately (first byte for SWA proxy)
             controller.enqueue(
               encoder.encode(
                 `data: ${JSON.stringify({ type: "skill", skillId, skillLabel: skillId })}\n\n`
@@ -222,18 +217,18 @@ app.http("chat", {
                     `data: ${JSON.stringify({ type: "token", text: event.delta.text })}\n\n`
                   )
                 );
-              } else if (event.type === "message_start" && event.message.usage) {
-                usage = { ...usage, input_tokens: event.message.usage.input_tokens };
-              } else if (event.type === "message_delta" && event.usage) {
-                usage = { ...usage, output_tokens: event.usage.output_tokens };
               }
             }
 
             // Send done event
-            context.log(`Chat response: skill=${skillId}, model=${model}, inputTokens=${usage.input_tokens}, outputTokens=${usage.output_tokens}`);
+            const finalMessage = await stream.finalMessage();
+            context.log(`Chat response: skill=${skillId}, model=${model}, inputTokens=${finalMessage.usage.input_tokens}, outputTokens=${finalMessage.usage.output_tokens}`);
             controller.enqueue(
               encoder.encode(
-                `data: ${JSON.stringify({ type: "done", usage })}\n\n`
+                `data: ${JSON.stringify({
+                  type: "done",
+                  usage: finalMessage.usage,
+                })}\n\n`
               )
             );
           } catch (streamErr: unknown) {
