@@ -175,6 +175,19 @@ app.http("chat", {
         return { role: m.role, content: m.content };
       });
 
+      // Pre-load domain skills outside the stream for debate mode
+      // so file I/O doesn't delay the first SSE byte.
+      let domainSkills: Record<string, string> | undefined;
+      let debateIsVersus = false;
+      if (isDebate) {
+        const { skills: requestedSkills, isVersus } =
+          parseDebateModifiers(messages);
+        debateIsVersus = isVersus;
+        domainSkills = loadDomainSkills(
+          requestedSkills.length > 0 ? requestedSkills : undefined
+        );
+      }
+
       context.log(
         `Chat request: skill=${skillId}, messages=${messages.length}, files=${files?.length ?? 0}, debate=${isDebate}`
       );
@@ -205,13 +218,9 @@ app.http("chat", {
               // expert analyses.
 
               const fastModel = "claude-haiku-4-5-20251001";
-              const { skills: requestedSkills, isVersus } =
-                parseDebateModifiers(messages);
-              const domainSkills = loadDomainSkills(
-                requestedSkills.length > 0 ? requestedSkills : undefined
-              );
+              const isVersus = debateIsVersus;
 
-              const expertIds = Object.keys(domainSkills);
+              const expertIds = Object.keys(domainSkills!);
               const expertCount = expertIds.length;
               const totalUsage = {
                 input_tokens: 0,
@@ -234,7 +243,7 @@ app.http("chat", {
 
               const expertResponses: Record<string, string> = {};
 
-              for (const [id, skillContent] of Object.entries(domainSkills)) {
+              for (const [id, skillContent] of Object.entries(domainSkills!)) {
                 const label = id
                   .replace(/-/g, " ")
                   .replace(/\b\w/g, (c) => c.toUpperCase());
