@@ -19,6 +19,7 @@ interface ChatInputProps {
   isStreaming: boolean;
   disabled: boolean;
   placeholder?: string;
+  externalText?: string;
   files: UploadedFile[];
   onAddFiles: (files: UploadedFile[]) => void;
   onRemoveFile: (id: string) => void;
@@ -30,6 +31,7 @@ export function ChatInput({
   isStreaming,
   disabled,
   placeholder = "Describe your product challenge...",
+  externalText,
   files,
   onAddFiles,
   onRemoveFile,
@@ -40,6 +42,29 @@ export function ChatInput({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragCountRef = useRef(0);
+
+  // Populate text from external source (e.g. prompt chip templates)
+  useEffect(() => {
+    if (externalText === undefined) return;
+    setText(externalText);
+    // Focus and adjust height on next frame so DOM has updated
+    requestAnimationFrame(() => {
+      const el = textareaRef.current;
+      if (el) {
+        el.style.height = "auto";
+        el.style.height = Math.min(el.scrollHeight, 80) + "px";
+        el.focus();
+        // Select the [placeholder] portion so the user can type over it
+        const bracketStart = externalText.indexOf("[");
+        const bracketEnd = externalText.lastIndexOf("]") + 1;
+        if (bracketStart !== -1 && bracketEnd > bracketStart) {
+          el.setSelectionRange(bracketStart, bracketEnd);
+        } else {
+          el.setSelectionRange(externalText.length, externalText.length);
+        }
+      }
+    });
+  }, [externalText]);
 
   // Auto-clear error after 3s
   useEffect(() => {
@@ -226,7 +251,7 @@ export function ChatInput({
             placeholder={placeholder}
             disabled={disabled}
             rows={1}
-            aria-label="Type your product challenge"
+            aria-label="Type your message"
             className="flex-1 resize-none bg-transparent text-[var(--color-text)] placeholder:text-[var(--color-text-subtle)] outline-none font-[var(--font-body)] text-sm leading-normal"
             style={{ minHeight: "20px", maxHeight: "80px" }}
           />

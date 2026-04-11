@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import type { Message, SelectableSkillId, UploadedFile } from "@/lib/coach-types";
 import { SKILL_META, resolveSkillForApi, buildDebateMessage } from "@/lib/coach-types";
+import { getRandomChips, type PromptChip } from "@/lib/prompt-chips";
 import { ChatInput } from "./chat-input";
 import { MessageBubble } from "./message-bubble";
 import { SkillSelector } from "./skill-selector";
@@ -13,9 +14,16 @@ export function CoachShell() {
   const [isDebateMode, setIsDebateMode] = useState(false);
   const [selectedDebateSkills, setSelectedDebateSkills] = useState<SelectableSkillId[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
+  const [promptTemplate, setPromptTemplate] = useState<string | undefined>();
+  const [chips, setChips] = useState<PromptChip[]>(() => getRandomChips("auto", false));
   const [isStreaming, setIsStreaming] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Rotate chips when coach mode changes
+  useEffect(() => {
+    setChips(getRandomChips(selectedSkill, isDebateMode));
+  }, [selectedSkill, isDebateMode]);
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -205,17 +213,30 @@ export function CoachShell() {
     <div className="mx-auto flex h-[calc(100dvh-4rem)] max-w-3xl flex-col px-4 sm:px-6">
       {messages.length === 0 ? (
         /* Empty state — hero + input + pills all centered as a group */
-        <div className="flex flex-1 flex-col items-center justify-center">
-          <div className="flex flex-col items-center text-center mb-10">
-            <h1 className="font-[var(--font-heading)] text-3xl text-[var(--color-text)] mb-4">
-              What product challenge are you working on?
+        <div className="flex flex-1 flex-col items-center justify-center pb-8 sm:pb-16">
+          <div className="flex flex-col items-center text-center mb-6 sm:mb-8">
+            <h1 className="font-[var(--font-heading)] text-3xl sm:text-4xl text-[var(--color-text)] mb-3">
+              Think through any idea like the world&apos;s best product minds
             </h1>
-            <p className="text-[var(--color-text-muted)] max-w-md">
-              7 expert AI coaches to sharpen your strategy,
-              pressure-test your plans, and ship with confidence.
+            <p className="text-[var(--color-text-muted)] max-w-lg text-base sm:text-lg leading-relaxed">
+              7 AI coaches. 100 proven frameworks. Describe your challenge, decision, or opportunity — get structured guidance and sharper next steps in seconds.
             </p>
           </div>
-          <div className="w-full space-y-4">
+
+          {/* Prompt chips — rotate by coach mode, 3 on mobile / 5 on desktop */}
+          <div className="flex flex-wrap justify-center gap-2 mb-6">
+            {chips.map((chip, i) => (
+              <button
+                key={chip.label}
+                onClick={() => setPromptTemplate(chip.template)}
+                className={`rounded-[var(--radius-full)] border border-[var(--color-border)] bg-[var(--color-surface-2,var(--color-surface))] px-3 py-1.5 text-xs text-[var(--color-text-muted)] transition-all duration-150 hover:border-[var(--color-accent)]/50 hover:text-[var(--color-text)] hover:bg-[color-mix(in_srgb,var(--color-accent)_8%,transparent)] outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-1 focus-visible:ring-offset-[var(--color-bg)] ${i >= 3 ? "hidden sm:inline-flex" : ""}`}
+              >
+                {chip.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="w-full space-y-3">
             <ChatInput
               onSend={handleSend}
               onStop={handleStop}
@@ -223,23 +244,27 @@ export function CoachShell() {
               disabled={false}
               placeholder={
                 isDebateMode
-                  ? "Describe the challenge for the expert panel..."
+                  ? "What decision, recommendation, or strategy should we challenge?"
                   : SKILL_META[selectedSkill].placeholder
               }
+              externalText={promptTemplate}
               files={uploadedFiles}
               onAddFiles={handleAddFiles}
               onRemoveFile={handleRemoveFile}
             />
-            <SkillSelector
-              mode={isDebateMode ? "multi" : "single"}
-              selectedSkill={selectedSkill}
-              onSelect={setSelectedSkill}
-              selectedSkills={selectedDebateSkills}
-              onToggleSkill={handleToggleDebateSkill}
-              disabled={isStreaming}
-              debateActive={isDebateMode}
-              onDebateToggle={() => setIsDebateMode((prev) => !prev)}
-            />
+            <div>
+              <p className="text-[10px] text-[var(--color-text-subtle)] mb-1.5 px-1">Pick a coach</p>
+              <SkillSelector
+                mode={isDebateMode ? "multi" : "single"}
+                selectedSkill={selectedSkill}
+                onSelect={setSelectedSkill}
+                selectedSkills={selectedDebateSkills}
+                onToggleSkill={handleToggleDebateSkill}
+                disabled={isStreaming}
+                debateActive={isDebateMode}
+                onDebateToggle={() => setIsDebateMode((prev) => !prev)}
+              />
+            </div>
           </div>
         </div>
       ) : (
@@ -267,7 +292,7 @@ export function CoachShell() {
               disabled={false}
               placeholder={
                 isDebateMode
-                  ? "Describe the challenge for the expert panel..."
+                  ? "What decision, recommendation, or strategy should we challenge?"
                   : SKILL_META[selectedSkill].placeholder
               }
               files={uploadedFiles}
