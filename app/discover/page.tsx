@@ -4,7 +4,7 @@ import { DiscoverClient } from "@/components/discover/discover-client";
 import {
   getAllFrameworks,
   getCategoriesWithCounts,
-  getFeaturedFrameworks,
+  FEATURED_POOL,
 } from "@/lib/frameworks";
 
 export const metadata: Metadata = {
@@ -16,7 +16,6 @@ export const metadata: Metadata = {
 export default function DiscoverPage() {
   const frameworks = getAllFrameworks();
   const categories = getCategoriesWithCounts();
-  const featured = getFeaturedFrameworks(6);
 
   return (
     <>
@@ -26,7 +25,7 @@ export default function DiscoverPage() {
         <DiscoverClient
           frameworks={frameworks}
           categories={categories}
-          featured={featured}
+          featuredPool={FEATURED_POOL}
         />
 
         {/* Trust Section */}

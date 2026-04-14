@@ -4,20 +4,57 @@ import { useState, useMemo } from "react";
 import type { Framework, Category, CategorySlug } from "@/lib/types";
 import { FrameworkCard } from "@/components/framework-card/framework-card";
 
+interface FeaturedEntry {
+  slug: string;
+  tier: 1 | 2 | 3;
+  cat: string;
+}
+
 interface DiscoverClientProps {
   frameworks: Framework[];
   categories: Category[];
-  featured: Framework[];
+  featuredPool: FeaturedEntry[];
+}
+
+/** Weighted random pick: tier 1 = 6x, tier 2 = 3x, tier 3 = 1x, category-diverse. */
+function pickFeatured(pool: FeaturedEntry[], frameworks: Framework[], count = 6): Framework[] {
+  const bySlug = new Map(frameworks.map((f) => [f.slug, f]));
+  const tierWeight = { 1: 6, 2: 3, 3: 1 } as const;
+
+  const weighted = pool
+    .map((e) => ({ ...e, fw: bySlug.get(e.slug), sort: Math.random() * tierWeight[e.tier] }))
+    .filter((e): e is typeof e & { fw: Framework } => e.fw !== undefined);
+  weighted.sort((a, b) => b.sort - a.sort);
+
+  const usedCats = new Set<string>();
+  const picks: Framework[] = [];
+  for (const entry of weighted) {
+    if (picks.length >= count) break;
+    if (usedCats.has(entry.cat)) continue;
+    usedCats.add(entry.cat);
+    picks.push(entry.fw);
+  }
+  if (picks.length < count) {
+    const pickedSlugs = new Set(picks.map((f) => f.slug));
+    for (const entry of weighted) {
+      if (picks.length >= count) break;
+      if (pickedSlugs.has(entry.slug)) continue;
+      picks.push(entry.fw);
+      pickedSlugs.add(entry.slug);
+    }
+  }
+  return picks;
 }
 
 export function DiscoverClient({
   frameworks,
   categories,
-  featured,
+  featuredPool,
 }: DiscoverClientProps) {
   const [selectedCategory, setSelectedCategory] =
     useState<CategorySlug | "all">("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [featured] = useState<Framework[]>(() => pickFeatured(featuredPool, frameworks));
 
   const filtered = useMemo(() => {
     if (selectedCategory === "all") return frameworks;

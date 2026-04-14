@@ -111,7 +111,7 @@ export function getCategoriesWithCounts(): Category[] {
  * Each entry maps slug → { tier, category } so we can guarantee
  * category diversity when sampling.
  */
-const FEATURED_POOL: { slug: string; tier: 1 | 2 | 3; cat: CategorySlug }[] = [
+export const FEATURED_POOL: { slug: string; tier: 1 | 2 | 3; cat: string }[] = [
   // ── Tier 1: iconic ──
   { slug: "design-thinking",          tier: 1, cat: "user-insights" },
   { slug: "jtbd",                     tier: 1, cat: "user-insights" },
