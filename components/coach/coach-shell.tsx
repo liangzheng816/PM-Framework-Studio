@@ -5,6 +5,7 @@ import type { Message, SelectableSkillId, UploadedFile } from "@/lib/coach-types
 import { SKILL_META, resolveSkillForApi, buildDebateMessage } from "@/lib/coach-types";
 import { getRandomChips, type PromptChip } from "@/lib/prompt-chips";
 import { ChatInput } from "./chat-input";
+import { ConversationToolbar } from "./conversation-toolbar";
 import { MessageBubble } from "./message-bubble";
 import { SkillSelector } from "./skill-selector";
 
@@ -297,6 +298,7 @@ export function CoachShell() {
       ) : (
         /* Conversation — scrollable message list + input pinned to bottom */
         <>
+          <ConversationToolbar messages={messages} isStreaming={isStreaming} />
           <div
             ref={scrollRef}
             className="min-h-0 flex-1 overflow-y-auto py-6 space-y-4"
