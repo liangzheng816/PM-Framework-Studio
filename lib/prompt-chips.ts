@@ -3,154 +3,233 @@ import type { SelectableSkillId } from "./coach-types";
 export interface PromptChip {
   /** Short text shown on the chip button. */
   label: string;
-  /** Full template populated in the input — includes a [placeholder] the user replaces. */
+  /** Full template populated in the input — includes a [placeholder] the user replaces with context. */
   template: string;
 }
 
+/** Build a chip with context-first template: [placeholder]. label */
+function makePool(labels: string[], placeholder: string): PromptChip[] {
+  return labels.map((label) => ({
+    label,
+    template: `[${placeholder}]. ${label}`,
+  }));
+}
+
 // ---------------------------------------------------------------------------
-// Chip pools by coach mode
+// Chip pools by coach mode — high-level, end-user-oriented
 // ---------------------------------------------------------------------------
 
-const auto: PromptChip[] = [
-  { label: "Help me think through this decision", template: "Help me think through this: [describe your decision or situation]" },
-  { label: "Turn this messy situation into a plan", template: "Turn this into a clear plan: [describe your situation]" },
-  { label: "Compare these two options", template: "Compare these options: [Option A] vs [Option B]" },
-  { label: "Pressure-test this idea", template: "Pressure-test this idea: [describe your idea briefly]" },
-  { label: "What should I do first?", template: "What should I do first? Context: [describe your situation]" },
-  { label: "What problem should we solve first?", template: "What problem should we solve first? We're dealing with: [list the problems]" },
-  { label: "What is the smartest next step?", template: "What is the smartest next step? Here's where we are: [describe current state]" },
-  { label: "Which framework fits this best?", template: "Which PM framework fits this best? Situation: [describe your challenge]" },
-  { label: "What are we not seeing yet?", template: "What are we not seeing yet? Here's our current thinking: [describe your plan or analysis]" },
-  { label: "Break this into manageable parts", template: "Break this challenge into manageable parts: [describe the challenge]" },
-  { label: "What are the tradeoffs here?", template: "What are the tradeoffs I should consider? Decision: [describe the decision]" },
-  { label: "How can I frame this problem better?", template: "How can I frame this problem better? Right now it looks like: [describe the problem]" },
-];
+const auto = makePool([
+  "Help me think this through",
+  "Turn this into a clear plan",
+  "What should I do first?",
+  "Compare these two options",
+  "Help me make a decision",
+  "What is the smartest next step?",
+  "Break this down for me",
+  "What matters most here?",
+  "Pressure-test this idea",
+  "Which approach makes the most sense?",
+  "What are the tradeoffs?",
+  "How would an expert approach this?",
+  "What am I missing?",
+  "Make this easier to think about",
+  "Help me move from confusion to clarity",
+  "How should I frame this?",
+  "What would be a practical way forward?",
+  "Simplify this complex situation",
+  "Give me a structured way to think about this",
+  "What is the core issue here?",
+], "describe your situation or question");
 
-const research: PromptChip[] = [
-  { label: "Summarize this market quickly", template: "Summarize this market quickly: [name or describe the market]" },
-  { label: "Map the competitors", template: "Map the competitors in this space: [describe the product or market]" },
-  { label: "What are the key user needs?", template: "What are the key user needs for: [describe the product or audience]" },
-  { label: "Find the biggest unknowns", template: "Find the biggest unknowns in this idea: [describe the idea]" },
-  { label: "Turn this into a research plan", template: "Turn this into a research plan: [describe what you want to learn]" },
-  { label: "What assumptions need evidence?", template: "What assumptions need evidence? Our plan: [describe your plan or hypothesis]" },
-  { label: "What questions should we ask users?", template: "What questions should we ask users about: [describe the topic or feature]" },
-  { label: "What should we learn before deciding?", template: "What should we learn before deciding on: [describe the decision]" },
-  { label: "What user segments matter most?", template: "What user segments matter most for: [describe the product or feature]" },
-  { label: "What are the top risks worth researching?", template: "What are the top risks worth researching? Context: [describe the initiative]" },
-  { label: "What signals should we look for?", template: "What signals should we look for to validate: [describe what you're testing]" },
-  { label: "How should we narrow the scope?", template: "How should we narrow the research scope for: [describe the broad topic]" },
-];
+const research = makePool([
+  "Help me understand this topic",
+  "What should I learn first?",
+  "Give me a quick overview",
+  "What are the key things to understand here?",
+  "Summarize the big picture",
+  "What questions should I ask?",
+  "Help me explore this space",
+  "What are the most important unknowns?",
+  "What should I look into next?",
+  "Turn this into a research plan",
+  "Help me understand the context",
+  "What should I compare?",
+  "What patterns should I pay attention to?",
+  "What would a smart review of this look like?",
+  "What information do I still need?",
+  "Help me get oriented quickly",
+  "What should I investigate before deciding?",
+  "What are the important perspectives here?",
+  "Where should I focus my attention?",
+  "What would make this easier to understand?",
+], "describe what you want to understand");
 
-const problems: PromptChip[] = [
-  { label: "Why are users dropping off?", template: "Why are users dropping off at: [describe where in the journey]" },
-  { label: "What is the root cause?", template: "What is the root cause of: [describe the symptom or issue]" },
-  { label: "Are we solving the right problem?", template: "Are we solving the right problem? We're focused on: [describe current focus]" },
-  { label: "Where is the biggest bottleneck?", template: "Where is the biggest bottleneck in: [describe the workflow or process]" },
-  { label: "Is this a symptom or the real issue?", template: "Is this a symptom or the real issue? We're seeing: [describe what's happening]" },
-  { label: "How should we frame this problem?", template: "How should we frame this problem? Current understanding: [describe the problem]" },
-  { label: "What is actually driving this behavior?", template: "What is actually driving this behavior? We observe: [describe the behavior]" },
-  { label: "What pain point matters most?", template: "What pain point matters most? Our users are frustrated by: [list pain points]" },
-  { label: "What is the real job to be done?", template: "What is the real job to be done for: [describe the user or scenario]" },
-  { label: "What hidden assumptions are distorting this?", template: "What hidden assumptions are distorting this? Our current belief: [describe your assumption]" },
-  { label: "Why is this workflow breaking down?", template: "Why is this workflow breaking down? Steps involved: [describe the workflow]" },
-  { label: "Which issue is most urgent to fix?", template: "Which issue is most urgent to fix? We're dealing with: [list the issues]" },
-];
+const problems = makePool([
+  "What is really going wrong here?",
+  "Help me find the root issue",
+  "What is causing this problem?",
+  "Is this the real issue or just a symptom?",
+  "What should I solve first?",
+  "Help me define the problem clearly",
+  "What is getting in the way?",
+  "Why does this keep happening?",
+  "Where is the biggest source of friction?",
+  "What are we overlooking?",
+  "What is making this harder than it should be?",
+  "How should I frame this challenge?",
+  "What is the main blocker?",
+  "What is most likely driving this outcome?",
+  "Which part of this problem matters most?",
+  "Help me untangle this situation",
+  "What assumptions may be causing the issue?",
+  "What makes this problem difficult?",
+  "Where should I start diagnosing this?",
+  "What should I question first?",
+], "describe the issue or challenge");
 
-const ideas: PromptChip[] = [
-  { label: "Give me 3 better ways to solve this", template: "Give me 3 better ways to solve: [describe the problem]" },
-  { label: "How else could we approach this?", template: "How else could we approach this? Current approach: [describe what you're doing]" },
-  { label: "Make this idea stronger", template: "Make this idea stronger: [describe your idea]" },
-  { label: "Generate lower-cost alternatives", template: "Generate lower-cost alternatives to: [describe the current solution]" },
-  { label: "How can we simplify this concept?", template: "How can we simplify this? Current concept: [describe the concept]" },
-  { label: "What would a breakthrough version look like?", template: "What would a breakthrough version look like for: [describe the product or feature]" },
-  { label: "What ideas fit this constraint?", template: "What ideas fit this constraint? We're limited by: [describe the constraint]" },
-  { label: "What are the best solution directions?", template: "What are the best solution directions for: [describe the problem]" },
-  { label: "How can we make this more differentiated?", template: "How can we make this more differentiated? Current offering: [describe your product]" },
-  { label: "What is the boldest viable option?", template: "What is the boldest viable option for: [describe the opportunity]" },
-  { label: "What could we eliminate without hurting value?", template: "What could we eliminate without hurting value? Current scope: [describe what's included]" },
-  { label: "What adjacent ideas are worth borrowing?", template: "What adjacent ideas are worth borrowing for: [describe your domain or problem]" },
-];
+const ideas = makePool([
+  "Give me better ways to approach this",
+  "What are some strong alternatives?",
+  "Help me improve this idea",
+  "What other directions could I explore?",
+  "How could I simplify this?",
+  "Give me fresh ways to think about this",
+  "What would a smarter version look like?",
+  "How can I make this more compelling?",
+  "What are some practical options?",
+  "How else could this be solved?",
+  "Give me a few strong concepts",
+  "Make this idea stronger",
+  "What are some creative but realistic options?",
+  "How can I rethink this from first principles?",
+  "What would an elegant solution look like?",
+  "Help me generate better possibilities",
+  "How can I make this clearer or more useful?",
+  "What would a bold version look like?",
+  "What is a simpler alternative?",
+  "What options deserve serious consideration?",
+], "describe what you're working on");
 
-const validate: PromptChip[] = [
-  { label: "Pressure-test this idea", template: "Pressure-test this idea before we invest: [describe the idea]" },
-  { label: "How can we validate this cheaply?", template: "How can we validate this cheaply? Idea: [describe what you want to test]" },
-  { label: "What assumptions should we test first?", template: "What assumptions should we test first? Our plan: [describe the plan]" },
-  { label: "How risky is this idea?", template: "How risky is this idea? Here's what we're considering: [describe the idea]" },
-  { label: "What should the MVP include?", template: "What should the MVP include for: [describe the product concept]" },
-  { label: "What would make us change our mind?", template: "What would make us change our mind about: [describe the bet or decision]" },
-  { label: "What is the riskiest assumption?", template: "What is the riskiest assumption in: [describe the plan or strategy]" },
-  { label: "What result would count as validation?", template: "What result would count as validation for: [describe the hypothesis]" },
-  { label: "How can we de-risk before launch?", template: "How can we de-risk before launch? We're planning to: [describe the launch]" },
-  { label: "What experiments should we run next?", template: "What experiments should we run next? We've learned: [describe what you know so far]" },
-  { label: "What proof do stakeholders need?", template: "What proof do stakeholders need to approve: [describe what needs approval]" },
-  { label: "How do we separate signal from noise?", template: "How do we separate signal from noise? We're seeing: [describe the mixed data]" },
-];
+const validate = makePool([
+  "How can I test this idea?",
+  "What assumptions should I question?",
+  "What would make this more believable?",
+  "How risky is this approach?",
+  "What should I confirm before moving ahead?",
+  "Help me pressure-test this plan",
+  "What evidence would I want to see?",
+  "How can I check whether this makes sense?",
+  "What could prove this wrong?",
+  "What is the fastest way to learn?",
+  "What should I verify first?",
+  "What would increase confidence here?",
+  "How do I know this is worth doing?",
+  "What could I test before committing more time?",
+  "What would a lightweight validation approach look like?",
+  "How can I reduce uncertainty here?",
+  "What signals should I look for?",
+  "What are the biggest assumptions underneath this?",
+  "What would change my mind?",
+  "How should I sanity-check this?",
+], "describe the idea or plan");
 
-const ship: PromptChip[] = [
-  { label: "Create a practical launch plan", template: "Create a practical launch plan for: [describe what you're launching]" },
-  { label: "How should we sequence delivery?", template: "How should we sequence delivery of: [describe the features or workstreams]" },
-  { label: "What can we cut without losing value?", template: "What can we cut without losing value? Current scope: [describe the scope]" },
-  { label: "How should we prioritize the roadmap?", template: "How should we prioritize the roadmap? Items: [list the initiatives]" },
-  { label: "What should happen now vs later?", template: "What should happen now vs later? We need to: [list the work items]" },
-  { label: "How do we turn this into milestones?", template: "How do we turn this into milestones? Goal: [describe the goal]" },
-  { label: "What is the clearest rollout plan?", template: "What is the clearest rollout plan for: [describe the feature or product]" },
-  { label: "What dependencies could delay delivery?", template: "What dependencies could delay delivery of: [describe the project]" },
-  { label: "What is the minimum viable launch?", template: "What is the minimum viable launch for: [describe the product]" },
-  { label: "How do we avoid overbuilding?", template: "How do we avoid overbuilding? We're planning: [describe what you're building]" },
-  { label: "What work belongs in phase one?", template: "What work belongs in phase one? Full vision: [describe the end state]" },
-  { label: "How do we move from idea to execution?", template: "How do we move from idea to execution? Idea: [describe the idea]" },
-];
+const ship = makePool([
+  "Turn this into a step-by-step plan",
+  "What should happen now, next, and later?",
+  "Help me organize the work",
+  "What is the clearest way to move forward?",
+  "What should I do first?",
+  "How can I make this more manageable?",
+  "Help me sequence the next steps",
+  "What can I simplify before starting?",
+  "What should I focus on right now?",
+  "How do I turn this into action?",
+  "What is a realistic plan?",
+  "Help me reduce overwhelm and get moving",
+  "What can I leave out for now?",
+  "How should I break this into phases?",
+  "What are the key milestones?",
+  "How can I keep this practical?",
+  "What does a good execution plan look like?",
+  "Help me go from idea to action",
+  "What is the cleanest rollout path?",
+  "How do I make progress without overcomplicating it?",
+], "describe what you're trying to do");
 
-const growth: PromptChip[] = [
-  { label: "Why is this not converting?", template: "Why is this not converting? Context: [describe the page, flow, or offer]" },
-  { label: "How can we improve activation?", template: "How can we improve activation for: [describe the product or onboarding]" },
-  { label: "Where is the funnel leaking?", template: "Where is the funnel leaking? Funnel: [describe the steps]" },
-  { label: "Which audience should we target first?", template: "Which audience should we target first? Product: [describe your product]" },
-  { label: "How do we improve retention?", template: "How do we improve retention for: [describe the product and current retention]" },
-  { label: "What is the strongest growth lever?", template: "What is the strongest growth lever for: [describe the product and stage]" },
-  { label: "How should we position this?", template: "How should we position this? Product: [describe what you offer and for whom]" },
-  { label: "What messaging would land better?", template: "What messaging would land better? Current pitch: [describe your current messaging]" },
-  { label: "Which segment has the most upside?", template: "Which user segment has the most upside? We serve: [describe your user segments]" },
-  { label: "How do we sharpen the value prop?", template: "How do we sharpen the value proposition for: [describe the product]" },
-  { label: "How can we create a stronger flywheel?", template: "How can we create a stronger flywheel? Current model: [describe your growth model]" },
-  { label: "What growth strategy fits this best?", template: "What growth strategy fits this product best? Product: [describe your product and stage]" },
-];
+const growth = makePool([
+  "How can this gain more traction?",
+  "What is the biggest opportunity to improve?",
+  "How can I make this more appealing?",
+  "What would help more people engage with this?",
+  "What is holding this back?",
+  "How can this become more effective?",
+  "What should I improve first?",
+  "How do I create more momentum?",
+  "How can I make this more valuable to people?",
+  "What would help this spread further?",
+  "How can I strengthen the overall result?",
+  "What changes would have the biggest payoff?",
+  "How can I make this easier for people to adopt?",
+  "What is limiting the impact?",
+  "How do I move this from okay to strong?",
+  "What would improve the experience most?",
+  "How can I increase interest or response?",
+  "What makes this easy or hard for people to embrace?",
+  "Where is the clearest growth opportunity?",
+  "What is the most promising lever for improvement?",
+], "describe what you want to improve");
 
-const systems: PromptChip[] = [
-  { label: "What are the hidden dependencies?", template: "What are the hidden dependencies in: [describe the system or project]" },
-  { label: "What breaks if we scale this?", template: "What breaks if we scale this? Current design: [describe the system]" },
-  { label: "What second-order effects are we missing?", template: "What second-order effects are we missing? We're planning to: [describe the change]" },
-  { label: "Should we build, buy, or partner?", template: "Should we build, buy, or partner for: [describe the capability you need]" },
-  { label: "What is the long-term tradeoff?", template: "What is the long-term tradeoff of: [describe the decision]" },
-  { label: "How does this fit the bigger system?", template: "How does this fit the bigger system? Component: [describe the part and the whole]" },
-  { label: "What would a more resilient design look like?", template: "What would a more resilient design look like for: [describe the system]" },
-  { label: "Where are we optimizing locally but losing globally?", template: "Where are we optimizing locally but losing globally? Context: [describe the system]" },
-  { label: "What happens if this succeeds at scale?", template: "What happens if this succeeds at scale? Plan: [describe what you're building]" },
-  { label: "Where is complexity accumulating?", template: "Where is complexity accumulating in: [describe the system or product]" },
-  { label: "What would first-principles thinking suggest?", template: "What would first-principles thinking suggest for: [describe the challenge]" },
-  { label: "Which constraints should we embrace or remove?", template: "Which constraints should we embrace or remove? Constraints: [list them]" },
-];
+const systems = makePool([
+  "Help me see the bigger picture",
+  "How do these parts connect?",
+  "What is influencing what?",
+  "What are the hidden dependencies here?",
+  "Where is the real constraint?",
+  "What happens if one part changes?",
+  "What second-order effects should I watch for?",
+  "Help me think about this as a system",
+  "What is the underlying structure here?",
+  "What tradeoffs exist across the whole picture?",
+  "What could break as this grows?",
+  "Where is the pressure point?",
+  "What is holding the whole system back?",
+  "How should I think about the moving parts?",
+  "What would make this more resilient?",
+  "What is the long-term effect of this choice?",
+  "What is the bottleneck in the bigger system?",
+  "How can I reduce unintended consequences?",
+  "What is the strongest leverage point?",
+  "What should I optimize at the system level?",
+], "describe the system or situation");
 
-const debate: PromptChip[] = [
-  { label: "Argue both sides of this decision", template: "Argue both sides of this decision: [describe the decision]" },
-  { label: "What is the strongest case against this?", template: "What is the strongest case against: [describe the plan or idea]" },
-  { label: "Challenge this strategy", template: "Challenge this strategy: [describe the strategy]" },
-  { label: "What tradeoffs are we missing?", template: "What tradeoffs are we missing in: [describe the plan]" },
-  { label: "Why might this fail?", template: "Why might this fail? Plan: [describe what you're proposing]" },
-  { label: "Stress-test this recommendation", template: "Stress-test this recommendation: [describe the recommendation]" },
-  { label: "What if our current plan is wrong?", template: "What if our current plan is wrong? Plan: [describe your plan]" },
-  { label: "Where could this backfire?", template: "Where could this backfire? We're planning to: [describe the action]" },
-  { label: "What assumptions deserve pushback?", template: "What assumptions deserve pushback in: [describe the proposal]" },
-  { label: "What are we overconfident about?", template: "What are we overconfident about? Our belief: [describe your conviction]" },
-  { label: "What is the strongest competing strategy?", template: "What is the strongest competing strategy to: [describe your current strategy]" },
-  { label: "What could invalidate this thinking?", template: "What could invalidate this thinking? Thesis: [describe your thesis]" },
-];
+const debate = makePool([
+  "Argue both sides of this decision",
+  "What is the strongest case against this?",
+  "Challenge my current thinking",
+  "What tradeoffs am I ignoring?",
+  "What would a skeptic say?",
+  "Why might this fail?",
+  "What is the smartest counterargument?",
+  "What are the weaknesses in this plan?",
+  "Stress-test this recommendation",
+  "Where could this go wrong?",
+  "What is the strongest alternative view?",
+  "Help me question this idea honestly",
+  "What risks am I underestimating?",
+  "What uncomfortable truths should I face?",
+  "How would someone disagree with this?",
+  "What would a critic point out first?",
+  "What assumptions deserve to be challenged?",
+  "What are the downsides of this path?",
+  "Why might a different approach be better?",
+  "What should I reconsider before committing?",
+], "describe the idea or decision");
 
 // ---------------------------------------------------------------------------
 // Pool index + selection logic
 // ---------------------------------------------------------------------------
 
-/** All chip pools keyed by UI skill ID + "debate". */
 const CHIP_POOLS: Record<SelectableSkillId | "debate", readonly PromptChip[]> = {
   auto,
   "discover-users": research,
@@ -163,7 +242,6 @@ const CHIP_POOLS: Record<SelectableSkillId | "debate", readonly PromptChip[]> = 
   debate,
 };
 
-/** Domain skill keys (everything except auto and debate). */
 const DOMAIN_KEYS: (SelectableSkillId | "debate")[] = [
   "discover-users",
   "frame-problems",
@@ -190,9 +268,9 @@ function pickOne<T>(arr: readonly T[]): T {
 }
 
 /**
- * Returns a set of randomised prompt chips appropriate for the current mode.
+ * Returns randomised prompt chips for the current mode.
  *
- * - **Auto**: picks chips from different random domains for breadth.
+ * - **Auto**: one chip from each of `count` random domain pools for breadth.
  * - **Debate**: picks from the debate pool.
  * - **Specific coach**: picks from that coach's pool.
  */
@@ -206,7 +284,6 @@ export function getRandomChips(
   }
 
   if (skill === "auto") {
-    // One chip from each of `count` randomly chosen domain pools → maximum diversity
     const domains = shuffle(DOMAIN_KEYS).slice(0, count);
     return domains.map((d) => pickOne(CHIP_POOLS[d]));
   }

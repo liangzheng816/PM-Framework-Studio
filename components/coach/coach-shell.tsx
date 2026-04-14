@@ -16,6 +16,7 @@ export function CoachShell() {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [promptTemplate, setPromptTemplate] = useState<string | undefined>();
   const [chips, setChips] = useState<PromptChip[]>(() => getRandomChips("auto", false));
+  const [spinKey, setSpinKey] = useState(0);
   const [isStreaming, setIsStreaming] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -224,7 +225,7 @@ export function CoachShell() {
           </div>
 
           {/* Prompt chips — rotate by coach mode, 3 on mobile / 5 on desktop */}
-          <div className="flex flex-wrap justify-center gap-2 mb-6">
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
             {chips.map((chip, i) => (
               <button
                 key={chip.label}
@@ -234,6 +235,32 @@ export function CoachShell() {
                 {chip.label}
               </button>
             ))}
+            <button
+              onClick={() => {
+                setChips(getRandomChips(selectedSkill, isDebateMode));
+                setSpinKey((k) => k + 1);
+              }}
+              title="Show different suggestions"
+              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-[var(--radius-full)] text-[var(--color-text-muted)] transition-colors duration-150 hover:text-[var(--color-accent)] hover:bg-[var(--color-surface-2)] outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-1 focus-visible:ring-offset-[var(--color-bg)]"
+            >
+              <svg
+                key={spinKey}
+                width="14"
+                height="14"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="animate-[spin_400ms_ease-out_1]"
+              >
+                <path d="M1.5 2v4.5H6" />
+                <path d="M14.5 14v-4.5H10" />
+                <path d="M13.15 5.5A6 6 0 0 0 3.05 4.15L1.5 6.5" />
+                <path d="M2.85 10.5a6 6 0 0 0 10.1 1.35l1.55-2.35" />
+              </svg>
+            </button>
           </div>
 
           <div className="w-full space-y-3">
@@ -244,7 +271,7 @@ export function CoachShell() {
               disabled={false}
               placeholder={
                 isDebateMode
-                  ? "What decision, recommendation, or strategy should we challenge?"
+                  ? "What idea, plan, or decision should we challenge?"
                   : SKILL_META[selectedSkill].placeholder
               }
               externalText={promptTemplate}
@@ -292,7 +319,7 @@ export function CoachShell() {
               disabled={false}
               placeholder={
                 isDebateMode
-                  ? "What decision, recommendation, or strategy should we challenge?"
+                  ? "What idea, plan, or decision should we challenge?"
                   : SKILL_META[selectedSkill].placeholder
               }
               files={uploadedFiles}

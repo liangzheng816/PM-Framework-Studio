@@ -19,12 +19,10 @@ export default function MapPage() {
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
       <header className="mb-8">
         <h1 className="font-[var(--font-heading)] text-3xl sm:text-4xl text-[var(--color-text)] mb-2">
-          Framework Map
+          See how 100 frameworks connect
         </h1>
-        <p className="text-[var(--color-text-muted)]">
-          Explore all {frameworks.length} frameworks — hover to preview, click
-          to open. X-axis shows product stage, Y-axis shows qualitative vs
-          quantitative orientation.
+        <p className="text-[var(--color-text-muted)] max-w-2xl">
+          From early-stage research on the left to scaling strategy on the right, qualitative methods at the top to quantitative at the bottom — find the right thinking tool for where you are now.
         </p>
       </header>
 

@@ -28,7 +28,7 @@ export function Hero({ compact }: HeroProps) {
         <div className="absolute top-[30%] right-[20%] w-[30%] h-[30%] rounded-full bg-purple-500/5 blur-[80px]" />
       </div>
 
-      <div className={`mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 ${compact ? "pt-12 pb-8 sm:pt-16 sm:pb-10" : "pt-20 pb-16 sm:pt-28 sm:pb-24"}`}>
+      <div className={`mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 ${compact ? "pt-10 pb-4 sm:pt-14 sm:pb-6" : "pt-20 pb-16 sm:pt-28 sm:pb-24"}`}>
         <div className="max-w-3xl">
           {/* Eyebrow */}
           <motion.p
@@ -37,7 +37,7 @@ export function Hero({ compact }: HeroProps) {
             transition={{ duration: 0.5, ease }}
             className="text-sm font-medium text-[var(--color-accent)] mb-4 tracking-wide uppercase"
           >
-            100 frameworks, one studio
+            100 proven frameworks, in one place
           </motion.p>
 
           {/* Headline */}
@@ -47,7 +47,7 @@ export function Hero({ compact }: HeroProps) {
             transition={{ duration: 0.6, delay: 0.1, ease }}
             className="font-[var(--font-heading)] text-4xl sm:text-5xl lg:text-6xl text-[var(--color-text)] leading-[1.1] mb-6"
           >
-            Discover the right framework for the right moment
+            Explore 100 frameworks for clearer thinking and better decisions
           </motion.h1>
 
           {/* Subhead */}
@@ -55,9 +55,9 @@ export function Hero({ compact }: HeroProps) {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2, ease }}
-            className="text-lg sm:text-xl text-[var(--color-text-muted)] leading-relaxed mb-10 max-w-2xl"
+            className={`text-lg sm:text-xl text-[var(--color-text-muted)] leading-relaxed max-w-2xl ${compact ? "mb-0" : "mb-10"}`}
           >
-            100 proven frameworks and methodologies to help you think clearer, decide faster, and build better products. Browse by category, compare side by side, or find the right model for any challenge.
+            From framing problems and testing ideas to comparing options, prioritizing tradeoffs, and planning next steps — discover structured methods for tackling complex questions with more clarity.
           </motion.p>
 
           {/* CTAs — hidden in compact mode */}

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Fuse from "fuse.js";
 import type { Framework, Category, CategorySlug } from "@/lib/types";
 import { FrameworkCard } from "@/components/framework-card/framework-card";
 
@@ -16,71 +15,21 @@ export function DiscoverClient({
   categories,
   featured,
 }: DiscoverClientProps) {
-  const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] =
     useState<CategorySlug | "all">("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  const fuse = useMemo(
-    () =>
-      new Fuse(frameworks, {
-        keys: [
-          { name: "title", weight: 2 },
-          { name: "aliases", weight: 1.5 },
-          { name: "best_for", weight: 1.2 },
-          { name: "summary", weight: 1 },
-          { name: "categoryLabel", weight: 0.8 },
-        ],
-        threshold: 0.3,
-        minMatchCharLength: 2,
-      }),
-    [frameworks]
-  );
-
   const filtered = useMemo(() => {
-    let result = frameworks;
+    if (selectedCategory === "all") return frameworks;
+    return frameworks.filter((f) => f.category === selectedCategory);
+  }, [selectedCategory, frameworks]);
 
-    if (search.trim()) {
-      result = fuse.search(search).map((r) => r.item);
-    }
-
-    if (selectedCategory !== "all") {
-      result = result.filter((f) => f.category === selectedCategory);
-    }
-
-    return result;
-  }, [search, selectedCategory, frameworks, fuse]);
-
-  const isDefaultView = !search.trim() && selectedCategory === "all";
+  const isDefaultView = selectedCategory === "all";
 
   return (
     <div>
-      {/* Search + category filters */}
-      <div className="mb-8 space-y-4">
-        {/* Search */}
-        <div className="relative max-w-md">
-          <svg
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-subtle)]"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-            />
-          </svg>
-          <input
-            type="text"
-            placeholder="Search frameworks..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] pl-10 pr-4 py-2.5 text-sm text-[var(--color-text)] placeholder-[var(--color-text-subtle)] focus:outline-none focus:border-[var(--color-accent)] transition-colors"
-          />
-        </div>
-
+      {/* Category filters */}
+      <div className="mb-6">
         {/* Category pills */}
         <div className="flex flex-wrap gap-2">
           <button
@@ -129,7 +78,6 @@ export function DiscoverClient({
       <div className="flex items-center justify-between mb-4">
         <p className="text-sm text-[var(--color-text-muted)]">
           {isDefaultView ? "All frameworks" : `${filtered.length} framework${filtered.length !== 1 ? "s" : ""}`}
-          {search && ` matching "${search}"`}
         </p>
 
         {/* View mode toggle */}

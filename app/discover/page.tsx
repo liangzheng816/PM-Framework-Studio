@@ -22,7 +22,7 @@ export default function DiscoverPage() {
     <>
       <Hero compact />
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 lg:py-6">
         <DiscoverClient
           frameworks={frameworks}
           categories={categories}

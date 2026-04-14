@@ -103,20 +103,24 @@ export function InteractiveMap({ frameworks, positions }: InteractiveMapProps) {
           {/* Axis labels */}
           <text
             x={SVG_WIDTH / 2}
-            y={SVG_HEIGHT - 12}
+            y={SVG_HEIGHT - 10}
             textAnchor="middle"
-            className="fill-[var(--color-text-subtle)]"
-            fontSize={12}
+            className="fill-[var(--color-text-muted)]"
+            fontSize={14}
+            fontWeight={500}
+            letterSpacing="0.05em"
           >
             Early Stage → Late Stage
           </text>
           <text
-            x={14}
+            x={16}
             y={SVG_HEIGHT / 2}
             textAnchor="middle"
-            transform={`rotate(-90, 14, ${SVG_HEIGHT / 2})`}
-            className="fill-[var(--color-text-subtle)]"
-            fontSize={12}
+            transform={`rotate(-90, 16, ${SVG_HEIGHT / 2})`}
+            className="fill-[var(--color-text-muted)]"
+            fontSize={14}
+            fontWeight={500}
+            letterSpacing="0.05em"
           >
             Qualitative → Quantitative
           </text>
@@ -207,29 +211,38 @@ export function InteractiveMap({ frameworks, positions }: InteractiveMapProps) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 4 }}
               transition={{ duration: 0.15 }}
-              className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-80 rounded-[var(--radius-lg)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-lg)] pointer-events-none"
+              className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-96 rounded-[var(--radius-lg)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-lg)] pointer-events-none"
             >
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-2 mb-3">
                 <span
-                  className="w-2.5 h-2.5 rounded-full"
+                  className="w-2.5 h-2.5 rounded-full shrink-0"
                   style={{
                     backgroundColor:
                       DOT_COLORS[hoveredNode.framework.category],
                   }}
                 />
-                <span className="text-xs text-[var(--color-text-muted)]">
+                <span className="text-xs font-medium text-[var(--color-text-muted)]">
                   {hoveredNode.framework.categoryLabel}
                 </span>
               </div>
-              <h3 className="font-[var(--font-heading)] text-lg text-[var(--color-text)] mb-1">
+              <h3 className="font-[var(--font-heading)] text-xl text-[var(--color-text)] mb-2">
                 {hoveredNode.framework.title}
               </h3>
-              <p className="text-sm text-[var(--color-text-muted)] line-clamp-2 leading-relaxed">
+              <p className="text-sm text-[var(--color-text-muted)] leading-relaxed mb-3">
                 {hoveredNode.framework.summary}
               </p>
-              <p className="text-xs text-[var(--color-accent)] mt-2">
-                Click to open →
-              </p>
+              {hoveredNode.framework.best_for.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {hoveredNode.framework.best_for.slice(0, 4).map((tag) => (
+                    <span
+                      key={tag}
+                      className="text-[10px] px-2 py-0.5 rounded-[var(--radius-full)] bg-[var(--color-surface-2)] text-[var(--color-text-subtle)] border border-[var(--color-border)]"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>

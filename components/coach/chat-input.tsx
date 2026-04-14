@@ -47,14 +47,13 @@ export function ChatInput({
   useEffect(() => {
     if (externalText === undefined) return;
     setText(externalText);
-    // Focus and adjust height on next frame so DOM has updated
+    // Focus and auto-select the [placeholder] so the user can type over it
     requestAnimationFrame(() => {
       const el = textareaRef.current;
       if (el) {
         el.style.height = "auto";
         el.style.height = Math.min(el.scrollHeight, 80) + "px";
         el.focus();
-        // Select the [placeholder] portion so the user can type over it
         const bracketStart = externalText.indexOf("[");
         const bracketEnd = externalText.lastIndexOf("]") + 1;
         if (bracketStart !== -1 && bracketEnd > bracketStart) {
