@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SharePoint AI in Practice — Collection 02</title>
+<meta name="description" content="Twenty-one short, self-contained sites on using AI and Copilot in SharePoint — from list styling and metadata to autonomous builders, demo tooling, and review councils.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,450;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+  --c:var(--amber);
+}
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:1100px;margin:0 auto;padding:0 28px 120px;}
+code,.mono{font-family:"JetBrains Mono",monospace;font-size:.82em;background:#ece7db;padding:.08em .38em;border-radius:4px;color:#3a382f;}
+a{color:inherit;}
+
+.back{display:inline-flex;align-items:center;gap:8px;margin:34px 0 0;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);text-decoration:none;}
+.back:hover{color:var(--c);}
+.back .arw{display:inline-block;transition:transform .15s;}
+.back:hover .arw{transform:translateX(-4px);}
+
+.hero{padding:30px 0 16px;position:relative;}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--c);font-weight:600;margin-bottom:16px;}
+.hero h1{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(42px,6.4vw,72px);line-height:1.02;margin:0 0 22px;letter-spacing:-.02em;max-width:880px;}
+.hero h1 em{font-style:italic;color:var(--c);}
+.hero .dek{font-family:"Newsreader",Georgia,serif;font-style:italic;font-size:22px;color:var(--ink-soft);line-height:1.5;margin:0 0 22px;max-width:780px;}
+
+.stats{display:flex;flex-wrap:wrap;margin:34px 0 6px;border:1px solid var(--rule);border-radius:11px;overflow:hidden;background:var(--card);}
+.stats .s{flex:1 1 140px;padding:18px 22px;border-right:1px solid var(--rule);}
+.stats .s:last-child{border-right:none;}
+.stats .s .v{font-family:"Fraunces",serif;font-weight:900;font-size:30px;color:var(--c);line-height:1;}
+.stats .s .l{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-top:7px;}
+
+.sec-label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin:54px 0 8px;font-weight:600;}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px;margin-top:16px;}
+.site{display:flex;flex-direction:column;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--c);border-radius:13px;padding:22px 24px 20px;position:relative;overflow:hidden;transition:transform .16s ease,box-shadow .16s ease;}
+.site:hover{transform:translateY(-3px);box-shadow:0 14px 34px -16px rgba(27,26,23,.3);}
+.site .num{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:.16em;color:var(--c);opacity:.8;margin-bottom:9px;}
+.site h3{font-family:"Fraunces",serif;font-weight:600;font-size:21px;line-height:1.18;margin:0 0 9px;letter-spacing:-.01em;}
+.site p{margin:0 0 16px;font-size:15px;line-height:1.5;color:var(--ink-soft);}
+.site .open{margin-top:auto;font-family:"JetBrains Mono",monospace;font-size:11.5px;font-weight:600;color:var(--c);letter-spacing:.06em;}
+.site .open .arw{display:inline-block;margin-left:3px;transition:transform .15s;}
+.site:hover .open .arw{transform:translateX(4px);}
+
+footer{margin-top:80px;padding-top:28px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-soft);line-height:1.6;}
+
+@media(max-width:760px){
+  .hero{padding:24px 0 12px;}
+  .grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="../../index.html"><span class="arw">←</span> Back to AI Learning</a>
+
+<header class="hero">
+  <div class="kicker">Collection 02 · 2026 · 05 · 31</div>
+  <h1>SharePoint AI <em>in Practice</em></h1>
+  <p class="dek">Twenty-one short, self-contained sites on putting AI and Copilot to work inside SharePoint — list styling, metadata, autonomous builders, demo tooling, brand compliance, and review councils. Each one is its own interactive guide.</p>
+</header>
+
+<div class="stats">
+  <div class="s"><div class="v">21</div><div class="l">Sites</div></div>
+  <div class="s"><div class="v">7</div><div class="l">Theme Clusters</div></div>
+  <div class="s"><div class="v">100%</div><div class="l">Self-Contained</div></div>
+  <div class="s"><div class="v">F → A</div><div class="l">Difficulty Range</div></div>
+</div>
+
+<div class="sec-label">Sites — click any card to open</div>
+
+<div class="grid">
+
+  <a class="site" href="01-72k-rows-no-hallucination/index.html">
+    <div class="num">01</div>
+    <h3>72,000 Rows Without Hallucinating</h3>
+    <p>How AI in SharePoint processes 12 files and 30 MB of data by writing code in a sandbox instead of guessing in chat.</p>
+    <span class="open">Open site <span class="arw">→</span></span>
+  </a>
+
+  <a class="site" href="02-beautiful-libraries-copilot/index.html">
+    <div class="num">02</div>
+    <h3>Beautiful Libraries with Copilot</h3>
+    <p>Turn ordinary document libraries into Bento grids, blueprints, and whatever else you can describe — "that can't be SharePoint?!"</p>
+    <span class="open">Open site <span class="arw">→</span></span>
+  </a>
+
+  <a class="site" href="03-no-code-quick-steps/index.html">
+    <div class="num">03</div>
+    <h3>No-Code Quick Steps</h3>
+    <p>One-click buttons inside any list that quietly run AI in SharePoint — for users who never need to know it's there.</p>
+    <span class="open">Open site <span class="arw">→</span></span>
+  </a>
+
+  <a class="site" href="04-living-knowledge-base/index.html">
+    <div class="num">04</div>
+    <h3>A Living Knowledge Base</h3>
+    <p>Document library, submissions folder, gap list, expert directory, and context file working as one organism — driven by four AI Skills.</p>
+    <span class="open">Open site <span class="arw">→</span></span>
+  </a>
+
+  <a class="site" href="05-learn-from-mistakes/index.html">
+    <div class="num">05</div>
+    <h3>Learn From Its Mistakes</h3>
+    <p>Group-scope context lets you write learning rules that turn every correction into a permanent lesson. Audit failures, then teach.</p>
+    <span class="open">Open site <span class="arw">→</span></span>
+  </a>
+
+  <a class="site" href="06-dashboard-from-data/index.html">
+    <div class="num">06</div>
+    <h3>A Dashboard From Your Data</h3>
+    <p>A reusable hiring-pipeline Skill turns messy SharePoint lists into an interactive HTML dashboard — and a PowerPoint on demand.</p>
+    <span class="open">Open site <span class="arw">→</span></span>
+  </a>
+
+  <a class="site" href="07-ai-demo-videos/index.html">
+    <div class="num">07</div>
+    <h3>AI-Generated Demo Videos</h3>
+    <p>A two-guide library on the new <code>--record</code> flag for producing polished demo videos of SharePoint AI in minutes.</p>
+    <span class="open">Open site <span class="arw">→</span></span>
+  </a>
+
+  <a class="site" href="08-social-media-workflow/index.html">
+    <div class="num">08</div>
+    <h3>A Social Media Workflow</h3>
+    <p>Narrow, composable skills draft LinkedIn posts, YouTube descriptions, chapter timestamps, and titles — all from one transcript.</p>
+    <span class="open">Open site <span class="arw">→</span></span>
+  </a>
+
+  <a class="site" href="09-demo-runner-tool/index.html">
+    <div class="num">09</div>
+    <h3>The Demo Runner Tool</h3>
+    <p>A three-guide library on the free, GitHub-hosted demo runner — the launcher, the demo file format, and a clean on-stage widget UI.</p>
+    <span class="open">Open site <span class="arw">→</span></span>
+  </a>
+
+  <a class="site" href="10-three-ways-improve/index.html">
+    <div class="num">10</div>
+    <h3>Three Ways to Improve</h3>
+    <p>Reference files to keep context tight. Permissions to scope the AI's menu. Evals to let skills optimize themselves.</p>
+    <span class="open">Open site <span class="arw">→</span></span>
+  </a>
+
+  <a class="site" href="11-time-off-tracker/index.html">
+    <div class="num">11</div>
+    <h3>An Autonomous Time-Off Tracker</h3>
+    <p>Two lists, four skills, one calendar, one homepage — built end-to-end with a Ralph Loop in about 20 minutes.</p>
+    <span class="open">Open site <span class="arw">→</span></span>
+  </a>
+
+  <a class="site" href="12-getting-started/index.html">
+    <div class="num">12</div>
+    <h3>Getting Started with AI Skills</h3>
+    <p>Build, edit, and list skills with plain-language utterances. Promote any ad-hoc action into a permanent, scoped skill.</p>
+    <span class="open">Open site <span class="arw">→</span></span>
+  </a>
+
+  <a class="site" href="13-branching-skills/index.html">
+    <div class="num">13</div>
+    <h3>Branching Skills, Smart Formatting</h3>
+    <p>One parent skill, two reference files, three prompts — choosing column formatting, view formatting, or both before it touches your list.</p>
+    <span class="open">Open site <span class="arw">→</span></span>
+  </a>
+
+  <a class="site" href="14-ultimate-list-styling/index.html">
+    <div class="num">14</div>
+    <h3>The Ultimate List Styling</h3>
+    <p>The Patterns & Practices catalog packaged as a skill, your brand layered on top — every list styled on-brand with no JSON by hand.</p>
+    <span class="open">Open site <span class="arw">→</span></span>
+  </a>
+
+  <a class="site" href="15-autonomous-list-builder/index.html">
+    <div class="num">15</div>
+    <h3>The Autonomous List Builder</h3>
+    <p>One conference list, three tiers. The Agentic Builder scaffolds it in a prompt; the Ralph Loop plans, builds, grades, and ships it.</p>
+    <span class="open">Open site <span class="arw">→</span></span>
+  </a>
+
+  <a class="site" href="16-stop-sorting-files/index.html">
+    <div class="num">16</div>
+    <h3>Stop Sorting Files Manually</h3>
+    <p>Let SharePoint AI scan a messy library, propose folder schemes, and rename the worst offenders — with you in control of every move.</p>
+    <span class="open">Open site <span class="arw">→</span></span>
+  </a>
+
+  <a class="site" href="17-metadata-fixes-ai/index.html">
+    <div class="num">17</div>
+    <h3>Metadata Fixes Your Library</h3>
+    <p>AI can summarize a contract in seconds but can't find every one missing a clause. Metadata — extracted at upload — is the missing layer.</p>
+    <span class="open">Open site <span class="arw">→</span></span>
+  </a>
+
+  <a class="site" href="18-brand-compliance/index.html">
+    <div class="num">18</div>
+    <h3>Automated Brand Compliance</h3>
+    <p>Encode a brand guide as a reusable Skill, run it across a whole library in one prompt, and wire it to a Quick Step button.</p>
+    <span class="open">Open site <span class="arw">→</span></span>
+  </a>
+
+  <a class="site" href="19-auto-cited-brief/index.html">
+    <div class="num">19</div>
+    <h3>An Auto-Cited Brief</h3>
+    <p>List Creator, Assertion Extractor, and Citation Finder chain together to turn an uncited brief into a fully sourced table.</p>
+    <span class="open">Open site <span class="arw">→</span></span>
+  </a>
+
+  <a class="site" href="20-resume-collection/index.html">
+    <div class="num">20</div>
+    <h3>Organize a Resume Collection</h3>
+    <p>A pile of resumes becomes a structured candidate library through seven conversational prompts — extract, categorize, alert, track, color.</p>
+    <span class="open">Open site <span class="arw">→</span></span>
+  </a>
+
+  <a class="site" href="21-panel-of-experts/index.html">
+    <div class="num">21</div>
+    <h3>Review Like a Panel of Experts</h3>
+    <p>A Review Council skill channels seven reviewer personas — Adversary, Analyst, Storyteller, and more — in a single pass over your content.</p>
+    <span class="open">Open site <span class="arw">→</span></span>
+  </a>
+
+</div>
+
+<footer>
+  AI LEARNING · COLLECTION 02 · SHAREPOINT AI IN PRACTICE · 2026 · 05 · 31<br>
+  EACH SITE IS SELF-CONTAINED — VERIFY FAST-MOVING SPECIFICS AGAINST CURRENT SOURCES BEFORE RELYING ON THEM.
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Living Knowledge Base in SharePoint — Self-Learning Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4; --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf; --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+}
+*, *::before, *::after { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 80px; }
+
+.hero { padding:80px 0 40px; position:relative; }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px;
+  letter-spacing:.28em; text-transform:uppercase; color:var(--accent);
+  font-weight:600; margin-bottom:18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900;
+  font-size:clamp(40px,6vw,68px); line-height:1.02; letter-spacing:-.025em;
+  margin:0 0 22px; max-width:920px; }
+.dek { font-size:22px; color:var(--ink-soft); max-width:740px; margin:0; line-height:1.5; }
+.hero-loop { position:absolute; top:60px; right:0; opacity:.18; pointer-events:none; }
+
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);
+  margin:54px 0 6px; font-weight:600; }
+
+/* Stats strip (3 stats) */
+.stats { display:flex; flex-wrap:wrap; margin:34px 0 6px;
+  border:1px solid var(--rule); border-radius:11px; overflow:hidden;
+  background:var(--card); }
+.stats .s { flex:1 1 140px; padding:20px 24px; border-right:1px solid var(--rule); }
+.stats .s:last-child { border-right:none; }
+.stats .s .v { font-family:"Fraunces",serif; font-weight:900; font-size:34px;
+  color:var(--accent); line-height:1; }
+.stats .s .l { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft); margin-top:8px; }
+
+/* Practice Hub — single card full width */
+.practice-hub { display:grid; grid-template-columns:1fr; gap:20px; margin:14px 0 0; }
+.hub-card { display:block; text-decoration:none; color:inherit;
+  border-radius:16px; padding:38px 36px; position:relative; overflow:hidden;
+  transition:transform .18s ease, box-shadow .18s ease; }
+.hub-card:hover { transform:translateY(-4px); box-shadow:0 16px 40px -14px rgba(27,26,23,.32); }
+.hub-card.flash { background:#1b1a17; color:#fff; }
+.hub-card .hc-wm { position:absolute; top:-30px; right:-10px;
+  font-family:"Fraunces",serif; font-weight:900; font-size:200px; line-height:1;
+  opacity:.07; pointer-events:none; color:#fff; }
+.hub-card .hc-type { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; opacity:.7; margin-bottom:16px; }
+.hub-card h2 { font-family:"Fraunces",serif; font-weight:900; font-size:38px;
+  letter-spacing:-.02em; margin:14px 0 12px; }
+.hub-card h2 em { color:var(--accent); font-style:normal; }
+.hub-card p { font-size:17px; max-width:560px; margin:0 0 22px; opacity:.85; }
+.hub-stat { display:flex; gap:36px; margin:8px 0 24px; flex-wrap:wrap; }
+.hub-stat .hs { display:flex; flex-direction:column; gap:2px; }
+.hub-stat .hv { font-family:"Fraunces",serif; font-weight:900; font-size:30px; line-height:1; }
+.hub-stat .hl { font-family:"JetBrains Mono",monospace; font-size:10px;
+  letter-spacing:.18em; text-transform:uppercase; opacity:.65; }
+.hub-cta { display:inline-flex; align-items:center; gap:8px;
+  font-family:"JetBrains Mono",monospace; font-size:13px; font-weight:600;
+  padding:11px 22px; border-radius:8px; transition:all .15s;
+  background:var(--accent); color:#fff; }
+
+/* Guide cards */
+.card { display:block; text-decoration:none; color:inherit;
+  background:var(--card); border:1px solid var(--rule);
+  border-left:5px solid var(--c, var(--slate));
+  border-radius:12px; padding:28px 32px 30px; margin:18px 0;
+  position:relative; overflow:hidden;
+  transition:transform .16s ease, box-shadow .16s ease; }
+.card:hover { transform:translateY(-3px); box-shadow:0 10px 30px -12px rgba(27,26,23,.28); }
+.card .wm { position:absolute; top:-22px; right:6px;
+  font-family:"Fraunces",serif; font-weight:900; font-size:150px; line-height:1;
+  color:var(--c, var(--slate)); opacity:.06; pointer-events:none; }
+.card .lvl { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--c, var(--slate));
+  font-weight:600; margin-bottom:10px; }
+.card h3 { font-family:"Fraunces",serif; font-weight:900;
+  font-size:30px; letter-spacing:-.015em; line-height:1.1; margin:0 0 8px; }
+.card h3 .en { display:block; font-family:"Newsreader",serif; font-weight:400;
+  font-style:italic; font-size:18px; color:var(--ink-soft); margin-top:4px; }
+.card .d { margin:10px 0 16px; font-size:17px; color:var(--ink-soft); max-width:720px; }
+.card .tags { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0 18px; }
+.card .tags span { font-family:"JetBrains Mono",monospace; font-size:11px;
+  font-weight:600; letter-spacing:.06em; padding:3px 9px; border-radius:5px;
+  background:var(--cs, var(--slate-soft)); color:var(--c, var(--slate)); }
+.card .open { font-family:"JetBrains Mono",monospace; font-size:12px;
+  font-weight:600; color:var(--c, var(--slate)); }
+.card .open .arw { transition:transform .14s; display:inline-block; }
+.card:hover .open .arw { transform:translateX(4px); }
+
+.lvl-1 { --c:var(--slate); --cs:var(--slate-soft); }
+.lvl-2 { --c:var(--amber); --cs:var(--amber-soft); }
+.lvl-3 { --c:var(--accent); --cs:var(--accent-soft); }
+
+.howto { margin-top:60px; padding:28px 32px; background:var(--card);
+  border:1px solid var(--rule); border-radius:12px; }
+.howto h3 { font-family:"Fraunces",serif; font-weight:900; font-size:22px;
+  margin:0 0 12px; }
+.howto ol { margin:0; padding-left:22px; color:var(--ink-soft); }
+.howto li { margin-bottom:8px; }
+
+.footer { margin-top:60px; padding-top:30px; border-top:1px solid var(--rule);
+  font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--ink-soft);
+  display:flex; flex-wrap:wrap; gap:18px; justify-content:space-between; }
+.footer a { color:var(--ink-soft); text-decoration:none;
+  border-bottom:1px dotted var(--ink-soft); }
+.footer a:hover { color:var(--accent); border-color:var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+  <svg class="hero-loop" width="220" height="220" viewBox="0 0 200 200" fill="none">
+    <circle cx="100" cy="100" r="80" stroke="#cc3b1d" stroke-width="2" stroke-dasharray="6 6"/>
+    <circle cx="100" cy="100" r="50" stroke="#2f5d62" stroke-width="2"/>
+    <circle cx="100" cy="100" r="20" stroke="#9a6a00" stroke-width="2"/>
+  </svg>
+  <div class="kicker">Self-Learning Library · Video 04</div>
+  <h1>AI Skills turned SharePoint into a living knowledge base</h1>
+  <p class="dek">A tour of a knowledge-base SharePoint site whose document library, submissions folder, gap list, expert directory, and context file work as one organism — driven by four AI Skills the agent calls in your name.</p>
+</div>
+
+<div class="stats">
+  <div class="s"><div class="v">3</div><div class="l">Learning Guides</div></div>
+  <div class="s"><div class="v">13</div><div class="l">Concepts Covered</div></div>
+  <div class="s"><div class="v">13</div><div class="l">Flashcards</div></div>
+</div>
+
+<div class="sec-label">Practice — drill what you've learned</div>
+<div class="practice-hub">
+  <a class="hub-card flash" href="flashcards-index.html">
+    <div class="hc-wm">🃏</div>
+    <div class="hc-type">Flip Cards · All Guides</div>
+    <div class="hub-stat">
+      <div class="hs"><span class="hv">13</span><span class="hl">Cards</span></div>
+      <div class="hs"><span class="hv">3</span><span class="hl">Guides</span></div>
+      <div class="hs"><span class="hv">Shuffle</span><span class="hl">+ Filter</span></div>
+    </div>
+    <h2>All <em>Flashcards</em></h2>
+    <p>13 flip cards across all three guides. Filter by guide, shuffle the deck, or flip everything at once.</p>
+    <span class="hub-cta">Browse Cards →</span>
+  </a>
+</div>
+
+<div class="sec-label">Curriculum — read the guides in order</div>
+
+<a class="card lvl-1" href="guide-01-foundations.html">
+  <div class="wm">01</div>
+  <div class="lvl">01 · Foundations</div>
+  <h3>The site is the system<span class="en">How a living KB is built</span></h3>
+  <p class="d">A SharePoint knowledge base is no longer a folder of documents. It is a site whose document library, submissions folder, and context file together form the substrate that AI Skills act on.</p>
+  <div class="tags">
+    <span>KB site</span><span>document library</span><span>submissions folder</span><span>context file</span>
+    <span>4 concepts · 4 cards</span>
+  </div>
+  <span class="open">Read guide <span class="arw">→</span></span>
+</a>
+
+<a class="card lvl-2" href="guide-02-applied.html">
+  <div class="wm">02</div>
+  <div class="lvl">02 · Applied</div>
+  <h3>The four skills that run it<span class="en">AI Skills in action</span></h3>
+  <p class="d">Watch the demo and you see the agent log gaps, ingest knowledge, find experts, and reason about decay — these are AI Skills, the verbs the site exposes to every user session.</p>
+  <div class="tags">
+    <span>AI skills</span><span>grounded Q&amp;A</span><span>knowledge decay</span><span>ingestion</span><span>why-tracking</span>
+    <span>5 concepts · 5 cards</span>
+  </div>
+  <span class="open">Read guide <span class="arw">→</span></span>
+</a>
+
+<a class="card lvl-3" href="guide-03-advanced.html">
+  <div class="wm">03</div>
+  <div class="lvl">03 · Advanced</div>
+  <h3>Gaps, experts, and admin surfaces<span class="en">The governance layer</span></h3>
+  <p class="d">A KB scales only if attention scales. Gaps, expert routing, skill permissions, and admin reports are how the system stays manageable as data grows.</p>
+  <div class="tags">
+    <span>gaps list</span><span>expert directory</span><span>permissions</span><span>admin report</span>
+    <span>4 concepts · 4 cards</span>
+  </div>
+  <span class="open">Read guide <span class="arw">→</span></span>
+</a>
+
+<div class="howto">
+  <h3>How to use this library</h3>
+  <ol>
+    <li>Read the three guides in order — Foundations → Applied → Advanced. Each guide takes 4–6 minutes.</li>
+    <li>Each guide ends with its own flashcards — flip through them before moving on.</li>
+    <li>When you finish all three, use the full <a href="flashcards-index.html">flashcard deck</a> to drill the 13 concepts across guides.</li>
+    <li>Filter the deck by guide, shuffle, or flip them all to self-test.</li>
+  </ol>
+</div>
+
+<div class="footer">
+  <span>Self-Learning Library · Living Knowledge Base · Video 04 of the SharePoint AI playlist</span>
+  <a href="https://www.youtube.com/watch?v=Ei61VshaVis" target="_blank" rel="noopener">↗ Watch the original video on YouTube</a>
+</div>
+
+</div>
+</body>
+</html>

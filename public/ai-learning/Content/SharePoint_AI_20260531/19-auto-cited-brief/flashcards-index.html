@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flashcards — Auto-Cited Brief with AI in SharePoint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4; --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf; --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+}
+*,*::before,*::after { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+
+.back { font-family:"JetBrains Mono",monospace; font-size:12px;
+  text-decoration:none; color:var(--ink-soft); display:inline-flex;
+  align-items:center; gap:6px; margin:30px 0 22px; border:1px solid var(--rule);
+  border-radius:6px; padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px;
+  letter-spacing:.28em; text-transform:uppercase; color:var(--accent);
+  font-weight:600; margin-bottom:18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(34px,5vw,52px);
+  letter-spacing:-.02em; line-height:1.05; margin:0 0 14px; }
+.dek { font-size:20px; color:var(--ink-soft); max-width:720px; margin:0 0 28px; }
+
+.controls { display:flex; flex-wrap:wrap; justify-content:space-between; gap:18px;
+  margin:30px 0 8px; padding:14px 0; border-top:1px solid var(--rule);
+  border-bottom:1px solid var(--rule); }
+.filter-tabs { display:flex; flex-wrap:wrap; gap:6px; }
+.ftab { font-family:"JetBrains Mono",monospace; font-size:12px; font-weight:600;
+  padding:6px 14px; border-radius:6px; border:2px solid transparent;
+  cursor:pointer; background:transparent; color:var(--ink-soft); transition:all .14s; }
+.ftab:hover { background:#ece7db; }
+.ftab.active { color:#fff; border-color:transparent; }
+.ftab[data-f="all"].active { background:var(--ink); }
+.ftab[data-f="g1"].active { background:var(--g1); }
+.ftab[data-f="g2"].active { background:var(--g2); }
+.ctrl-btns { display:flex; gap:8px; }
+.cbtn { font-family:"JetBrains Mono",monospace; font-size:12px; font-weight:600;
+  padding:6px 14px; border-radius:6px; border:1.5px solid var(--rule);
+  background:transparent; cursor:pointer; color:var(--ink); transition:all .14s; }
+.cbtn:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+
+.counter-bar { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft);
+  margin:16px 0 24px; }
+
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
+.fc { perspective:900px; height:190px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%;
+  transform-style:preserve-3d; transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front,.fc-back { position:absolute; inset:0; border-radius:13px;
+  padding:22px 22px 18px; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  display:flex; flex-direction:column; justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back { background:#7a5400; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px; font-weight:600;
+  letter-spacing:.08em; text-transform:uppercase; padding:2px 8px; border-radius:4px;
+  border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent);
+  background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent);
+  background:color-mix(in srgb,var(--g2) 10%,transparent); }
+
+@media (max-width:760px) { .fc-grid { grid-template-columns:1fr 1fr; } }
+@media (max-width:420px) { .fc-grid { grid-template-columns:1fr; } }
+
+footer { margin-top:80px; padding-top:30px; border-top:1px solid var(--rule);
+  font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--ink-soft);
+  display:flex; flex-wrap:wrap; gap:18px; justify-content:space-between; }
+footer a { color:var(--ink-soft); text-decoration:underline; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="index.html">← Back to library</a>
+
+<div class="kicker">Flashcard Deck · All Guides · 10 Unique Cards</div>
+<h1>Flashcards — Auto-Citing a Brief with AI in SharePoint</h1>
+<p class="dek">Filter by guide, shuffle the deck, or flip them all at once. Each card pairs a term with its working definition from the citation pipeline.</p>
+
+<div class="controls">
+  <div class="filter-tabs">
+    <button class="ftab active" data-f="all" onclick="setFilter('all')">All 10</button>
+    <button class="ftab" data-f="g1" onclick="setFilter('g1')">01 · Foundations</button>
+    <button class="ftab" data-f="g2" onclick="setFilter('g2')">02 · Applied</button>
+  </div>
+  <div class="ctrl-btns">
+    <button class="cbtn" onclick="shuffleCards()">⇄ Shuffle</button>
+    <button class="cbtn" id="flip-all-btn" onclick="flipAll()">↻ Flip All</button>
+    <button class="cbtn" onclick="resetAll()">↺ Reset</button>
+  </div>
+</div>
+
+<div class="counter-bar">Showing <span id="visible-count">0</span> cards · <span id="flipped-count">0</span> flipped</div>
+
+<div class="fc-grid" id="card-grid">
+
+<div class="fc" data-g="g1" onclick="flip(this)">
+  <div class="fc-inner">
+    <div class="fc-front">
+      <div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div>
+      <div class="fc-term">AI Skill</div>
+      <div class="fc-tap">tap to reveal →</div>
+    </div>
+    <div class="fc-back">
+      <div class="fc-def">A reusable building block in SharePoint that bundles a complex prompt, context, and target output under a short verb. Invoked by name on a file or list.</div>
+      <div class="fc-tap">← tap to flip back</div>
+    </div>
+  </div>
+</div>
+
+<div class="fc" data-g="g1" onclick="flip(this)">
+  <div class="fc-inner">
+    <div class="fc-front">
+      <div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div>
+      <div class="fc-term">Assertion</div>
+      <div class="fc-tap">tap to reveal →</div>
+    </div>
+    <div class="fc-back">
+      <div class="fc-def">A standalone factual claim inside a document that needs a source. The unit the extractor breaks the brief into — one record per assertion.</div>
+      <div class="fc-tap">← tap to flip back</div>
+    </div>
+  </div>
+</div>
+
+<div class="fc" data-g="g2" onclick="flip(this)">
+  <div class="fc-inner">
+    <div class="fc-front">
+      <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+      <div class="fc-term">Assertion Extractor</div>
+      <div class="fc-tap">tap to reveal →</div>
+    </div>
+    <div class="fc-back">
+      <div class="fc-def">Skill that reads a document and creates one list record per factual claim, leaving the citation column blank for the next step.</div>
+      <div class="fc-tap">← tap to flip back</div>
+    </div>
+  </div>
+</div>
+
+<div class="fc" data-g="g2" onclick="flip(this)">
+  <div class="fc-inner">
+    <div class="fc-front">
+      <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+      <div class="fc-term">Citation Finder</div>
+      <div class="fc-tap">tap to reveal →</div>
+    </div>
+    <div class="fc-back">
+      <div class="fc-def">Skill that finds backing passages in the source folder for every list row with an empty citation, then writes the passage and source file back into the row.</div>
+      <div class="fc-tap">← tap to flip back</div>
+    </div>
+  </div>
+</div>
+
+<div class="fc" data-g="g1" onclick="flip(this)">
+  <div class="fc-inner">
+    <div class="fc-front">
+      <div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div>
+      <div class="fc-term">Citation Problem</div>
+      <div class="fc-tap">tap to reveal →</div>
+    </div>
+    <div class="fc-back">
+      <div class="fc-def">The slow, mechanical work of matching claims in a document to passages in source files. High effort, low judgment — ideal for automation.</div>
+      <div class="fc-tap">← tap to flip back</div>
+    </div>
+  </div>
+</div>
+
+<div class="fc" data-g="g2" onclick="flip(this)">
+  <div class="fc-inner">
+    <div class="fc-front">
+      <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+      <div class="fc-term">Empty Cell Queue</div>
+      <div class="fc-tap">tap to reveal →</div>
+    </div>
+    <div class="fc-back">
+      <div class="fc-def">Rows with no citation yet — the work queue for the Citation Finder. Re-running the finder only touches blanks, making re-runs cheap and idempotent.</div>
+      <div class="fc-tap">← tap to flip back</div>
+    </div>
+  </div>
+</div>
+
+<div class="fc" data-g="g2" onclick="flip(this)">
+  <div class="fc-inner">
+    <div class="fc-front">
+      <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+      <div class="fc-term">Explicit Invocation</div>
+      <div class="fc-tap">tap to reveal →</div>
+    </div>
+    <div class="fc-back">
+      <div class="fc-def">Naming a skill by name in the prompt instead of relying on the AI to infer it. Useful when driving a precise multi-step process or teaching teammates the skill names.</div>
+      <div class="fc-tap">← tap to flip back</div>
+    </div>
+  </div>
+</div>
+
+<div class="fc" data-g="g1" onclick="flip(this)">
+  <div class="fc-inner">
+    <div class="fc-front">
+      <div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div>
+      <div class="fc-term">Source Folder</div>
+      <div class="fc-tap">tap to reveal →</div>
+    </div>
+    <div class="fc-back">
+      <div class="fc-def">The SharePoint folder holding all backing data. The Citation Finder only searches inside this folder — facts outside it cannot get cited.</div>
+      <div class="fc-tap">← tap to flip back</div>
+    </div>
+  </div>
+</div>
+
+<div class="fc" data-g="g1" onclick="flip(this)">
+  <div class="fc-inner">
+    <div class="fc-front">
+      <div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div>
+      <div class="fc-term">Three-Skill Pipeline</div>
+      <div class="fc-tap">tap to reveal →</div>
+    </div>
+    <div class="fc-back">
+      <div class="fc-def">List Creator → Assertion Extractor → Citation Finder. Each skill does one job, writes to SharePoint, and hands off to the next.</div>
+      <div class="fc-tap">← tap to flip back</div>
+    </div>
+  </div>
+</div>
+
+<div class="fc" data-g="g2" onclick="flip(this)">
+  <div class="fc-inner">
+    <div class="fc-front">
+      <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+      <div class="fc-term">Tracking List</div>
+      <div class="fc-tap">tap to reveal →</div>
+    </div>
+    <div class="fc-back">
+      <div class="fc-def">SharePoint list with three columns — assertion, citation, source file — that all three skills read from or write to. Acts as the pipeline's shared workspace.</div>
+      <div class="fc-tap">← tap to flip back</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<footer>
+  <span>Auto-Cited Brief · All Flashcards</span>
+  <span><a href="index.html">← Library home</a></span>
+</footer>
+
+</div>
+
+<script>
+let currentFilter = 'all';
+let allFlipped = false;
+const allCards = () => document.querySelectorAll('#card-grid .fc');
+const visibleCards = () => document.querySelectorAll('#card-grid .fc:not(.hidden)');
+
+function flip(card) { card.classList.toggle('flipped'); updateCounters(); }
+
+function setFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('.ftab').forEach(t =>
+    t.classList.toggle('active', t.dataset.f === f));
+  allCards().forEach(c =>
+    c.classList.toggle('hidden', f !== 'all' && c.dataset.g !== f));
+  updateCounters();
+}
+
+function flipAll() {
+  allFlipped = !allFlipped;
+  [...visibleCards()].forEach(c => c.classList.toggle('flipped', allFlipped));
+  document.getElementById('flip-all-btn').textContent = allFlipped ? '↺ Unflip All' : '↻ Flip All';
+  updateCounters();
+}
+
+function shuffleCards() {
+  allFlipped = false;
+  document.getElementById('flip-all-btn').textContent = '↻ Flip All';
+  const grid = document.getElementById('card-grid');
+  const visible = [...grid.querySelectorAll('.fc:not(.hidden)')];
+  const hidden = [...grid.querySelectorAll('.fc.hidden')];
+  visible.forEach(c => c.classList.remove('flipped'));
+  for (let i = visible.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [visible[i], visible[j]] = [visible[j], visible[i]];
+  }
+  [...visible, ...hidden].forEach(c => grid.appendChild(c));
+  updateCounters();
+}
+
+function resetAll() {
+  allCards().forEach(c => c.classList.remove('flipped'));
+  allFlipped = false;
+  document.getElementById('flip-all-btn').textContent = '↻ Flip All';
+  updateCounters();
+}
+
+function updateCounters() {
+  const vis = [...visibleCards()];
+  const flipped = vis.filter(c => c.classList.contains('flipped'));
+  document.getElementById('visible-count').textContent = vis.length;
+  document.getElementById('flipped-count').textContent = flipped.length;
+}
+
+updateCounters();
+</script>
+</body>
+</html>

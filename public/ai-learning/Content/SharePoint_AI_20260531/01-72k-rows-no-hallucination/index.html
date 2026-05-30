@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI in SharePoint — 72,000 Rows Without Hallucinating</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4; --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf; --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+}
+*, *::before, *::after { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 80px; }
+
+/* Hero */
+.hero { padding:80px 0 36px; position:relative; }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.28em;
+  text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(42px,6.5vw,72px);
+  line-height:1.02; letter-spacing:-.025em; margin:0 0 22px; }
+h1 em { font-style:italic; color:var(--accent); }
+.dek { font-size:22px; color:var(--ink-soft); max-width:780px; margin:0 0 22px; }
+.loop { display:block; width:180px; height:8px; background:linear-gradient(90deg,var(--accent) 0%,var(--amber) 50%,var(--slate) 100%);
+  border-radius:4px; margin:6px 0 0; }
+
+/* Stats strip */
+.stats { display:flex; flex-wrap:wrap; margin:34px 0 6px; border:1px solid var(--rule);
+  border-radius:11px; overflow:hidden; background:var(--card); }
+.stats .s { flex:1 1 140px; padding:18px 22px; border-right:1px solid var(--rule); }
+.stats .s:last-child { border-right:none; }
+.stats .s .v { font-family:"Fraunces",serif; font-weight:900; font-size:30px;
+  color:var(--accent); line-height:1; }
+.stats .s .l { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft); margin-top:7px; }
+
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--ink-soft); margin:48px 0 6px; font-weight:600; }
+
+/* Practice Hub — single card (flashcards only) */
+.practice-hub { display:grid; grid-template-columns:1fr; gap:20px; margin:20px 0 0; }
+.hub-card { display:block; text-decoration:none; color:inherit;
+  border-radius:16px; padding:34px 32px; position:relative; overflow:hidden;
+  transition:transform .18s ease, box-shadow .18s ease; }
+.hub-card:hover { transform:translateY(-4px); box-shadow:0 16px 40px -14px rgba(27,26,23,.32); }
+.hub-card.flash { background:#1b1a17; color:#fff; }
+.hub-card .hc-wm { position:absolute; top:-30px; right:-10px;
+  font-family:"Fraunces",serif; font-weight:900; font-size:180px; line-height:1;
+  opacity:.07; pointer-events:none; color:#fff; }
+.hub-card .hc-type { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.2em; text-transform:uppercase; opacity:.7; margin-bottom:18px; }
+.hub-card h2 { font-family:"Fraunces",serif; font-weight:900; font-size:42px;
+  line-height:1.05; margin:0 0 14px; }
+.hub-card h2 em { font-style:italic; color:var(--accent); }
+.hub-card p { font-size:17px; opacity:.85; margin:0 0 22px; max-width:560px; }
+.hub-stat { display:flex; gap:28px; margin-bottom:24px; flex-wrap:wrap; }
+.hs { display:flex; flex-direction:column; }
+.hv { font-family:"Fraunces",serif; font-weight:900; font-size:30px; line-height:1; }
+.hl { font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.18em;
+  text-transform:uppercase; opacity:.65; margin-top:4px; }
+.hub-cta { display:inline-flex; align-items:center; gap:8px;
+  font-family:"JetBrains Mono",monospace; font-size:13px; font-weight:600;
+  padding:10px 20px; border-radius:8px; transition:all .15s; }
+.hub-card.flash .hub-cta { background:var(--accent); color:#fff; }
+
+/* Guide cards */
+.card { display:block; text-decoration:none; color:inherit;
+  background:var(--card); border:1px solid var(--rule);
+  border-left:5px solid var(--c, var(--slate));
+  border-radius:12px; padding:26px 30px 28px; margin:18px 0;
+  position:relative; overflow:hidden;
+  transition:transform .16s ease, box-shadow .16s ease; }
+.card:hover { transform:translateY(-3px); box-shadow:0 10px 30px -12px rgba(27,26,23,.28); }
+.card .wm { position:absolute; top:-22px; right:6px;
+  font-family:"Fraunces",serif; font-weight:900; font-size:150px; line-height:1;
+  color:var(--c, var(--slate)); opacity:.06; pointer-events:none; }
+.lvl-1 { --c:var(--slate); --cs:var(--slate-soft); }
+.lvl-2 { --c:var(--amber); --cs:var(--amber-soft); }
+.lvl-3 { --c:var(--accent); --cs:var(--accent-soft); }
+.lvl { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--c, var(--slate));
+  font-weight:600; margin-bottom:10px; }
+.card h3 { font-family:"Fraunces",serif; font-weight:900; font-size:28px;
+  line-height:1.1; margin:0 0 6px; letter-spacing:-.015em; }
+.card .en { display:block; font-family:"Newsreader",serif; font-weight:400;
+  font-style:italic; font-size:18px; color:var(--ink-soft); margin-top:4px; }
+.card .d { font-size:16.5px; margin:14px 0 18px; color:var(--ink-soft); max-width:680px; }
+.tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; }
+.tags span { font-family:"JetBrains Mono",monospace; font-size:10px;
+  letter-spacing:.1em; text-transform:uppercase; padding:3px 10px;
+  border-radius:4px; background:var(--cs, var(--slate-soft)); color:var(--c, var(--slate)); font-weight:600; }
+.open { font-family:"JetBrains Mono",monospace; font-size:12px; font-weight:600;
+  color:var(--c, var(--slate)); }
+.open .arw { transition:transform .14s; display:inline-block; }
+.card:hover .open .arw { transform:translateX(4px); }
+
+/* How-to */
+.howto { margin:48px 0 0; padding:24px 28px; background:var(--card);
+  border:1px solid var(--rule); border-radius:12px; }
+.howto h4 { font-family:"Fraunces",serif; font-weight:600; font-size:20px;
+  margin:0 0 10px; }
+.howto ol { margin:0; padding-left:22px; color:var(--ink-soft); }
+.howto li { margin:6px 0; }
+
+.foot { margin-top:60px; padding-top:24px; border-top:1px solid var(--rule);
+  display:flex; flex-wrap:wrap; gap:14px; justify-content:space-between; align-items:center;
+  font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--ink-soft); }
+.foot a { color:var(--accent); text-decoration:none; font-weight:600; }
+.foot a:hover { text-decoration:underline; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div class="kicker">SharePoint AI Playlist · Episode 01</div>
+    <h1>72,000 rows. <em>Zero</em> hallucinations.</h1>
+    <p class="dek">A short self-learning site that unpacks how AI in SharePoint processes 12 files and 30 megabytes of data — by writing code in a sandbox instead of guessing in chat.</p>
+    <span class="loop"></span>
+  </div>
+
+  <div class="stats">
+    <div class="s"><div class="v">3</div><div class="l">Learning Guides</div></div>
+    <div class="s"><div class="v">15+</div><div class="l">Concepts Covered</div></div>
+    <div class="s"><div class="v">15</div><div class="l">Flashcards</div></div>
+  </div>
+
+  <div class="sec-label">Practice — drill what you've learned</div>
+  <div class="practice-hub">
+    <a class="hub-card flash" href="flashcards-index.html">
+      <div class="hc-wm">🃏</div>
+      <div class="hc-type">Flip Cards · All Guides</div>
+      <div class="hub-stat">
+        <div class="hs"><span class="hv">15</span><span class="hl">Cards</span></div>
+        <div class="hs"><span class="hv">3</span><span class="hl">Guides</span></div>
+        <div class="hs"><span class="hv">Shuffle</span><span class="hl">+ Filter</span></div>
+      </div>
+      <h2>All <em>Flashcards</em></h2>
+      <p>15 flip cards across all three guides. Filter by topic, shuffle the deck, or flip everything at once.</p>
+      <span class="hub-cta">Browse Cards →</span>
+    </a>
+  </div>
+
+  <div class="sec-label">Reading guides — start here</div>
+
+  <a class="card lvl-1" href="guide-01-foundations.html">
+    <div class="wm">01</div>
+    <div class="lvl">01 · Foundations</div>
+    <h3>What AI in SharePoint actually is<span class="en">Worker agent, not chatbot</span></h3>
+    <p class="d">A worker agent that writes and runs code in a sandbox — not a Copilot-style RAG system. Get the mental model right before you trust the math.</p>
+    <div class="tags">
+      <span>Worker Agent</span><span>Sandbox</span><span>RAG</span><span>5 cards</span>
+    </div>
+    <span class="open">Read guide <span class="arw">→</span></span>
+  </a>
+
+  <a class="card lvl-2" href="guide-02-applied.html">
+    <div class="wm">02</div>
+    <div class="lvl">02 · Applied</div>
+    <h3>Processing 72,000 rows<span class="en">Where context windows fail and code wins</span></h3>
+    <p class="d">The full demo: 12 CSVs, 35 columns, 72K rows, 30 MB. Why a chat AI would fall apart here, and how tool storage and generated code make it work.</p>
+    <div class="tags">
+      <span>72K Demo</span><span>Tool Storage</span><span>Context Window</span><span>5 cards</span>
+    </div>
+    <span class="open">Read guide <span class="arw">→</span></span>
+  </a>
+
+  <a class="card lvl-3" href="guide-03-advanced.html">
+    <div class="wm">03</div>
+    <div class="lvl">03 · Advanced</div>
+    <h3>The sandbox pipeline<span class="en">Five tool calls, one trust boundary</span></h3>
+    <p class="d">End-to-end: find_files, read_files, run_in_sandbox, generate HTML, create_file. What the agent actually does between your prompt and your report.</p>
+    <div class="tags">
+      <span>Trust Boundary</span><span>Tool Pipeline</span><span>Self-Contained</span><span>5 cards</span>
+    </div>
+    <span class="open">Read guide <span class="arw">→</span></span>
+  </a>
+
+  <div class="howto">
+    <h4>How to use this site</h4>
+    <ol>
+      <li>Read the three guides in order — they build foundations → applied → advanced.</li>
+      <li>Each guide has slide-style sections with insight and misconception boxes.</li>
+      <li>When you're ready to drill, hit the flashcards. Shuffle, filter, flip all.</li>
+    </ol>
+  </div>
+
+  <div class="foot">
+    <span>Self-learning site · SharePoint AI · Episode 01 of the playlist</span>
+    <span>Source: <a href="https://www.youtube.com/watch?v=q6CriYvr8_k" target="_blank" rel="noopener">YouTube original →</a></span>
+  </div>
+</div>
+</body>
+</html>

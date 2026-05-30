@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Learning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,450;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+}
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:1040px;margin:0 auto;padding:0 28px 120px;}
+code,.mono{font-family:"JetBrains Mono",monospace;font-size:.82em;background:#ece7db;padding:.08em .38em;border-radius:4px;color:#3a382f;}
+a{color:inherit;}
+
+.hero{padding:90px 0 24px;position:relative;}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:16px;}
+.hero h1{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(46px,7vw,80px);line-height:1.0;margin:0 0 22px;letter-spacing:-.02em;max-width:880px;}
+.hero h1 em{font-style:italic;color:var(--accent);}
+.hero .dek{font-family:"Newsreader",Georgia,serif;font-style:italic;font-size:23px;color:var(--ink-soft);line-height:1.5;margin:0 0 22px;max-width:760px;}
+.spark{position:absolute;top:96px;right:0;width:120px;height:120px;opacity:.85;}
+@media(max-width:880px){.spark{display:none;}}
+
+.stats{display:flex;flex-wrap:wrap;margin:38px 0 6px;border:1px solid var(--rule);border-radius:11px;overflow:hidden;background:var(--card);}
+.stats .s{flex:1 1 140px;padding:18px 22px;border-right:1px solid var(--rule);}
+.stats .s:last-child{border-right:none;}
+.stats .s .v{font-family:"Fraunces",serif;font-weight:900;font-size:30px;color:var(--accent);line-height:1;}
+.stats .s .l{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-top:7px;}
+
+.sec-label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin:54px 0 8px;font-weight:600;}
+
+.collections{margin:14px 0 0;}
+.col-card{display:block;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--rule);border-left:5px solid var(--c,var(--slate));border-radius:14px;padding:34px 36px 32px;margin:20px 0;position:relative;overflow:hidden;transition:transform .18s ease,box-shadow .18s ease;}
+.col-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px -14px rgba(27,26,23,.28);}
+.col-card .wm{position:absolute;top:-18px;right:14px;font-family:"Fraunces",serif;font-weight:900;font-size:160px;line-height:1;color:var(--c,var(--slate));opacity:.06;pointer-events:none;letter-spacing:-.04em;}
+.col-card.cat-agent{--c:var(--slate);}
+.col-card.cat-applied{--c:var(--amber);}
+.col-card.cat-advanced{--c:var(--accent);}
+
+.col-meta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--c);font-weight:600;}
+.col-meta .dot{width:5px;height:5px;border-radius:50%;background:var(--c);opacity:.55;}
+.col-meta .date{color:var(--ink-soft);}
+
+.col-card h2{font-family:"Fraunces",serif;font-weight:600;font-size:36px;line-height:1.08;margin:0 0 4px;letter-spacing:-.015em;}
+.col-card h2 em{font-style:italic;color:var(--c);}
+.col-card .sub{display:block;font-family:"Newsreader",Georgia,serif;font-style:italic;font-size:19px;color:var(--ink-soft);margin-top:8px;font-weight:400;}
+.col-card .d{margin:16px 0 18px;font-size:17px;color:var(--ink-soft);max-width:720px;line-height:1.55;}
+.col-card .tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:22px;}
+.col-card .tags span{font-family:"JetBrains Mono",monospace;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:5px;color:var(--c);border:1.5px solid color-mix(in srgb,var(--c) 35%,transparent);background:color-mix(in srgb,var(--c) 8%,transparent);}
+.col-card .mini-stats{display:flex;gap:28px;flex-wrap:wrap;margin:0 0 22px;padding:14px 0 0;border-top:1px dashed var(--rule);}
+.col-card .ms{display:flex;flex-direction:column;}
+.col-card .mv{font-family:"Fraunces",serif;font-weight:600;font-size:22px;color:var(--c);line-height:1;}
+.col-card .ml{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--ink-soft);letter-spacing:.12em;text-transform:uppercase;margin-top:5px;}
+.col-card .open{font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;color:var(--c);letter-spacing:.06em;}
+.col-card .arw{display:inline-block;margin-left:4px;transition:transform .15s;}
+.col-card:hover .arw{transform:translateX(4px);}
+
+.empty-slot{border:1.5px dashed var(--rule);border-radius:14px;padding:34px 36px;margin:20px 0;color:var(--ink-soft);font-style:italic;text-align:center;background:transparent;}
+.empty-slot .es-k{font-family:"JetBrains Mono",monospace;font-style:normal;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);display:block;margin-bottom:8px;font-weight:600;opacity:.8;}
+.empty-slot .es-t{font-family:"Fraunces",serif;font-style:normal;font-size:22px;color:var(--ink);font-weight:600;display:block;margin-bottom:6px;}
+
+/* ---- collection groups (centralized, fully expanded) ---- */
+.group{margin:18px 0 0;}
+.group.cat-agent{--c:var(--slate);}
+.group.cat-applied{--c:var(--amber);}
+.group.cat-advanced{--c:var(--accent);}
+.group-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap;padding:18px 0 16px;border-bottom:2px solid var(--c);margin-bottom:22px;}
+.group-head .gh-l{min-width:260px;}
+.group-head .gh-meta{display:flex;align-items:center;gap:11px;flex-wrap:wrap;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--c);font-weight:600;margin-bottom:9px;}
+.group-head .gh-meta .dot{width:5px;height:5px;border-radius:50%;background:var(--c);opacity:.55;}
+.group-head .gh-meta .date{color:var(--ink-soft);}
+.group-head h2{font-family:"Fraunces",serif;font-weight:600;font-size:34px;line-height:1.05;margin:0;letter-spacing:-.015em;}
+.group-head h2 em{font-style:italic;color:var(--c);}
+.group-head .gh-sub{font-family:"Newsreader",Georgia,serif;font-style:italic;font-size:18px;color:var(--ink-soft);margin:7px 0 0;max-width:560px;}
+.group-head .gh-home{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--c);text-decoration:none;white-space:nowrap;padding-bottom:4px;}
+.group-head .gh-home .arw{display:inline-block;margin-left:4px;transition:transform .15s;}
+.group-head .gh-home:hover .arw{transform:translateX(4px);}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin:0 0 8px;}
+.site{display:flex;flex-direction:column;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--c,var(--slate));border-radius:11px;padding:18px 20px 16px;transition:transform .15s ease,box-shadow .15s ease;}
+.site:hover{transform:translateY(-3px);box-shadow:0 12px 28px -12px rgba(27,26,23,.26);}
+.site .num{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:.14em;color:var(--c,var(--slate));opacity:.85;margin-bottom:8px;}
+.site h3{font-family:"Fraunces",serif;font-weight:600;font-size:19px;line-height:1.18;margin:0 0 7px;letter-spacing:-.01em;}
+.site p{margin:0 0 14px;font-size:15px;line-height:1.46;color:var(--ink-soft);flex:1;}
+.site p code{font-size:.8em;}
+.site .open{font-family:"JetBrains Mono",monospace;font-size:11.5px;font-weight:600;color:var(--c,var(--slate));letter-spacing:.05em;margin-top:auto;}
+.site .open .arw{display:inline-block;margin-left:3px;transition:transform .15s;}
+.site:hover .open .arw{transform:translateX(4px);}
+
+.howto{background:var(--card);border:1px solid var(--rule);border-radius:11px;padding:24px 28px;margin:36px 0 0;}
+.howto h4{font-family:"Fraunces",serif;font-weight:600;font-size:20px;margin:0 0 10px;}
+.howto ul{margin:0;padding-left:0;list-style:none;}
+.howto li{padding:6px 0 6px 22px;position:relative;font-size:16px;line-height:1.5;color:var(--ink-soft);}
+.howto li::before{content:"▸";position:absolute;left:0;color:var(--accent);font-size:14px;top:8px;}
+.howto a{color:var(--accent);text-decoration:none;border-bottom:1px solid currentColor;}
+.howto code{font-size:.78em;}
+
+footer{margin-top:80px;padding-top:28px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-soft);line-height:1.6;}
+
+@media(max-width:760px){
+  .hero{padding:60px 0 16px;}
+  .col-card{padding:26px 22px 26px;}
+  .col-card h2{font-size:28px;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <svg class="spark" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M50 8 L57 42 L92 50 L57 58 L50 92 L43 58 L8 50 L43 42 Z" fill="#cc3b1d" opacity=".85"/>
+    <circle cx="50" cy="50" r="6" fill="#2f5d62"/>
+  </svg>
+  <div class="kicker">Personal Learning Index · AI</div>
+  <h1>AI <em>Learning</em></h1>
+  <p class="dek">An evolving shelf of self-contained learning collections — each one is a folder of interactive HTML guides, quizzes, and flashcards on a specific AI topic. New collections drop in over time; this page is the front door.</p>
+</header>
+
+<div class="stats">
+  <div class="s"><div class="v">2</div><div class="l">Collections</div></div>
+  <div class="s"><div class="v">24</div><div class="l">Pages · Sites &amp; Guides</div></div>
+  <div class="s"><div class="v">26</div><div class="l">Quiz Questions</div></div>
+  <div class="s"><div class="v">45</div><div class="l">Flashcards</div></div>
+</div>
+
+<div class="sec-label">Everything under <code>Content/</code> — click any card to open that page</div>
+
+<!-- ============ COLLECTION 01 ============ -->
+<section class="group cat-agent">
+  <div class="group-head">
+    <div class="gh-l">
+      <div class="gh-meta">
+        <span>Collection 01</span><span class="dot"></span>
+        <span>AI Agent Engineering</span><span class="dot"></span>
+        <span class="date">2026 · 05 · 30</span>
+      </div>
+      <h2>The AI Learning <em>Library</em></h2>
+      <p class="gh-sub">How agents actually work — from the bare loop to production infrastructure.</p>
+    </div>
+    <a class="gh-home" href="Content/Learning_Agent_20260530/index.html">Collection home <span class="arw">→</span></a>
+  </div>
+
+  <div class="grid">
+    <a class="site" href="Content/Learning_Agent_20260530/agents-from-scratch-cheatsheet.html">
+      <div class="num">GUIDE 01</div>
+      <h3>How an Agent Actually Runs</h3>
+      <p>The agent loop from scratch — mini-swe-agent, smolagents, and Mini-Agent. ReAct, tools, and the read-think-act cycle laid bare.</p>
+      <span class="open">Open guide <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/Learning_Agent_20260530/claude-code-workflow-cheatsheet.html">
+      <div class="num">GUIDE 02</div>
+      <h3>The Claude Code Workflow</h3>
+      <p>End-to-end: the harness, CLAUDE.md, Skills, MCP, Hooks, and Subagents — plus enterprise cases for putting it all to work.</p>
+      <span class="open">Open guide <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/Learning_Agent_20260530/harness-agent-interview-cheatsheet.html">
+      <div class="num">GUIDE 03</div>
+      <h3>Agent Infrastructure Deep Dive</h3>
+      <p>Memory, sandboxes, KV-cache, long-horizon execution, and the Kimi Swarm — the plumbing behind agents that run for hours.</p>
+      <span class="open">Open guide <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/Learning_Agent_20260530/quiz-index.html">
+      <div class="num">PRACTICE</div>
+      <h3>Full Quiz · All Guides</h3>
+      <p>26 questions spanning all three guides, F → A difficulty. Test recall on the agent loop, the harness, and infrastructure.</p>
+      <span class="open">Open quiz <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/Learning_Agent_20260530/flashcards-index.html">
+      <div class="num">PRACTICE</div>
+      <h3>All Flashcards · All Guides</h3>
+      <p>45 flip-cards across every guide for fast spaced review of the key terms, patterns, and mechanisms.</p>
+      <span class="open">Open flashcards <span class="arw">→</span></span>
+    </a>
+  </div>
+</section>
+
+<!-- ============ COLLECTION 02 ============ -->
+<section class="group cat-applied">
+  <div class="group-head">
+    <div class="gh-l">
+      <div class="gh-meta">
+        <span>Collection 02</span><span class="dot"></span>
+        <span>SharePoint AI in Practice</span><span class="dot"></span>
+        <span class="date">2026 · 05 · 31</span>
+      </div>
+      <h2>SharePoint AI <em>in Practice</em></h2>
+      <p class="gh-sub">Twenty-one hands-on sites on putting AI and Copilot to work inside SharePoint.</p>
+    </div>
+    <a class="gh-home" href="Content/SharePoint_AI_20260531/index.html">Collection home <span class="arw">→</span></a>
+  </div>
+
+  <div class="grid">
+    <a class="site" href="Content/SharePoint_AI_20260531/01-72k-rows-no-hallucination/index.html">
+      <div class="num">01</div>
+      <h3>72,000 Rows Without Hallucinating</h3>
+      <p>How AI in SharePoint processes 12 files and 30 MB of data by writing code in a sandbox instead of guessing in chat.</p>
+      <span class="open">Open site <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/SharePoint_AI_20260531/02-beautiful-libraries-copilot/index.html">
+      <div class="num">02</div>
+      <h3>Beautiful Libraries with Copilot</h3>
+      <p>Turn ordinary document libraries into Bento grids, blueprints, and whatever else you can describe — "that can't be SharePoint?!"</p>
+      <span class="open">Open site <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/SharePoint_AI_20260531/03-no-code-quick-steps/index.html">
+      <div class="num">03</div>
+      <h3>No-Code Quick Steps</h3>
+      <p>One-click buttons inside any list that quietly run AI in SharePoint — for users who never need to know it's there.</p>
+      <span class="open">Open site <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/SharePoint_AI_20260531/04-living-knowledge-base/index.html">
+      <div class="num">04</div>
+      <h3>A Living Knowledge Base</h3>
+      <p>Document library, submissions folder, gap list, expert directory, and context file working as one organism — driven by four AI Skills.</p>
+      <span class="open">Open site <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/SharePoint_AI_20260531/05-learn-from-mistakes/index.html">
+      <div class="num">05</div>
+      <h3>Learn From Its Mistakes</h3>
+      <p>Group-scope context lets you write learning rules that turn every correction into a permanent lesson. Audit failures, then teach.</p>
+      <span class="open">Open site <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/SharePoint_AI_20260531/06-dashboard-from-data/index.html">
+      <div class="num">06</div>
+      <h3>A Dashboard From Your Data</h3>
+      <p>A reusable hiring-pipeline Skill turns messy SharePoint lists into an interactive HTML dashboard — and a PowerPoint on demand.</p>
+      <span class="open">Open site <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/SharePoint_AI_20260531/07-ai-demo-videos/index.html">
+      <div class="num">07</div>
+      <h3>AI-Generated Demo Videos</h3>
+      <p>A two-guide library on the new <code>--record</code> flag for producing polished demo videos of SharePoint AI in minutes.</p>
+      <span class="open">Open site <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/SharePoint_AI_20260531/08-social-media-workflow/index.html">
+      <div class="num">08</div>
+      <h3>A Social Media Workflow</h3>
+      <p>Narrow, composable skills draft LinkedIn posts, YouTube descriptions, chapter timestamps, and titles — all from one transcript.</p>
+      <span class="open">Open site <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/SharePoint_AI_20260531/09-demo-runner-tool/index.html">
+      <div class="num">09</div>
+      <h3>The Demo Runner Tool</h3>
+      <p>A three-guide library on the free, GitHub-hosted demo runner — the launcher, the demo file format, and a clean on-stage widget UI.</p>
+      <span class="open">Open site <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/SharePoint_AI_20260531/10-three-ways-improve/index.html">
+      <div class="num">10</div>
+      <h3>Three Ways to Improve</h3>
+      <p>Reference files to keep context tight. Permissions to scope the AI's menu. Evals to let skills optimize themselves.</p>
+      <span class="open">Open site <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/SharePoint_AI_20260531/11-time-off-tracker/index.html">
+      <div class="num">11</div>
+      <h3>An Autonomous Time-Off Tracker</h3>
+      <p>Two lists, four skills, one calendar, one homepage — built end-to-end with a Ralph Loop in about 20 minutes.</p>
+      <span class="open">Open site <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/SharePoint_AI_20260531/12-getting-started/index.html">
+      <div class="num">12</div>
+      <h3>Getting Started with AI Skills</h3>
+      <p>Build, edit, and list skills with plain-language utterances. Promote any ad-hoc action into a permanent, scoped skill.</p>
+      <span class="open">Open site <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/SharePoint_AI_20260531/13-branching-skills/index.html">
+      <div class="num">13</div>
+      <h3>Branching Skills, Smart Formatting</h3>
+      <p>One parent skill, two reference files, three prompts — choosing column formatting, view formatting, or both before it touches your list.</p>
+      <span class="open">Open site <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/SharePoint_AI_20260531/14-ultimate-list-styling/index.html">
+      <div class="num">14</div>
+      <h3>The Ultimate List Styling</h3>
+      <p>The Patterns &amp; Practices catalog packaged as a skill, your brand layered on top — every list styled on-brand with no JSON by hand.</p>
+      <span class="open">Open site <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/SharePoint_AI_20260531/15-autonomous-list-builder/index.html">
+      <div class="num">15</div>
+      <h3>The Autonomous List Builder</h3>
+      <p>One conference list, three tiers. The Agentic Builder scaffolds it in a prompt; the Ralph Loop plans, builds, grades, and ships it.</p>
+      <span class="open">Open site <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/SharePoint_AI_20260531/16-stop-sorting-files/index.html">
+      <div class="num">16</div>
+      <h3>Stop Sorting Files Manually</h3>
+      <p>Let SharePoint AI scan a messy library, propose folder schemes, and rename the worst offenders — with you in control of every move.</p>
+      <span class="open">Open site <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/SharePoint_AI_20260531/17-metadata-fixes-ai/index.html">
+      <div class="num">17</div>
+      <h3>Metadata Fixes Your Library</h3>
+      <p>AI can summarize a contract in seconds but can't find every one missing a clause. Metadata — extracted at upload — is the missing layer.</p>
+      <span class="open">Open site <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/SharePoint_AI_20260531/18-brand-compliance/index.html">
+      <div class="num">18</div>
+      <h3>Automated Brand Compliance</h3>
+      <p>Encode a brand guide as a reusable Skill, run it across a whole library in one prompt, and wire it to a Quick Step button.</p>
+      <span class="open">Open site <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/SharePoint_AI_20260531/19-auto-cited-brief/index.html">
+      <div class="num">19</div>
+      <h3>An Auto-Cited Brief</h3>
+      <p>List Creator, Assertion Extractor, and Citation Finder chain together to turn an uncited brief into a fully sourced table.</p>
+      <span class="open">Open site <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/SharePoint_AI_20260531/20-resume-collection/index.html">
+      <div class="num">20</div>
+      <h3>Organize a Resume Collection</h3>
+      <p>A pile of resumes becomes a structured candidate library through seven conversational prompts — extract, categorize, alert, track, color.</p>
+      <span class="open">Open site <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/SharePoint_AI_20260531/21-panel-of-experts/index.html">
+      <div class="num">21</div>
+      <h3>Review Like a Panel of Experts</h3>
+      <p>A Review Council skill channels seven reviewer personas — Adversary, Analyst, Storyteller, and more — in a single pass over your content.</p>
+      <span class="open">Open site <span class="arw">→</span></span>
+    </a>
+  </div>
+</section>
+
+<div class="sec-label" style="margin-top:46px;">Coming up</div>
+<div class="collections">
+  <div class="empty-slot">
+    <span class="es-k">Slot 03</span>
+    <span class="es-t">Next collection</span>
+    Drop a new folder into <code>Content/</code> with its own pages, then add a <code>group</code> section above pointing at them.
+  </div>
+</div>
+
+<div class="sec-label">How this index works</div>
+<div class="howto">
+  <h4>Conventions</h4>
+  <ul>
+    <li><b>One folder per collection</b> — every collection lives in <code>Content/&lt;Name_YYYYMMDD&gt;/</code> and keeps its own <code>index.html</code> as a collection home.</li>
+    <li><b>This page lists everything</b> — each individual guide, site, quiz, and flashcard page under <code>Content/</code> is linked directly here, grouped by collection.</li>
+    <li><b>Self-contained</b> — each collection bundles its own pages and styles. The folders don't depend on each other.</li>
+    <li><b>Adding pages</b> — drop the new HTML into its collection folder, then copy a <code>.site</code> card in the matching <code>.group</code> and point <code>href</code> at it. For a brand-new collection, copy a whole <code>section.group</code> block and update the stats above.</li>
+    <li><b>Color lanes</b> — <code>cat-agent</code> (slate), <code>cat-applied</code> (amber), <code>cat-advanced</code> (vermillion). Reuse, or add a new <code>.cat-*</code> rule with a fresh <code>--c</code>.</li>
+  </ul>
+</div>
+
+<footer>
+  AI LEARNING · PERSONAL LEARNING INDEX · 2026<br>
+  EACH COLLECTION IS SELF-CONTAINED — VERIFY FAST-MOVING SPECIFICS AGAINST CURRENT SOURCES BEFORE RELYING ON THEM.
+</footer>
+
+</div>
+</body>
+</html>

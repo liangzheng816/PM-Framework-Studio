@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Social Media Workflow with SharePoint Skills — Learning Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #f4f1ea; --ink: #1b1a17; --ink-soft: #4a463d; --rule: #d8d2c4;
+  --accent: #cc3b1d; --accent-soft: #f3ddd4;
+  --slate: #2f5d62; --slate-soft: #dde7e6;
+  --amber: #9a6a00; --amber-soft: #f4e9cf;
+  --card: #fbf9f4;
+  --g1: #2f5d62; --g2: #9a6a00; --g3: #cc3b1d;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: "Newsreader", Georgia, serif; font-size: 18px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 28px 120px; }
+.kicker { font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: .28em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 18px; }
+.hero { padding-top: 56px; padding-bottom: 8px; position: relative; }
+.hero h1 { font-family: "Fraunces", serif; font-weight: 900; font-size: clamp(40px, 6.4vw, 68px); letter-spacing: -.025em; line-height: 1.02; margin: 6px 0 18px; }
+.hero .dek { font-size: 22px; color: var(--ink-soft); max-width: 760px; margin: 0; }
+.loop-svg { position: absolute; right: -10px; top: 40px; opacity: .12; pointer-events: none; }
+.sec-label { font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-soft); margin: 48px 0 6px; font-weight: 600; }
+.stats { display: flex; flex-wrap: wrap; margin: 34px 0 6px; border: 1px solid var(--rule); border-radius: 11px; overflow: hidden; background: var(--card); }
+.stats .s { flex: 1 1 140px; padding: 18px 22px; border-right: 1px solid var(--rule); }
+.stats .s:last-child { border-right: none; }
+.stats .s .v { font-family: "Fraunces", serif; font-weight: 900; font-size: 30px; color: var(--accent); line-height: 1; }
+.stats .s .l { font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); margin-top: 7px; }
+
+.practice-hub { display: grid; grid-template-columns: 1fr; gap: 20px; margin: 20px 0 0; }
+.hub-card { display: block; text-decoration: none; color: inherit; border-radius: 16px; padding: 34px 32px; position: relative; overflow: hidden; transition: transform .18s ease, box-shadow .18s ease; }
+.hub-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px -14px rgba(27,26,23,.32); }
+.hub-card.flash { background: #1b1a17; color: #fff; }
+.hub-card .hc-wm { position: absolute; top: -30px; right: -10px; font-family: "Fraunces", serif; font-weight: 900; font-size: 180px; line-height: 1; opacity: .07; pointer-events: none; color: #fff; }
+.hc-type { font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: .2em; text-transform: uppercase; opacity: .75; margin-bottom: 14px; }
+.hub-stat { display: flex; gap: 28px; margin: 16px 0 18px; }
+.hs { display: flex; flex-direction: column; }
+.hv { font-family: "Fraunces", serif; font-weight: 900; font-size: 30px; line-height: 1; }
+.hl { font-family: "JetBrains Mono", monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; opacity: .75; margin-top: 6px; }
+.hub-card h2 { font-family: "Fraunces", serif; font-weight: 900; font-size: clamp(28px, 4vw, 38px); margin: 8px 0 10px; letter-spacing: -.02em; line-height: 1.05; }
+.hub-card h2 em { font-style: italic; font-weight: 400; }
+.hub-card p { font-size: 17px; line-height: 1.5; opacity: .82; max-width: 540px; margin: 0 0 22px; }
+.hub-cta { display: inline-flex; align-items: center; gap: 8px; font-family: "JetBrains Mono", monospace; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 8px; transition: all .15s; }
+.hub-card.flash .hub-cta { background: var(--accent); color: #fff; }
+
+.card { display: block; text-decoration: none; color: inherit; background: var(--card); border: 1px solid var(--rule); border-left: 5px solid var(--c, var(--slate)); border-radius: 12px; padding: 26px 30px 28px; margin: 18px 0; position: relative; overflow: hidden; transition: transform .16s ease, box-shadow .16s ease; }
+.card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px -12px rgba(27,26,23,.28); }
+.card .wm { position: absolute; top: -22px; right: 6px; font-family: "Fraunces", serif; font-weight: 900; font-size: 150px; line-height: 1; color: var(--c, var(--slate)); opacity: .06; pointer-events: none; }
+.card .lvl { font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--c, var(--slate)); font-weight: 600; margin-bottom: 8px; }
+.card h3 { font-family: "Fraunces", serif; font-weight: 900; font-size: 28px; letter-spacing: -.015em; line-height: 1.1; margin: 0 0 8px; }
+.card h3 .en { display: block; font-family: "Newsreader", serif; font-style: italic; font-weight: 400; font-size: 18px; color: var(--ink-soft); margin-top: 4px; letter-spacing: 0; }
+.card .d { font-size: 17px; color: var(--ink-soft); margin: 8px 0 14px; max-width: 700px; }
+.card .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.card .tags span { font-family: "JetBrains Mono", monospace; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; background: var(--cs, var(--slate-soft)); color: var(--c, var(--slate)); }
+.card .open { font-family: "JetBrains Mono", monospace; font-size: 12px; font-weight: 600; color: var(--c, var(--slate)); letter-spacing: .12em; text-transform: uppercase; }
+.card .arw { transition: transform .14s; display: inline-block; }
+.card:hover .arw { transform: translateX(4px); }
+.lvl-1 { --c: var(--slate); --cs: var(--slate-soft); }
+.lvl-2 { --c: var(--amber); --cs: var(--amber-soft); }
+.lvl-3 { --c: var(--accent); --cs: var(--accent-soft); }
+
+.howto { margin-top: 56px; padding: 26px 30px; background: var(--card); border: 1px solid var(--rule); border-radius: 12px; }
+.howto h3 { font-family: "Fraunces", serif; font-weight: 900; font-size: 22px; margin: 0 0 10px; }
+.howto p { font-size: 16px; color: var(--ink-soft); margin: 6px 0; }
+
+footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--rule); font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--ink-soft); display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; }
+footer a { color: var(--accent); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+@media (max-width: 760px) { .card { padding: 22px 22px 24px; } .card h3 { font-size: 24px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+  <svg class="loop-svg" width="180" height="180" viewBox="0 0 180 180" aria-hidden="true">
+    <circle cx="90" cy="90" r="70" fill="none" stroke="#cc3b1d" stroke-width="2"/>
+    <circle cx="90" cy="90" r="50" fill="none" stroke="#2f5d62" stroke-width="2"/>
+    <circle cx="90" cy="90" r="30" fill="none" stroke="#9a6a00" stroke-width="2"/>
+  </svg>
+  <div class="kicker">SharePoint AI · Video 08</div>
+  <h1>Social Media Workflow with SharePoint Skills</h1>
+  <p class="dek">A 2-guide library on using narrow, composable SharePoint skills to draft LinkedIn posts, YouTube descriptions, chapter timestamps, and title candidates — all from a single video transcript.</p>
+</div>
+
+<div class="stats">
+  <div class="s"><div class="v">2</div><div class="l">Learning Guides</div></div>
+  <div class="s"><div class="v">12+</div><div class="l">Concepts Covered</div></div>
+  <div class="s"><div class="v">12</div><div class="l">Flashcards</div></div>
+</div>
+
+<div class="sec-label">Practice — drill what you've learned</div>
+<div class="practice-hub">
+  <a class="hub-card flash" href="flashcards-index.html">
+    <div class="hc-wm">🃏</div>
+    <div class="hc-type">Flip Cards · All Guides</div>
+    <div class="hub-stat">
+      <div class="hs"><span class="hv">12</span><span class="hl">Cards</span></div>
+      <div class="hs"><span class="hv">2</span><span class="hl">Guides</span></div>
+      <div class="hs"><span class="hv">Shuffle</span><span class="hl">+ Filter</span></div>
+    </div>
+    <h2>All <em>Flashcards</em></h2>
+    <p>12 flip cards across both guides. Filter by topic, shuffle the deck, or flip everything at once.</p>
+    <span class="hub-cta">Browse Cards →</span>
+  </a>
+</div>
+
+<div class="sec-label">Reading Guides</div>
+
+<a class="card lvl-1" href="guide-01-foundations.html">
+  <div class="wm">01</div>
+  <div class="lvl">01 · Foundations</div>
+  <h3>SharePoint Skills as Personal Content Tools<span class="en">What a skill is, and why the transcript is the input</span></h3>
+  <p class="d">The mental model: skills are narrow, reusable building blocks; the transcript carries the content; the human still writes the final post.</p>
+  <div class="tags">
+    <span>Skills</span><span>Transcripts</span><span>Clipchamp</span><span>5 cards</span>
+  </div>
+  <span class="open">Read guide <span class="arw">→</span></span>
+</a>
+
+<a class="card lvl-2" href="guide-02-applied.html">
+  <div class="wm">02</div>
+  <div class="lvl">02 · Applied</div>
+  <h3>Composing Skills — The Generate Socials Chain<span class="en">Three skills, one command, output written back to SharePoint columns</span></h3>
+  <p class="d">How a thin composing skill chains the LinkedIn, YouTube description, and title-candidate skills, then writes the drafts back to the source item's columns.</p>
+  <div class="tags">
+    <span>Composition</span><span>Generate Socials</span><span>Columns</span><span>7 cards</span>
+  </div>
+  <span class="open">Read guide <span class="arw">→</span></span>
+</a>
+
+<div class="howto">
+  <h3>How to use this library</h3>
+  <p>Guide 01 sets up the mental model: what a skill is and why the transcript matters. Guide 02 walks through how three small skills compose into one "generate socials" command that drafts an entire post-release content set.</p>
+  <p>Use the flashcards to drill the vocabulary — skill, composition, write-back, generate socials. Filter by guide if you want to study one chapter at a time.</p>
+</div>
+
+<footer>
+  <span>Video 08 · My Social Media Workflow with SharePoint Skills</span>
+  <span><a href="https://www.youtube.com/watch?v=O7kY41kZTIA" target="_blank" rel="noopener">Original video on YouTube ↗</a></span>
+</footer>
+
+</div>
+</body>
+</html>

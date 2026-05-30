@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Guide 01 · Foundations — Autonomous List Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--slate);
+}
+*,*::before,*::after { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; counter-reset:slide; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);
+  margin:48px 0 6px; font-weight:600; }
+code,.mono { font-family:"JetBrains Mono",monospace; font-size:.82em;
+  background:#ece7db; padding:.08em .38em; border-radius:4px; color:#3a382f; }
+.back { font-family:"JetBrains Mono",monospace; font-size:12px;
+  text-decoration:none; color:var(--ink-soft); display:inline-flex;
+  align-items:center; gap:6px; margin-bottom:22px; border:1px solid var(--rule);
+  border-radius:6px; padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px;
+  letter-spacing:.28em; text-transform:uppercase; color:var(--accent);
+  font-weight:600; margin-bottom:18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(36px,5.5vw,56px);
+  line-height:1.02; margin:0 0 16px; letter-spacing:-.02em; }
+.dek { font-size:20px; color:var(--ink-soft); max-width:720px; margin:0 0 30px; }
+.topnav { position:sticky; top:0; z-index:10; background:var(--paper);
+  border-bottom:1px solid var(--rule); padding:12px 0; margin:24px 0 0;
+  display:flex; flex-wrap:wrap; gap:6px; }
+.topnav a { font-family:"JetBrains Mono",monospace; font-size:11px;
+  font-weight:600; text-decoration:none; color:var(--ink-soft);
+  padding:5px 10px; border-radius:5px; letter-spacing:.05em;
+  text-transform:uppercase; transition:all .12s; }
+.topnav a:hover { background:var(--guide-color); color:#fff; }
+.meta-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:28px 0 12px; }
+@media (max-width:760px) { .meta-grid { grid-template-columns:1fr; } }
+.meta { background:var(--card); border:1px solid var(--rule);
+  border-top:3px solid var(--guide-color); border-radius:10px; padding:18px 20px; }
+.meta .mlbl { font-family:"JetBrains Mono",monospace; font-size:10px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft);
+  margin-bottom:8px; font-weight:600; }
+.meta .mtxt { font-family:"Fraunces",serif; font-weight:600; font-size:18px; line-height:1.3; }
+
+section:not(#quiz):not(#flashcards) {
+  counter-increment: slide;
+  background: var(--card);
+  border: 1.5px solid color-mix(in srgb, var(--guide-color, var(--slate)) 28%, var(--rule));
+  border-radius: 18px;
+  box-shadow: 0 8px 36px -10px rgba(27,26,23,.18), 0 1px 0 rgba(27,26,23,.04);
+  margin: 48px 0; overflow: hidden; position: relative;
+}
+section:not(#quiz):not(#flashcards) h2 {
+  margin: 0; padding: 26px 36px 22px;
+  background: var(--guide-color, var(--slate));
+  color: #fff; font-family: "Fraunces", serif;
+  font-weight: 900; font-size: clamp(20px, 2.8vw, 26px);
+  letter-spacing: -.015em; line-height: 1.1;
+  display: flex; align-items: flex-start; gap: 14px;
+}
+section:not(#quiz):not(#flashcards) h2::before {
+  content: counter(slide, decimal-leading-zero);
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 600; font-size: 12px; letter-spacing: .1em;
+  background: rgba(255,255,255,.16); color: rgba(255,255,255,.9);
+  border: 1px solid rgba(255,255,255,.28);
+  padding: 4px 10px; border-radius: 5px;
+  flex-shrink: 0; margin-top: 3px; white-space: nowrap;
+}
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre {
+  margin-left: 36px; margin-right: 36px;
+}
+section:not(#quiz):not(#flashcards) > p:first-of-type { margin-top: 28px; }
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child { margin-bottom: 34px; }
+section:not(#quiz):not(#flashcards)::after {
+  content: ""; display: block; height: 4px;
+  background: linear-gradient(90deg,
+    var(--guide-color, var(--slate)) 0%,
+    color-mix(in srgb, var(--guide-color, var(--slate)) 30%, transparent) 100%);
+  margin-top: 34px; opacity: .35;
+}
+@media (max-width:680px) {
+  section:not(#quiz):not(#flashcards) h2 { padding:20px 22px 18px; font-size:20px; }
+  section:not(#quiz):not(#flashcards) > p,
+  section:not(#quiz):not(#flashcards) > .insight,
+  section:not(#quiz):not(#flashcards) > .misconception,
+  section:not(#quiz):not(#flashcards) > blockquote { margin-left:22px; margin-right:22px; }
+}
+
+.insight, .misconception { border-radius:10px; padding:18px 22px; margin:22px 0; font-size:17px; line-height:1.5; }
+.insight { border-left:4px solid var(--slate); background:var(--slate-soft); }
+.misconception { border-left:4px solid var(--accent); background:var(--accent-soft); }
+.insight::before { content:"✦ Key insight — "; font-weight:600; color:var(--slate); }
+.misconception::before { content:"✕ Common misconception — "; font-weight:600; color:var(--accent); }
+
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
+.fc { perspective:900px; height:190px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%;
+  transform-style:preserve-3d;
+  transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front, .fc-back { position:absolute; inset:0; border-radius:13px;
+  padding:22px 22px 18px; backface-visibility:hidden;
+  -webkit-backface-visibility:hidden; display:flex; flex-direction:column;
+  justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back { background:#7a5400; }
+.fc[data-g="g3"] .fc-front { border-left:4px solid var(--g3); }
+.fc[data-g="g3"] .fc-back { background:#3a1a10; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc[data-g="g3"] .fc-term { color:var(--g3); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc[data-g="g3"] .fc-def { color:#f5d6ce; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px;
+  color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px;
+  font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+  padding:2px 8px; border-radius:4px; border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent); background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent); background:color-mix(in srgb,var(--g2) 10%,transparent); }
+.gtag.g3 { color:var(--g3); border-color:color-mix(in srgb,var(--g3) 40%,transparent); background:color-mix(in srgb,var(--g3) 10%,transparent); }
+.footnav { margin-top:60px; padding-top:24px; border-top:1px solid var(--rule);
+  display:flex; flex-wrap:wrap; gap:14px; justify-content:space-between;
+  font-family:"JetBrains Mono",monospace; font-size:12px; }
+.footnav a { color:var(--ink-soft); text-decoration:none; padding:8px 14px;
+  border:1px solid var(--rule); border-radius:6px; }
+.footnav a:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+@media (max-width:760px) { .fc-grid { grid-template-columns:1fr 1fr; } }
+@media (max-width:420px) { .fc-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← Library</a>
+  <div class="kicker">01 · Foundations</div>
+  <h1>The easy path — Agentic Builder</h1>
+  <p class="dek">The same goal — a conference session-tracking list — built three ways. The easiest way is one prompt to SharePoint's new Agentic Builder, which scaffolds a site, a list, suggested columns, and suggested views in one shot.</p>
+
+  <nav class="topnav">
+    <a href="#agentic-builder">01 Agentic Builder</a>
+    <a href="#one-prompt">02 One prompt</a>
+    <a href="#suggested-views">03 Suggested views</a>
+    <a href="#three-tiers">04 Three tiers</a>
+    <a href="#flashcards">Flashcards</a>
+  </nav>
+
+  <div class="sec-label">Meta takeaways</div>
+  <div class="meta-grid">
+    <div class="meta"><div class="mlbl">Tool</div><div class="mtxt">Agentic Builder is the new SharePoint entry point for "describe a site, get a site."</div></div>
+    <div class="meta"><div class="mlbl">Input</div><div class="mtxt">A few sentences of plain English. Names columns, lists what views you want.</div></div>
+    <div class="meta"><div class="mlbl">Output</div><div class="mtxt">Site, landing page, list, columns, suggested views — all scaffolded in one pass.</div></div>
+  </div>
+
+  <section id="agentic-builder">
+    <h2>The Agentic Builder is the new front door</h2>
+    <p>SharePoint now has an Agentic Builder — a prompt-first tool that takes a description of a site you want and scaffolds it. Not just an empty page: a full site shell with a landing page and any lists you describe.</p>
+    <div class="insight">The Agentic Builder is upstream of any styling work. It creates the site itself from a paragraph of intent.</div>
+    <p>This is different from the styling skills you saw in earlier videos. Those skills decorate existing lists. The Agentic Builder creates the lists from nothing.</p>
+    <div class="misconception">The Agentic Builder isn't a wizard with predefined templates. It reads your description and decides what columns, choices, and views are appropriate for that domain.</div>
+  </section>
+
+  <section id="one-prompt">
+    <h2>One prompt, one site</h2>
+    <p>The demo prompt: <em>generate a site for running Zac Con 2026. We need a landing page and a list for submitting session ideas that we'll review and approve. Sessions need a title, speakers, description, 100–400 level assignments, conference track, status, and a link to the deck.</em></p>
+    <div class="insight">The prompt names the domain (conference), the artefacts (landing page, list), and the schema (columns). The builder fills in the rest.</div>
+    <p>The result, before any human edits, is a working site with the list, the columns the prompt named, and a few extra columns the builder added because they fit the domain.</p>
+  </section>
+
+  <section id="suggested-views">
+    <h2>Suggested views come back for free</h2>
+    <p>Along with the scaffold, the builder proposes views the user didn't explicitly ask for — like "Approved Sessions" and "Pending Review." These are inferred from the status column the prompt named.</p>
+    <div class="insight">The builder uses the columns you describe to guess views that make the list useful day one. Status columns become filter views.</div>
+    <p>The author treats these suggestions as a starting point, not the final answer. The point isn't that the views are perfect — it's that they're there before anyone asked for them.</p>
+    <div class="misconception">Suggested views aren't pinned defaults. You can throw them out and create your own — the builder just spares you from starting blank.</div>
+  </section>
+
+  <section id="three-tiers">
+    <h2>Three tiers, same end goal</h2>
+    <p>The video runs the same scenario — a conference session list — three ways: easy (Agentic Builder, one prompt), moderate (manual prompting with voice control), and advanced (a self-iterating loop the author calls Ralph). Each tier trades less control for more automation.</p>
+    <div class="insight">The same goal lives on a spectrum of automation. The easy tier gets you 80% in a single prompt. The advanced tier hands the whole job to an agent loop.</div>
+    <p>This guide covers the easy tier. The next guide is the moderate tier — voice-driven manual prompting. Guide 03 covers the advanced Ralph Loop.</p>
+    <div class="misconception">The advanced tier isn't strictly better. It's slower, less controllable in the moment, and worth using only when you want to hand off the full job, not when you want a fast scaffold.</div>
+  </section>
+
+  <section id="flashcards">
+    <div class="sec-label">Flashcards — Foundations</div>
+    <div class="fc-grid">
+
+      <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')">
+        <div class="fc-inner">
+          <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Agentic Builder</div><div class="fc-tap">tap to reveal →</div></div>
+          <div class="fc-back"><div class="fc-def">SharePoint's new prompt-first site builder. Takes a description of the site you want and scaffolds the landing page, lists, columns, and suggested views.</div><div class="fc-tap">← tap to flip back</div></div>
+        </div>
+      </div>
+
+      <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')">
+        <div class="fc-inner">
+          <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Scaffold prompt</div><div class="fc-tap">tap to reveal →</div></div>
+          <div class="fc-back"><div class="fc-def">A single paragraph that names the domain, the artefacts (site, lists), and the column schema. The Agentic Builder produces the whole shell from it.</div><div class="fc-tap">← tap to flip back</div></div>
+        </div>
+      </div>
+
+      <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')">
+        <div class="fc-inner">
+          <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Suggested views</div><div class="fc-tap">tap to reveal →</div></div>
+          <div class="fc-back"><div class="fc-def">Filter views the builder proposes based on columns you defined (e.g. status → Approved Sessions, Pending Review). Free starting point you can edit.</div><div class="fc-tap">← tap to flip back</div></div>
+        </div>
+      </div>
+
+      <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')">
+        <div class="fc-inner">
+          <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Three-tier demo</div><div class="fc-tap">tap to reveal →</div></div>
+          <div class="fc-back"><div class="fc-def">The video's structure — easy (Agentic Builder), moderate (manual prompting + voice), advanced (Ralph self-iterating loop). Same goal, three levels of automation.</div><div class="fc-tap">← tap to flip back</div></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="footnav">
+    <a href="index.html">← Back to library</a>
+    <a href="guide-02-applied.html">Guide 02 · Applied →</a>
+  </div>
+</div>
+</body>
+</html>

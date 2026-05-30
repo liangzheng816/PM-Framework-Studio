@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flashcards — Branching AI Skills in SharePoint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+}
+*,*::before,*::after { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);
+  margin:36px 0 6px; font-weight:600; }
+.back { font-family:"JetBrains Mono",monospace; font-size:12px;
+  text-decoration:none; color:var(--ink-soft); display:inline-flex;
+  align-items:center; gap:6px; margin-bottom:22px; border:1px solid var(--rule);
+  border-radius:6px; padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px;
+  letter-spacing:.28em; text-transform:uppercase; color:var(--accent);
+  font-weight:600; margin-bottom:18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(36px,5.5vw,56px);
+  line-height:1.02; margin:0 0 16px; letter-spacing:-.02em; }
+.dek { font-size:20px; color:var(--ink-soft); max-width:720px; margin:0 0 30px; }
+
+.controls { display:flex; flex-wrap:wrap; gap:14px; justify-content:space-between;
+  align-items:center; margin:24px 0; padding:14px 16px; background:var(--card);
+  border:1px solid var(--rule); border-radius:12px; }
+.filter-tabs { display:flex; flex-wrap:wrap; gap:6px; }
+.ftab { font-family:"JetBrains Mono",monospace; font-size:12px; font-weight:600;
+  padding:6px 14px; border-radius:6px; border:2px solid transparent;
+  cursor:pointer; background:transparent; color:var(--ink-soft); transition:all .14s; }
+.ftab:hover { background:#ece7db; }
+.ftab.active { color:#fff; border-color:transparent; }
+.ftab[data-f="all"].active { background:var(--ink); }
+.ftab[data-f="g1"].active { background:var(--g1); }
+.ftab[data-f="g2"].active { background:var(--g2); }
+.ctrl-btns { display:flex; gap:8px; }
+.cbtn { font-family:"JetBrains Mono",monospace; font-size:12px; font-weight:600;
+  padding:7px 14px; border-radius:6px; border:1.5px solid var(--rule);
+  background:transparent; cursor:pointer; color:var(--ink); transition:all .14s; }
+.cbtn:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.counter { font-family:"JetBrains Mono",monospace; font-size:12px;
+  color:var(--ink-soft); margin:18px 0 18px; }
+
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
+.fc { perspective:900px; height:190px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%;
+  transform-style:preserve-3d;
+  transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front, .fc-back { position:absolute; inset:0; border-radius:13px;
+  padding:22px 22px 18px; backface-visibility:hidden;
+  -webkit-backface-visibility:hidden; display:flex; flex-direction:column;
+  justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back { background:#7a5400; }
+.fc[data-g="g3"] .fc-front { border-left:4px solid var(--g3); }
+.fc[data-g="g3"] .fc-back { background:#3a1a10; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc[data-g="g3"] .fc-term { color:var(--g3); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc[data-g="g3"] .fc-def { color:#f5d6ce; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px;
+  color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px;
+  font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+  padding:2px 8px; border-radius:4px; border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent); background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent); background:color-mix(in srgb,var(--g2) 10%,transparent); }
+.gtag.g3 { color:var(--g3); border-color:color-mix(in srgb,var(--g3) 40%,transparent); background:color-mix(in srgb,var(--g3) 10%,transparent); }
+
+.crosslink { margin-top:60px; padding:18px 22px; background:var(--card);
+  border:1px solid var(--rule); border-radius:12px; display:flex;
+  justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; }
+.crosslink a { font-family:"JetBrains Mono",monospace; font-size:12px;
+  text-decoration:none; color:var(--ink); padding:8px 14px;
+  border:1.5px solid var(--ink); border-radius:6px; }
+.crosslink a:hover { background:var(--ink); color:var(--paper); }
+@media (max-width:760px) { .fc-grid { grid-template-columns:1fr 1fr; } }
+@media (max-width:420px) { .fc-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← Library</a>
+  <div class="kicker">Flashcard Deck · All Guides · 11 Unique Cards</div>
+  <h1>All flashcards</h1>
+  <p class="dek">Every concept from this video as a flip card. Filter by guide, shuffle the deck, or flip everything at once.</p>
+
+  <div class="controls">
+    <div class="filter-tabs">
+      <button class="ftab active" data-f="all" onclick="setFilter('all')">All 11</button>
+      <button class="ftab" data-f="g1" onclick="setFilter('g1')">01 · Foundations</button>
+      <button class="ftab" data-f="g2" onclick="setFilter('g2')">02 · Applied</button>
+    </div>
+    <div class="ctrl-btns">
+      <button class="cbtn" onclick="shuffleCards()">⇄ Shuffle</button>
+      <button class="cbtn" id="flip-all-btn" onclick="flipAll()">↻ Flip All</button>
+      <button class="cbtn" onclick="resetAll()">↺ Reset</button>
+    </div>
+  </div>
+
+  <div class="counter">Showing <span id="visible-count">11</span> cards · <span id="flipped-count">0</span> flipped</div>
+
+  <div class="fc-grid" id="card-grid">
+
+    <div class="fc" data-g="g2" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Brand overlay</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">A second skill that layers brand rules (the "forest brand") on top of the formatting work, so styled lists stay on-brand.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Both-path branch</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">When a request spans multiple sub-areas, the classifier loads more than one reference file in the same turn instead of choosing a single branch.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Branching skill</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">A parent skill that classifies the request and loads one of several reference files on demand instead of inlining all knowledge up front.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Classifier step</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">The first thing the parent skill does — read the prompt, pick which reference file(s) apply, log the decision, then load.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Column formatting</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">SharePoint JSON that styles a single column's cells — colour-coded status, icons, progress bars. Different schema from view formatting.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Conditional load</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">Pulling a reference file into the model's context only when this request actually needs it. Saves context for knowledge you sometimes need.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Governance pattern</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">The general use of branching skills to gate heavy knowledge — governance, security, naming rules — behind a classifier that loads on demand.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Parent skill</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">The top-level skill in a branching setup. Owns routing logic only — decides which sub-file to read before doing any formatting work.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Progress bar trace</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">The run output shown by SharePoint AI as the skill executes — surfaces the classification and lets you confirm which branch was taken.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Sub-skill file</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">A reference file behind one branch — the column-patterns file or the view-patterns file. Heavy and detailed, loaded conditionally.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">View formatting</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">SharePoint JSON that styles entire list views — row highlighting, timelines, gallery layouts. The earlier video covered this set.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="crosslink">
+    <span>Back to the reading guides?</span>
+    <a href="index.html">← Library home</a>
+  </div>
+</div>
+<script>
+let currentFilter = 'all';
+let allFlipped = false;
+const allCards = () => document.querySelectorAll('#card-grid .fc');
+const visibleCards = () => document.querySelectorAll('#card-grid .fc:not(.hidden)');
+
+function flip(card) { card.classList.toggle('flipped'); updateCounters(); }
+
+function setFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('.ftab').forEach(t => t.classList.toggle('active', t.dataset.f === f));
+  allCards().forEach(c => c.classList.toggle('hidden', f !== 'all' && c.dataset.g !== f));
+  updateCounters();
+}
+
+function flipAll() {
+  allFlipped = !allFlipped;
+  [...visibleCards()].forEach(c => c.classList.toggle('flipped', allFlipped));
+  document.getElementById('flip-all-btn').textContent = allFlipped ? '↺ Unflip All' : '↻ Flip All';
+  updateCounters();
+}
+
+function shuffleCards() {
+  allFlipped = false;
+  document.getElementById('flip-all-btn').textContent = '↻ Flip All';
+  const grid = document.getElementById('card-grid');
+  const visible = [...grid.querySelectorAll('.fc:not(.hidden)')];
+  const hidden = [...grid.querySelectorAll('.fc.hidden')];
+  visible.forEach(c => c.classList.remove('flipped'));
+  for (let i = visible.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [visible[i], visible[j]] = [visible[j], visible[i]];
+  }
+  [...visible, ...hidden].forEach(c => grid.appendChild(c));
+  updateCounters();
+}
+
+function resetAll() {
+  allCards().forEach(c => c.classList.remove('flipped'));
+  allFlipped = false;
+  document.getElementById('flip-all-btn').textContent = '↻ Flip All';
+  updateCounters();
+}
+
+function updateCounters() {
+  const vis = [...visibleCards()];
+  const flipped = vis.filter(c => c.classList.contains('flipped'));
+  document.getElementById('visible-count').textContent = vis.length;
+  document.getElementById('flipped-count').textContent = flipped.length;
+}
+
+updateCounters();
+</script>
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>01 · Foundations — Teaching SharePoint AI to Learn from Its Mistakes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root { --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4; --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf; --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d; --guide-color: var(--slate); }
+*, *::before, *::after { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; counter-reset:slide; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+.back { font-family:"JetBrains Mono",monospace; font-size:12px; text-decoration:none;
+  color:var(--ink-soft); display:inline-flex; align-items:center; gap:6px;
+  margin-bottom:22px; border:1px solid var(--rule); border-radius:6px;
+  padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.28em;
+  text-transform:uppercase; color:var(--accent); font-weight:600; margin:28px 0 18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(34px,5vw,52px);
+  line-height:1.05; letter-spacing:-.02em; margin:0 0 18px; }
+.dek { font-size:21px; color:var(--ink-soft); max-width:720px; margin:0 0 36px; }
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);
+  margin:48px 0 6px; font-weight:600; }
+code, .mono { font-family:"JetBrains Mono",monospace; font-size:.82em;
+  background:#ece7db; padding:.08em .38em; border-radius:4px; color:#3a382f; }
+.topnav { position:sticky; top:0; z-index:20; background:var(--paper);
+  border-bottom:1px solid var(--rule); margin:0 -28px 30px; padding:12px 28px;
+  display:flex; flex-wrap:wrap; gap:6px; font-family:"JetBrains Mono",monospace; font-size:11px; }
+.topnav a { text-decoration:none; color:var(--ink-soft); border:1px solid var(--rule);
+  border-radius:5px; padding:5px 10px; transition:all .14s; }
+.topnav a:hover { background:var(--guide-color); color:#fff; border-color:var(--guide-color); }
+.takeaways { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:14px 0 30px; }
+@media (max-width:760px) { .takeaways { grid-template-columns:1fr; } }
+.take { background:var(--card); border:1px solid var(--rule); border-top:3px solid var(--guide-color);
+  border-radius:10px; padding:18px 20px; }
+.take .tk-l { font-family:"JetBrains Mono",monospace; font-size:10px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:8px; }
+.take .tk-v { font-family:"Fraunces",serif; font-size:18px; line-height:1.3; font-weight:600; }
+section:not(#quiz):not(#flashcards) { counter-increment:slide; background:var(--card);
+  border:1.5px solid color-mix(in srgb, var(--guide-color, var(--slate)) 28%, var(--rule));
+  border-radius:18px; box-shadow:0 8px 36px -10px rgba(27,26,23,.18), 0 1px 0 rgba(27,26,23,.04);
+  margin:48px 0; overflow:hidden; position:relative; }
+section:not(#quiz):not(#flashcards) h2 { margin:0; padding:26px 36px 22px;
+  background:var(--guide-color, var(--slate)); color:#fff;
+  font-family:"Fraunces",serif; font-weight:900;
+  font-size:clamp(20px,2.8vw,26px); letter-spacing:-.015em; line-height:1.1;
+  display:flex; align-items:flex-start; gap:14px; }
+section:not(#quiz):not(#flashcards) h2::before {
+  content:counter(slide,decimal-leading-zero);
+  font-family:"JetBrains Mono",monospace; font-weight:600; font-size:12px;
+  letter-spacing:.1em; background:rgba(255,255,255,.16); color:rgba(255,255,255,.9);
+  border:1px solid rgba(255,255,255,.28); padding:4px 10px; border-radius:5px;
+  flex-shrink:0; margin-top:3px; white-space:nowrap; }
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre { margin-left:36px; margin-right:36px; }
+section:not(#quiz):not(#flashcards) > p:first-of-type { margin-top:28px; }
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child { margin-bottom:34px; }
+section:not(#quiz):not(#flashcards)::after { content:""; display:block; height:4px;
+  background:linear-gradient(90deg, var(--guide-color, var(--slate)) 0%,
+    color-mix(in srgb, var(--guide-color, var(--slate)) 30%, transparent) 100%);
+  margin-top:34px; opacity:.35; }
+@media (max-width:680px) {
+  section:not(#quiz):not(#flashcards) h2 { padding:20px 22px 18px; font-size:20px; }
+  section:not(#quiz):not(#flashcards) > p,
+  section:not(#quiz):not(#flashcards) > .insight,
+  section:not(#quiz):not(#flashcards) > .misconception,
+  section:not(#quiz):not(#flashcards) > blockquote { margin-left:22px; margin-right:22px; }
+}
+.insight, .misconception { border-radius:10px; padding:18px 22px; margin:22px 0;
+  font-size:17px; line-height:1.5; }
+.insight { border-left:4px solid var(--slate); background:var(--slate-soft); }
+.misconception { border-left:4px solid var(--accent); background:var(--accent-soft); }
+.insight::before { content:"✦ Key insight — "; font-weight:600; color:var(--slate); }
+.misconception::before { content:"✕ Common misconception — "; font-weight:600; color:var(--accent); }
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
+.fc { perspective:900px; height:200px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%; transform-style:preserve-3d;
+  transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front, .fc-back { position:absolute; inset:0; border-radius:13px;
+  padding:22px 22px 18px; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  display:flex; flex-direction:column; justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back { background:#7a5400; }
+.fc[data-g="g3"] .fc-front { border-left:4px solid var(--g3); }
+.fc[data-g="g3"] .fc-back { background:#3a1a10; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc[data-g="g3"] .fc-term { color:var(--g3); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc[data-g="g3"] .fc-def { color:#f5d6ce; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px;
+  color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px; font-weight:600;
+  letter-spacing:.08em; text-transform:uppercase; padding:2px 8px;
+  border-radius:4px; border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent);
+  background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent);
+  background:color-mix(in srgb,var(--g2) 10%,transparent); }
+.gtag.g3 { color:var(--g3); border-color:color-mix(in srgb,var(--g3) 40%,transparent);
+  background:color-mix(in srgb,var(--g3) 10%,transparent); }
+.footer-cross { margin-top:60px; padding:24px 28px; border:1px solid var(--rule);
+  border-radius:11px; background:var(--card); display:flex; flex-wrap:wrap;
+  gap:18px; justify-content:space-between; align-items:center; }
+.footer-cross a { font-family:"JetBrains Mono",monospace; font-size:12px;
+  text-decoration:none; color:var(--slate); font-weight:600;
+  border:1.5px solid var(--slate); padding:7px 14px; border-radius:7px; }
+.footer-cross a:hover { background:var(--slate); color:#fff; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="index.html">← Library home</a>
+<div class="kicker">Guide 01 · Foundations</div>
+<h1>Context is the agent's group memory</h1>
+<p class="dek">SharePoint AI's context support lets you define what every agent session must know — not for one user, but for the whole site. Once set, it travels with every chat the team starts.</p>
+
+<nav class="topnav">
+  <a href="#group-context">01 · Group-scope context</a>
+  <a href="#context-file">02 · The context file</a>
+  <a href="#adding-context">03 · Adding context</a>
+  <a href="#sessions">04 · Agent sessions</a>
+  <a href="#flashcards">Flashcards</a>
+</nav>
+
+<div class="sec-label">3 things to walk away with</div>
+<div class="takeaways">
+  <div class="take"><div class="tk-l">Group, not personal</div><div class="tk-v">Context belongs to the site or team — every user in that group gets the same agent behavior.</div></div>
+  <div class="take"><div class="tk-l">Plain markdown</div><div class="tk-v">The context file is a markdown doc you can edit directly or have the agent edit on your behalf.</div></div>
+  <div class="take"><div class="tk-l">Loaded per session</div><div class="tk-v">Every new chat reloads context — so changes propagate without any redeploy or restart.</div></div>
+</div>
+
+<section id="group-context">
+<h2>Group-Scope Context — memory for the team, not the user</h2>
+
+<p>SharePoint AI's context support defines what every agent run for this site must know. The key word is <em>group</em>: context is not your personal preference. It belongs to the site or team, and every user who starts a chat on that site inherits it.</p>
+
+<div class="insight">Context in SharePoint AI is team memory, not user memory. Anything you save becomes a rule for every chat session anyone on the site starts.</div>
+
+<p>That makes the context file a governance surface, not a settings menu. Use it for things the whole team needs the agent to know: who owns the site, how decisions are tracked, where reports are saved, what the fiscal year is. Personal preferences belong elsewhere.</p>
+
+<div class="misconception">Each user has their own context. The opposite — context is shared across the entire site, which is exactly why it can encode "how we work" rules instead of personal habits.</div>
+</section>
+
+<section id="context-file">
+<h2>The Context File — plain markdown the agent reads on every run</h2>
+
+<p>The context file is a markdown document stored in the site's agent assets. You can edit it directly in the SharePoint markdown editor like any other document, and the changes apply to the next session that starts. No publishing pipeline, no deployment, no restart.</p>
+
+<p>Inside the file you write whatever the team needs the agent to know — site owners, processes, naming conventions, file storage rules, decay handling, even prompts like "remember to always check the expert directory before assigning a task."</p>
+
+<div class="insight">Markdown is the agent's lingua franca. The context file is just a document; that is what makes it editable by anyone and readable by the agent on every run.</div>
+
+<div class="misconception">The context file is a configuration JSON only admins can change. It is a normal SharePoint markdown document — anyone with edit access to the agent assets library can modify it.</div>
+</section>
+
+<section id="adding-context">
+<h2>Adding Context — edit the file or just tell the agent</h2>
+
+<p>You can update context two ways. First: open the markdown file in the editor and type. Second: in any agent chat, give an explicit instruction like "save this to your context" or a hint like "remember this" or "you should always do X." The agent recognizes the intent and writes the addition to the context file for you.</p>
+
+<p>In the demo, the user adds "report outputs always save to the reports folder" by simply telling the agent. The next session reloads the file and that rule is in force.</p>
+
+<div class="insight">You can manage context conversationally. Telling the agent to "remember" something is functionally identical to editing the markdown file — the agent writes the change for you.</div>
+
+<div class="misconception">You must use a special syntax to add context. Natural language works — words like "remember," "always," "save this" trigger the agent to update the context file.</div>
+</section>
+
+<section id="sessions">
+<h2>Agent Sessions — context loads at the start of every chat</h2>
+
+<p>Each new chat (session) on a SharePoint AI-enabled site starts by loading the current context file. Whatever is in that file becomes the rules for that session. There is no global cache; if you change the context file at noon, the chat someone starts at noon-and-five-seconds sees the new rules.</p>
+
+<p>This per-session loading is what makes context changes propagate instantly across the team. Nobody has to log out, refresh permissions, or wait for an update.</p>
+
+<div class="insight">Context propagation is automatic and immediate. Editing the file changes behavior for every chat started afterward — no restart, no opt-in.</div>
+
+<div class="misconception">Agent sessions cache context for hours and stale rules persist. Each session reloads at start — once you save the file, the very next chat session sees the new rules.</div>
+</section>
+
+<div class="footer-cross">
+  <div style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink-soft);">Continue:</div>
+  <a href="guide-02-applied.html">02 · Applied — Tracking unanswered questions →</a>
+  <a href="flashcards-index.html">All flashcards</a>
+</div>
+
+<section id="flashcards">
+  <div class="sec-label">Flashcards — Foundations</div>
+  <div class="fc-grid">
+
+    <div class="fc" data-g="g1" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div>
+          <div class="fc-term">Group-Scope Context</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">SharePoint AI's context belongs to the site or team, not the individual user. Every chat session anyone starts on that site loads the same rules — making context a governance surface, not a personal setting.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div>
+          <div class="fc-term">Context File</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">A plain markdown document in the site's agent assets, loaded at the start of every session. Editable like any other doc — no deploy step. Carries owners, processes, conventions, and decay rules.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div>
+          <div class="fc-term">Adding Context Inline</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">Updating context conversationally: telling the agent "save this," "remember," or "you should always" triggers it to edit the context file on your behalf. No special syntax needed.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div>
+          <div class="fc-term">Agent Sessions</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">Each new chat loads the current context file at startup. Changes propagate to the next session immediately — no restart, no caching, no opt-in for users.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</div>
+<script>
+function flip(card){ card.classList.toggle('flipped'); }
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { e.preventDefault(); t.scrollIntoView({behavior:'smooth', block:'start'}); }
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>03 · Advanced — Correction-as-Lesson</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root { --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4; --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf; --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d; --guide-color: var(--accent); }
+*, *::before, *::after { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; counter-reset:slide; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+.back { font-family:"JetBrains Mono",monospace; font-size:12px; text-decoration:none;
+  color:var(--ink-soft); display:inline-flex; align-items:center; gap:6px;
+  margin-bottom:22px; border:1px solid var(--rule); border-radius:6px;
+  padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.28em;
+  text-transform:uppercase; color:var(--accent); font-weight:600; margin:28px 0 18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(34px,5vw,52px);
+  line-height:1.05; letter-spacing:-.02em; margin:0 0 18px; }
+.dek { font-size:21px; color:var(--ink-soft); max-width:720px; margin:0 0 36px; }
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);
+  margin:48px 0 6px; font-weight:600; }
+code, .mono { font-family:"JetBrains Mono",monospace; font-size:.82em;
+  background:#ece7db; padding:.08em .38em; border-radius:4px; color:#3a382f; }
+.topnav { position:sticky; top:0; z-index:20; background:var(--paper);
+  border-bottom:1px solid var(--rule); margin:0 -28px 30px; padding:12px 28px;
+  display:flex; flex-wrap:wrap; gap:6px; font-family:"JetBrains Mono",monospace; font-size:11px; }
+.topnav a { text-decoration:none; color:var(--ink-soft); border:1px solid var(--rule);
+  border-radius:5px; padding:5px 10px; transition:all .14s; }
+.topnav a:hover { background:var(--guide-color); color:#fff; border-color:var(--guide-color); }
+.takeaways { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:14px 0 30px; }
+@media (max-width:760px) { .takeaways { grid-template-columns:1fr; } }
+.take { background:var(--card); border:1px solid var(--rule); border-top:3px solid var(--guide-color);
+  border-radius:10px; padding:18px 20px; }
+.take .tk-l { font-family:"JetBrains Mono",monospace; font-size:10px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:8px; }
+.take .tk-v { font-family:"Fraunces",serif; font-size:18px; line-height:1.3; font-weight:600; }
+section:not(#quiz):not(#flashcards) { counter-increment:slide; background:var(--card);
+  border:1.5px solid color-mix(in srgb, var(--guide-color, var(--slate)) 28%, var(--rule));
+  border-radius:18px; box-shadow:0 8px 36px -10px rgba(27,26,23,.18), 0 1px 0 rgba(27,26,23,.04);
+  margin:48px 0; overflow:hidden; position:relative; }
+section:not(#quiz):not(#flashcards) h2 { margin:0; padding:26px 36px 22px;
+  background:var(--guide-color, var(--slate)); color:#fff;
+  font-family:"Fraunces",serif; font-weight:900;
+  font-size:clamp(20px,2.8vw,26px); letter-spacing:-.015em; line-height:1.1;
+  display:flex; align-items:flex-start; gap:14px; }
+section:not(#quiz):not(#flashcards) h2::before {
+  content:counter(slide,decimal-leading-zero);
+  font-family:"JetBrains Mono",monospace; font-weight:600; font-size:12px;
+  letter-spacing:.1em; background:rgba(255,255,255,.16); color:rgba(255,255,255,.9);
+  border:1px solid rgba(255,255,255,.28); padding:4px 10px; border-radius:5px;
+  flex-shrink:0; margin-top:3px; white-space:nowrap; }
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre { margin-left:36px; margin-right:36px; }
+section:not(#quiz):not(#flashcards) > p:first-of-type { margin-top:28px; }
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child { margin-bottom:34px; }
+section:not(#quiz):not(#flashcards)::after { content:""; display:block; height:4px;
+  background:linear-gradient(90deg, var(--guide-color, var(--slate)) 0%,
+    color-mix(in srgb, var(--guide-color, var(--slate)) 30%, transparent) 100%);
+  margin-top:34px; opacity:.35; }
+@media (max-width:680px) {
+  section:not(#quiz):not(#flashcards) h2 { padding:20px 22px 18px; font-size:20px; }
+  section:not(#quiz):not(#flashcards) > p,
+  section:not(#quiz):not(#flashcards) > .insight,
+  section:not(#quiz):not(#flashcards) > .misconception,
+  section:not(#quiz):not(#flashcards) > blockquote { margin-left:22px; margin-right:22px; }
+}
+.insight, .misconception { border-radius:10px; padding:18px 22px; margin:22px 0;
+  font-size:17px; line-height:1.5; }
+.insight { border-left:4px solid var(--slate); background:var(--slate-soft); }
+.misconception { border-left:4px solid var(--accent); background:var(--accent-soft); }
+.insight::before { content:"✦ Key insight — "; font-weight:600; color:var(--slate); }
+.misconception::before { content:"✕ Common misconception — "; font-weight:600; color:var(--accent); }
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
+.fc { perspective:900px; height:200px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%; transform-style:preserve-3d;
+  transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front, .fc-back { position:absolute; inset:0; border-radius:13px;
+  padding:22px 22px 18px; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  display:flex; flex-direction:column; justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back { background:#7a5400; }
+.fc[data-g="g3"] .fc-front { border-left:4px solid var(--g3); }
+.fc[data-g="g3"] .fc-back { background:#3a1a10; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc[data-g="g3"] .fc-term { color:var(--g3); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc[data-g="g3"] .fc-def { color:#f5d6ce; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px;
+  color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px; font-weight:600;
+  letter-spacing:.08em; text-transform:uppercase; padding:2px 8px;
+  border-radius:4px; border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent);
+  background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent);
+  background:color-mix(in srgb,var(--g2) 10%,transparent); }
+.gtag.g3 { color:var(--g3); border-color:color-mix(in srgb,var(--g3) 40%,transparent);
+  background:color-mix(in srgb,var(--g3) 10%,transparent); }
+.footer-cross { margin-top:60px; padding:24px 28px; border:1px solid var(--rule);
+  border-radius:11px; background:var(--card); display:flex; flex-wrap:wrap;
+  gap:18px; justify-content:space-between; align-items:center; }
+.footer-cross a { font-family:"JetBrains Mono",monospace; font-size:12px;
+  text-decoration:none; color:var(--accent); font-weight:600;
+  border:1.5px solid var(--accent); padding:7px 14px; border-radius:7px; }
+.footer-cross a:hover { background:var(--accent); color:#fff; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="index.html">← Library home</a>
+<div class="kicker">Guide 03 · Advanced</div>
+<h1>The agent learns when you correct it</h1>
+<p class="dek">A learning rule in the context file turns every in-chat correction — formatting, terminology, assumptions, fiscal calendars — into a permanent lesson the next session inherits.</p>
+
+<nav class="topnav">
+  <a href="#learning-rules">01 · Learning rules</a>
+  <a href="#correction">02 · Correction in flow</a>
+  <a href="#permanent">03 · Permanent lessons</a>
+  <a href="#flashcards">Flashcards</a>
+</nav>
+
+<div class="sec-label">3 things to walk away with</div>
+<div class="takeaways">
+  <div class="take"><div class="tk-l">Learning is a rule</div><div class="tk-v">Add a "learn from corrections" instruction once; the agent self-updates from then on.</div></div>
+  <div class="take"><div class="tk-l">Correct mid-flow</div><div class="tk-v">You do not need to prep context up front — correct the agent when it gets something wrong.</div></div>
+  <div class="take"><div class="tk-l">Lessons persist</div><div class="tk-v">Corrections are written back to the context file, so future sessions never make the same mistake.</div></div>
+</div>
+
+<section id="learning-rules">
+<h2>Learning Rules — coach the coach</h2>
+
+<p>The crown jewel of this video: add a single rule to the context file that says "when a user corrects something you generated — whether formatting, convention, assumptions, or terminology — treat that correction as a permanent lesson for this site and add it to this context file."</p>
+
+<p>That sentence alone changes the system's character. The agent now treats every correction as a teaching moment, not a one-off fix. It interprets the user's words, extracts the underlying rule, and writes it back to its own context.</p>
+
+<div class="insight">A learning rule is meta-context — context that tells the agent how to update its context. One sentence converts the system from static to self-improving.</div>
+
+<div class="misconception">The agent learns from corrections automatically. It does not — without the learning rule, corrections live only in that one chat. The rule is what makes the lesson permanent.</div>
+</section>
+
+<section id="correction">
+<h2>Correction in the Flow of Work — no need to prep up front</h2>
+
+<p>The demo asks "what contracts expire in Q1?" The agent assumes calendar Q1 (January–March) because that is the model's default. The user corrects: "our fiscal year starts in July, so Q1 is July–September." The agent re-runs the query with the new definition and saves the lesson to the context file.</p>
+
+<p>The user did not need to prep the agent with the fiscal calendar in advance. They corrected when the issue appeared — and from then on, every session uses the right calendar.</p>
+
+<div class="insight">Correction-driven learning lowers the bar to deploy an agent. You do not need a perfect context file on day one; you just need a learning rule and the willingness to correct mid-flow.</div>
+
+<div class="misconception">Correcting mid-flow is wasted effort because the agent forgets after the session. With the learning rule in place, the correction becomes permanent on the next save — the agent does not forget.</div>
+</section>
+
+<section id="permanent">
+<h2>Permanent Lessons — corrections become context entries</h2>
+
+<p>After the fiscal-year correction, the agent updates the context file with a new section: "Learned corrections — Zava's fiscal year is July to June." The next chat session loads that section as part of the rules. Q1 means July–September forever, until someone edits the file again.</p>
+
+<p>This is how the agent gets opinionated about a specific organization. Generic LLMs assume calendar quarters; this site's agent now knows your quarters. Specificity compounds with every correction.</p>
+
+<div class="insight">Permanent lessons are how a generic AI becomes <em>your team's</em> AI. Each correction nudges the behavior closer to how your organization actually works.</div>
+
+<div class="misconception">The agent stores lessons in a hidden memory you cannot inspect. Lessons are written into the context markdown file in plain text — you can read them, edit them, or delete them like any other line.</div>
+</section>
+
+<div class="footer-cross">
+  <div style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink-soft);">Continue:</div>
+  <a href="index.html">← Library home</a>
+  <a href="flashcards-index.html">All flashcards</a>
+</div>
+
+<section id="flashcards">
+  <div class="sec-label">Flashcards — Advanced</div>
+  <div class="fc-grid">
+
+    <div class="fc" data-g="g3" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div>
+          <div class="fc-term">Learning Rules</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">A meta-instruction in the context file telling the agent to treat user corrections as permanent lessons and write them back to context. One sentence converts the system from static to self-improving.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g3" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div>
+          <div class="fc-term">Correction-as-Lesson</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">The behavior pattern enabled by learning rules. Correct the agent in chat; it extracts the underlying rule, saves it to context, and re-runs the query with the new knowledge.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g3" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div>
+          <div class="fc-term">Permanent Lessons</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">Corrections written back into the context file as plain-text entries. Survive across sessions, inspectable by anyone, editable like any other markdown — your team's agent gets smarter without code.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</div>
+<script>
+function flip(card){ card.classList.toggle('flipped'); }
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { e.preventDefault(); t.scrollIntoView({behavior:'smooth', block:'start'}); }
+  });
+});
+</script>
+</body>
+</html>

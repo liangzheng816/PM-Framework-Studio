@@ -25,7 +25,7 @@ export function Hero({ compact }: HeroProps) {
           animate={{ x: [0, -15, 0], y: [0, 20, 0] }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
         />
-        <div className="absolute top-[30%] right-[20%] w-[30%] h-[30%] rounded-full bg-purple-500/5 blur-[80px]" />
+        <div className="absolute top-[30%] right-[20%] w-[30%] h-[30%] rounded-full bg-[var(--color-accent-soft)]/40 blur-[80px]" />
       </div>
 
       <div className={`mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 ${compact ? "pt-10 pb-4 sm:pt-14 sm:pb-6" : "pt-20 pb-16 sm:pt-28 sm:pb-24"}`}>

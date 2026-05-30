@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flashcards · Stop Sorting Files Manually</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);
+  margin:48px 0 6px; font-weight:600; }
+
+.back { font-family:"JetBrains Mono",monospace; font-size:12px;
+  text-decoration:none; color:var(--ink-soft); display:inline-flex;
+  align-items:center; gap:6px; margin-bottom:22px; border:1px solid var(--rule);
+  border-radius:6px; padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px;
+  letter-spacing:.28em; text-transform:uppercase; color:var(--accent);
+  font-weight:600; margin-bottom:18px; }
+
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(34px,5.4vw,56px);
+  line-height:1.05; letter-spacing:-.02em; margin:6px 0 16px; }
+.dek { font-size:20px; color:var(--ink-soft); max-width:720px; margin:0 0 36px; }
+
+.controls { display:flex; justify-content:space-between; flex-wrap:wrap; gap:14px;
+  margin:30px 0 18px; padding:14px; border:1px solid var(--rule);
+  border-radius:11px; background:var(--card); }
+.filter-tabs { display:flex; gap:6px; flex-wrap:wrap; }
+.ftab { font-family:"JetBrains Mono",monospace; font-size:12px; font-weight:600;
+  padding:6px 14px; border-radius:6px; border:2px solid transparent;
+  cursor:pointer; background:transparent; color:var(--ink-soft); transition:all .14s; }
+.ftab:hover { background:#ece7db; }
+.ftab.active { color:#fff; border-color:transparent; }
+.ftab[data-f="all"].active { background:var(--ink); }
+.ftab[data-f="g1"].active  { background:var(--g1); }
+.ftab[data-f="g2"].active  { background:var(--g2); }
+.ctrl-btns { display:flex; gap:8px; flex-wrap:wrap; }
+.cbtn { font-family:"JetBrains Mono",monospace; font-size:12px; font-weight:600;
+  padding:6px 14px; border-radius:6px; border:1.5px solid var(--rule);
+  background:var(--paper); color:var(--ink); cursor:pointer; transition:all .14s; }
+.cbtn:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+
+.counter-bar { font-family:"JetBrains Mono",monospace; font-size:12px;
+  color:var(--ink-soft); margin:0 0 22px; padding:0 4px; }
+
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
+.fc { perspective:900px; height:190px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%;
+  transform-style:preserve-3d; transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front, .fc-back { position:absolute; inset:0; border-radius:13px;
+  padding:22px 22px 18px; backface-visibility:hidden;
+  -webkit-backface-visibility:hidden; display:flex; flex-direction:column;
+  justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back { background:#7a5400; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px;
+  color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px;
+  font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+  padding:2px 8px; border-radius:4px; border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent); background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent); background:color-mix(in srgb,var(--g2) 10%,transparent); }
+
+.xlink { display:flex; gap:14px; flex-wrap:wrap; margin:48px 0 0;
+  padding:22px; border:1px solid var(--rule); border-radius:11px;
+  background:var(--card); }
+.xlink a { font-family:"JetBrains Mono",monospace; font-size:13px;
+  text-decoration:none; color:var(--ink); padding:8px 16px;
+  border:1.5px solid var(--ink); border-radius:7px; font-weight:600; }
+.xlink a:hover { background:var(--ink); color:var(--paper); }
+
+footer { margin-top:60px; padding-top:24px; border-top:1px solid var(--rule);
+  font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--ink-soft); }
+
+@media (max-width: 760px) {
+  .fc-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 420px) {
+  .fc-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="index.html">← Back to library</a>
+<div class="kicker">Flashcard Deck · All Guides · 8 Unique Cards</div>
+<h1>Flashcards</h1>
+<p class="dek">All 8 concepts from this video, alphabetical. Filter by guide, shuffle, or flip everything at once.</p>
+
+<div class="controls">
+  <div class="filter-tabs">
+    <button class="ftab active" data-f="all" onclick="setFilter('all')">All 8</button>
+    <button class="ftab" data-f="g1" onclick="setFilter('g1')">01 · Foundations</button>
+    <button class="ftab" data-f="g2" onclick="setFilter('g2')">02 · Applied</button>
+  </div>
+  <div class="ctrl-btns">
+    <button class="cbtn" onclick="shuffleCards()">⇄ Shuffle</button>
+    <button class="cbtn" id="flip-all-btn" onclick="flipAll()">↻ Flip All</button>
+    <button class="cbtn" onclick="resetAll()">↺ Reset</button>
+  </div>
+</div>
+
+<div class="counter-bar">Showing <span id="visible-count">8</span> cards · <span id="flipped-count">0</span> flipped</div>
+
+<div class="fc-grid" id="card-grid">
+
+  <div class="fc" data-g="g1" data-term="AI Library Organization" onclick="flip(this)">
+    <div class="fc-inner">
+      <div class="fc-front">
+        <div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div>
+        <div class="fc-term">AI Library Organization</div>
+        <div class="fc-tap">tap to reveal →</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-def">SharePoint AI feature that scans a document library, proposes folder schemes, and applies the moves you approve — turning manual file sorting into a one-click review.</div>
+        <div class="fc-tap">← tap to flip back</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fc" data-g="g2" data-term="Defer Metadata" onclick="flip(this)">
+    <div class="fc-inner">
+      <div class="fc-front">
+        <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+        <div class="fc-term">Defer Metadata</div>
+        <div class="fc-tap">tap to reveal →</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-def">The decision to skip metadata extraction during the structural pass. Folders and names get fixed first; metadata is a separate, later run.</div>
+        <div class="fc-tap">← tap to flip back</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fc" data-g="g1" data-term="Folder Consolidation" onclick="flip(this)">
+    <div class="fc-inner">
+      <div class="fc-front">
+        <div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div>
+        <div class="fc-term">Folder Consolidation</div>
+        <div class="fc-tap">tap to reveal →</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-def">The pattern where the organizer keeps existing useful folders, creates only the new ones it needs, and redistributes loose files across the merged structure.</div>
+        <div class="fc-tap">← tap to flip back</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fc" data-g="g2" data-term="Iterative Cleanup" onclick="flip(this)">
+    <div class="fc-inner">
+      <div class="fc-front">
+        <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+        <div class="fc-term">Iterative Cleanup</div>
+        <div class="fc-tap">tap to reveal →</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-def">The loop of scan, review, apply, re-scan that drives SharePoint AI library cleanup. Each pass addresses one dimension and feeds the next.</div>
+        <div class="fc-tap">← tap to flip back</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fc" data-g="g1" data-term="Loose Root Files" onclick="flip(this)">
+    <div class="fc-inner">
+      <div class="fc-front">
+        <div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div>
+        <div class="fc-term">Loose Root Files</div>
+        <div class="fc-tap">tap to reveal →</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-def">Documents sitting in the library root with no folder home. The biggest signal of a disorganized library and the first thing the AI organizer addresses.</div>
+        <div class="fc-tap">← tap to flip back</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fc" data-g="g2" data-term="Rename Suggestions" onclick="flip(this)">
+    <div class="fc-inner">
+      <div class="fc-front">
+        <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+        <div class="fc-term">Rename Suggestions</div>
+        <div class="fc-tap">tap to reveal →</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-def">The AI's proposed list of better filenames, shown alongside current names. You approve, edit, or reject each suggestion before the bulk rename runs.</div>
+        <div class="fc-tap">← tap to flip back</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fc" data-g="g1" data-term="Suggestion Options" onclick="flip(this)">
+    <div class="fc-inner">
+      <div class="fc-front">
+        <div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div>
+        <div class="fc-term">Suggestion Options</div>
+        <div class="fc-tap">tap to reveal →</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-def">Numbered organization schemes the AI proposes after scanning the library. You can apply one, mix several, or ignore them all.</div>
+        <div class="fc-tap">← tap to flip back</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fc" data-g="g2" data-term="Worst Offenders" onclick="flip(this)">
+    <div class="fc-inner">
+      <div class="fc-front">
+        <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+        <div class="fc-term">Worst Offenders</div>
+        <div class="fc-tap">tap to reveal →</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-def">A scope filter telling the AI to rename only the files whose names cause the most confusion — leaving already-acceptable names untouched.</div>
+        <div class="fc-tap">← tap to flip back</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="xlink">
+  <a href="index.html">Library home</a>
+  <a href="guide-01-foundations.html">Guide 01 →</a>
+  <a href="guide-02-applied.html">Guide 02 →</a>
+</div>
+
+<footer>Flashcards · 8 cards · Stop Sorting Files Manually</footer>
+
+</div>
+
+<script>
+let currentFilter = 'all';
+let allFlipped = false;
+const allCards = () => document.querySelectorAll('#card-grid .fc');
+const visibleCards = () => document.querySelectorAll('#card-grid .fc:not(.hidden)');
+
+function flip(card) { card.classList.toggle('flipped'); updateCounters(); }
+
+function setFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('.ftab').forEach(t =>
+    t.classList.toggle('active', t.dataset.f === f));
+  allCards().forEach(c =>
+    c.classList.toggle('hidden', f !== 'all' && c.dataset.g !== f));
+  updateCounters();
+}
+
+function flipAll() {
+  allFlipped = !allFlipped;
+  [...visibleCards()].forEach(c => c.classList.toggle('flipped', allFlipped));
+  document.getElementById('flip-all-btn').textContent =
+    allFlipped ? '↺ Unflip All' : '↻ Flip All';
+  updateCounters();
+}
+
+function shuffleCards() {
+  allFlipped = false;
+  document.getElementById('flip-all-btn').textContent = '↻ Flip All';
+  const grid = document.getElementById('card-grid');
+  const visible = [...grid.querySelectorAll('.fc:not(.hidden)')];
+  const hidden = [...grid.querySelectorAll('.fc.hidden')];
+  visible.forEach(c => c.classList.remove('flipped'));
+  for (let i = visible.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [visible[i], visible[j]] = [visible[j], visible[i]];
+  }
+  [...visible, ...hidden].forEach(c => grid.appendChild(c));
+  updateCounters();
+}
+
+function resetAll() {
+  allCards().forEach(c => c.classList.remove('flipped'));
+  allFlipped = false;
+  document.getElementById('flip-all-btn').textContent = '↻ Flip All';
+  updateCounters();
+}
+
+function updateCounters() {
+  const vis = [...visibleCards()];
+  const flipped = vis.filter(c => c.classList.contains('flipped'));
+  document.getElementById('visible-count').textContent = vis.length;
+  document.getElementById('flipped-count').textContent = flipped.length;
+}
+
+updateCounters();
+</script>
+</body>
+</html>

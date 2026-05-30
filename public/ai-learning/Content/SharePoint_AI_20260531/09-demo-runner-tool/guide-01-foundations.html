@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide 01 · Foundations — The Demo Runner Tool</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #f4f1ea; --ink: #1b1a17; --ink-soft: #4a463d; --rule: #d8d2c4;
+  --accent: #cc3b1d; --accent-soft: #f3ddd4;
+  --slate: #2f5d62; --slate-soft: #dde7e6;
+  --amber: #9a6a00; --amber-soft: #f4e9cf;
+  --card: #fbf9f4;
+  --g1: #2f5d62; --g2: #9a6a00; --g3: #cc3b1d;
+  --guide-color: var(--slate);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: "Newsreader", Georgia, serif; font-size: 18px; line-height: 1.55; -webkit-font-smoothing: antialiased; counter-reset: slide; }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 28px 120px; }
+.sec-label { font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-soft); margin: 48px 0 6px; font-weight: 600; }
+code, .mono { font-family: "JetBrains Mono", monospace; font-size: .82em; background: #ece7db; padding: .08em .38em; border-radius: 4px; color: #3a382f; }
+pre { background: #1b1a17; color: #f4f1ea; border-radius: 10px; padding: 18px 22px; overflow-x: auto; font-family: "JetBrains Mono", monospace; font-size: 13px; line-height: 1.5; }
+pre code { background: none; color: inherit; font-size: inherit; padding: 0; }
+.back { font-family: "JetBrains Mono", monospace; font-size: 12px; text-decoration: none; color: var(--ink-soft); display: inline-flex; align-items: center; gap: 6px; margin-bottom: 22px; border: 1px solid var(--rule); border-radius: 6px; padding: 5px 12px; transition: all .14s; }
+.back:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.kicker { font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: .28em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 18px; }
+.masthead { padding-top: 32px; border-bottom: 1px solid var(--rule); padding-bottom: 18px; margin-bottom: 12px; }
+.masthead h1 { font-family: "Fraunces", serif; font-weight: 900; font-size: clamp(34px, 5vw, 52px); letter-spacing: -.02em; line-height: 1.05; margin: 6px 0 14px; }
+.masthead .dek { font-size: 20px; color: var(--ink-soft); max-width: 720px; margin: 0; }
+.topic-nav { position: sticky; top: 0; z-index: 10; background: var(--paper); border-bottom: 1px solid var(--rule); padding: 12px 0; margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 6px 14px; font-family: "JetBrains Mono", monospace; font-size: 12px; }
+.topic-nav a { color: var(--ink-soft); text-decoration: none; padding: 4px 8px; border-radius: 5px; }
+.topic-nav a:hover { background: var(--slate-soft); color: var(--slate); }
+.takeaways { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 30px 0 12px; }
+@media (max-width: 760px) { .takeaways { grid-template-columns: 1fr; } }
+.tk { background: var(--card); border: 1px solid var(--rule); border-left: 4px solid var(--guide-color); border-radius: 10px; padding: 18px 20px; }
+.tk .tklbl { font-family: "JetBrains Mono", monospace; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 6px; }
+.tk .tkbody { font-family: "Fraunces", serif; font-weight: 600; font-size: 17px; line-height: 1.35; }
+
+section:not(#quiz):not(#flashcards) { counter-increment: slide; background: var(--card); border: 1.5px solid color-mix(in srgb, var(--guide-color, var(--slate)) 28%, var(--rule)); border-radius: 18px; box-shadow: 0 8px 36px -10px rgba(27,26,23,.18), 0 1px 0 rgba(27,26,23,.04); margin: 48px 0; overflow: hidden; position: relative; }
+section:not(#quiz):not(#flashcards) h2 { margin: 0; padding: 26px 36px 22px; background: var(--guide-color, var(--slate)); color: #fff; font-family: "Fraunces", serif; font-weight: 900; font-size: clamp(20px, 2.8vw, 26px); letter-spacing: -.015em; line-height: 1.1; display: flex; align-items: flex-start; gap: 14px; }
+section:not(#quiz):not(#flashcards) h2::before { content: counter(slide, decimal-leading-zero); font-family: "JetBrains Mono", monospace; font-weight: 600; font-size: 12px; letter-spacing: .1em; background: rgba(255,255,255,.16); color: rgba(255,255,255,.9); border: 1px solid rgba(255,255,255,.28); padding: 4px 10px; border-radius: 5px; flex-shrink: 0; margin-top: 3px; white-space: nowrap; }
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre { margin-left: 36px; margin-right: 36px; }
+section:not(#quiz):not(#flashcards) > p:first-of-type { margin-top: 28px; }
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child { margin-bottom: 34px; }
+section:not(#quiz):not(#flashcards)::after { content: ""; display: block; height: 4px; background: linear-gradient(90deg, var(--guide-color, var(--slate)) 0%, color-mix(in srgb, var(--guide-color, var(--slate)) 30%, transparent) 100%); margin-top: 34px; opacity: .35; }
+@media (max-width: 680px) { section:not(#quiz):not(#flashcards) h2 { padding: 20px 22px 18px; font-size: 20px; } section:not(#quiz):not(#flashcards) > p, section:not(#quiz):not(#flashcards) > .insight, section:not(#quiz):not(#flashcards) > .misconception, section:not(#quiz):not(#flashcards) > blockquote, section:not(#quiz):not(#flashcards) > pre { margin-left: 22px; margin-right: 22px; } }
+
+.insight, .misconception { border-radius: 10px; padding: 18px 22px; margin: 22px 0; font-size: 17px; line-height: 1.5; }
+.insight { border-left: 4px solid var(--slate); background: var(--slate-soft); }
+.misconception { border-left: 4px solid var(--accent); background: var(--accent-soft); }
+.insight::before { content: "✦ Key insight — "; font-weight: 600; color: var(--slate); }
+.misconception::before { content: "✕ Common misconception — "; font-weight: 600; color: var(--accent); }
+
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; margin-top: 18px; }
+.fc { perspective:900px; height:190px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%; transform-style:preserve-3d; transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front, .fc-back { position:absolute; inset:0; border-radius:13px; padding:22px 22px 18px; backface-visibility:hidden; -webkit-backface-visibility:hidden; display:flex; flex-direction:column; justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back  { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back  { background:#7a5400; }
+.fc[data-g="g3"] .fc-front { border-left:4px solid var(--g3); }
+.fc[data-g="g3"] .fc-back  { background:#3a1a10; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc[data-g="g3"] .fc-term { color:var(--g3); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc[data-g="g3"] .fc-def { color:#f5d6ce; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+.gtag { font-family: "JetBrains Mono", monospace; font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; border: 1.5px solid; line-height: 1.6; }
+.gtag.g1 { color: var(--g1); border-color: color-mix(in srgb,var(--g1) 40%,transparent); background: color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color: var(--g2); border-color: color-mix(in srgb,var(--g2) 40%,transparent); background: color-mix(in srgb,var(--g2) 10%,transparent); }
+.gtag.g3 { color: var(--g3); border-color: color-mix(in srgb,var(--g3) 40%,transparent); background: color-mix(in srgb,var(--g3) 10%,transparent); }
+
+footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--rule); font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--ink-soft); display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; }
+footer a { color: var(--accent); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="index.html" class="back">← Back to library</a>
+
+<div class="masthead">
+  <div class="kicker">Guide 01 · Foundations</div>
+  <h1>The Demo Tool — Launcher, Modes, Pause-Steps</h1>
+  <p class="dek">A free, GitHub-hosted demo runner for SharePoint AI features. Pick a demo, choose setup-only / demo-only / both / reset, and step through with predictable pauses.</p>
+</div>
+
+<nav class="topic-nav">
+  <a href="#why">01 · Why a Demo Tool</a>
+  <a href="#launcher">02 · The Launcher</a>
+  <a href="#four-modes">03 · Four Run Modes</a>
+  <a href="#step-controls">04 · Step Controls</a>
+  <a href="#21-steps">05 · Walking the 21 Steps</a>
+  <a href="#flashcards">Flashcards</a>
+</nav>
+
+<div class="takeaways">
+  <div class="tk"><div class="tklbl">Takeaway 01</div><div class="tkbody">The tool eliminates the cognitive load of demo flow so you can focus on talk track.</div></div>
+  <div class="tk"><div class="tklbl">Takeaway 02</div><div class="tkbody">Four modes (setup, demo, both, reset) give you the slice you need.</div></div>
+  <div class="tk"><div class="tklbl">Takeaway 03</div><div class="tkbody">Pause-steps let you take action with spacebar or enter — no surprise execution.</div></div>
+</div>
+
+<section id="why">
+  <h2>Why Build a Demo Tool at All</h2>
+  <p>SharePoint AI demos require fresh state — a clean library, specific files uploaded, a working skill configured. Doing all that setup live, in front of an audience, is risky and slow. The author built this tool because he demos a lot, and the setup-then-demo cycle was eating his prep time.</p>
+  <div class="insight">A demo tool turns the demo flow into a file. The script is on disk, deterministic, and reusable — your job during the demo is only to talk.</div>
+  <p>The lineage is intentional: this tool echoes the 2007 SharePoint start-demo tool the author worked on when he first joined Microsoft. The pattern is timeless — demoers benefit from automation that handles state.</p>
+  <div class="misconception">This is not a screen recorder or a video playback tool. It actually runs SharePoint AI commands against a real tenant. The screen you see is live, just driven by a script.</div>
+</section>
+
+<section id="launcher">
+  <h2>The Demo Launcher</h2>
+  <p>You start the tool from a command prompt. Launching a demo file opens a launcher UI — a list of demos discovered from a folder on disk. You arrow-key through them, pick the one you want, and select what mode to run.</p>
+  <div class="insight">Each demo is a file. Drop new <code>.demo</code> files in the folder and they appear in the launcher automatically. No registration, no rebuild.</div>
+  <p>The author shows a comparison-report demo and a messy-data-cleanup demo as examples. The launcher is just a thin discovery layer over files on disk.</p>
+</section>
+
+<section id="four-modes">
+  <h2>Four Run Modes</h2>
+  <p>Once you pick a demo, you choose one of four modes: set up and run the whole demo, just set up (do the pre-work for later), just demo (you already set up), or reset (undo what the demo did).</p>
+  <div class="insight">Mode separation maps to real presenter workflows. Pre-conf you might just set up. On stage you only want the demo. After your slot you reset.</div>
+  <p>The reset mode is opt-in per demo. You define an explicit set of undo steps in the demo file. The tool will not "auto-undo" unless you have written what undoing means — because for a read-only demo, undo is a no-op.</p>
+</section>
+
+<section id="step-controls">
+  <h2>Step Controls: Enter, B, S</h2>
+  <p>During execution, the tool pauses at pre-defined stop points. You drive with the keyboard: Enter to continue, B to go back, S to skip the next step. This is the loop the presenter uses to control pacing during the talk.</p>
+  <div class="insight">The presenter is always in control. Steps run only on a deliberate keystroke — never on a timer — so you can talk as long as you need.</div>
+  <p>For pure pacing, you can also use spacebar. The keys are interchangeable in most contexts; what matters is that nothing runs unless you press something.</p>
+  <div class="misconception">B does not "rewind" arbitrary SharePoint state. It steps the presenter pointer backwards in the script so you can re-narrate. The underlying tenant state is unchanged unless the previous step had an explicit inverse defined.</div>
+</section>
+
+<section id="21-steps">
+  <h2>Walking the 21 Steps</h2>
+  <p>The demo the author walks through has 21 steps. Eleven of them are setup (create library, upload files, create skill, etc.). Step 11 is the pause where the actual demo begins. From step 11 onward, the presenter narrates and the tool walks the real workflow.</p>
+  <div class="insight">The setup-to-demo ratio is roughly half. Without the tool, the presenter would spend half the demo doing prep visibly to the audience — which is dull and risky.</div>
+  <p>The timestamps on the left of the runner UI show what step is running and how long it took. That gives the presenter situational awareness without breaking flow.</p>
+</section>
+
+<section id="flashcards">
+  <div class="sec-label">Flashcards — Guide 01</div>
+  <div class="fc-grid">
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Demo Launcher</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A list UI that discovers demo files from a folder on disk. Pick a demo and a run mode; new files appear automatically without registration.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Four Run Modes</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Setup-and-demo, setup-only, demo-only, and reset. Lets the presenter pre-stage at home, then run only the demo portion live on stage.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Pause-Step</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A scripted halt in the demo flow that waits for the presenter to press Enter, spacebar, B, or S. Keeps execution under deliberate human control.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Reset Mode</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">An opt-in mode that runs author-defined undo steps. Required because the tool does not auto-invert state changes — you must write what undo means.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Setup vs Demo Split</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Demo files declare a setup section and a demo section. In a 21-step demo, steps 1–10 are setup; step 11 is the pause where the live demo begins.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Step Keys</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Enter or spacebar advances, B goes back one step in the script, S skips the next step. The presenter drives pacing with deliberate keystrokes.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+  </div>
+</section>
+
+<footer>
+  <span>Guide 01 · Foundations — Demo Runner Tool</span>
+  <span><a href="flashcards-index.html">All flashcards →</a></span>
+</footer>
+
+</div>
+<script>
+function flip(card){ card.classList.toggle('flipped'); }
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+</body>
+</html>

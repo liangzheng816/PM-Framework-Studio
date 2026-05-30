@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>03 · Advanced — Composing the App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--accent);
+}
+*, *::before, *::after { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; counter-reset:slide; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);
+  margin:48px 0 6px; font-weight:600; }
+code,.mono { font-family:"JetBrains Mono",monospace; font-size:.82em;
+  background:#ece7db; padding:.08em .38em; border-radius:4px; color:#3a382f; }
+.back { font-family:"JetBrains Mono",monospace; font-size:12px;
+  text-decoration:none; color:var(--ink-soft);
+  display:inline-flex; align-items:center; gap:6px;
+  margin-bottom:22px; border:1px solid var(--rule);
+  border-radius:6px; padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px;
+  letter-spacing:.28em; text-transform:uppercase; color:var(--accent);
+  font-weight:600; margin-bottom:18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(34px,5vw,52px);
+  line-height:1.05; letter-spacing:-.02em; margin:0 0 16px; }
+.dek { font-size:20px; color:var(--ink-soft); max-width:680px; margin:0 0 28px;
+  font-family:"Newsreader",serif; font-style:italic; }
+.tnav { position:sticky; top:0; z-index:20; background:rgba(244,241,234,.95);
+  backdrop-filter:blur(8px); border-bottom:1px solid var(--rule);
+  margin:0 -28px 28px; padding:14px 28px; }
+.tnav-inner { display:flex; flex-wrap:wrap; gap:8px 18px; }
+.tnav a { font-family:"JetBrains Mono",monospace; font-size:12px;
+  color:var(--ink-soft); text-decoration:none; padding:4px 10px;
+  border-radius:5px; transition:all .14s; }
+.tnav a:hover { background:var(--guide-color); color:#fff; }
+.meta-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:28px 0 12px; }
+@media (max-width:760px) { .meta-grid { grid-template-columns:1fr; } }
+.mg { background:var(--card); border:1px solid var(--rule); border-left:4px solid var(--guide-color);
+  border-radius:10px; padding:18px 20px; }
+.mg .mg-l { font-family:"JetBrains Mono",monospace; font-size:10px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--guide-color);
+  font-weight:600; margin-bottom:8px; }
+.mg .mg-t { font-family:"Fraunces",serif; font-weight:600; font-size:17px; line-height:1.3; }
+
+section:not(#quiz):not(#flashcards) {
+  counter-increment:slide; background:var(--card);
+  border:1.5px solid color-mix(in srgb, var(--guide-color, var(--slate)) 28%, var(--rule));
+  border-radius:18px;
+  box-shadow:0 8px 36px -10px rgba(27,26,23,.18), 0 1px 0 rgba(27,26,23,.04);
+  margin:48px 0; overflow:hidden; position:relative;
+}
+section:not(#quiz):not(#flashcards) h2 {
+  margin:0; padding:26px 36px 22px;
+  background:var(--guide-color, var(--slate));
+  color:#fff; font-family:"Fraunces",serif; font-weight:900;
+  font-size:clamp(20px,2.8vw,26px); letter-spacing:-.015em; line-height:1.1;
+  display:flex; align-items:flex-start; gap:14px;
+}
+section:not(#quiz):not(#flashcards) h2::before {
+  content: counter(slide, decimal-leading-zero);
+  font-family:"JetBrains Mono",monospace; font-weight:600;
+  font-size:12px; letter-spacing:.1em;
+  background:rgba(255,255,255,.16); color:rgba(255,255,255,.9);
+  border:1px solid rgba(255,255,255,.28);
+  padding:4px 10px; border-radius:5px; flex-shrink:0;
+  margin-top:3px; white-space:nowrap;
+}
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre {
+  margin-left:36px; margin-right:36px;
+}
+section:not(#quiz):not(#flashcards) > p:first-of-type { margin-top:28px; }
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child { margin-bottom:34px; }
+section:not(#quiz):not(#flashcards)::after {
+  content:""; display:block; height:4px;
+  background:linear-gradient(90deg, var(--guide-color, var(--slate)) 0%,
+    color-mix(in srgb, var(--guide-color, var(--slate)) 30%, transparent) 100%);
+  margin-top:34px; opacity:.35;
+}
+@media (max-width:680px) {
+  section:not(#quiz):not(#flashcards) h2 { padding:20px 22px 18px; font-size:20px; }
+  section:not(#quiz):not(#flashcards) > p,
+  section:not(#quiz):not(#flashcards) > .insight,
+  section:not(#quiz):not(#flashcards) > .misconception,
+  section:not(#quiz):not(#flashcards) > blockquote { margin-left:22px; margin-right:22px; }
+}
+
+.insight, .misconception { border-radius:10px; padding:18px 22px; margin:22px 0;
+  font-size:17px; line-height:1.5; }
+.insight { border-left:4px solid var(--slate); background:var(--slate-soft); }
+.misconception { border-left:4px solid var(--accent); background:var(--accent-soft); }
+.insight::before { content:"✦ Key insight — "; font-weight:600; color:var(--slate); }
+.misconception::before { content:"✕ Common misconception — "; font-weight:600; color:var(--accent); }
+
+#flashcards { margin-top:60px; }
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
+.fc { perspective:900px; height:190px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%;
+  transform-style:preserve-3d; transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front, .fc-back { position:absolute; inset:0; border-radius:13px;
+  padding:22px 22px 18px; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  display:flex; flex-direction:column; justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back  { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back  { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back  { background:#7a5400; }
+.fc[data-g="g3"] .fc-front { border-left:4px solid var(--g3); }
+.fc[data-g="g3"] .fc-back  { background:#3a1a10; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc[data-g="g3"] .fc-term { color:var(--g3); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc[data-g="g3"] .fc-def { color:#f5d6ce; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px;
+  color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px;
+  font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+  padding:2px 8px; border-radius:4px; border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent); background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent); background:color-mix(in srgb,var(--g2) 10%,transparent); }
+.gtag.g3 { color:var(--g3); border-color:color-mix(in srgb,var(--g3) 40%,transparent); background:color-mix(in srgb,var(--g3) 10%,transparent); }
+
+footer { margin-top:80px; padding-top:30px; border-top:1px solid var(--rule);
+  font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--ink-soft);
+  display:flex; gap:18px; flex-wrap:wrap; }
+footer a { color:var(--ink); text-decoration:none; border-bottom:1px dotted var(--ink-soft); }
+footer a:hover { color:var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="index.html" class="back">← Library</a>
+
+<div class="kicker">03 · Advanced</div>
+<h1>Composing the App</h1>
+<p class="dek">Two lists, a calendar view, a conflict-detection skill, a user-filtered view, and a homepage that pulls it all together. The composition is the app.</p>
+
+<nav class="tnav"><div class="tnav-inner">
+  <a href="#composite">01 · Composite app</a>
+  <a href="#calendar-view">02 · Calendar view</a>
+  <a href="#conflict-detection">03 · Conflict detection</a>
+  <a href="#user-filter">04 · Filtered by user</a>
+  <a href="#homepage">05 · Homepage composition</a>
+  <a href="#flashcards">Flashcards</a>
+</div></nav>
+
+<div class="meta-grid">
+  <div class="mg"><div class="mg-l">Takeaway 1</div><div class="mg-t">A composite app is several lists, views, and skills assembled to behave as one tool.</div></div>
+  <div class="mg"><div class="mg-l">Takeaway 2</div><div class="mg-t">A conflict-check skill makes the app feel like a real workflow, not just a form.</div></div>
+  <div class="mg"><div class="mg-l">Takeaway 3</div><div class="mg-t">The homepage is where it all becomes one experience — quick actions, an embedded calendar, and a filtered request list.</div></div>
+</div>
+
+<section id="composite">
+  <h2>Composite Apps in SharePoint</h2>
+  <p>A composite app is two or more lists wired together by skills and surfaced through a unified homepage. The time-off tracker has two lists (requests and team availability), four skills (request, review, approve, check availability), and one page that ties them together. None of these pieces is custom code.</p>
+  <div class="insight">An app is composition. The lists are the data, the skills are the actions, the views are the screens, and the homepage is the front door. Build them in that order.</div>
+  <p>The author built each piece independently with its own Ralph Loop, then composed them on the homepage at the end. The composition step is fast because every piece already works in isolation.</p>
+</section>
+
+<section id="calendar-view">
+  <h2>The Calendar View</h2>
+  <p>A calendar view renders list rows as events on a month grid. Each row's start and end dates become a calendar block. The view inherits the list's filters and groupings, so you can show "approved time off only" or "this department" without changing the underlying list.</p>
+  <div class="insight">The calendar view is just another view of the same list. Adding it costs nothing — the data already exists. Removing it doesn't lose data either.</div>
+  <p>In the demo, after the agent finishes, the team-availability list has a calendar view as its default. People-out-this-week become coloured blocks. The agent also stamps a "team availability" view that groups the same data by department.</p>
+</section>
+
+<section id="conflict-detection">
+  <h2>Conflict Detection — The Workflow Tier</h2>
+  <p>A conflict-detection skill reads the time-off list, finds requests that overlap with the new one, and reports them before the user submits. In the demo the author requests time off on March 20th; the skill spots an overlapping request he already filed, and reports the coverage conflict back.</p>
+  <div class="insight">Conflict detection is what turns a form into a workflow. The user feels like the app is checking the world before saving the change — even though it's just a skill reading a list.</div>
+  <div class="misconception">"You need a backend service to do conflict checks." You don't. The skill query is just a structured read against the existing list. The intelligence is in the trigger and the prompt, not in any new infrastructure.</div>
+</section>
+
+<section id="user-filter">
+  <h2>Filtered Views by User</h2>
+  <p>SharePoint lists can filter rows by the current user — so each viewer sees only the requests they created, or only the ones they manage. The demo flags this: the author sees every request because he's the site owner, but in normal use each person sees only their own.</p>
+  <div class="insight">User-filtered views give you per-person experiences for free. One list, one view, automatically scoped to who's looking — no per-user copies, no per-user permissions to manage.</div>
+  <p>This is the SharePoint equivalent of row-level security combined with default UI scoping. The agent can set it up when it creates the view; you don't have to think about it again.</p>
+</section>
+
+<section id="homepage">
+  <h2>Homepage Composition</h2>
+  <p>The homepage is where the parts meet the user. The author edits a blank page, starts a fresh chat (no Ralph Loop this time), and dictates five sections: quick actions, embedded team schedule, my requests, prompts/utterances, and the list browse links. The agent assembles the page; the lists and skills it references already exist.</p>
+  <div class="insight">Build the parts first, the homepage last. Once the lists, views, and skills work in isolation, the homepage prompt becomes a layout exercise — not a build.</div>
+  <p>The final result: quick action buttons that fire the request and review skills. A live calendar embed. A filtered request list. Free-form chat that resolves utterances like "who is out the week of March 12th" by calling the availability skill. Twenty minutes of run time, two or three minutes of human attention.</p>
+</section>
+
+<section id="flashcards">
+  <div class="sec-label">Flashcards — Advanced</div>
+  <div class="fc-grid">
+
+    <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div>
+        <div class="fc-term">Composite App</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A SharePoint application made by composing multiple lists, views, and skills, then surfacing them through a unified homepage. No custom code is required.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div>
+        <div class="fc-term">Calendar View</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A list view that renders rows as month-grid events using their start and end date columns. Inherits the parent list's filters, so it stays in sync automatically.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div>
+        <div class="fc-term">Conflict Detection</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A skill that reads the list, finds rows overlapping the new request, and reports them before the change is saved. Turns a form into a workflow.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div>
+        <div class="fc-term">User-Filtered View</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A list view scoped to the current viewer — only rows they created, or only ones they own. One list, one view, per-person scoping done automatically by SharePoint.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div>
+        <div class="fc-term">Homepage Composition</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">The final layout step that brings lists, views, and skills together on one page. Build the parts in isolation first; assembling them on the homepage is then quick.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+  </div>
+</section>
+
+<footer>
+  <a href="index.html">← Library home</a>
+  <a href="flashcards-index.html">All flashcards →</a>
+  <a href="guide-01-foundations.html">← Back to Foundations</a>
+</footer>
+
+</div>
+</body>
+</html>

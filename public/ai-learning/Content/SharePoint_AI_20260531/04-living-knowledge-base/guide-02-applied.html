@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>02 · Applied — AI Skills in Action</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4; --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf; --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--amber);
+}
+*, *::before, *::after { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; counter-reset:slide; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+.back { font-family:"JetBrains Mono",monospace; font-size:12px; text-decoration:none;
+  color:var(--ink-soft); display:inline-flex; align-items:center; gap:6px;
+  margin-bottom:22px; border:1px solid var(--rule); border-radius:6px;
+  padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.28em;
+  text-transform:uppercase; color:var(--accent); font-weight:600; margin:28px 0 18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(34px,5vw,52px);
+  line-height:1.05; letter-spacing:-.02em; margin:0 0 18px; }
+.dek { font-size:21px; color:var(--ink-soft); max-width:720px; margin:0 0 36px; }
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);
+  margin:48px 0 6px; font-weight:600; }
+code, .mono { font-family:"JetBrains Mono",monospace; font-size:.82em;
+  background:#ece7db; padding:.08em .38em; border-radius:4px; color:#3a382f; }
+.topnav { position:sticky; top:0; z-index:20; background:var(--paper);
+  border-bottom:1px solid var(--rule); margin:0 -28px 30px; padding:12px 28px;
+  display:flex; flex-wrap:wrap; gap:6px; font-family:"JetBrains Mono",monospace;
+  font-size:11px; }
+.topnav a { text-decoration:none; color:var(--ink-soft); border:1px solid var(--rule);
+  border-radius:5px; padding:5px 10px; transition:all .14s; }
+.topnav a:hover { background:var(--guide-color); color:#fff; border-color:var(--guide-color); }
+.takeaways { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:14px 0 30px; }
+@media (max-width:760px) { .takeaways { grid-template-columns:1fr; } }
+.take { background:var(--card); border:1px solid var(--rule); border-top:3px solid var(--guide-color);
+  border-radius:10px; padding:18px 20px; }
+.take .tk-l { font-family:"JetBrains Mono",monospace; font-size:10px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:8px; }
+.take .tk-v { font-family:"Fraunces",serif; font-size:18px; line-height:1.3; font-weight:600; }
+
+section:not(#quiz):not(#flashcards) {
+  counter-increment:slide; background:var(--card);
+  border:1.5px solid color-mix(in srgb, var(--guide-color, var(--slate)) 28%, var(--rule));
+  border-radius:18px;
+  box-shadow:0 8px 36px -10px rgba(27,26,23,.18), 0 1px 0 rgba(27,26,23,.04);
+  margin:48px 0; overflow:hidden; position:relative;
+}
+section:not(#quiz):not(#flashcards) h2 {
+  margin:0; padding:26px 36px 22px;
+  background:var(--guide-color, var(--slate)); color:#fff;
+  font-family:"Fraunces",serif; font-weight:900;
+  font-size:clamp(20px,2.8vw,26px); letter-spacing:-.015em; line-height:1.1;
+  display:flex; align-items:flex-start; gap:14px;
+}
+section:not(#quiz):not(#flashcards) h2::before {
+  content:counter(slide,decimal-leading-zero);
+  font-family:"JetBrains Mono",monospace; font-weight:600; font-size:12px;
+  letter-spacing:.1em; background:rgba(255,255,255,.16); color:rgba(255,255,255,.9);
+  border:1px solid rgba(255,255,255,.28); padding:4px 10px; border-radius:5px;
+  flex-shrink:0; margin-top:3px; white-space:nowrap;
+}
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre {
+  margin-left:36px; margin-right:36px;
+}
+section:not(#quiz):not(#flashcards) > p:first-of-type { margin-top:28px; }
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child { margin-bottom:34px; }
+section:not(#quiz):not(#flashcards)::after {
+  content:""; display:block; height:4px;
+  background:linear-gradient(90deg, var(--guide-color, var(--slate)) 0%,
+    color-mix(in srgb, var(--guide-color, var(--slate)) 30%, transparent) 100%);
+  margin-top:34px; opacity:.35;
+}
+@media (max-width:680px) {
+  section:not(#quiz):not(#flashcards) h2 { padding:20px 22px 18px; font-size:20px; }
+  section:not(#quiz):not(#flashcards) > p,
+  section:not(#quiz):not(#flashcards) > .insight,
+  section:not(#quiz):not(#flashcards) > .misconception,
+  section:not(#quiz):not(#flashcards) > blockquote { margin-left:22px; margin-right:22px; }
+}
+.insight, .misconception { border-radius:10px; padding:18px 22px; margin:22px 0;
+  font-size:17px; line-height:1.5; }
+.insight { border-left:4px solid var(--slate); background:var(--slate-soft); }
+.misconception { border-left:4px solid var(--accent); background:var(--accent-soft); }
+.insight::before { content:"✦ Key insight — "; font-weight:600; color:var(--slate); }
+.misconception::before { content:"✕ Common misconception — "; font-weight:600; color:var(--accent); }
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
+.fc { perspective:900px; height:190px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%; transform-style:preserve-3d;
+  transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front, .fc-back { position:absolute; inset:0; border-radius:13px;
+  padding:22px 22px 18px; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  display:flex; flex-direction:column; justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back { background:#7a5400; }
+.fc[data-g="g3"] .fc-front { border-left:4px solid var(--g3); }
+.fc[data-g="g3"] .fc-back { background:#3a1a10; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc[data-g="g3"] .fc-term { color:var(--g3); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc[data-g="g3"] .fc-def { color:#f5d6ce; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px;
+  color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px; font-weight:600;
+  letter-spacing:.08em; text-transform:uppercase; padding:2px 8px;
+  border-radius:4px; border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent);
+  background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent);
+  background:color-mix(in srgb,var(--g2) 10%,transparent); }
+.gtag.g3 { color:var(--g3); border-color:color-mix(in srgb,var(--g3) 40%,transparent);
+  background:color-mix(in srgb,var(--g3) 10%,transparent); }
+.footer-cross { margin-top:60px; padding:24px 28px; border:1px solid var(--rule);
+  border-radius:11px; background:var(--card); display:flex; flex-wrap:wrap;
+  gap:18px; justify-content:space-between; align-items:center; }
+.footer-cross a { font-family:"JetBrains Mono",monospace; font-size:12px;
+  text-decoration:none; color:var(--amber); font-weight:600;
+  border:1.5px solid var(--amber); padding:7px 14px; border-radius:7px; }
+.footer-cross a:hover { background:var(--amber); color:#fff; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="index.html">← Library home</a>
+<div class="kicker">Guide 02 · Applied</div>
+<h1>The four skills that run the knowledge base</h1>
+<p class="dek">Watch the demo and you see the agent log gaps, ingest knowledge, find experts, and reason about decay — these are AI Skills, the verbs the site exposes to every user session.</p>
+
+<nav class="topnav">
+  <a href="#four-skills">01 · The four skills</a>
+  <a href="#asking">02 · Asking questions</a>
+  <a href="#decay">03 · Knowledge decay</a>
+  <a href="#ingest">04 · Ingest skill</a>
+  <a href="#why-tracking">05 · Why-tracking</a>
+  <a href="#flashcards">Flashcards</a>
+</nav>
+
+<div class="sec-label">3 things to walk away with</div>
+<div class="takeaways">
+  <div class="take"><div class="tk-l">Skills as verbs</div><div class="tk-v">The KB exposes four skills users can call by name; the agent picks which to invoke.</div></div>
+  <div class="take"><div class="tk-l">Decay is automatic</div><div class="tk-v">Every answer ships with a freshness check — stale entries spawn verification tasks on their own.</div></div>
+  <div class="take"><div class="tk-l">Why over what</div><div class="tk-v">Ingestion captures rationale, not just numbers — so questions like "why 99.9%" can be answered later.</div></div>
+</div>
+
+<section id="four-skills">
+<h2>The Four Skills — verbs the KB exposes</h2>
+
+<p>The demo KB ships with four AI Skills: <code>log gaps</code>, <code>ingest knowledge</code>, <code>find experts</code>, and <code>generate admin reports</code>. Each is a discrete capability the agent can invoke during a session. Users do not call them by name — they ask natural questions, and the agent decides which skills to chain together to satisfy the request.</p>
+
+<div class="insight">Skills are the verbs of the site. The context file (the grammar) tells the agent <em>when</em> to use which verb on which surface.</div>
+
+<p>Because skills are first-class building blocks, you can add or remove them per site. A legal KB might add a "redaction" skill; a sales KB might add "score-lead". The four shown here are the minimum set for a self-maintaining KB.</p>
+
+<div class="misconception">Skills are SharePoint plugins or apps the user manually activates. They are agent-callable capabilities — the agent invokes them based on the user's question and the context file's rules.</div>
+</section>
+
+<section id="asking">
+<h2>Asking Questions — the agent grounds answers in the library</h2>
+
+<p>The first demo question — "what is our policy on vendor contract SLA requirements?" — triggers the agent to scan the document library, find the relevant entry, and synthesize an answer. It does not invent. It cites the markdown file the answer came from.</p>
+
+<p>What looks like simple Q&amp;A is actually the entry point that unlocks the rest of the system. The agent also checks the file's last-verified date, notices it is over 90 days old, and silently invokes the <code>log gaps</code> skill to spawn a verification task — without the user asking.</p>
+
+<div class="insight">A user question can fire multiple skills in sequence. The answer is just one output; the side effects (gap logging, task routing) are equally important.</div>
+
+<div class="misconception">The agent answers from a generic LLM model. It is grounded specifically on the document library, and the answer always traces back to a markdown file in the site.</div>
+</section>
+
+<section id="decay">
+<h2>Knowledge Decay — every answer has an expiration check</h2>
+
+<p>Each markdown file in the library records a <em>last-verified date</em>. The context file defines decay rules: anything over 90 days is "potentially stale" and should be flagged. When the agent answers from a stale file, it spawns a verification gap and assigns it to the expert who owns that domain.</p>
+
+<p>In the demo, asking the SLA question triggers a verification item routed to Jordan Lee. Asking a second question about the same domain does <em>not</em> create a duplicate gap — the context file rule "do not log duplicate gaps" prevents it. The system is opinionated about not wasting attention.</p>
+
+<div class="insight">Decay handling is the difference between a static wiki and a living KB. Every answer carries a freshness signal, and stale ones generate work.</div>
+
+<div class="misconception">Decay is a passive flag the user must notice. The agent acts on decay automatically — it creates tasks, routes them, and tracks resolution without prompting.</div>
+</section>
+
+<section id="ingest">
+<h2>The Ingest Knowledge Skill — promote raw input into curated entries</h2>
+
+<p>When a user pastes "Hey, I can answer that — standard SLA is tier one…" into the chat, the agent detects this is new knowledge, not just conversation. The <code>ingest knowledge</code> skill fires: it parses what the user said, finds the matching gap items, locates the correct markdown files in the library, and rewrites them with the new information plus an updated verification date.</p>
+
+<p>The same skill runs on the submissions folder when an approver triggers it — different source, same logic. The skill does not blindly paste; it reasons about what already exists, what is new, and what should be merged where.</p>
+
+<div class="insight">Ingestion is reasoning, not copy-paste. The skill decides which entries to update, which gaps to close, and what to leave for human review.</div>
+
+<div class="misconception">Ingesting knowledge means dumping raw text into a file. The skill extracts what belongs in the KB and discards the rest — your meeting transcript becomes a structured policy entry, not a wall of text.</div>
+</section>
+
+<section id="why-tracking">
+<h2>Why-Tracking — capturing rationale, not just facts</h2>
+
+<p>The third demo question — "what uptime do we require from critical vendors, and why is it set at that level?" — exposes the most powerful feature: the KB stores not just numbers, but reasoning. When the ingest skill processes a meeting transcript, it tries to extract the <em>why</em> behind decisions: what was discussed, what was rejected, what tradeoffs were accepted.</p>
+
+<p>That is why the right input for ingestion is a meeting recording or email thread, not a polished policy doc. The richer the raw source, the more rationale the skill can capture — and that rationale becomes searchable knowledge.</p>
+
+<div class="insight">A living KB stores decisions and their rationale, not just outcomes. The "why" is what makes the answers useful months after the meeting.</div>
+
+<div class="misconception">Feed the agent your finished policy documents and you get the best KB. The opposite is true — feed it raw transcripts and emails so it can capture the reasoning, not just the conclusion.</div>
+</section>
+
+<div class="footer-cross">
+  <div style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink-soft);">Continue:</div>
+  <a href="guide-03-advanced.html">03 · Advanced — Gaps, experts, admin →</a>
+  <a href="flashcards-index.html">All flashcards</a>
+</div>
+
+<section id="flashcards">
+  <div class="sec-label">Flashcards — Applied</div>
+  <div class="fc-grid">
+
+    <div class="fc" data-g="g2" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+          <div class="fc-term">AI Skills</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">Discrete agent-callable capabilities the KB exposes (e.g. log gaps, ingest knowledge, find experts). The agent picks which to invoke from a user question; users do not call them by name.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+          <div class="fc-term">Asking Questions</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">The entry point to the KB. The agent grounds answers on the document library, cites the source file, and can silently fire side-effect skills like gap logging.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+          <div class="fc-term">Knowledge Decay</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">Automatic freshness handling. Each file carries a last-verified date; the context file defines stale thresholds. Stale entries trigger verification tasks routed to owners.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+          <div class="fc-term">Ingest Knowledge Skill</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">The skill that promotes raw input into canonical entries. Reasons about what already exists, merges new info into the right files, updates verification dates, and resolves matching gaps.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+          <div class="fc-term">Why-Tracking</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">Ingestion captures the rationale behind a decision, not just the outcome. Best fed raw transcripts and email threads — the agent extracts both the number and the reasoning that produced it.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</div>
+<script>
+function flip(card){ card.classList.toggle('flipped'); }
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { e.preventDefault(); t.scrollIntoView({behavior:'smooth', block:'start'}); }
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Applied · Brand Compliance with SharePoint AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--amber);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; counter-reset: slide; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);
+  margin:48px 0 6px; font-weight:600; }
+code, .mono { font-family:"JetBrains Mono",monospace; font-size:.82em;
+  background:#ece7db; padding:.08em .38em; border-radius:4px; color:#3a382f; }
+
+.back { font-family:"JetBrains Mono",monospace; font-size:12px;
+  text-decoration:none; color:var(--ink-soft); display:inline-flex;
+  align-items:center; gap:6px; margin-bottom:22px; border:1px solid var(--rule);
+  border-radius:6px; padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px;
+  letter-spacing:.28em; text-transform:uppercase; color:var(--accent);
+  font-weight:600; margin-bottom:18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(34px,5.4vw,56px);
+  line-height:1.05; letter-spacing:-.02em; margin:6px 0 16px; }
+.dek { font-size:20px; color:var(--ink-soft); max-width:720px; margin:0 0 36px; }
+
+.topnav { position:sticky; top:0; z-index:10; background:var(--paper);
+  border-bottom:1px solid var(--rule); margin:28px -28px 36px; padding:14px 28px;
+  display:flex; gap:18px; flex-wrap:wrap; }
+.topnav a { font-family:"JetBrains Mono",monospace; font-size:12px;
+  text-decoration:none; color:var(--ink-soft); font-weight:600;
+  letter-spacing:.04em; }
+.topnav a:hover { color:var(--guide-color); }
+
+.takeaways { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:14px; margin:30px 0 8px; }
+.tk { background:var(--card); border:1px solid var(--rule);
+  border-left:4px solid var(--guide-color); border-radius:10px; padding:18px 20px; }
+.tk-lbl { font-family:"JetBrains Mono",monospace; font-size:10px;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--guide-color);
+  font-weight:600; margin-bottom:6px; }
+.tk-body { font-size:15.5px; line-height:1.45; }
+
+/* ===== SLIDE PANELS ===== */
+section:not(#quiz):not(#flashcards) {
+  counter-increment: slide;
+  background: var(--card);
+  border: 1.5px solid color-mix(in srgb, var(--guide-color, var(--slate)) 28%, var(--rule));
+  border-radius: 18px;
+  box-shadow: 0 8px 36px -10px rgba(27,26,23,.18), 0 1px 0 rgba(27,26,23,.04);
+  margin: 48px 0; overflow: hidden; position: relative;
+}
+section:not(#quiz):not(#flashcards) h2 {
+  margin: 0; padding: 26px 36px 22px;
+  background: var(--guide-color, var(--slate)); color: #fff;
+  font-family: "Fraunces", serif; font-weight: 900;
+  font-size: clamp(20px, 2.8vw, 26px);
+  letter-spacing: -.015em; line-height: 1.1;
+  display: flex; align-items: flex-start; gap: 14px;
+}
+section:not(#quiz):not(#flashcards) h2::before {
+  content: counter(slide, decimal-leading-zero);
+  font-family: "JetBrains Mono", monospace; font-weight: 600;
+  font-size: 12px; letter-spacing: .1em;
+  background: rgba(255,255,255,.16); color: rgba(255,255,255,.9);
+  border: 1px solid rgba(255,255,255,.28);
+  padding: 4px 10px; border-radius: 5px;
+  flex-shrink: 0; margin-top: 3px; white-space: nowrap;
+}
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre {
+  margin-left: 36px; margin-right: 36px;
+}
+section:not(#quiz):not(#flashcards) > p:first-of-type { margin-top: 28px; }
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child { margin-bottom: 34px; }
+section:not(#quiz):not(#flashcards)::after {
+  content: ""; display: block; height: 4px;
+  background: linear-gradient(90deg,
+    var(--guide-color, var(--slate)) 0%,
+    color-mix(in srgb, var(--guide-color, var(--slate)) 30%, transparent) 100%);
+  margin-top: 34px; opacity: .35;
+}
+@media (max-width: 680px) {
+  section:not(#quiz):not(#flashcards) h2 { padding: 20px 22px 18px; font-size: 20px; }
+  section:not(#quiz):not(#flashcards) > p,
+  section:not(#quiz):not(#flashcards) > .insight,
+  section:not(#quiz):not(#flashcards) > .misconception,
+  section:not(#quiz):not(#flashcards) > blockquote { margin-left: 22px; margin-right: 22px; }
+}
+/* ===== END SLIDE PANELS ===== */
+
+.insight, .misconception { border-radius:10px; padding:18px 22px;
+  margin:22px 0; font-size:17px; line-height:1.5; }
+.insight { border-left:4px solid var(--slate); background:var(--slate-soft); }
+.misconception { border-left:4px solid var(--accent); background:var(--accent-soft); }
+.insight::before { content:"✦ Key insight — "; font-weight:600; color:var(--slate); }
+.misconception::before { content:"✕ Common misconception — "; font-weight:600; color:var(--accent); }
+
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
+.fc { perspective:900px; height:190px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%;
+  transform-style:preserve-3d; transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front, .fc-back { position:absolute; inset:0; border-radius:13px;
+  padding:22px 22px 18px; backface-visibility:hidden;
+  -webkit-backface-visibility:hidden; display:flex; flex-direction:column;
+  justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back { background:#7a5400; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px;
+  color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px;
+  font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+  padding:2px 8px; border-radius:4px; border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent); background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent); background:color-mix(in srgb,var(--g2) 10%,transparent); }
+
+.xlink { display:flex; gap:14px; flex-wrap:wrap; margin:48px 0 0;
+  padding:22px; border:1px solid var(--rule); border-radius:11px;
+  background:var(--card); }
+.xlink a { font-family:"JetBrains Mono",monospace; font-size:13px;
+  text-decoration:none; color:var(--ink); padding:8px 16px;
+  border:1.5px solid var(--guide-color); border-radius:7px; font-weight:600; }
+.xlink a:hover { background:var(--guide-color); color:#fff; }
+
+footer { margin-top:60px; padding-top:24px; border-top:1px solid var(--rule);
+  font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--ink-soft); }
+
+@media (max-width: 760px) { .fc-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 420px) { .fc-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="index.html">← Back to library</a>
+<div class="kicker">Guide 02 · Applied</div>
+<h1>Bulk Runs and One-Click Buttons</h1>
+<p class="dek">Run the brand review across a whole library with one prompt, then wire it to a Quick Step button so every future file gets the same review at the click of a column action.</p>
+
+<nav class="topnav">
+  <a href="#bulk-run">01 · Bulk Run</a>
+  <a href="#score-column">02 · Score Column</a>
+  <a href="#notes-column">03 · Notes Column</a>
+  <a href="#quickstep">04 · Quick Step Button</a>
+  <a href="#flashcards">Flashcards ↓</a>
+</nav>
+
+<div class="takeaways">
+  <div class="tk"><div class="tk-lbl">Takeaway 01</div><div class="tk-body">"For each file in this library" is a one-line bulk run — no loops, no scripts.</div></div>
+  <div class="tk"><div class="tk-lbl">Takeaway 02</div><div class="tk-body">Direct the AI to write the score and the notes into specific columns. That's the audit trail.</div></div>
+  <div class="tk"><div class="tk-lbl">Takeaway 03</div><div class="tk-body">A Quick Step column turns the bulk prompt into a per-file button you click once per upload.</div></div>
+</div>
+
+<section id="bulk-run">
+  <h2>Running the Skill in Bulk</h2>
+  <p>Instead of running the skill file by file, the narrator asks SharePoint to "perform a brand review of each file in this library." That single instruction iterates across every file, runs the skill, and saves the results. Four sample files come back with a mix of scores; one passes, the others have issues.</p>
+  <div class="insight">"For each file in this library" is the magic phrase. The AI handles iteration; you handle the prompt. That's the difference between a chat session and an operational workflow.</div>
+  <p>The bulk pattern works for any reusable skill — not just brand review. Once you have a skill that takes one file and returns a structured answer, you can fan it out across an entire library with one sentence.</p>
+  <div class="misconception">A common reflex is to run skills one file at a time because "that's how the chat works." But SharePoint's AI iterates automatically when you tell it to — there's no per-file ceremony required.</div>
+</section>
+
+<section id="score-column">
+  <h2>Writing to a Score Column</h2>
+  <p>The narrator tells the skill exactly where to write: "save the score, just the number, in the brand review score column." That puts the score into a real SharePoint column you can sort, filter, and chart on. A pile of chat responses turns into structured data.</p>
+  <div class="insight">Specifying the target column converts AI output from a transient message into persistent metadata. Suddenly the review results live with the file forever.</div>
+  <p>"Just the number" is doing work too — it tells the AI not to include text, units, or commentary in the score field. Clean numbers in the score column means clean filters and clean sums later.</p>
+</section>
+
+<section id="notes-column">
+  <h2>Writing Detailed Notes to a Second Column</h2>
+  <p>Alongside the score, the AI writes the full review explanation into a Brand Review Notes column. Same skill run, two outputs, two columns. Now you can sort by score to find failing files and click into any one of them to read the specific notes.</p>
+  <div class="insight">Separating "score" and "notes" into two columns is what makes the system operational. Score drives triage; notes drive action.</div>
+  <p>The notes contain the actionable feedback — what color was off, what tone was wrong, what photography didn't match. That's what the file owner needs to fix the problem; the score alone wouldn't tell them.</p>
+</section>
+
+<section id="quickstep">
+  <h2>The Quick Step Button</h2>
+  <p>Typing the bulk prompt every time would be tedious. So the narrator adds a Quick Step column — a button-style column that runs a saved prompt on the file you click. The saved prompt is the same brand review instruction, scoped to the single file instead of the whole library.</p>
+  <div class="insight">A Quick Step column converts a typed prompt into a clickable button. Every future file gets reviewed by clicking that button once — no prompt memory required.</div>
+  <p>Once the column is moved to the front of the view, "review this file" becomes a single click. New files added to the library get the button automatically — no setup per file, no workflow configuration.</p>
+  <div class="misconception">Teams sometimes assume you need Power Automate or a custom app to operationalize an AI skill. A Quick Step column gives you a one-click trigger with zero extra services to configure.</div>
+</section>
+
+<section id="flashcards">
+  <div class="sec-label">Flashcards — Applied</div>
+  <div class="fc-grid">
+    <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')">
+      <div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Bulk Skill Run</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Running a skill across every file in a library with a single "for each file" prompt. The AI handles iteration so you write one instruction instead of many.</div><div class="fc-tap">← tap to flip back</div></div></div>
+    </div>
+    <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')">
+      <div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Brand Review Score Column</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A SharePoint number column the skill writes the compliance score into. Specifying "just the number" keeps the value clean for sorting, filtering, and aggregation.</div><div class="fc-tap">← tap to flip back</div></div></div>
+    </div>
+    <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')">
+      <div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Brand Review Notes Column</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A SharePoint text column the skill writes the full review explanation into. Score drives triage; notes drive action — and both live with the file.</div><div class="fc-tap">← tap to flip back</div></div></div>
+    </div>
+    <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')">
+      <div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Quick Step Column</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A SharePoint actions column that exposes a saved AI prompt as a clickable button. One click per file, no prompt memory, no Power Automate setup.</div><div class="fc-tap">← tap to flip back</div></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="xlink">
+  <a href="flashcards-index.html">All Flashcards →</a>
+  <a href="guide-01-foundations.html">← Previous: Foundations</a>
+  <a href="index.html">Library home</a>
+</div>
+
+<footer>Guide 02 of 02 · Brand Compliance with SharePoint AI</footer>
+
+</div>
+</body>
+</html>

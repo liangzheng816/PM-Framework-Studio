@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>02 · Applied — Running the Citation Pipeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4; --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf; --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--amber);
+}
+*,*::before,*::after { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; counter-reset:slide; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+
+.back { font-family:"JetBrains Mono",monospace; font-size:12px;
+  text-decoration:none; color:var(--ink-soft); display:inline-flex;
+  align-items:center; gap:6px; margin:30px 0 22px; border:1px solid var(--rule);
+  border-radius:6px; padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px;
+  letter-spacing:.28em; text-transform:uppercase; color:var(--accent);
+  font-weight:600; margin-bottom:18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(34px,5vw,52px);
+  letter-spacing:-.02em; line-height:1.05; margin:0 0 14px; }
+.dek { font-size:20px; color:var(--ink-soft); max-width:720px; margin:0 0 28px; }
+
+.topic-nav { position:sticky; top:0; z-index:10; background:var(--paper);
+  border-bottom:1px solid var(--rule); margin:0 -28px 32px; padding:14px 28px;
+  display:flex; flex-wrap:wrap; gap:8px 18px; font-family:"JetBrains Mono",monospace;
+  font-size:12px; font-weight:600; }
+.topic-nav a { color:var(--ink-soft); text-decoration:none; padding:4px 10px;
+  border:1px solid var(--rule); border-radius:5px; transition:all .14s; }
+.topic-nav a:hover { background:var(--guide-color); color:#fff; border-color:var(--guide-color); }
+
+.meta-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:24px 0 40px; }
+@media (max-width:680px) { .meta-grid { grid-template-columns:1fr; } }
+.meta { background:var(--card); border:1px solid var(--rule); border-radius:10px;
+  padding:18px 20px; border-top:3px solid var(--guide-color); }
+.meta .ml { font-family:"JetBrains Mono",monospace; font-size:10px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:6px; }
+.meta .mb { font-family:"Fraunces",serif; font-weight:600; font-size:18px; line-height:1.3; }
+
+/* ===== SLIDE PANELS ===== */
+section:not(#quiz):not(#flashcards) {
+  counter-increment:slide; background:var(--card);
+  border:1.5px solid color-mix(in srgb, var(--guide-color, var(--slate)) 28%, var(--rule));
+  border-radius:18px;
+  box-shadow:0 8px 36px -10px rgba(27,26,23,.18), 0 1px 0 rgba(27,26,23,.04);
+  margin:48px 0; overflow:hidden; position:relative;
+}
+section:not(#quiz):not(#flashcards) h2 {
+  margin:0; padding:26px 36px 22px;
+  background:var(--guide-color, var(--slate)); color:#fff;
+  font-family:"Fraunces",serif; font-weight:900;
+  font-size:clamp(20px,2.8vw,26px); letter-spacing:-.015em; line-height:1.1;
+  display:flex; align-items:flex-start; gap:14px;
+}
+section:not(#quiz):not(#flashcards) h2::before {
+  content:counter(slide, decimal-leading-zero);
+  font-family:"JetBrains Mono",monospace; font-weight:600; font-size:12px;
+  letter-spacing:.1em; background:rgba(255,255,255,.16);
+  color:rgba(255,255,255,.9); border:1px solid rgba(255,255,255,.28);
+  padding:4px 10px; border-radius:5px; flex-shrink:0; margin-top:3px; white-space:nowrap;
+}
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre { margin-left:36px; margin-right:36px; }
+section:not(#quiz):not(#flashcards) > p:first-of-type { margin-top:28px; }
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child { margin-bottom:34px; }
+section:not(#quiz):not(#flashcards)::after {
+  content:""; display:block; height:4px;
+  background:linear-gradient(90deg, var(--guide-color, var(--slate)) 0%,
+    color-mix(in srgb, var(--guide-color, var(--slate)) 30%, transparent) 100%);
+  margin-top:34px; opacity:.35;
+}
+@media (max-width:680px) {
+  section:not(#quiz):not(#flashcards) h2 { padding:20px 22px 18px; font-size:20px; }
+  section:not(#quiz):not(#flashcards) > p,
+  section:not(#quiz):not(#flashcards) > .insight,
+  section:not(#quiz):not(#flashcards) > .misconception,
+  section:not(#quiz):not(#flashcards) > blockquote { margin-left:22px; margin-right:22px; }
+}
+/* ===== END SLIDE PANELS ===== */
+
+.insight, .misconception { border-radius:10px; padding:18px 22px; margin:22px 0;
+  font-size:17px; line-height:1.5; }
+.insight { border-left:4px solid var(--slate); background:var(--slate-soft); }
+.misconception { border-left:4px solid var(--accent); background:var(--accent-soft); }
+.insight::before { content:"✦ Key insight — "; font-weight:600; color:var(--slate); }
+.misconception::before { content:"✕ Common misconception — "; font-weight:600; color:var(--accent); }
+
+code,.mono { font-family:"JetBrains Mono",monospace; font-size:.82em;
+  background:#ece7db; padding:.08em .38em; border-radius:4px; color:#3a382f; }
+
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);
+  margin:48px 0 6px; font-weight:600; }
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
+.fc { perspective:900px; height:190px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%;
+  transform-style:preserve-3d; transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front,.fc-back { position:absolute; inset:0; border-radius:13px;
+  padding:22px 22px 18px; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  display:flex; flex-direction:column; justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back { background:#7a5400; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px; font-weight:600;
+  letter-spacing:.08em; text-transform:uppercase; padding:2px 8px; border-radius:4px;
+  border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent);
+  background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent);
+  background:color-mix(in srgb,var(--g2) 10%,transparent); }
+
+footer { margin-top:80px; padding-top:30px; border-top:1px solid var(--rule);
+  font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--ink-soft);
+  display:flex; flex-wrap:wrap; gap:18px; justify-content:space-between; }
+footer a { color:var(--ink-soft); text-decoration:underline; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="index.html">← Back to library</a>
+
+<div class="kicker">02 · Applied</div>
+<h1>Running the citation pipeline end to end</h1>
+<p class="dek">Three skills, one tracking list, one source folder — and the brief comes back fully cited. Here's exactly what happens at each step, and how to drive the model when you want to.</p>
+
+<nav class="topic-nav">
+  <a href="#tracking-list">Tracking list</a>
+  <a href="#assertion-extraction">Assertion extraction</a>
+  <a href="#citation-run">Citation run</a>
+  <a href="#cited-passage">Cited passage</a>
+  <a href="#explicit-invocation">Explicit invocation</a>
+  <a href="#flashcards">Flashcards</a>
+</nav>
+
+<div class="meta-grid">
+  <div class="meta"><div class="ml">Takeaway 1</div><div class="mb">The list is the workspace — every skill reads from or writes to it.</div></div>
+  <div class="meta"><div class="ml">Takeaway 2</div><div class="mb">Empty citation cells are the trigger — the finder only re-runs rows that need it.</div></div>
+  <div class="meta"><div class="ml">Takeaway 3</div><div class="mb">Naming the skill is optional but useful when you're driving a specific process.</div></div>
+</div>
+
+<section id="tracking-list">
+  <h2>Create the tracking list first</h2>
+  <p>Step one is provisioning the SharePoint list the rest of the pipeline writes into. The List Creator skill spins up a list with three columns: the assertion itself, the citation, and which source file the citation came from.</p>
+  <p>The list is a contract. Once it exists, the other two skills know exactly where to put their output. Without it, the extractor would have nowhere to drop records, and the citation finder would have nothing to process.</p>
+  <div class="insight">SharePoint lists are the connective tissue between skills. Each skill agrees to read from or write to specific columns — the schema is the API.</div>
+</section>
+
+<section id="assertion-extraction">
+  <h2>Extract every assertion as a row</h2>
+  <p>With the list ready, the Assertion Extractor skill takes the brief file as input. It walks the document, identifies each standalone factual claim, and creates one list record per assertion. The citation column is left blank on purpose — that's what the next step looks for.</p>
+  <p>Open the list in a second tab while the extractor runs and hit refresh. Records appear one by one as the model works through the document.</p>
+  <div class="insight">The extractor's job is parsing, not researching. It splits the brief into atomic, citeable claims — short enough to match against a source passage, complete enough to stand alone.</div>
+  <div class="misconception">It's tempting to assume the extractor already knows the sources. It doesn't — it only reads the brief. The list at this stage has assertions and empty citation cells, nothing more.</div>
+</section>
+
+<section id="citation-run">
+  <h2>Run the citation finder against the source folder</h2>
+  <p>The third skill — Citation Finder — gets pointed at the source folder and told to process every record in the list with an empty citation. For each blank row, it searches the folder, picks the best-matching passage, and writes both the citation and the source file back into the row.</p>
+  <p>This is the only step that touches the evidence library. It's also the slowest, because the model has to actually read the source documents. When it finishes, it prints a short report summarizing what it cited and what it couldn't.</p>
+  <div class="insight">Empty cells are the work queue. Run the finder again later and it'll only touch the rows that still need a citation — re-runs are cheap and idempotent.</div>
+</section>
+
+<section id="cited-passage">
+  <h2>The output: assertion plus quoted passage</h2>
+  <p>The finished list pairs each assertion with the specific passage that supports it. Not just a file name — the actual sentence or paragraph quoted out, so the user can verify the match without opening the source.</p>
+  <p>From there the table becomes raw material. Export it, paste it into a footnotes section, feed it into a new document. The structured shape — one row per claim, one citation per row — is what makes those downstream uses easy.</p>
+  <div class="misconception">A citation isn't the same as a search result. The finder is expected to lift the exact supporting passage, not just say "see report X." That quoted passage is what the human verifies against.</div>
+</section>
+
+<section id="explicit-invocation">
+  <h2>Naming the skill explicitly</h2>
+  <p>The AI in SharePoint can usually figure out which skill to use from context alone. In this workflow, the user names them anyway — "use the assertion extractor skill," "use the citation finder skill" — because they're driving a very specific process and want zero ambiguity.</p>
+  <p>Explicit invocation is also good for teaching. New teammates watching the demo learn the skill names by hearing them used. Once the skills are familiar, the verbal step can drop away and the model picks them up from context.</p>
+  <div class="insight">Be explicit when you care about the path. Let the model infer when you care about the result. Both modes work — the difference is just how much steering you want to do.</div>
+</section>
+
+
+<section id="flashcards">
+<div class="sec-label">Flashcards — Applied</div>
+<div class="fc-grid">
+
+<div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')">
+  <div class="fc-inner">
+    <div class="fc-front">
+      <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+      <div class="fc-term">Tracking List</div>
+      <div class="fc-tap">tap to reveal →</div>
+    </div>
+    <div class="fc-back">
+      <div class="fc-def">SharePoint list with three columns — assertion, citation, source file — that all three skills read from or write to. Acts as the pipeline's shared workspace.</div>
+      <div class="fc-tap">← tap to flip back</div>
+    </div>
+  </div>
+</div>
+
+<div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')">
+  <div class="fc-inner">
+    <div class="fc-front">
+      <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+      <div class="fc-term">Assertion Extractor</div>
+      <div class="fc-tap">tap to reveal →</div>
+    </div>
+    <div class="fc-back">
+      <div class="fc-def">Skill that reads a document and creates one list record per factual claim, leaving the citation column blank for the next step.</div>
+      <div class="fc-tap">← tap to flip back</div>
+    </div>
+  </div>
+</div>
+
+<div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')">
+  <div class="fc-inner">
+    <div class="fc-front">
+      <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+      <div class="fc-term">Citation Finder</div>
+      <div class="fc-tap">tap to reveal →</div>
+    </div>
+    <div class="fc-back">
+      <div class="fc-def">Skill that finds backing passages in the source folder for every list row with an empty citation, then writes the passage and source file back into the row.</div>
+      <div class="fc-tap">← tap to flip back</div>
+    </div>
+  </div>
+</div>
+
+<div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')">
+  <div class="fc-inner">
+    <div class="fc-front">
+      <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+      <div class="fc-term">Empty Cell Queue</div>
+      <div class="fc-tap">tap to reveal →</div>
+    </div>
+    <div class="fc-back">
+      <div class="fc-def">Rows with no citation yet — the work queue for the Citation Finder. Re-running the finder only touches blanks, making re-runs cheap and idempotent.</div>
+      <div class="fc-tap">← tap to flip back</div>
+    </div>
+  </div>
+</div>
+
+<div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')">
+  <div class="fc-inner">
+    <div class="fc-front">
+      <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+      <div class="fc-term">Explicit Invocation</div>
+      <div class="fc-tap">tap to reveal →</div>
+    </div>
+    <div class="fc-back">
+      <div class="fc-def">Naming a skill by name in the prompt instead of relying on the AI to infer it. Useful when driving a precise multi-step process or teaching teammates the skill names.</div>
+      <div class="fc-tap">← tap to flip back</div>
+    </div>
+  </div>
+</div>
+
+</div>
+</section>
+
+<footer>
+  <span>Auto-Cited Brief · Guide 02 · Applied</span>
+  <span><a href="flashcards-index.html">All flashcards →</a></span>
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Guide 03 · Advanced — Ultimate List Styling</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--accent);
+}
+*,*::before,*::after { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; counter-reset:slide; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);
+  margin:48px 0 6px; font-weight:600; }
+code,.mono { font-family:"JetBrains Mono",monospace; font-size:.82em;
+  background:#ece7db; padding:.08em .38em; border-radius:4px; color:#3a382f; }
+.back { font-family:"JetBrains Mono",monospace; font-size:12px;
+  text-decoration:none; color:var(--ink-soft); display:inline-flex;
+  align-items:center; gap:6px; margin-bottom:22px; border:1px solid var(--rule);
+  border-radius:6px; padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px;
+  letter-spacing:.28em; text-transform:uppercase; color:var(--accent);
+  font-weight:600; margin-bottom:18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(36px,5.5vw,56px);
+  line-height:1.02; margin:0 0 16px; letter-spacing:-.02em; }
+.dek { font-size:20px; color:var(--ink-soft); max-width:720px; margin:0 0 30px; }
+.topnav { position:sticky; top:0; z-index:10; background:var(--paper);
+  border-bottom:1px solid var(--rule); padding:12px 0; margin:24px 0 0;
+  display:flex; flex-wrap:wrap; gap:6px; }
+.topnav a { font-family:"JetBrains Mono",monospace; font-size:11px;
+  font-weight:600; text-decoration:none; color:var(--ink-soft);
+  padding:5px 10px; border-radius:5px; letter-spacing:.05em;
+  text-transform:uppercase; transition:all .12s; }
+.topnav a:hover { background:var(--guide-color); color:#fff; }
+.meta-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:28px 0 12px; }
+@media (max-width:760px) { .meta-grid { grid-template-columns:1fr; } }
+.meta { background:var(--card); border:1px solid var(--rule);
+  border-top:3px solid var(--guide-color); border-radius:10px; padding:18px 20px; }
+.meta .mlbl { font-family:"JetBrains Mono",monospace; font-size:10px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft);
+  margin-bottom:8px; font-weight:600; }
+.meta .mtxt { font-family:"Fraunces",serif; font-weight:600; font-size:18px; line-height:1.3; }
+
+section:not(#quiz):not(#flashcards) {
+  counter-increment: slide;
+  background: var(--card);
+  border: 1.5px solid color-mix(in srgb, var(--guide-color, var(--slate)) 28%, var(--rule));
+  border-radius: 18px;
+  box-shadow: 0 8px 36px -10px rgba(27,26,23,.18), 0 1px 0 rgba(27,26,23,.04);
+  margin: 48px 0; overflow: hidden; position: relative;
+}
+section:not(#quiz):not(#flashcards) h2 {
+  margin: 0; padding: 26px 36px 22px;
+  background: var(--guide-color, var(--slate));
+  color: #fff; font-family: "Fraunces", serif;
+  font-weight: 900; font-size: clamp(20px, 2.8vw, 26px);
+  letter-spacing: -.015em; line-height: 1.1;
+  display: flex; align-items: flex-start; gap: 14px;
+}
+section:not(#quiz):not(#flashcards) h2::before {
+  content: counter(slide, decimal-leading-zero);
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 600; font-size: 12px; letter-spacing: .1em;
+  background: rgba(255,255,255,.16); color: rgba(255,255,255,.9);
+  border: 1px solid rgba(255,255,255,.28);
+  padding: 4px 10px; border-radius: 5px;
+  flex-shrink: 0; margin-top: 3px; white-space: nowrap;
+}
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre {
+  margin-left: 36px; margin-right: 36px;
+}
+section:not(#quiz):not(#flashcards) > p:first-of-type { margin-top: 28px; }
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child { margin-bottom: 34px; }
+section:not(#quiz):not(#flashcards)::after {
+  content: ""; display: block; height: 4px;
+  background: linear-gradient(90deg,
+    var(--guide-color, var(--slate)) 0%,
+    color-mix(in srgb, var(--guide-color, var(--slate)) 30%, transparent) 100%);
+  margin-top: 34px; opacity: .35;
+}
+@media (max-width:680px) {
+  section:not(#quiz):not(#flashcards) h2 { padding:20px 22px 18px; font-size:20px; }
+  section:not(#quiz):not(#flashcards) > p,
+  section:not(#quiz):not(#flashcards) > .insight,
+  section:not(#quiz):not(#flashcards) > .misconception,
+  section:not(#quiz):not(#flashcards) > blockquote { margin-left:22px; margin-right:22px; }
+}
+
+.insight, .misconception { border-radius:10px; padding:18px 22px; margin:22px 0; font-size:17px; line-height:1.5; }
+.insight { border-left:4px solid var(--slate); background:var(--slate-soft); }
+.misconception { border-left:4px solid var(--accent); background:var(--accent-soft); }
+.insight::before { content:"✦ Key insight — "; font-weight:600; color:var(--slate); }
+.misconception::before { content:"✕ Common misconception — "; font-weight:600; color:var(--accent); }
+
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
+.fc { perspective:900px; height:190px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%;
+  transform-style:preserve-3d;
+  transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front, .fc-back { position:absolute; inset:0; border-radius:13px;
+  padding:22px 22px 18px; backface-visibility:hidden;
+  -webkit-backface-visibility:hidden; display:flex; flex-direction:column;
+  justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back { background:#7a5400; }
+.fc[data-g="g3"] .fc-front { border-left:4px solid var(--g3); }
+.fc[data-g="g3"] .fc-back { background:#3a1a10; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc[data-g="g3"] .fc-term { color:var(--g3); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc[data-g="g3"] .fc-def { color:#f5d6ce; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px;
+  color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px;
+  font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+  padding:2px 8px; border-radius:4px; border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent); background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent); background:color-mix(in srgb,var(--g2) 10%,transparent); }
+.gtag.g3 { color:var(--g3); border-color:color-mix(in srgb,var(--g3) 40%,transparent); background:color-mix(in srgb,var(--g3) 10%,transparent); }
+.footnav { margin-top:60px; padding-top:24px; border-top:1px solid var(--rule);
+  display:flex; flex-wrap:wrap; gap:14px; justify-content:space-between;
+  font-family:"JetBrains Mono",monospace; font-size:12px; }
+.footnav a { color:var(--ink-soft); text-decoration:none; padding:8px 14px;
+  border:1px solid var(--rule); border-radius:6px; }
+.footnav a:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+@media (max-width:760px) { .fc-grid { grid-template-columns:1fr 1fr; } }
+@media (max-width:420px) { .fc-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← Library</a>
+  <div class="kicker">03 · Advanced</div>
+  <h1>Multiple skills, one consistent brand</h1>
+  <p class="dek">Two skills, side by side, applied to every list in a site. How to layer formatting know-how with brand know-how — and what to do when a session already started.</p>
+
+  <nav class="topnav">
+    <a href="#two-skills">01 Two skills</a>
+    <a href="#mid-session">02 Mid-session load</a>
+    <a href="#replica">03 Replica lists</a>
+    <a href="#at-scale">04 At scale</a>
+    <a href="#flashcards">Flashcards</a>
+  </nav>
+
+  <div class="sec-label">Meta takeaways</div>
+  <div class="meta-grid">
+    <div class="meta"><div class="mlbl">Layering</div><div class="mtxt">Formatting skill + style skill = consistent on-brand output.</div></div>
+    <div class="meta"><div class="mlbl">Sessions</div><div class="mtxt">A new skill needs an explicit "load" if the session has already started.</div></div>
+    <div class="meta"><div class="mlbl">Scale</div><div class="mtxt">The same prompt runs across many lists without losing brand fidelity.</div></div>
+  </div>
+
+  <section id="two-skills">
+    <h2>Both skills, layered</h2>
+    <p>With the list-formatting skill and the forest style skill both loaded, the AI now has two pieces of guidance to combine: how SharePoint formatting works (the technical reference) and what the brand demands (design tokens and rules). The same <em>style this as a timeline</em> prompt produces a timeline that follows the forest palette and spacing.</p>
+    <div class="insight">Stacking skills is multiplicative. The styling skill chooses a pattern from the catalog. The style skill constrains how that pattern looks. The output respects both.</div>
+    <p>This is the practical version of the rule from Guide 02: variability is fine when you want exploration, harmful when you want consistency. Adding a style definition skill is how you regain consistency without losing creative variation in layout.</p>
+    <div class="misconception">The style skill doesn't override the formatting skill. They cooperate — one picks the structure, the other picks the colours, type, and rhythm inside that structure.</div>
+  </section>
+
+  <section id="mid-session">
+    <h2>Loading a new skill mid-session</h2>
+    <p>The author calls out a small gotcha: when you add a new skill to a site mid-session, the AI doesn't automatically pull it in. New sessions get the new skill automatically; current sessions need an explicit nudge — <em>load the new skills</em> — to refresh.</p>
+    <div class="insight">Skills are loaded at session start. If you add one after starting, ask the AI to load skills before your next styling request.</div>
+    <p>This is small but easy to miss. If a styling result looks unbranded after you just uploaded the style skill, the most likely cause is that the session never picked it up.</p>
+    <div class="misconception">The AI doesn't watch the skills directory for new files in real time. Skill discovery is per session — a refresh is needed when you change the set mid-session.</div>
+  </section>
+
+  <section id="replica">
+    <h2>Replica lists as a fair test</h2>
+    <p>To prove the brand consistency story, the author uses a replica of the exact same product launch milestones list. Same columns, same data — but this run has the style skill loaded. The output is recognisably the same timeline shape with the forest brand applied throughout.</p>
+    <div class="insight">A replica list is the cleanest A/B for skill changes. Same data, same prompt — different styling skill set — see what the layering changes.</div>
+    <p>The replica technique generalises: any time you're tuning a skill, build a few replica lists and run the same prompt on each. You'll see the effect of every added skill directly.</p>
+  </section>
+
+  <section id="at-scale">
+    <h2>The same prompt across many lists</h2>
+    <p>For the rest of the demo the author stops narrating and just runs the same <em>style this list</em> prompt against a sequence of different lists with different data. Each one comes back styled, and each one carries the forest brand. Different data, different layouts the AI picks, same overall look and feel.</p>
+    <div class="insight">Once the skills are loaded, you scale by repetition. The brand consistency comes from the skills, not from the prompt.</div>
+    <p>This is the point the demo is making: with the right two skills in place, list styling at scale is no harder than running the same one-line prompt on every list in the site.</p>
+    <div class="misconception">Scale here isn't bulk-applying a fixed template. It's bulk-applying the same intent — the AI picks an appropriate pattern for each list and renders it on-brand.</div>
+  </section>
+
+  <section id="flashcards">
+    <div class="sec-label">Flashcards — Advanced</div>
+    <div class="fc-grid">
+
+      <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')">
+        <div class="fc-inner">
+          <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Skill layering</div><div class="fc-tap">tap to reveal →</div></div>
+          <div class="fc-back"><div class="fc-def">Loading both a formatting skill and a style skill so the AI applies SharePoint patterns through the brand's design tokens — structure and skin together.</div><div class="fc-tap">← tap to flip back</div></div>
+        </div>
+      </div>
+
+      <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')">
+        <div class="fc-inner">
+          <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Mid-session load</div><div class="fc-tap">tap to reveal →</div></div>
+          <div class="fc-back"><div class="fc-def">The explicit "load skills" nudge needed when you add a skill to a site during an active session. New sessions pick it up automatically.</div><div class="fc-tap">← tap to flip back</div></div>
+        </div>
+      </div>
+
+      <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')">
+        <div class="fc-inner">
+          <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Replica list test</div><div class="fc-tap">tap to reveal →</div></div>
+          <div class="fc-back"><div class="fc-def">Cloning a list to compare runs with different skill sets. Same data, same prompt — the only variable is the active skills.</div><div class="fc-tap">← tap to flip back</div></div>
+        </div>
+      </div>
+
+      <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')">
+        <div class="fc-inner">
+          <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Brand at scale</div><div class="fc-tap">tap to reveal →</div></div>
+          <div class="fc-back"><div class="fc-def">Applying the same styling prompt to many lists with brand consistency held by the style skill. Scale by repetition, not template.</div><div class="fc-tap">← tap to flip back</div></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="footnav">
+    <a href="guide-02-applied.html">← Guide 02 · Applied</a>
+    <a href="index.html">Back to library →</a>
+  </div>
+</div>
+</body>
+</html>

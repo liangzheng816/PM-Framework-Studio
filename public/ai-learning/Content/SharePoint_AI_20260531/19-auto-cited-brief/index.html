@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Auto-Citing a Brief with AI in SharePoint — Learning Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4; --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf; --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+}
+*,*::before,*::after { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+
+.hero { padding:60px 0 12px; position:relative; }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px;
+  letter-spacing:.28em; text-transform:uppercase; color:var(--accent);
+  font-weight:600; margin-bottom:18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(40px,6vw,68px);
+  letter-spacing:-.025em; line-height:1.02; margin:0 0 18px; }
+.dek { font-size:21px; color:var(--ink-soft); max-width:740px; margin:0 0 10px; }
+
+.loop { position:absolute; top:50px; right:-20px; width:120px; height:120px;
+  opacity:.18; pointer-events:none; }
+@media (max-width:760px) { .loop { display:none; } }
+
+.stats { display:flex; flex-wrap:wrap; margin:34px 0 6px;
+  border:1px solid var(--rule); border-radius:11px; overflow:hidden; background:var(--card); }
+.stats .s { flex:1 1 140px; padding:18px 22px; border-right:1px solid var(--rule); }
+.stats .s:last-child { border-right:none; }
+.stats .s .v { font-family:"Fraunces",serif; font-weight:900; font-size:30px;
+  color:var(--accent); line-height:1; }
+.stats .s .l { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft); margin-top:7px; }
+
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);
+  margin:48px 0 6px; font-weight:600; }
+
+.practice-hub { display:grid; grid-template-columns:1fr; gap:20px; margin:20px 0 0; }
+.hub-card { display:block; text-decoration:none; color:inherit;
+  border-radius:16px; padding:34px 32px; position:relative; overflow:hidden;
+  transition:transform .18s ease, box-shadow .18s ease; }
+.hub-card:hover { transform:translateY(-4px); box-shadow:0 16px 40px -14px rgba(27,26,23,.32); }
+.hub-card.flash { background:#1b1a17; color:#fff; }
+.hub-card .hc-wm { position:absolute; top:-30px; right:-10px;
+  font-family:"Fraunces",serif; font-weight:900; font-size:180px; line-height:1;
+  opacity:.07; pointer-events:none; color:#fff; }
+.hub-card .hc-type { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; opacity:.7; margin-bottom:18px; }
+.hub-stat { display:flex; gap:30px; margin-bottom:24px; flex-wrap:wrap; }
+.hs .hv { font-family:"Fraunces",serif; font-weight:900; font-size:28px; display:block; line-height:1; }
+.hs .hl { font-family:"JetBrains Mono",monospace; font-size:10px;
+  letter-spacing:.16em; text-transform:uppercase; opacity:.65; margin-top:5px; display:block; }
+.hub-card h2 { font-family:"Fraunces",serif; font-weight:900; font-size:36px;
+  margin:0 0 10px; letter-spacing:-.02em; line-height:1.05; }
+.hub-card h2 em { font-style:italic; color:var(--accent); }
+.hub-card.flash h2 em { color:#ff7a55; }
+.hub-card p { font-size:17px; opacity:.85; max-width:520px; margin:0 0 22px; line-height:1.5; }
+.hub-cta { display:inline-flex; align-items:center; gap:8px;
+  font-family:"JetBrains Mono",monospace; font-size:13px; font-weight:600;
+  padding:10px 20px; border-radius:8px; transition:all .15s; }
+.hub-card.flash .hub-cta { background:var(--accent); color:#fff; }
+
+.card { display:block; text-decoration:none; color:inherit;
+  background:var(--card); border:1px solid var(--rule);
+  border-left:5px solid var(--c, var(--slate));
+  border-radius:12px; padding:26px 30px 28px; margin:18px 0;
+  position:relative; overflow:hidden;
+  transition:transform .16s ease, box-shadow .16s ease; }
+.card:hover { transform:translateY(-3px); box-shadow:0 10px 30px -12px rgba(27,26,23,.28); }
+.card .wm { position:absolute; top:-22px; right:6px;
+  font-family:"Fraunces",serif; font-weight:900; font-size:150px; line-height:1;
+  color:var(--c, var(--slate)); opacity:.06; pointer-events:none; }
+.card .lvl { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--c, var(--slate));
+  font-weight:600; margin-bottom:10px; }
+.card h3 { font-family:"Fraunces",serif; font-weight:900; font-size:28px;
+  margin:0 0 8px; letter-spacing:-.015em; line-height:1.1; }
+.card h3 .en { display:block; font-style:italic; font-weight:400; font-size:18px;
+  color:var(--ink-soft); margin-top:4px; }
+.card .d { font-size:17px; color:var(--ink-soft); margin:10px 0 14px; max-width:680px; }
+.card .tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; }
+.card .tags span { font-family:"JetBrains Mono",monospace; font-size:10px;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft);
+  border:1px solid var(--rule); padding:3px 9px; border-radius:5px; background:var(--paper); }
+.card .open { display:inline-block; font-family:"JetBrains Mono",monospace;
+  font-size:12px; font-weight:600; color:var(--c, var(--slate)); margin-top:12px; }
+.card .open .arw { transition:transform .14s; display:inline-block; }
+.card:hover .open .arw { transform:translateX(4px); }
+.lvl-1 { --c:var(--slate); --cs:var(--slate-soft); }
+.lvl-2 { --c:var(--amber); --cs:var(--amber-soft); }
+
+.howto { margin:48px 0 0; padding:22px 28px; background:var(--card);
+  border:1px solid var(--rule); border-left:4px solid var(--accent); border-radius:10px;
+  font-size:17px; color:var(--ink-soft); }
+.howto strong { color:var(--ink); font-family:"Fraunces",serif; font-weight:600; }
+
+footer { margin-top:80px; padding-top:30px; border-top:1px solid var(--rule);
+  font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--ink-soft);
+  display:flex; flex-wrap:wrap; gap:18px; justify-content:space-between; }
+footer a { color:var(--ink-soft); text-decoration:underline; }
+
+@media (max-width:760px) {
+  .card { padding:22px 22px 24px; }
+  .card h3 { font-size:24px; }
+  .hub-card h2 { font-size:28px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+  <svg class="loop" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="42" fill="none" stroke="#cc3b1d" stroke-width="3"/>
+    <path d="M50 8 a42 42 0 0 1 0 84" fill="none" stroke="#1b1a17" stroke-width="3"/>
+    <circle cx="50" cy="50" r="14" fill="none" stroke="#2f5d62" stroke-width="3"/>
+  </svg>
+  <div class="kicker">SharePoint AI · Video 19</div>
+  <h1>Auto-Citing an Entire Brief Using AI in SharePoint</h1>
+  <p class="dek">Three small AI Skills — List Creator, Assertion Extractor, Citation Finder — chain together to turn an uncited executive brief into a fully sourced table. The slow part of research becomes a conversation.</p>
+</div>
+
+<div class="stats">
+  <div class="s"><div class="v">2</div><div class="l">Learning Guides</div></div>
+  <div class="s"><div class="v">10+</div><div class="l">Concepts Covered</div></div>
+  <div class="s"><div class="v">10</div><div class="l">Flashcards</div></div>
+</div>
+
+<div class="sec-label">Practice — test &amp; drill what you've learned</div>
+<div class="practice-hub">
+  <a class="hub-card flash" href="flashcards-index.html">
+    <div class="hc-wm">🃏</div>
+    <div class="hc-type">Flip Cards · All Guides</div>
+    <div class="hub-stat">
+      <div class="hs"><span class="hv">10</span><span class="hl">Cards</span></div>
+      <div class="hs"><span class="hv">2</span><span class="hl">Guides</span></div>
+      <div class="hs"><span class="hv">Shuffle</span><span class="hl">+ Filter</span></div>
+    </div>
+    <h2>All <em>Flashcards</em></h2>
+    <p>10 flip cards across the citation pipeline. Filter by guide, shuffle the deck, or flip everything at once.</p>
+    <span class="hub-cta">Browse Cards →</span>
+  </a>
+</div>
+
+<div class="sec-label">Curriculum — read in order, or jump in anywhere</div>
+
+<a class="card lvl-1" href="guide-01-foundations.html">
+  <div class="wm">01</div>
+  <div class="lvl">01 · Foundations</div>
+  <h3>Why citations stay manual — and the three-skill fix<span class="en">The problem, the source folder, and what an AI Skill actually is</span></h3>
+  <p class="d">An executive brief makes dozens of confident claims. Each one needs a source. Here's why that work is so slow by hand, and how three composable skills model the whole workflow.</p>
+  <div class="tags">
+    <span>Citation Problem</span><span>Source Folder</span><span>AI Skill</span><span>Three-Skill Pipeline</span>
+    <span>5 cards</span>
+  </div>
+  <span class="open">Read guide <span class="arw">→</span></span>
+</a>
+
+<a class="card lvl-2" href="guide-02-applied.html">
+  <div class="wm">02</div>
+  <div class="lvl">02 · Applied</div>
+  <h3>Running the citation pipeline end to end<span class="en">List creation → assertion extraction → citation finding</span></h3>
+  <p class="d">Walk through the live run. See how the tracking list becomes the shared workspace, how empty cells drive the work queue, and when to name the skill explicitly versus letting the model figure it out.</p>
+  <div class="tags">
+    <span>Tracking List</span><span>Assertion Extractor</span><span>Citation Finder</span><span>Empty Cell Queue</span><span>Explicit Invocation</span>
+    <span>5 cards</span>
+  </div>
+  <span class="open">Read guide <span class="arw">→</span></span>
+</a>
+
+<div class="howto">
+  <strong>How to use this site —</strong> read the guides in order (Foundations first, then Applied), or jump straight to the flashcards to drill terminology. Every page is plain HTML; open them offline, print them, or share the folder.
+</div>
+
+<footer>
+  <span>Auto-Cited Brief · Self-learning library</span>
+  <span><a href="https://www.youtube.com/watch?v=xNLCwLIy_uE" target="_blank" rel="noopener">▶ Watch the original video on YouTube</a></span>
+</footer>
+
+</div>
+</body>
+</html>

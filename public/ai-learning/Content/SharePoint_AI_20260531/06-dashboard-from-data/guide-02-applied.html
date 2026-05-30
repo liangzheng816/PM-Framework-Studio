@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>02 · Applied — How the Skill Actually Runs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root { --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4; --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf; --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d; --guide-color: var(--amber); }
+*, *::before, *::after { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; counter-reset:slide; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+.back { font-family:"JetBrains Mono",monospace; font-size:12px; text-decoration:none;
+  color:var(--ink-soft); display:inline-flex; align-items:center; gap:6px;
+  margin-bottom:22px; border:1px solid var(--rule); border-radius:6px;
+  padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.28em;
+  text-transform:uppercase; color:var(--accent); font-weight:600; margin:28px 0 18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(34px,5vw,52px);
+  line-height:1.05; letter-spacing:-.02em; margin:0 0 18px; }
+.dek { font-size:21px; color:var(--ink-soft); max-width:720px; margin:0 0 36px; }
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);
+  margin:48px 0 6px; font-weight:600; }
+code, .mono { font-family:"JetBrains Mono",monospace; font-size:.82em;
+  background:#ece7db; padding:.08em .38em; border-radius:4px; color:#3a382f; }
+.topnav { position:sticky; top:0; z-index:20; background:var(--paper);
+  border-bottom:1px solid var(--rule); margin:0 -28px 30px; padding:12px 28px;
+  display:flex; flex-wrap:wrap; gap:6px; font-family:"JetBrains Mono",monospace; font-size:11px; }
+.topnav a { text-decoration:none; color:var(--ink-soft); border:1px solid var(--rule);
+  border-radius:5px; padding:5px 10px; transition:all .14s; }
+.topnav a:hover { background:var(--guide-color); color:#fff; border-color:var(--guide-color); }
+.takeaways { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:14px 0 30px; }
+@media (max-width:760px) { .takeaways { grid-template-columns:1fr; } }
+.take { background:var(--card); border:1px solid var(--rule); border-top:3px solid var(--guide-color);
+  border-radius:10px; padding:18px 20px; }
+.take .tk-l { font-family:"JetBrains Mono",monospace; font-size:10px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:8px; }
+.take .tk-v { font-family:"Fraunces",serif; font-size:18px; line-height:1.3; font-weight:600; }
+section:not(#quiz):not(#flashcards) { counter-increment:slide; background:var(--card);
+  border:1.5px solid color-mix(in srgb, var(--guide-color, var(--slate)) 28%, var(--rule));
+  border-radius:18px; box-shadow:0 8px 36px -10px rgba(27,26,23,.18), 0 1px 0 rgba(27,26,23,.04);
+  margin:48px 0; overflow:hidden; position:relative; }
+section:not(#quiz):not(#flashcards) h2 { margin:0; padding:26px 36px 22px;
+  background:var(--guide-color, var(--slate)); color:#fff;
+  font-family:"Fraunces",serif; font-weight:900;
+  font-size:clamp(20px,2.8vw,26px); letter-spacing:-.015em; line-height:1.1;
+  display:flex; align-items:flex-start; gap:14px; }
+section:not(#quiz):not(#flashcards) h2::before {
+  content:counter(slide,decimal-leading-zero);
+  font-family:"JetBrains Mono",monospace; font-weight:600; font-size:12px;
+  letter-spacing:.1em; background:rgba(255,255,255,.16); color:rgba(255,255,255,.9);
+  border:1px solid rgba(255,255,255,.28); padding:4px 10px; border-radius:5px;
+  flex-shrink:0; margin-top:3px; white-space:nowrap; }
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre { margin-left:36px; margin-right:36px; }
+section:not(#quiz):not(#flashcards) > p:first-of-type { margin-top:28px; }
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child { margin-bottom:34px; }
+section:not(#quiz):not(#flashcards)::after { content:""; display:block; height:4px;
+  background:linear-gradient(90deg, var(--guide-color, var(--slate)) 0%,
+    color-mix(in srgb, var(--guide-color, var(--slate)) 30%, transparent) 100%);
+  margin-top:34px; opacity:.35; }
+@media (max-width:680px) {
+  section:not(#quiz):not(#flashcards) h2 { padding:20px 22px 18px; font-size:20px; }
+  section:not(#quiz):not(#flashcards) > p,
+  section:not(#quiz):not(#flashcards) > .insight,
+  section:not(#quiz):not(#flashcards) > .misconception,
+  section:not(#quiz):not(#flashcards) > blockquote { margin-left:22px; margin-right:22px; }
+}
+.insight, .misconception { border-radius:10px; padding:18px 22px; margin:22px 0;
+  font-size:17px; line-height:1.5; }
+.insight { border-left:4px solid var(--slate); background:var(--slate-soft); }
+.misconception { border-left:4px solid var(--accent); background:var(--accent-soft); }
+.insight::before { content:"✦ Key insight — "; font-weight:600; color:var(--slate); }
+.misconception::before { content:"✕ Common misconception — "; font-weight:600; color:var(--accent); }
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
+.fc { perspective:900px; height:200px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%; transform-style:preserve-3d;
+  transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front, .fc-back { position:absolute; inset:0; border-radius:13px;
+  padding:22px 22px 18px; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  display:flex; flex-direction:column; justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back { background:#7a5400; }
+.fc[data-g="g3"] .fc-front { border-left:4px solid var(--g3); }
+.fc[data-g="g3"] .fc-back { background:#3a1a10; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc[data-g="g3"] .fc-term { color:var(--g3); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc[data-g="g3"] .fc-def { color:#f5d6ce; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px;
+  color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px; font-weight:600;
+  letter-spacing:.08em; text-transform:uppercase; padding:2px 8px;
+  border-radius:4px; border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent);
+  background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent);
+  background:color-mix(in srgb,var(--g2) 10%,transparent); }
+.gtag.g3 { color:var(--g3); border-color:color-mix(in srgb,var(--g3) 40%,transparent);
+  background:color-mix(in srgb,var(--g3) 10%,transparent); }
+.footer-cross { margin-top:60px; padding:24px 28px; border:1px solid var(--rule);
+  border-radius:11px; background:var(--card); display:flex; flex-wrap:wrap;
+  gap:18px; justify-content:space-between; align-items:center; }
+.footer-cross a { font-family:"JetBrains Mono",monospace; font-size:12px;
+  text-decoration:none; color:var(--amber); font-weight:600;
+  border:1.5px solid var(--amber); padding:7px 14px; border-radius:7px; }
+.footer-cross a:hover { background:var(--amber); color:#fff; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="index.html">← Library home</a>
+<div class="kicker">Guide 02 · Applied</div>
+<h1>How the Skill actually runs</h1>
+<p class="dek">The Skill is not a fancy prompt template. It is a worker that loads data, writes code in a sandbox, computes, and emits a self-contained HTML dashboard with JavaScript baked in.</p>
+
+<nav class="topnav">
+  <a href="#sandbox">01 · Code in a sandbox</a>
+  <a href="#context-window">02 · Beating context limits</a>
+  <a href="#html-output">03 · Live HTML output</a>
+  <a href="#flashcards">Flashcards</a>
+</nav>
+
+<div class="sec-label">3 things to walk away with</div>
+<div class="takeaways">
+  <div class="take"><div class="tk-l">Real code</div><div class="tk-v">The agent writes and runs actual code in a sandbox — not LLM math.</div></div>
+  <div class="take"><div class="tk-l">Scales to libraries</div><div class="tk-v">Sandboxed execution handles large lists and libraries without context-window blowup.</div></div>
+  <div class="take"><div class="tk-l">Standalone artifact</div><div class="tk-v">The output is a self-contained HTML file you can open in any browser.</div></div>
+</div>
+
+<section id="sandbox">
+<h2>Code in a Sandbox — the agent writes real code, not LLM math</h2>
+
+<p>When the hiring Skill runs, the agent does not "think through" the candidate counts in its head. It writes a short program — the demo author describes it as "writing code to process the math or handle the complexity of the data" — and executes it in a sandbox. The numbers in the dashboard come from real computed output, not from the model's arithmetic guess.</p>
+
+<div class="insight">SharePoint AI's worker-agent shape is the key differentiator. It writes code, runs code, and uses the results — that is how the dashboard's numbers are trustworthy.</div>
+
+<div class="misconception">The agent uses its language-model brain to count and sum candidates. It writes code that does the counting — completely different reliability profile, and how you get accurate large-dataset reports.</div>
+</section>
+
+<section id="context-window">
+<h2>Beating Context-Window Limits</h2>
+
+<p>The author calls out the practical win directly: "you don't run into context window limits when you're generating code." A SharePoint list with thousands of rows would normally choke a chat model — too many tokens to load into the prompt. But if the agent only writes code that reads the list, the model never has to hold every row in memory.</p>
+
+<p>The data lives in SharePoint; the agent writes a short program; the program reads what it needs. The model's context window only holds the code and the summary results, never the raw dataset.</p>
+
+<div class="insight">Sandboxed code execution is how worker-agents handle real-scale SharePoint data. Context-window limits stop being a constraint because the model never sees the raw rows.</div>
+
+<div class="misconception">Big SharePoint lists can't be analyzed by AI because of context limits. They can — as long as the agent processes them with code instead of stuffing them into the prompt.</div>
+</section>
+
+<section id="html-output">
+<h2>Live HTML Output — a real artifact, not a chat reply</h2>
+
+<p>The Skill's output is an HTML file dropped into a SharePoint folder. Complete with JavaScript for interactivity. The user can open it in the browser like any other file — click through the role breakdown, hover over the Sankey diagram, drill into at-risk candidates.</p>
+
+<p>Because the dashboard is a generated file, it is durable. It does not disappear when the chat closes. It is shareable, archivable, and re-openable. Next quarter's run produces a new file alongside the old ones, and you can compare them directly.</p>
+
+<div class="insight">A Skill that produces a file produces an artifact you can share, archive, and compare. That is different from a chat reply that disappears with the conversation.</div>
+
+<div class="misconception">The dashboard lives inside the agent chat and you have to re-ask the agent every time. The dashboard is a standalone HTML file in SharePoint — open it anytime, no chat session required.</div>
+</section>
+
+<div class="footer-cross">
+  <div style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink-soft);">Continue:</div>
+  <a href="guide-03-advanced.html">03 · Advanced — Chained format transforms →</a>
+  <a href="flashcards-index.html">All flashcards</a>
+</div>
+
+<section id="flashcards">
+  <div class="sec-label">Flashcards — Applied</div>
+  <div class="fc-grid">
+
+    <div class="fc" data-g="g2" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+          <div class="fc-term">Code-in-Sandbox Execution</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">The worker-agent's signature move: write actual code, run it in a sandbox, use the computed results. Numbers in the dashboard come from real execution, not LLM arithmetic — which is what makes them trustworthy.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+          <div class="fc-term">Beating Context-Window Limits</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">By processing large lists with sandboxed code instead of stuffing rows into the prompt, the agent handles SharePoint datasets of any size. The model only holds the code and the summary, never the raw data.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+          <div class="fc-term">Live HTML Dashboard</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">The Skill's output: a self-contained HTML file with embedded JavaScript dropped into SharePoint. Interactive, shareable, archivable, re-openable — a durable artifact, not a chat reply that vanishes.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</div>
+<script>
+function flip(card){ card.classList.toggle('flipped'); }
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { e.preventDefault(); t.scrollIntoView({behavior:'smooth', block:'start'}); }
+  });
+});
+</script>
+</body>
+</html>

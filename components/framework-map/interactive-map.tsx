@@ -22,17 +22,10 @@ const SVG_WIDTH = 1000;
 const SVG_HEIGHT = 600;
 const PADDING = 60;
 
-// Tailwind color classes → hex for SVG
-const DOT_COLORS: Record<CategorySlug, string> = {
-  "user-insights": "#38bdf8",
-  "problem-framing": "#a78bfa",
-  ideation: "#fbbf24",
-  validation: "#34d399",
-  execution: "#fb923c",
-  growth: "#fb7185",
-  "systems-thinking": "#2dd4bf",
-  appendix: "#9ca3af",
-};
+// Category dot fill resolves via CSS custom properties — single source of truth in app/globals.css
+function dotColor(category: CategorySlug): string {
+  return `var(--color-cat-${category})`;
+}
 
 export function InteractiveMap({ frameworks, positions }: InteractiveMapProps) {
   const [hovered, setHovered] = useState<string | null>(null);
@@ -150,7 +143,7 @@ export function InteractiveMap({ frameworks, positions }: InteractiveMapProps) {
           {/* Nodes */}
           {filteredNodes.map((node) => {
             const isHovered = hovered === node.framework.slug;
-            const color = DOT_COLORS[node.framework.category];
+            const color = dotColor(node.framework.category);
             const dimmed =
               activeCategory !== "all" &&
               node.framework.category !== activeCategory;
@@ -217,8 +210,7 @@ export function InteractiveMap({ frameworks, positions }: InteractiveMapProps) {
                 <span
                   className="w-2.5 h-2.5 rounded-full shrink-0"
                   style={{
-                    backgroundColor:
-                      DOT_COLORS[hoveredNode.framework.category],
+                    backgroundColor: dotColor(hoveredNode.framework.category),
                   }}
                 />
                 <span className="text-xs font-medium text-[var(--color-text-muted)]">

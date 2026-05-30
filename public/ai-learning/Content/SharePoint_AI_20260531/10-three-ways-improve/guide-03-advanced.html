@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>03 · Advanced — Evals & Auto-Optimization</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--accent);
+}
+*, *::before, *::after { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; counter-reset:slide; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);
+  margin:48px 0 6px; font-weight:600; }
+code,.mono { font-family:"JetBrains Mono",monospace; font-size:.82em;
+  background:#ece7db; padding:.08em .38em; border-radius:4px; color:#3a382f; }
+.back { font-family:"JetBrains Mono",monospace; font-size:12px;
+  text-decoration:none; color:var(--ink-soft);
+  display:inline-flex; align-items:center; gap:6px;
+  margin-bottom:22px; border:1px solid var(--rule);
+  border-radius:6px; padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px;
+  letter-spacing:.28em; text-transform:uppercase; color:var(--accent);
+  font-weight:600; margin-bottom:18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(34px,5vw,52px);
+  line-height:1.05; letter-spacing:-.02em; margin:0 0 16px; }
+.dek { font-size:20px; color:var(--ink-soft); max-width:680px; margin:0 0 28px;
+  font-family:"Newsreader",serif; font-style:italic; }
+
+.tnav { position:sticky; top:0; z-index:20; background:rgba(244,241,234,.95);
+  backdrop-filter:blur(8px); border-bottom:1px solid var(--rule);
+  margin:0 -28px 28px; padding:14px 28px; }
+.tnav-inner { display:flex; flex-wrap:wrap; gap:8px 18px; }
+.tnav a { font-family:"JetBrains Mono",monospace; font-size:12px;
+  color:var(--ink-soft); text-decoration:none; padding:4px 10px;
+  border-radius:5px; transition:all .14s; }
+.tnav a:hover { background:var(--guide-color); color:#fff; }
+
+.meta-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:28px 0 12px; }
+@media (max-width:760px) { .meta-grid { grid-template-columns:1fr; } }
+.mg { background:var(--card); border:1px solid var(--rule); border-left:4px solid var(--guide-color);
+  border-radius:10px; padding:18px 20px; }
+.mg .mg-l { font-family:"JetBrains Mono",monospace; font-size:10px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--guide-color);
+  font-weight:600; margin-bottom:8px; }
+.mg .mg-t { font-family:"Fraunces",serif; font-weight:600; font-size:17px; line-height:1.3; }
+
+/* ===== SLIDE PANELS ===== */
+section:not(#quiz):not(#flashcards) {
+  counter-increment:slide; background:var(--card);
+  border:1.5px solid color-mix(in srgb, var(--guide-color, var(--slate)) 28%, var(--rule));
+  border-radius:18px;
+  box-shadow:0 8px 36px -10px rgba(27,26,23,.18), 0 1px 0 rgba(27,26,23,.04);
+  margin:48px 0; overflow:hidden; position:relative;
+}
+section:not(#quiz):not(#flashcards) h2 {
+  margin:0; padding:26px 36px 22px;
+  background:var(--guide-color, var(--slate));
+  color:#fff; font-family:"Fraunces",serif; font-weight:900;
+  font-size:clamp(20px,2.8vw,26px); letter-spacing:-.015em; line-height:1.1;
+  display:flex; align-items:flex-start; gap:14px;
+}
+section:not(#quiz):not(#flashcards) h2::before {
+  content: counter(slide, decimal-leading-zero);
+  font-family:"JetBrains Mono",monospace; font-weight:600;
+  font-size:12px; letter-spacing:.1em;
+  background:rgba(255,255,255,.16); color:rgba(255,255,255,.9);
+  border:1px solid rgba(255,255,255,.28);
+  padding:4px 10px; border-radius:5px; flex-shrink:0;
+  margin-top:3px; white-space:nowrap;
+}
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre {
+  margin-left:36px; margin-right:36px;
+}
+section:not(#quiz):not(#flashcards) > p:first-of-type { margin-top:28px; }
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child { margin-bottom:34px; }
+section:not(#quiz):not(#flashcards)::after {
+  content:""; display:block; height:4px;
+  background:linear-gradient(90deg, var(--guide-color, var(--slate)) 0%,
+    color-mix(in srgb, var(--guide-color, var(--slate)) 30%, transparent) 100%);
+  margin-top:34px; opacity:.35;
+}
+@media (max-width:680px) {
+  section:not(#quiz):not(#flashcards) h2 { padding:20px 22px 18px; font-size:20px; }
+  section:not(#quiz):not(#flashcards) > p,
+  section:not(#quiz):not(#flashcards) > .insight,
+  section:not(#quiz):not(#flashcards) > .misconception,
+  section:not(#quiz):not(#flashcards) > blockquote { margin-left:22px; margin-right:22px; }
+}
+/* ===== END SLIDE PANELS ===== */
+
+.insight, .misconception { border-radius:10px; padding:18px 22px; margin:22px 0;
+  font-size:17px; line-height:1.5; }
+.insight { border-left:4px solid var(--slate); background:var(--slate-soft); }
+.misconception { border-left:4px solid var(--accent); background:var(--accent-soft); }
+.insight::before { content:"✦ Key insight — "; font-weight:600; color:var(--slate); }
+.misconception::before { content:"✕ Common misconception — "; font-weight:600; color:var(--accent); }
+
+#flashcards { margin-top:60px; }
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
+.fc { perspective:900px; height:190px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%;
+  transform-style:preserve-3d; transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front, .fc-back { position:absolute; inset:0; border-radius:13px;
+  padding:22px 22px 18px; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  display:flex; flex-direction:column; justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back  { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back  { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back  { background:#7a5400; }
+.fc[data-g="g3"] .fc-front { border-left:4px solid var(--g3); }
+.fc[data-g="g3"] .fc-back  { background:#3a1a10; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc[data-g="g3"] .fc-term { color:var(--g3); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc[data-g="g3"] .fc-def { color:#f5d6ce; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px;
+  color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px;
+  font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+  padding:2px 8px; border-radius:4px; border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent); background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent); background:color-mix(in srgb,var(--g2) 10%,transparent); }
+.gtag.g3 { color:var(--g3); border-color:color-mix(in srgb,var(--g3) 40%,transparent); background:color-mix(in srgb,var(--g3) 10%,transparent); }
+
+footer { margin-top:80px; padding-top:30px; border-top:1px solid var(--rule);
+  font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--ink-soft);
+  display:flex; gap:18px; flex-wrap:wrap; }
+footer a { color:var(--ink); text-decoration:none; border-bottom:1px dotted var(--ink-soft); }
+footer a:hover { color:var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="index.html" class="back">← Library</a>
+
+<div class="kicker">03 · Advanced</div>
+<h1>Evals &amp; Auto-Optimization</h1>
+<p class="dek">Let the AI score your skill against known-good inputs, propose a better version, and iterate until the score holds. The skill improves itself.</p>
+
+<nav class="tnav"><div class="tnav-inner">
+  <a href="#what-is-an-eval">01 · What is an eval</a>
+  <a href="#auto-research">02 · The auto-research skill</a>
+  <a href="#eval-criteria">03 · Writing eval criteria</a>
+  <a href="#baseline-mutate">04 · Baseline → mutate → rerun</a>
+  <a href="#versioning">05 · Skill versioning</a>
+  <a href="#flashcards">Flashcards</a>
+</div></nav>
+
+<div class="meta-grid">
+  <div class="mg"><div class="mg-l">Takeaway 1</div><div class="mg-t">An eval is a measurable test you can rerun. The AI uses the score to know if a change actually helped.</div></div>
+  <div class="mg"><div class="mg-l">Takeaway 2</div><div class="mg-t">The auto-research skill automates the loop: baseline, mutate, rerun, keep what wins.</div></div>
+  <div class="mg"><div class="mg-l">Takeaway 3</div><div class="mg-t">Always save improved skills as a new version (V2) so the old one is preserved as a rollback.</div></div>
+</div>
+
+<section id="what-is-an-eval">
+  <h2>What an Eval Actually Does</h2>
+  <p>An eval — short for evaluation — runs your skill against a fixed set of inputs and scores each output against measurable criteria. It turns "is this skill any good?" into a number. With a number, you can see whether a change helped, hurt, or did nothing.</p>
+  <div class="insight">Evals replace vibes with measurement. Without a score, every "improvement" is a guess. With one, you can compare baseline to mutation in a single pane.</div>
+  <p>In the demo, the author uses a small library of three real YouTube transcripts as inputs. The skill under test — a YouTube description generator — runs against each transcript. Each output is graded on hook quality, timestamps, tone, structure, and hallucinations. Five tests per criterion, scored pass/fail.</p>
+  <div class="misconception">"An eval is a unit test." Not quite — unit tests check exact outputs. Evals check qualities: does the hook create curiosity? Is the tone right? Does it hallucinate facts? They use the model itself as the judge.</div>
+</section>
+
+<section id="auto-research">
+  <h2>The Auto-Research Skill</h2>
+  <p>The auto-research skill (built by Marcus on the SharePoint AI team) is a skill that improves other skills. You point it at a target skill, give it inputs to test against, and define what "good" looks like. It runs the baseline, proposes a mutation, reruns, and keeps iterating until the score plateaus or hits your target.</p>
+  <div class="insight">The auto-research skill is a meta-skill. It treats your other skills as code under optimization — running, measuring, mutating, and rerunning until it converges.</div>
+  <p>You invoke it with one big prompt that names the target skill, the input set, the criteria, and an output convention (e.g. "save the improved version as V2"). Then you watch it work. The model is both the engineer who edits the skill and the judge who scores the result.</p>
+</section>
+
+<section id="eval-criteria">
+  <h2>Writing Good Eval Criteria</h2>
+  <p>Each criterion is a yes/no question with a defined pass/fail bar. For the description skill the author used: "Do the first one to two sentences create curiosity or clearly state value?" Pass = yes. Fail = no. Specific enough that even the model judging can answer it the same way twice.</p>
+  <div class="insight">A good criterion is a short question with an obvious failure mode. Vague criteria like "is it good?" produce vague scores. Tight criteria produce reliable scores.</div>
+  <p>The author cheats — productively — by asking Copilot to draft an initial criteria list from a sample of inputs. The model knows what these transcripts look like, so it can suggest dimensions worth grading. You edit and approve, then hand it to the eval skill.</p>
+  <div class="misconception">"Hand-write every eval criterion from scratch." You'll undershoot. Use the model to draft criteria first, then trim. It catches dimensions you wouldn't think of.</div>
+</section>
+
+<section id="baseline-mutate">
+  <h2>Baseline → Mutate → Rerun</h2>
+  <p>The loop has three steps. Baseline: run the skill on every input, score each output, record the total. Mutate: based on the failing scores, the skill edits its own prompt — rewording instructions, tightening anti-hallucination guardrails, restructuring sections. Rerun: same inputs, same criteria, fresh score.</p>
+  <p>In the demo, the baseline scored 85%. The first mutation lifted it to 100% on the first four inputs — but a follow-up rerun on a larger set exposed a remaining hallucination issue. The skill mutated again, reran, and finally held the improvement across the full set. Final lift: 15 percentage points.</p>
+  <div class="insight">One pass isn't enough. A good auto-research run loops until the score holds across an expanded input set — otherwise you're just memorising the first four examples.</div>
+</section>
+
+<section id="versioning">
+  <h2>Skill Versioning — Why V2 Matters</h2>
+  <p>Always tell the auto-research skill to save its improved output as a new version (V2, V3 …) rather than overwriting the original. The original is your rollback. If V2 turns out to regress on a real-world input the eval set didn't catch, you can swap back in seconds.</p>
+  <div class="insight">Treat skill files like code. Version them. Diff them. Keep the original until you've used the new one in production for long enough to trust it.</div>
+  <p>Naming convention: <code>youtube-description.md</code> stays. The optimizer writes <code>youtube-description-v2.md</code>. You compare side by side, promote V2 when you're confident, archive the original.</p>
+  <div class="misconception">"The optimizer made it better, so just overwrite." Don't. Real-world inputs always have edge cases the eval set missed. Keep the previous version until V2 has earned trust.</div>
+</section>
+
+<section id="flashcards">
+  <div class="sec-label">Flashcards — Advanced</div>
+  <div class="fc-grid">
+
+    <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div>
+          <div class="fc-term">Eval</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">A measurable test that runs a skill against fixed inputs and scores each output against defined criteria. Turns subjective quality into a number you can compare.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div>
+          <div class="fc-term">Auto-Research Skill</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">A meta-skill that improves other skills by running baseline evals, mutating the target skill, rerunning evals, and keeping the version that scores best.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div>
+          <div class="fc-term">Eval Criterion</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">A short, specific yes/no question used to grade one dimension of a skill's output — hook quality, hallucination, tone, structure, and so on.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div>
+          <div class="fc-term">Baseline Score</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">The eval score of a skill before any optimization. Every mutation is judged against this number — improvement is the lift over baseline.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div>
+          <div class="fc-term">Skill Mutation</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">A single proposed change to a skill's instructions — usually a reworded section or new guardrail — generated by the auto-research loop in response to failing eval criteria.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div>
+          <div class="fc-term">Skill Versioning (V2)</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">Saving an improved skill under a new name (V2, V3 …) instead of overwriting the original. Preserves rollback and lets you A/B the versions on live work.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <a href="index.html">← Library home</a>
+  <a href="flashcards-index.html">All flashcards →</a>
+  <a href="guide-01-foundations.html">← Back to Foundations</a>
+</footer>
+
+</div>
+</body>
+</html>

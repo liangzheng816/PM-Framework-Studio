@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flashcards — AI in SharePoint · 72K Rows</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4; --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf; --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+}
+*, *::before, *::after { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+.back { font-family:"JetBrains Mono",monospace; font-size:12px; text-decoration:none;
+  color:var(--ink-soft); display:inline-flex; align-items:center; gap:6px;
+  margin:28px 0 22px; border:1px solid var(--rule); border-radius:6px; padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.28em;
+  text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(34px,5vw,52px);
+  line-height:1.05; letter-spacing:-.02em; margin:0 0 18px; }
+.dek { font-size:20px; color:var(--ink-soft); max-width:760px; margin:0 0 28px; }
+
+.controls { display:flex; flex-wrap:wrap; gap:16px; justify-content:space-between; align-items:center;
+  margin:28px 0 16px; padding:14px 18px; background:var(--card); border:1px solid var(--rule); border-radius:10px; }
+.filter-tabs { display:flex; flex-wrap:wrap; gap:6px; }
+.ftab { font-family:"JetBrains Mono",monospace; font-size:12px; font-weight:600;
+  padding:6px 14px; border-radius:6px; border:2px solid transparent;
+  cursor:pointer; background:transparent; color:var(--ink-soft); transition:all .14s; }
+.ftab:hover { background:#ece7db; }
+.ftab.active { color:#fff; border-color:transparent; }
+.ftab[data-f="all"].active { background:var(--ink); }
+.ftab[data-f="g1"].active { background:var(--g1); }
+.ftab[data-f="g2"].active { background:var(--g2); }
+.ftab[data-f="g3"].active { background:var(--g3); }
+.ctrl-btns { display:flex; gap:8px; flex-wrap:wrap; }
+.cbtn { font-family:"JetBrains Mono",monospace; font-size:12px; font-weight:600;
+  padding:6px 14px; border-radius:6px; border:1.5px solid var(--rule);
+  background:transparent; color:var(--ink); cursor:pointer; transition:all .14s; }
+.cbtn:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+
+.counter-bar { font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--ink-soft); margin:0 0 18px; }
+
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
+.fc { perspective:900px; height:190px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%; transform-style:preserve-3d;
+  transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front, .fc-back { position:absolute; inset:0; border-radius:13px; padding:22px 22px 18px;
+  backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  display:flex; flex-direction:column; justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back { background:#7a5400; }
+.fc[data-g="g3"] .fc-front { border-left:4px solid var(--g3); }
+.fc[data-g="g3"] .fc-back { background:#3a1a10; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc[data-g="g3"] .fc-term { color:var(--g3); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc[data-g="g3"] .fc-def { color:#f5d6ce; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px; font-weight:600;
+  letter-spacing:.08em; text-transform:uppercase; padding:2px 8px; border-radius:4px;
+  border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent); background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent); background:color-mix(in srgb,var(--g2) 10%,transparent); }
+.gtag.g3 { color:var(--g3); border-color:color-mix(in srgb,var(--g3) 40%,transparent); background:color-mix(in srgb,var(--g3) 10%,transparent); }
+
+.foot { margin-top:60px; padding-top:24px; border-top:1px solid var(--rule);
+  display:flex; flex-wrap:wrap; gap:14px; justify-content:space-between; align-items:center;
+  font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--ink-soft); }
+.foot a { color:var(--accent); text-decoration:none; font-weight:600; }
+.foot a:hover { text-decoration:underline; }
+
+@media (max-width:760px) { .fc-grid { grid-template-columns:1fr 1fr; } }
+@media (max-width:420px) { .fc-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← Library home</a>
+  <div class="kicker">Flashcard Deck · All Guides · 15 Unique Cards</div>
+  <h1>Flashcards</h1>
+  <p class="dek">Every concept across the three guides, alphabetical. Filter by guide, shuffle, or flip them all at once.</p>
+
+  <div class="controls">
+    <div class="filter-tabs">
+      <button class="ftab active" data-f="all" onclick="setFilter('all')">All 15</button>
+      <button class="ftab" data-f="g1" onclick="setFilter('g1')">01 · Foundations</button>
+      <button class="ftab" data-f="g2" onclick="setFilter('g2')">02 · Applied</button>
+      <button class="ftab" data-f="g3" onclick="setFilter('g3')">03 · Advanced</button>
+    </div>
+    <div class="ctrl-btns">
+      <button class="cbtn" onclick="shuffleCards()">⇄ Shuffle</button>
+      <button class="cbtn" id="flip-all-btn" onclick="flipAll()">↻ Flip All</button>
+      <button class="cbtn" onclick="resetAll()">↺ Reset</button>
+    </div>
+  </div>
+
+  <div class="counter-bar">Showing <span id="visible-count">15</span> cards · <span id="flipped-count">0</span> flipped</div>
+
+  <div class="fc-grid" id="card-grid">
+
+    <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">72K Row Demo</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A worked example: 12 CSV files, 35 columns, ~72,000 rows, 30 MB. AI in SharePoint reads, analyzes, and produces an interactive HTML report in about seven minutes.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">AI in SharePoint</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A worker agent that writes and runs code in a sandbox against SharePoint files. Different from Copilot, which is a chat/RAG experience grounded in search.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">content_return: false</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">The read-tool flag that tells SharePoint to keep file content in tool storage instead of returning it to the model. The mechanism that prevents context overflow.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Context Window</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">The token budget the LLM can see at once. Even modern windows cannot fit 30 MB of data — and even if they could, the model still gets confused.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">create_file</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Final tool call in the pipeline. Writes the sandbox-generated artifact into the SharePoint document library where the user can open it.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">find_files</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">First tool call in a typical run. Returns file metadata matching the prompt — names, sizes, columns — without transferring content.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">RAG</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Retrieval-Augmented Generation. The LLM searches a corpus, retrieves chunks, and reasons over them. Powers Copilot; cannot do precise math at large scale.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">run_in_sandbox</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Executes the JavaScript the model has generated against data in tool storage. Produces a new artifact — JSON analytics, an image, or an HTML file.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Sandbox</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A secure execution boundary where agent-generated code runs against data the user supplied. Cannot call external services or mutate other content.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Self-Contained Report</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">An HTML file that includes all CSS, JS, and data inline. No CDN dependencies, no live data source. Portable, shareable, snapshot in time.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Strawberry Problem</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">The classic "how many Rs in strawberry" failure. Demonstrates why letting the LLM write code, not the answer, produces reliable results for any countable task.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Tool Call</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A single step the agent invokes — find files, read files, run code, create file. The model chains tool calls to build a workflow.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Tool Storage</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Server-side storage that holds file content during an agent run. The model references the data by handle; the bytes never enter the context window.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Trust Boundary</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">The strict edge around the sandbox. Data and code-execution stay inside. No outbound network, no mutation of other content, no escape — only the produced artifact crosses out.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Worker Agent</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">An AI agent that delivers work artifacts — files, reports — by writing and executing code, rather than predicting answers from a trained model.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+  </div>
+
+  <div class="foot">
+    <span>15 flashcards · 3 guides · AI in SharePoint</span>
+    <span><a href="index.html">← Back to library</a></span>
+  </div>
+</div>
+<script>
+let currentFilter='all'; let allFlipped=false;
+const allCards = () => document.querySelectorAll('#card-grid .fc');
+const visibleCards = () => document.querySelectorAll('#card-grid .fc:not(.hidden)');
+
+function flip(card){ card.classList.toggle('flipped'); updateCounters(); }
+function setFilter(f){ currentFilter=f;
+  document.querySelectorAll('.ftab').forEach(t => t.classList.toggle('active', t.dataset.f===f));
+  allCards().forEach(c => c.classList.toggle('hidden', f!=='all' && c.dataset.g!==f));
+  updateCounters();
+}
+function flipAll(){ allFlipped=!allFlipped;
+  [...visibleCards()].forEach(c => c.classList.toggle('flipped', allFlipped));
+  document.getElementById('flip-all-btn').textContent = allFlipped ? '↺ Unflip All' : '↻ Flip All';
+  updateCounters();
+}
+function shuffleCards(){ allFlipped=false;
+  document.getElementById('flip-all-btn').textContent='↻ Flip All';
+  const grid=document.getElementById('card-grid');
+  const visible=[...grid.querySelectorAll('.fc:not(.hidden)')];
+  const hidden=[...grid.querySelectorAll('.fc.hidden')];
+  visible.forEach(c => c.classList.remove('flipped'));
+  for(let i=visible.length-1; i>0; i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [visible[i], visible[j]]=[visible[j], visible[i]];
+  }
+  [...visible, ...hidden].forEach(c => grid.appendChild(c));
+  updateCounters();
+}
+function resetAll(){ allCards().forEach(c => c.classList.remove('flipped'));
+  allFlipped=false; document.getElementById('flip-all-btn').textContent='↻ Flip All';
+  updateCounters();
+}
+function updateCounters(){
+  const vis=[...visibleCards()];
+  const flipped=vis.filter(c => c.classList.contains('flipped'));
+  document.getElementById('visible-count').textContent=vis.length;
+  document.getElementById('flipped-count').textContent=flipped.length;
+}
+updateCounters();
+</script>
+</body>
+</html>

@@ -29,6 +29,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ├── lib/                        # Core modules: frameworks.ts, types.ts, collections.ts, coach-types.ts
 ├── scripts/                    # migrate-content.ts, generate-map-positions.ts
 ├── public/                     # robots.txt, static assets
+│   └── ai-learning/            # Self-contained static "AI Learning" library (centralized index.html + Content/ collections). Single source of truth — linked from the navbar as /ai-learning/index.html. Edit here directly; do NOT keep a second copy at repo root.
 └── .github/workflows/          # CI/CD (SWA deploy + Container API deploy)
 ```
 
@@ -110,7 +111,7 @@ User Insights (12) · Problem Framing (17) · Ideation (14) · Validation (14) �
 | `lib/types.ts` | Core interfaces: `Framework`, `Category`, `Collection`, `CategorySlug`, `SearchableFramework` |
 | `lib/coach-types.ts` | Skill IDs, metadata, `resolveSkillForApi()`, `buildDebateMessage()`, `Message`, `Conversation` types |
 | `lib/collections.ts` | localStorage CRUD for saved frameworks |
-| `lib/category-colors.ts` | Tailwind-safe category color class mappings |
+| `lib/category-colors.ts` | Token-driven category color class mappings (`var(--color-cat-*)`) |
 | `lib/motion.ts` | Shared Framer Motion variants (fadeInUp, staggerContainer, scaleIn) — reuse instead of inline |
 | `components/coach/coach-shell.tsx` | Root Coach chat UI (home page): skill selector, message list, streaming responses |
 | `components/search/command-palette.tsx` | Global Cmd+K / `/` or navbar click → search overlay with ARIA combobox. Listens for `fs:open-search` custom event. |
@@ -137,25 +138,27 @@ To update content: edit source files in `PM_Frameworks/`, then re-run both scrip
 ## Key Conventions
 
 - **Next.js 16 breaking changes**: `params` and `searchParams` are async Promises — always `await params` in page components. **Read `node_modules/next/dist/docs/` before writing any Next.js code** — APIs, conventions, and file structure may differ from training data.
-- **Category colors**: `lib/category-colors.ts` maps category slugs to Tailwind-safe color classes — use these, don't invent new color schemes
+- **Design tokens are the only truth**: All color, font, radius, shadow, and motion values come from CSS custom properties defined in `app/globals.css` and exposed through Tailwind via `@theme inline`. **Never use raw Tailwind color utilities** like `bg-emerald-500`, `text-purple-400`, `border-rose-500/30` in component code — they bypass the theme system. Use `bg-[var(--color-confidence-high-soft)]`, `text-[var(--color-cat-user-insights)]`, etc. An ESLint guard in `eslint.config.mjs` blocks color-with-ramp utilities under `app/`, `components/`, and `lib/`. The bare-name utilities `text-white`, `bg-white`, `text-black`, `bg-black` are allowed (semantic, used for white-on-accent text in primary buttons / logo badges).
+- **Category colors**: `lib/category-colors.ts` emits token-driven class strings (`bg-[var(--color-cat-{slug}-soft)]` etc.) — use these for any category-keyed UI, never hardcode hues.
 - **Motion**: `lib/motion.ts` exports shared Framer Motion variants (fadeInUp, staggerContainer, etc.) — reuse them instead of writing inline animations
 - **Coach types**: `lib/coach-types.ts` defines all skill IDs, metadata, and the `resolveSkillForApi()` mapping — update this when adding skills
-- **Confidence labeling**: Frontmatter `confidence: "high" | "moderate"` drives trust badges ("Canonical" / "Adapted")
+- **Confidence labeling**: Frontmatter `confidence: "high" | "moderate"` drives trust badges ("Canonical" / "Adapted") via `components/ui/confidence-badge.tsx`
 - **API env vars**: `ANTHROPIC_API_KEY` (required), `COACH_MODEL` (default: `claude-sonnet-4-6`), `COACH_MAX_TOKENS` (default: 4096, debate auto-bumps to 16384)
 
 ## Design System
 
-- **Theme**: Midnight editorial dark (default) + light mode tokens via `[data-theme="light"]` in `app/globals.css`
-- **Fonts**: Instrument Serif (headings), Inter (body), JetBrains Mono (code) — loaded via `next/font/google`
-- **Motion**: 120–240ms spring-based, `prefers-reduced-motion` respected
-- **Accessibility**: skip nav, focus-visible outlines, ARIA combobox on search, keyboard navigation
-- **Confidence labels**: `high` → "Canonical" (green), `moderate` → "Adapted" (amber) — indicates source attribution trustworthiness
+- **Theme**: Single warm editorial light theme — paper `#f4f1ea` background, ink `#1b1a17` text, vermillion `#cc3b1d` accent. No dark mode. Tokens live in `:root` in `app/globals.css`; consumers reference them via `var(--color-*)` directly or through Tailwind utilities exposed by `@theme inline`.
+- **Fonts**: Fraunces (display — h1/h2 and italic accents), Inter (body, UI chrome), JetBrains Mono (kickers, eyebrows, code) — all loaded via `next/font/google` in `app/layout.tsx`.
+- **Italic accent in display headings**: `<h1>Discover <em>frameworks</em></h1>` renders the em in vermillion italic Fraunces automatically (CSS rule on `h1 em, h2 em`).
+- **Editorial primitives** in `components/ui/`: `Eyebrow` (mono kicker), `Lead` (21px lead paragraph), `SectionLabel` (mono section divider), `Card` (editorial card with optional left stripe), `ConfidenceBadge`. Reuse these — don't reinvent the patterns inline.
+- **Motion**: 120–240ms spring-based, `prefers-reduced-motion` respected (global rule in `globals.css`)
+- **Accessibility**: skip nav, focus-visible outlines (vermillion 2px), ARIA combobox on search, keyboard navigation
 
 ## Design Constraints (PRD §25)
 
 - Avoid generic template aesthetics, crowded dashboards, loud gradients, excessive neon
 - Prioritize readability on long-form pages
 - Never ship placeholder lorem ipsum — use real framework content
-- Dark mode must feel luxurious, not gamer-style
+- Editorial calm over dashboard density — generous whitespace, serif headlines, restrained color
 - WCAG 2.2 AA accessibility target
 - Lighthouse performance > 90, LCP < 2.5s on mobile

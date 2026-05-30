@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>01 · Foundations — Organizing Resumes with AI in SharePoint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4; --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf; --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--slate);
+}
+*,*::before,*::after { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; counter-reset:slide; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+.back { font-family:"JetBrains Mono",monospace; font-size:12px;
+  text-decoration:none; color:var(--ink-soft); display:inline-flex;
+  align-items:center; gap:6px; margin:30px 0 22px; border:1px solid var(--rule);
+  border-radius:6px; padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px;
+  letter-spacing:.28em; text-transform:uppercase; color:var(--accent);
+  font-weight:600; margin-bottom:18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(34px,5vw,52px);
+  letter-spacing:-.02em; line-height:1.05; margin:0 0 14px; }
+.dek { font-size:20px; color:var(--ink-soft); max-width:720px; margin:0 0 28px; }
+.topic-nav { position:sticky; top:0; z-index:10; background:var(--paper);
+  border-bottom:1px solid var(--rule); margin:0 -28px 32px; padding:14px 28px;
+  display:flex; flex-wrap:wrap; gap:8px 18px; font-family:"JetBrains Mono",monospace;
+  font-size:12px; font-weight:600; }
+.topic-nav a { color:var(--ink-soft); text-decoration:none; padding:4px 10px;
+  border:1px solid var(--rule); border-radius:5px; transition:all .14s; }
+.topic-nav a:hover { background:var(--guide-color); color:#fff; border-color:var(--guide-color); }
+.meta-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:24px 0 40px; }
+@media (max-width:680px) { .meta-grid { grid-template-columns:1fr; } }
+.meta { background:var(--card); border:1px solid var(--rule); border-radius:10px;
+  padding:18px 20px; border-top:3px solid var(--guide-color); }
+.meta .ml { font-family:"JetBrains Mono",monospace; font-size:10px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:6px; }
+.meta .mb { font-family:"Fraunces",serif; font-weight:600; font-size:18px; line-height:1.3; }
+section:not(#quiz):not(#flashcards) {
+  counter-increment:slide; background:var(--card);
+  border:1.5px solid color-mix(in srgb, var(--guide-color, var(--slate)) 28%, var(--rule));
+  border-radius:18px;
+  box-shadow:0 8px 36px -10px rgba(27,26,23,.18), 0 1px 0 rgba(27,26,23,.04);
+  margin:48px 0; overflow:hidden; position:relative;
+}
+section:not(#quiz):not(#flashcards) h2 {
+  margin:0; padding:26px 36px 22px;
+  background:var(--guide-color, var(--slate)); color:#fff;
+  font-family:"Fraunces",serif; font-weight:900;
+  font-size:clamp(20px,2.8vw,26px); letter-spacing:-.015em; line-height:1.1;
+  display:flex; align-items:flex-start; gap:14px;
+}
+section:not(#quiz):not(#flashcards) h2::before {
+  content:counter(slide, decimal-leading-zero);
+  font-family:"JetBrains Mono",monospace; font-weight:600; font-size:12px;
+  letter-spacing:.1em; background:rgba(255,255,255,.16);
+  color:rgba(255,255,255,.9); border:1px solid rgba(255,255,255,.28);
+  padding:4px 10px; border-radius:5px; flex-shrink:0; margin-top:3px; white-space:nowrap;
+}
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre { margin-left:36px; margin-right:36px; }
+section:not(#quiz):not(#flashcards) > p:first-of-type { margin-top:28px; }
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child { margin-bottom:34px; }
+section:not(#quiz):not(#flashcards)::after {
+  content:""; display:block; height:4px;
+  background:linear-gradient(90deg, var(--guide-color, var(--slate)) 0%,
+    color-mix(in srgb, var(--guide-color, var(--slate)) 30%, transparent) 100%);
+  margin-top:34px; opacity:.35;
+}
+@media (max-width:680px) {
+  section:not(#quiz):not(#flashcards) h2 { padding:20px 22px 18px; font-size:20px; }
+  section:not(#quiz):not(#flashcards) > p,
+  section:not(#quiz):not(#flashcards) > .insight,
+  section:not(#quiz):not(#flashcards) > .misconception,
+  section:not(#quiz):not(#flashcards) > blockquote { margin-left:22px; margin-right:22px; }
+}
+.insight, .misconception { border-radius:10px; padding:18px 22px; margin:22px 0;
+  font-size:17px; line-height:1.5; }
+.insight { border-left:4px solid var(--slate); background:var(--slate-soft); }
+.misconception { border-left:4px solid var(--accent); background:var(--accent-soft); }
+.insight::before { content:"✦ Key insight — "; font-weight:600; color:var(--slate); }
+.misconception::before { content:"✕ Common misconception — "; font-weight:600; color:var(--accent); }
+code,.mono { font-family:"JetBrains Mono",monospace; font-size:.82em;
+  background:#ece7db; padding:.08em .38em; border-radius:4px; color:#3a382f; }
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);
+  margin:48px 0 6px; font-weight:600; }
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
+.fc { perspective:900px; height:190px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%;
+  transform-style:preserve-3d; transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front,.fc-back { position:absolute; inset:0; border-radius:13px;
+  padding:22px 22px 18px; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  display:flex; flex-direction:column; justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back { background:#7a5400; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px; font-weight:600;
+  letter-spacing:.08em; text-transform:uppercase; padding:2px 8px; border-radius:4px;
+  border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent);
+  background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent);
+  background:color-mix(in srgb,var(--g2) 10%,transparent); }
+footer { margin-top:80px; padding-top:30px; border-top:1px solid var(--rule);
+  font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--ink-soft);
+  display:flex; flex-wrap:wrap; gap:18px; justify-content:space-between; }
+footer a { color:var(--ink-soft); text-decoration:underline; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="index.html">← Back to library</a>
+
+<div class="kicker">01 · Foundations</div>
+<h1>Letting AI read the resumes and suggest the schema</h1>
+<p class="dek">A pile of PDFs becomes a structured library when the AI extracts the names, proposes columns, and lets you keep only the ones that matter. Schema as a conversation.</p>
+
+<nav class="topic-nav">
+  <a href="#library-as-workspace">Library workspace</a>
+  <a href="#extracted-column">Extracted column</a>
+  <a href="#column-suggestions">Column suggestions</a>
+  <a href="#keep-or-drop">Keep or drop</a>
+  <a href="#flashcards">Flashcards</a>
+</nav>
+
+<div class="meta-grid">
+  <div class="meta"><div class="ml">Takeaway 1</div><div class="mb">The document library is the database — files plus columns is the schema.</div></div>
+  <div class="meta"><div class="ml">Takeaway 2</div><div class="mb">AI extracts metadata from inside the file, not from a separate form.</div></div>
+  <div class="meta"><div class="ml">Takeaway 3</div><div class="mb">You curate the schema — the AI proposes, you accept, edit, or drop.</div></div>
+</div>
+
+<section id="library-as-workspace">
+  <h2>A document library is your candidate database</h2>
+  <p>Resumes arrive as files. Drop them in a SharePoint document library and you already have a table — every file is a row, and every column you add becomes a queryable field. There's no separate database to provision. The library is the workspace.</p>
+  <p>This matters because the next step — asking AI to fill in columns from the files themselves — only works when files and columns live side by side. The library co-locates the documents and their derived metadata.</p>
+  <div class="insight">In SharePoint, the document library doubles as the table. Files are rows, columns are derived metadata. Resume triage runs entirely in this one surface.</div>
+</section>
+
+<section id="extracted-column">
+  <h2>One sentence creates a column from file content</h2>
+  <p>The opening move is a single ask: "Extract the person's name from each one of these files and add them to a new candidate name column." The AI reads every resume, picks out the name, and lands it in a new column — one row per file, populated.</p>
+  <p>The user reviews the column and decides to keep it. From that point on, every new resume that lands in the library can be extracted into the same column automatically.</p>
+  <div class="insight">Extraction is column-shaped. You describe the field you want, the AI reads the file, and the answer lands in the column for every row at once.</div>
+  <div class="misconception">It looks like the AI is filling out a form. It isn't — the column is the form, and the files are the source. There's no intermediate data entry step.</div>
+</section>
+
+<section id="column-suggestions">
+  <h2>Ask the AI what other columns would help</h2>
+  <p>After the name column lands, the next prompt is "Suggest a few more columns that'll help me organize these resumes." The AI looks at what's in the files and proposes options: primary skill, years of experience, education, job title.</p>
+  <p>This flips the usual schema design pattern. Instead of guessing what columns the library needs up front, you let the AI read the corpus and tell you what's in there worth tracking.</p>
+  <div class="insight">Schema discovery beats schema design. The AI already knows what's in the resumes — let it tell you what fields to bother tracking.</div>
+</section>
+
+<section id="keep-or-drop">
+  <h2>Curate the suggestions — keep some, drop others</h2>
+  <p>Suggestions are not commands. In the demo, primary skill is rejected ("a little noisy"), years of experience is dropped, but education and job title are kept. The user is still the editor.</p>
+  <p>This back-and-forth — propose, evaluate, accept or reject — is how the schema actually gets built. Each kept column becomes another lens for filtering candidates later. Each rejection saves a column that would have added noise without signal.</p>
+  <div class="misconception">"AI organizing your data" sounds passive, like watching it work. The real value comes from your edits — the schema is a conversation, not a delivery.</div>
+</section>
+
+
+<section id="flashcards">
+<div class="sec-label">Flashcards — Foundations</div>
+<div class="fc-grid">
+
+<div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')">
+  <div class="fc-inner">
+    <div class="fc-front">
+      <div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div>
+      <div class="fc-term">Document Library</div>
+      <div class="fc-tap">tap to reveal →</div>
+    </div>
+    <div class="fc-back">
+      <div class="fc-def">A SharePoint container of files that doubles as a table — each file is a row, each column is queryable metadata. The single workspace for resume triage.</div>
+      <div class="fc-tap">← tap to flip back</div>
+    </div>
+  </div>
+</div>
+
+<div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')">
+  <div class="fc-inner">
+    <div class="fc-front">
+      <div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div>
+      <div class="fc-term">Extracted Column</div>
+      <div class="fc-tap">tap to reveal →</div>
+    </div>
+    <div class="fc-back">
+      <div class="fc-def">A library column whose values are pulled from file contents by AI in a single instruction. The candidate name column is the first example in the demo.</div>
+      <div class="fc-tap">← tap to flip back</div>
+    </div>
+  </div>
+</div>
+
+<div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')">
+  <div class="fc-inner">
+    <div class="fc-front">
+      <div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div>
+      <div class="fc-term">Column Suggestions</div>
+      <div class="fc-tap">tap to reveal →</div>
+    </div>
+    <div class="fc-back">
+      <div class="fc-def">AI-proposed fields based on what it sees inside the files. Flips schema design from guessing up front to discovering after reading the corpus.</div>
+      <div class="fc-tap">← tap to flip back</div>
+    </div>
+  </div>
+</div>
+
+<div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')">
+  <div class="fc-inner">
+    <div class="fc-front">
+      <div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div>
+      <div class="fc-term">Schema Curation</div>
+      <div class="fc-tap">tap to reveal →</div>
+    </div>
+    <div class="fc-back">
+      <div class="fc-def">The keep-or-drop pass on AI suggestions. The user accepts useful columns and rejects noisy ones, treating the schema as a conversation rather than a delivery.</div>
+      <div class="fc-tap">← tap to flip back</div>
+    </div>
+  </div>
+</div>
+
+</div>
+</section>
+
+<footer>
+  <span>Resume Collection · Guide 01 · Foundations</span>
+  <span><a href="flashcards-index.html">All flashcards →</a></span>
+</footer>
+
+</div>
+</body>
+</html>

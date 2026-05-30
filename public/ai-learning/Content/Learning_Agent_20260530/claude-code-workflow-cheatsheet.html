@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Claude Code Workflow — AI Learning Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--amber);  /* GUIDE 2 = amber */
+}
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.6;-webkit-font-smoothing:antialiased;counter-reset:slide;}
+.wrap{max-width:1040px;margin:0 auto;padding:0 28px 120px;}
+code,.mono{font-family:"JetBrains Mono",monospace;font-size:.82em;background:#ece7db;padding:.08em .38em;border-radius:4px;color:#3a382f;}
+a{color:inherit;}
+
+.back{font-family:"JetBrains Mono",monospace;font-size:12px;text-decoration:none;color:var(--ink-soft);display:inline-flex;align-items:center;gap:6px;margin:32px 0 22px;border:1px solid var(--rule);border-radius:6px;padding:5px 12px;transition:all .14s;}
+.back:hover{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--guide-color);font-weight:600;margin-bottom:14px;}
+h1{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(38px,6vw,64px);line-height:1.04;margin:0 0 14px;letter-spacing:-.015em;}
+h1 em{font-style:italic;color:var(--guide-color);}
+.dek{font-family:"Newsreader",Georgia,serif;font-style:italic;font-size:21px;color:var(--ink-soft);line-height:1.5;margin:0 0 12px;max-width:780px;}
+
+.topic-nav{position:sticky;top:0;background:var(--paper);border-bottom:1px solid var(--rule);margin:40px -28px 0;padding:14px 28px;z-index:50;display:flex;gap:18px;flex-wrap:wrap;}
+.topic-nav a{font-family:"JetBrains Mono",monospace;font-size:11.5px;font-weight:600;text-decoration:none;color:var(--ink-soft);letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-radius:5px;transition:all .14s;}
+.topic-nav a:hover{background:var(--ink);color:var(--paper);}
+
+.meta-takeaway{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:46px 0 8px;}
+@media(max-width:760px){.meta-takeaway{grid-template-columns:1fr;}}
+.mt{background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--guide-color);border-radius:11px;padding:22px 24px;}
+.mt .mt-num{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--guide-color);font-weight:600;letter-spacing:.18em;margin-bottom:8px;}
+.mt h4{font-family:"Fraunces",serif;font-weight:600;font-size:19px;margin:0 0 8px;line-height:1.3;}
+.mt p{margin:0;font-size:15.5px;line-height:1.5;color:var(--ink-soft);}
+
+/* ===== SLIDE PANELS ===== */
+section:not(#quiz):not(#flashcards){counter-increment:slide;background:var(--card);border:1.5px solid color-mix(in srgb, var(--guide-color) 28%, var(--rule));border-radius:18px;box-shadow:0 8px 36px -10px rgba(27,26,23,.18),0 1px 0 rgba(27,26,23,.04);margin:48px 0;overflow:hidden;position:relative;}
+section:not(#quiz):not(#flashcards) h2{margin:0;padding:26px 36px 22px;background:var(--guide-color);color:#fff;font-family:"Fraunces",serif;font-weight:900;font-size:clamp(20px,2.8vw,26px);letter-spacing:-.015em;line-height:1.1;display:flex;align-items:flex-start;gap:14px;}
+section:not(#quiz):not(#flashcards) h2::before{content:counter(slide,decimal-leading-zero);font-family:"JetBrains Mono",monospace;font-weight:600;font-size:12px;letter-spacing:.1em;background:rgba(255,255,255,.16);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.28);padding:4px 10px;border-radius:5px;flex-shrink:0;margin-top:3px;white-space:nowrap;}
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre,
+section:not(#quiz):not(#flashcards) > h4,
+section:not(#quiz):not(#flashcards) > ul,
+section:not(#quiz):not(#flashcards) > ol,
+section:not(#quiz):not(#flashcards) > .tblwrap{margin-left:36px;margin-right:36px;}
+section:not(#quiz):not(#flashcards) > p:first-of-type{margin-top:28px;}
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child,
+section:not(#quiz):not(#flashcards) > .insight:last-child,
+section:not(#quiz):not(#flashcards) > .tblwrap:last-child{margin-bottom:34px;}
+section:not(#quiz):not(#flashcards)::after{content:"";display:block;height:4px;background:linear-gradient(90deg,var(--guide-color) 0%,color-mix(in srgb,var(--guide-color) 30%,transparent) 100%);margin-top:34px;opacity:.35;}
+@media(max-width:680px){
+  section:not(#quiz):not(#flashcards) h2{padding:20px 22px 18px;font-size:20px;}
+  section:not(#quiz):not(#flashcards) > *{margin-left:22px !important;margin-right:22px !important;}
+}
+/* ===== END SLIDE PANELS ===== */
+
+section:not(#quiz):not(#flashcards) h4{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);margin-top:24px;margin-bottom:10px;font-weight:600;}
+section:not(#quiz):not(#flashcards) ul,
+section:not(#quiz):not(#flashcards) ol{padding-left:0;list-style:none;margin-top:0;}
+section:not(#quiz):not(#flashcards) li{padding:5px 0 5px 22px;position:relative;font-size:16.5px;line-height:1.5;}
+section:not(#quiz):not(#flashcards) li::before{content:"▸";position:absolute;left:0;color:var(--guide-color);font-size:14px;top:7px;}
+section:not(#quiz):not(#flashcards) li b{font-weight:600;}
+
+.insight,.misconception{border-radius:10px;padding:18px 22px;margin:22px 0;font-size:17px;line-height:1.5;}
+.insight{border-left:4px solid var(--slate);background:var(--slate-soft);}
+.misconception{border-left:4px solid var(--accent);background:var(--accent-soft);}
+.insight::before{content:"✦ Key insight — ";font-weight:600;color:var(--slate);}
+.misconception::before{content:"✕ Common misconception — ";font-weight:600;color:var(--accent);}
+
+.tblwrap{overflow-x:auto;margin:18px 0;}
+table{border-collapse:collapse;width:100%;font-size:15.5px;}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top;}
+thead th{font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--ink);font-weight:600;}
+tbody tr:nth-child(even){background:rgba(255,255,255,.4);}
+
+.sec-label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin:54px 0 6px;font-weight:600;}
+#quiz, #flashcards{margin-top:60px;}
+.q-item{margin:18px 0;padding:22px 26px;background:var(--card);border:1.5px solid var(--rule);border-radius:12px;}
+.q-item.correct{border-color:#2f5d62;background:#f0f6f5;}
+.q-item.wrong{border-color:#cc3b1d;background:#fdf3f0;}
+.q-item .qnum{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--guide-color);font-weight:600;margin-bottom:8px;}
+.q-text{font-size:17px;font-weight:600;margin-bottom:14px;}
+.options{display:flex;flex-direction:column;gap:9px;margin-bottom:14px;}
+.options label{display:flex;align-items:flex-start;gap:10px;font-size:16px;cursor:pointer;padding:9px 14px;border-radius:7px;border:1.5px solid var(--rule);background:var(--paper);transition:background .12s;line-height:1.45;}
+.options label:hover{background:#ede9e0;}
+.q-item.correct label:has(input[data-correct]){background:#dde7e6;border-color:#2f5d62;}
+.q-item.wrong label:has(input:checked:not([data-correct])){background:#fde8e3;border-color:#cc3b1d;}
+.check-btn{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:8px 18px;border-radius:7px;border:1.5px solid var(--guide-color);background:transparent;color:var(--guide-color);cursor:pointer;transition:all .14s;}
+.check-btn:hover:not(:disabled){background:var(--guide-color);color:#fff;}
+.check-btn:disabled{opacity:.4;cursor:not-allowed;}
+.explanation{margin-top:14px;padding:12px 16px;background:#f4e9cf;border-left:3px solid var(--guide-color);border-radius:6px;font-size:15px;color:var(--ink-soft);}
+
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:18px;}
+.fc{perspective:900px;height:170px;cursor:pointer;}
+.fc-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1);}
+.fc.flipped .fc-inner{transform:rotateY(180deg);}
+.fc-front,.fc-back{position:absolute;inset:0;border-radius:11px;padding:18px 18px 14px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;justify-content:space-between;}
+.fc-front{background:var(--card);border:1.5px solid var(--rule);border-left:4px solid var(--guide-color);}
+.fc-back{transform:rotateY(180deg);background:#7a5400;}
+.fc-term{font-family:"JetBrains Mono",monospace;font-weight:600;font-size:14px;color:var(--guide-color);}
+.fc-def{color:#fff8e6;font-size:13px;line-height:1.4;}
+.fc-tap{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--ink-soft);}
+.fc-back .fc-tap{color:rgba(255,255,255,.45);}
+
+footer{margin-top:90px;padding-top:28px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+footer a{color:var(--guide-color);text-decoration:none;border-bottom:1px solid currentColor;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<a class="back" href="index.html">← Back to Library</a>
+<div class="kicker">02 · Applied</div>
+<h1>The <em>Claude Code</em> Workflow</h1>
+<p class="dek">How Anthropic's agentic coding tool actually works under the hood — its loop, its building blocks, the canonical workflow, and how enterprises put it to work.</p>
+
+<nav class="topic-nav">
+  <a href="#loop">A1 Loop</a>
+  <a href="#access">A2 Env</a>
+  <a href="#claudemd">B1 CLAUDE.md</a>
+  <a href="#perms">B2 Perms</a>
+  <a href="#ext">B3 Extensions</a>
+  <a href="#ctx">B4 Context</a>
+  <a href="#sessions">B5 Sessions</a>
+  <a href="#epcc">C Workflow</a>
+  <a href="#surfaces">D Surfaces</a>
+  <a href="#enterprise">E Enterprise</a>
+  <a href="#quiz">Quiz</a>
+  <a href="#flashcards">Flashcards</a>
+</nav>
+
+<div class="meta-takeaway">
+  <div class="mt"><div class="mt-num">MODEL 01</div>
+    <h4>It's an agent, not autocomplete</h4>
+    <p>You hand it a <i>goal</i>, not line-by-line prompts. It reads files, runs commands, and loops on its own results until done.</p></div>
+  <div class="mt"><div class="mt-num">MODEL 02</div>
+    <h4>The harness is the product</h4>
+    <p>The model reasons; Claude Code supplies the <b>tools, context management, and execution environment</b> that turn a model into a coding agent.</p></div>
+  <div class="mt"><div class="mt-num">MODEL 03</div>
+    <h4>You stay in the loop</h4>
+    <p>Permission prompts, plan mode, and checkpoints keep a human in control — which is what makes autonomy safe on real codebases.</p></div>
+</div>
+
+<section id="loop">
+  <h2>The agentic loop — gather, act, verify, repeat</h2>
+  <p><strong>One line:</strong> Every task runs the same cycle — Claude gathers context, takes an action with a tool, reads the result, and repeats until no more tool calls are needed.</p>
+  <p>Picture a capable colleague at your keyboard who narrates as they go. You say "fix the failing tests." Claude <b>runs the tests</b> to see what broke → <b>reads the error</b> → <b>searches</b> for the relevant file → <b>reads</b> it → <b>edits</b> it → <b>re-runs the tests</b> to check. Each result tells it what to do next. Mechanically it's a simple rule: <i>keep calling tools until the answer needs no more tools</i> (engineers describe it as a <code>while(tool_use)</code> loop). A small fix might loop 8–12 times in under a minute; a big refactor chains dozens of steps and course-corrects along the way.</p>
+  <h4>The three phases (they blend together)</h4>
+  <ul>
+    <li><b>Gather context</b> — search and read files, pull git state, fetch docs from the web, load CLAUDE.md, ask you a question if something's missing.</li>
+    <li><b>Take action</b> — edit files, run shell commands, start servers, use git, call external tools via MCP.</li>
+    <li><b>Verify results</b> — run tests, check type errors, compare against a screenshot, then decide whether to loop again.</li>
+  </ul>
+  <h4>Powered by two things</h4>
+  <ul>
+    <li><b>Models that reason</b> — Sonnet handles most coding; Opus for harder architectural reasoning. Swap mid-session with <code>/model</code>.</li>
+    <li><b>Tools that act</b> — five built-in families: <b>file ops, search, execution, web, code intelligence</b>. Without tools the model can only talk; tools are what make it <i>agentic</i>.</li>
+  </ul>
+  <div class="insight">The key advance over Copilot-style tools is <b>autonomy</b>. You give it a goal, not a prompt per line, and it iterates on its <i>own</i> failures — gathering, acting, and verifying without you driving each step.</div>
+</section>
+
+<section id="access">
+  <h2>What Claude can see and touch — the working environment</h2>
+  <p><strong>One line:</strong> Run <code>claude</code> in a directory and it gains scoped access to your project, terminal, git state, and any extensions you've configured.</p>
+  <p>Unlike an inline assistant that only sees the file you're staring at, Claude Code sees the <b>whole project</b> — so when you say "fix the auth bug" it can search across files, read several to understand how they connect, make coordinated edits, run the tests, and commit. It works <i>inside your real environment</i> using your real tools, rather than in some opaque backend.</p>
+  <h4>What it gets access to</h4>
+  <ul>
+    <li><b>Your project</b> — files in the directory + subdirectories (others only with permission).</li>
+    <li><b>Your terminal</b> — anything you could run: build tools, git, package managers, scripts.</li>
+    <li><b>Your git state</b> — current branch, uncommitted changes, recent commit history.</li>
+    <li><b>CLAUDE.md + auto memory</b> — your standing instructions, plus learnings it saved itself (see B1).</li>
+    <li><b>Extensions</b> — MCP servers, skills, subagents, and browser control, when you configure them.</li>
+  </ul>
+</section>
+
+<section id="claudemd">
+  <h2>CLAUDE.md and memory — persistent project context</h2>
+  <p><strong>One line:</strong> A markdown file in your project root that Claude reads at the start of <i>every</i> session — the highest-leverage thing you can set up.</p>
+  <p>Think of it as the onboarding doc you'd hand a new hire. Coding standards, architecture decisions, preferred libraries, the commands to build and test, a review checklist. Because Claude re-reads it each session, a good <code>CLAUDE.md</code> dramatically cuts how many back-and-forth iterations a task needs. There's also <b>auto memory</b>: Claude quietly saves learnings (like build commands and debugging insights) to a <code>MEMORY.md</code> as it works, and reloads them next time — so the project gets easier to work in over time.</p>
+  <ul>
+    <li>Generate a starter with <code>/init</code>; put <b>rules you never want lost</b> here, not in the chat (chat history can get compacted away).</li>
+    <li>Scopes stack: organization-wide → project → personal, so teams can share standards.</li>
+  </ul>
+</section>
+
+<section id="perms">
+  <h2>Permission modes and checkpoints — the safety layer</h2>
+  <p><strong>One line:</strong> Claude asks before risky actions, you pick how much autonomy to grant, and every file edit is reversible.</p>
+  <p>A dial between "ask me everything" and "just go." Tap <code>Shift+Tab</code> to cycle modes. Before editing any file Claude takes a snapshot, so <code>Esc Esc</code> rewinds you to an earlier state — like a local undo separate from git. Actions that hit the outside world (databases, deploys, APIs) <i>can't</i> be checkpointed, which is exactly why Claude always asks before those.</p>
+  <h4>The four permission modes</h4>
+  <ul>
+    <li><b>Default</b> — asks before file edits and shell commands.</li>
+    <li><b>Auto-accept edits</b> — edits + safe filesystem commands run without asking; still asks for the rest. Good for rapid prototyping loops.</li>
+    <li><b>Plan mode</b> — read-only; produces a plan you approve <i>before</i> any change. Best for production code.</li>
+    <li><b>Auto mode</b> — evaluates every action with background safety checks (research preview).</li>
+  </ul>
+  <div class="insight">"<b>Supervised autonomy</b>" — decisions about what ships stay with the human. Plan mode isn't a limitation; it's what makes autonomous operation <i>trustworthy</i> rather than risky.</div>
+</section>
+
+<section id="ext">
+  <h2>Skills · MCP · Hooks · Subagents — the extension layer</h2>
+  <p><strong>One line:</strong> Four ways to extend the core loop — add knowledge, connect tools, automate guardrails, and parallelize work.</p>
+  <p>If the loop is the engine, these are the bolt-ons. <b>Skills</b> are reusable playbooks ("how we review a PR") packaged as files Claude loads only when relevant. <b>MCP</b> is a universal adapter that lets Claude read a Jira ticket, a Google Doc, or a Slack thread as if they were built-in tools. <b>Hooks</b> are automatic triggers — "run the formatter after every edit," "lint before every commit." <b>Subagents</b> are disposable helpers with their <i>own</i> context window that go do one scoped job and hand back a summary, so deep digging doesn't clog the main conversation.</p>
+  <div class="tblwrap"><table>
+    <thead><tr><th>Primitive</th><th>What it adds</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td><b>Skills</b></td><td>Packaged repeatable workflows, loaded on demand</td><td><code>/review-pr</code>, <code>/deploy-staging</code></td></tr>
+      <tr><td><b>MCP</b></td><td>Connects external data/tools via an open standard</td><td>Read Drive docs, update Jira, pull Slack</td></tr>
+      <tr><td><b>Hooks</b></td><td>Shell commands before/after Claude's actions</td><td>Auto-format on edit; lint before commit</td></tr>
+      <tr><td><b>Subagents</b></td><td>Isolated context for delegated/parallel work</td><td>One reviews tests while another reads diffs</td></tr>
+    </tbody>
+  </table></div>
+  <div class="insight"><b>Subagents</b> = quick parallel research <i>within</i> one task (fresh context, returns a summary). <b>Agent teams</b> = genuinely parallel workstreams (e.g. one agent on the backend, another on frontend tests), coordinated by a lead agent that assigns subtasks and merges results.</div>
+</section>
+
+<section id="ctx">
+  <h2>Context management — keeping the agent sharp</h2>
+  <p><strong>One line:</strong> The context window holds everything Claude is "thinking about"; as it fills, Claude prunes and compacts automatically — but early instructions can get lost.</p>
+  <p>The context window is the agent's desk — limited surface area. It holds the conversation, file contents, command outputs, CLAUDE.md, and loaded skills. When the desk fills, Claude first <b>clears old tool outputs</b>, then <b>summarizes the conversation</b> if needed (compaction). Your requests and key code survive; fine-grained instructions from early on may not — which is why durable rules belong in CLAUDE.md. Run <code>/context</code> to see what's eating space.</p>
+  <ul>
+    <li><b>Compaction</b> is automatic near the limit; steer it with a "Compact Instructions" section in CLAUDE.md or <code>/compact focus on the API changes</code>.</li>
+    <li><b>Skills</b> stay out of context until used; <b>subagents</b> keep their digging in a separate window — both are context-saving levers.</li>
+    <li>MCP tool definitions are <b>deferred</b> (loaded on demand via tool search), so only tool names cost context until called.</li>
+  </ul>
+  <div class="misconception">The "kitchen-sink session" — start one task, veer into an unrelated one, jump back, and now context is full of noise and quality drops. Fix: keep sessions focused, or start fresh (a new session begins with a clean window).</div>
+</section>
+
+<section id="sessions">
+  <h2>Sessions, resume and fork — continuity and parallelism</h2>
+  <p><strong>One line:</strong> Conversations are saved locally so you can resume, fork, or run several in parallel — each tied to a directory.</p>
+  <p>Every session is written to a local logbook (a plaintext file under <code>~/.claude/</code>). That's what lets you <b>resume</b> tomorrow exactly where you stopped, or <b>fork</b> — branch off to try a different approach without disturbing the original thread. To run multiple Claudes at once without their edits colliding, give each its own folder via <b>git worktrees</b>. Sessions are independent: a new one starts fresh, which is why persistent rules live in CLAUDE.md, not chat history.</p>
+  <ul>
+    <li><code>claude --continue</code> / <code>--resume</code> picks up the same session; <code>--fork-session</code> branches with a new ID.</li>
+    <li><b>Worktrees</b> = isolated git checkouts for true parallel sessions; the Desktop app and web manage these visually.</li>
+  </ul>
+</section>
+
+<section id="epcc">
+  <h2>Explore → Plan → Code → Commit — the canonical workflow</h2>
+  <p><strong>One line:</strong> The most reliable results come from separating <i>research</i> from <i>writing code</i> — explore first, plan, then implement, then commit.</p>
+  <ol>
+    <li><b>Explore</b> — Ask Claude to read the relevant code and understand it, <b>without writing any code yet</b>. Use plan mode (read-only).</li>
+    <li><b>Plan</b> — Have it produce a plan for the change. Review and refine it through conversation before approving.</li>
+    <li><b>Code</b> — Let it implement against the agreed plan, ideally with a test or screenshot to verify against.</li>
+    <li><b>Commit</b> — It stages changes, writes the commit message, and can open a PR with a structured description.</li>
+  </ol>
+  <h4>The habits that make it work</h4>
+  <ul>
+    <li><b>Be specific upfront</b> — name files, constraints, and example patterns; specific prompts often succeed on the first try.</li>
+    <li><b>Give it something to verify against</b> — test cases, expected output, a screenshot of the target UI. Self-checking sharply improves results.</li>
+    <li><b>Delegate, don't dictate</b> — give context and direction like you would a capable colleague; let Claude figure out which files to read.</li>
+    <li><b>Interrupt and steer</b> — if it goes down the wrong path, just type a correction; no need to wait or restart.</li>
+    <li><b>Non-interactive mode</b> (<code>claude -p "…"</code>) pipes Claude into CI, pre-commit hooks, and scripts, with <code>--output-format json</code> for parsing.</li>
+  </ul>
+  <div class="insight">Jumping straight to code lets small misunderstandings compound. Forcing an explore-and-plan step surfaces the misunderstanding <i>before</i> any code is written — cheaper to fix a plan than a pile of edits.</div>
+</section>
+
+<section id="surfaces">
+  <h2>Surfaces and execution environments — one engine, many doors</h2>
+  <p><strong>One line:</strong> The same agentic loop runs everywhere; what changes is <i>where the code executes</i> and <i>how you interact</i>. Your CLAUDE.md, settings, and MCP servers carry across all of them.</p>
+  <p>One brain, many doors into it. The terminal is the full-featured home base; the IDE extension (VS Code, JetBrains) adds inline diffs; the Desktop app runs several sessions side-by-side; the web and iOS app let you kick off long tasks and check back later. You can even start on the web and pull the task into your terminal with <code>--teleport</code>, or hand a terminal session to Desktop for visual diff review.</p>
+  <div class="tblwrap"><table>
+    <thead><tr><th>Execution environment</th><th>Where code runs</th><th>Use case</th></tr></thead>
+    <tbody>
+      <tr><td><b>Local</b></td><td>Your machine</td><td>Default. Full access to your files and tools.</td></tr>
+      <tr><td><b>Cloud</b></td><td>Anthropic-managed VMs</td><td>Offload long tasks; work on repos you don't have locally.</td></tr>
+      <tr><td><b>Remote Control</b></td><td>Your machine, driven from a browser</td><td>Use the web UI while everything stays local.</td></tr>
+    </tbody>
+  </table></div>
+  <h4>Automation and team entry points</h4>
+  <ul>
+    <li><b>CI/CD</b> — GitHub Actions / GitLab CI for automated code review and issue triage; <b>@-mention Claude in Slack</b> with a bug report and get a PR back.</li>
+    <li><b>Routines</b> — scheduled recurring work (morning PR reviews, overnight CI-failure analysis, weekly dependency audits) on managed infra, so they run even when your machine is off.</li>
+    <li><b>Agent SDK</b> — embed the same loop in your own apps with full control over tools, permissions, and orchestration.</li>
+  </ul>
+</section>
+
+<section id="enterprise">
+  <h2>Enterprise use cases — real deployments and results</h2>
+  <p><strong>One line:</strong> The same loop powers fintech, e-commerce, dev tools, supply chain, telecom, and finance — at scales from dozens to tens of thousands of developers.</p>
+
+  <h4>Ramp · Fintech</h4>
+  <p><b>Org-wide adoption beyond engineering.</b> A grassroots rollout where data teams query the Snowflake warehouse in natural language, and non-technical staff in sales, risk, finance, and recruiting pull insights without writing SQL.</p>
+  <ul>
+    <li><b>1M+</b> lines of AI-suggested code in 30 days</li>
+    <li><b>50%</b> weekly active usage across engineering</li>
+    <li><b>~80%</b> faster incident investigation</li>
+  </ul>
+
+  <h4>Rakuten · E-commerce, 70+ businesses</h4>
+  <p><b>Long autonomous runs on complex refactors.</b> Used Claude Code to automate coding tasks across thousands of developers while holding enterprise-grade quality and security.</p>
+  <ul>
+    <li><b>7 hrs</b> sustained autonomous coding on one refactor</li>
+    <li><b>79%</b> faster time-to-market (24 days → 5)</li>
+    <li><b>99.9%</b> accuracy on complex code modifications</li>
+  </ul>
+
+  <h4>cubic · Dev tools</h4>
+  <p><b>AI-native code review.</b> Built review workflows on Claude to catch issues before merge, compressing development cycles.</p>
+  <ul>
+    <li><b>60×</b> faster code shipping</li>
+    <li><b>28%</b> faster development cycles</li>
+  </ul>
+
+  <h4>Altana · Supply-chain AI</h4>
+  <p><b>Building sophisticated AI/ML systems faster.</b> Uses Claude Code to accelerate development of large-scale knowledge graphs for global supply chains.</p>
+  <ul>
+    <li><b>2–10×</b> faster development velocity</li>
+  </ul>
+
+  <h4>Other patterns worth knowing</h4>
+  <ul>
+    <li><b>Behavox</b> (compliance/security) — rolled out to <b>hundreds of developers</b> as their "go-to pair programmer," reporting it outperformed other coding agents.</li>
+    <li><b>TELUS</b> (telecom/health) — Claude powers the internal "Fuel iX" platform for <b>57,000 employees</b>; developers use Claude Code in VS Code and GitHub for real-time refactoring.</li>
+    <li><b>Bridgewater</b> (asset management) — Claude as an "investment analyst assistant" that writes Python for analysis, handles errors, and outputs charts — freeing analysts for strategy.</li>
+    <li><b>Anthropic internal</b> — even the <b>legal team</b> built a "phone-tree" tool prototype with Claude Code; engineers use auto-accept mode for autonomous test-and-iterate loops.</li>
+  </ul>
+
+  <h4>How to think about enterprise value</h4>
+  <ul>
+    <li><b>Velocity</b> — features ship faster; long refactors run autonomously (Ramp, Rakuten).</li>
+    <li><b>Quality and risk</b> — automated review and incident response; permission/checkpoint model makes it safe on production code (cubic, Ramp).</li>
+    <li><b>Democratization</b> — non-engineers build tools and query data in natural language (Ramp, Anthropic legal).</li>
+    <li><b>Onboarding and knowledge</b> — point it at an unfamiliar codebase for an architecture walkthrough and auto-generated docs.</li>
+    <li><b>Governance</b> — org-down permission policies, audit, and admin controls make org-wide rollout viable.</li>
+  </ul>
+</section>
+
+<div class="sec-label" id="quiz">✦ Quiz — check your understanding (8 questions)</div>
+<p style="font-size:16px;color:var(--ink-soft);margin:0 0 10px">Pick an answer and hit "Check" to see if you've got it.</p>
+
+<div class="q-item" id="q2_1">
+  <div class="qnum">Question 1 of 8</div>
+  <p class="q-text">What is Claude Code's core agentic loop?</p>
+  <div class="options">
+    <label><input type="radio" name="q2_1" value="a"> Prompt → Edit → Review → Merge</label>
+    <label><input type="radio" name="q2_1" value="b"> Read → Write → Test</label>
+    <label><input type="radio" name="q2_1" value="c" data-correct="true"> Gather context → Take action → Verify results → repeat</label>
+    <label><input type="radio" name="q2_1" value="d"> Plan → Code → Deploy</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q2_1')">Check answer</button>
+  <div class="explanation" style="display:none">Every task in Claude Code follows this cycle: gather context (read files, pull git state), take action (edit, run commands), verify results (run tests, check output), then repeat as needed.</div>
+</div>
+
+<div class="q-item" id="q2_2">
+  <div class="qnum">Question 2 of 8</div>
+  <p class="q-text">Where should durable project rules be written so they survive context compaction?</p>
+  <div class="options">
+    <label><input type="radio" name="q2_2" value="a"> At the start of every chat message</label>
+    <label><input type="radio" name="q2_2" value="b" data-correct="true"> In CLAUDE.md — read at the start of every session</label>
+    <label><input type="radio" name="q2_2" value="c"> In a .env file in the project root</label>
+    <label><input type="radio" name="q2_2" value="d"> Nowhere — Claude remembers everything automatically</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q2_2')">Check answer</button>
+  <div class="explanation" style="display:none">CLAUDE.md is read at the start of every session, so rules here survive compaction. Chat history can get summarized away; CLAUDE.md cannot.</div>
+</div>
+
+<div class="q-item" id="q2_3">
+  <div class="qnum">Question 3 of 8</div>
+  <p class="q-text">Which permission mode is read-only and best suited for reviewing changes to production code?</p>
+  <div class="options">
+    <label><input type="radio" name="q2_3" value="a"> Default mode</label>
+    <label><input type="radio" name="q2_3" value="b"> Auto-accept edits mode</label>
+    <label><input type="radio" name="q2_3" value="c" data-correct="true"> Plan mode</label>
+    <label><input type="radio" name="q2_3" value="d"> Auto mode</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q2_3')">Check answer</button>
+  <div class="explanation" style="display:none">Plan mode is read-only — Claude produces a plan for you to approve before any change is made. This makes autonomous operation trustworthy on production code.</div>
+</div>
+
+<div class="q-item" id="q2_4">
+  <div class="qnum">Question 4 of 8</div>
+  <p class="q-text">What does a Subagent do differently from the main agent in a Claude Code session?</p>
+  <div class="options">
+    <label><input type="radio" name="q2_4" value="a"> It runs on a different model (always Haiku)</label>
+    <label><input type="radio" name="q2_4" value="b"> It can edit files the main agent cannot</label>
+    <label><input type="radio" name="q2_4" value="c" data-correct="true"> It works in its own isolated context window on a scoped job, then returns a summary</label>
+    <label><input type="radio" name="q2_4" value="d"> It runs multiple tasks in sequence before reporting back</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q2_4')">Check answer</button>
+  <div class="explanation" style="display:none">Subagents are disposable helpers with their own context — deep digging doesn't clog the main conversation, and they hand back a concise summary when done.</div>
+</div>
+
+<div class="q-item" id="q2_5">
+  <div class="qnum">Question 5 of 8</div>
+  <p class="q-text">What is the key benefit of the Explore → Plan → Code → Commit workflow?</p>
+  <div class="options">
+    <label><input type="radio" name="q2_5" value="a"> It makes Claude run faster by parallelizing tasks</label>
+    <label><input type="radio" name="q2_5" value="b"> It reduces the number of files Claude needs to read</label>
+    <label><input type="radio" name="q2_5" value="c" data-correct="true"> It surfaces misunderstandings before any code is written — cheaper to fix a plan than a pile of edits</label>
+    <label><input type="radio" name="q2_5" value="d"> It prevents Claude from needing to run tests</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q2_5')">Check answer</button>
+  <div class="explanation" style="display:none">Separating research from implementation is the key insight: small misunderstandings caught at the plan stage are far cheaper to fix than after code has been written.</div>
+</div>
+
+<div class="q-item" id="q2_6">
+  <div class="qnum">Question 6 of 8</div>
+  <p class="q-text">What is "compaction" in Claude Code's context management?</p>
+  <div class="options">
+    <label><input type="radio" name="q2_6" value="a"> Minifying code to reduce file sizes</label>
+    <label><input type="radio" name="q2_6" value="b"> Deleting old sessions permanently to free storage</label>
+    <label><input type="radio" name="q2_6" value="c" data-correct="true"> Auto-summarizing older context when the window fills so the agent stays sharp</label>
+    <label><input type="radio" name="q2_6" value="d"> A compression algorithm applied to files before editing</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q2_6')">Check answer</button>
+  <div class="explanation" style="display:none">When the context window fills, Claude first clears old tool outputs, then summarizes the conversation if needed. Your code and requests survive; stale instructions from early in the session may not — which is why CLAUDE.md exists.</div>
+</div>
+
+<div class="q-item" id="q2_7">
+  <div class="qnum">Question 7 of 8</div>
+  <p class="q-text">What does a Hook do in Claude Code?</p>
+  <div class="options">
+    <label><input type="radio" name="q2_7" value="a"> It captures the model's reasoning before each response</label>
+    <label><input type="radio" name="q2_7" value="b"> It lets the user interrupt Claude mid-task</label>
+    <label><input type="radio" name="q2_7" value="c" data-correct="true"> It runs a shell command automatically before or after Claude's actions</label>
+    <label><input type="radio" name="q2_7" value="d"> It connects Claude to external APIs via MCP</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q2_7')">Check answer</button>
+  <div class="explanation" style="display:none">Hooks are shell commands that fire at fixed lifecycle points — before/after a tool call or turn. Classic uses: auto-format on edit, lint before commit, run type-checker after any file change.</div>
+</div>
+
+<div class="q-item" id="q2_8">
+  <div class="qnum">Question 8 of 8</div>
+  <p class="q-text">What does MCP (Model Context Protocol) do in the context of Claude Code?</p>
+  <div class="options">
+    <label><input type="radio" name="q2_8" value="a"> It controls how much context the model is allowed to use</label>
+    <label><input type="radio" name="q2_8" value="b"> It manages the model's internal memory weights</label>
+    <label><input type="radio" name="q2_8" value="c" data-correct="true"> It connects external tools and data (Jira, Drive, Slack) to Claude via a standard protocol</label>
+    <label><input type="radio" name="q2_8" value="d"> It is a protocol for compressing context before sending to the model</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q2_8')">Check answer</button>
+  <div class="explanation" style="display:none">MCP = Model Context Protocol. It's an open standard so external tools/data can be connected without bespoke glue per service. Claude can read a Jira ticket or a Google Doc as if they were built-in tools.</div>
+</div>
+
+<div class="sec-label" id="flashcards">🃏 Flashcards — tap any card to reveal the definition</div>
+<p style="font-size:16px;color:var(--ink-soft);margin:0 0 14px">16 key terms from this guide. Tap to flip.</p>
+<div class="fc-grid">
+  <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">Agentic loop</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Gather context → take action → verify → repeat. Runs until no more tool calls are needed. The core of Claude Code.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">Agentic harness</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Everything around the model — tools, context management, execution environment — that turns an LLM into a coding agent.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">CLAUDE.md</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Project-root markdown file of standards, commands, and context — read at the start of every session. Use /init to generate a starter.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">Auto memory</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Learnings Claude saves itself (to MEMORY.md) and reloads across sessions — build commands, debugging insights — no writing required.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">Plan mode</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Read-only permission mode — Claude produces a plan for you to approve before making any change. Press Shift+Tab twice to activate.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">Checkpoint</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">A pre-edit file snapshot taken automatically. Press Esc Esc to rewind. Local, separate from git; applies to file changes only.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">MCP</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Model Context Protocol — open standard to connect external data/tools (Jira, Drive, Slack) as native tools without bespoke integration per service.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">Skill</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">A packaged, on-demand workflow Claude loads only when relevant — e.g. /review-pr or /deploy-staging. Keeps context clean until needed.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">Hook</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">A shell command that runs automatically before or after Claude's actions — format-on-edit, lint-before-commit, type-check after any file change.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">Subagent</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">A disposable helper with its own context window. Does one scoped job and returns a summary — keeps deep digging from clogging the main session.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">Agent team</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Multiple full agents on parallel workstreams — e.g. one on backend, one on frontend tests — coordinated by a lead agent that merges results.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">Compaction</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Auto-summarizing older context when the window fills. Steerable via /compact or a "Compact Instructions" section in CLAUDE.md.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">Worktree</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">An isolated git checkout so parallel Claude sessions don't collide on edits. The Desktop app manages these visually.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">Non-interactive mode</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">claude -p "…" — pipes Claude into CI, hooks, and scripts. Use --output-format json for programmatic parsing of results.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">Routines</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Scheduled recurring tasks on Anthropic-managed infra — morning PR reviews, overnight CI-failure analysis — run even when your machine is off.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">Agent SDK</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Library to embed Claude Code's loop in your own apps with full control over tools, permissions, and orchestration logic.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+</div>
+
+<footer>
+  <span><a href="index.html">← Library index</a></span>
+  <span><a href="agents-from-scratch-cheatsheet.html">← Prev: Agents from scratch</a></span>
+  <span><a href="harness-agent-interview-cheatsheet.html">Next: Harness agent interview →</a></span>
+  <span><a href="flashcards-index.html">All flashcards →</a></span>
+</footer>
+
+</div>
+
+<script>
+function checkQ(id) {
+  const item = document.getElementById(id);
+  const selected = item.querySelector('input[type=radio]:checked');
+  item.classList.remove('correct','wrong');
+  if (!selected) { alert('Please select an answer first.'); return; }
+  const isCorrect = selected.hasAttribute('data-correct');
+  item.classList.add(isCorrect ? 'correct' : 'wrong');
+  item.querySelector('.check-btn').disabled = true;
+  item.querySelectorAll('input[type=radio]').forEach(r => r.disabled = true);
+  const exp = item.querySelector('.explanation');
+  if (exp) exp.style.display = 'block';
+}
+
+document.querySelectorAll('.topic-nav a, footer a').forEach(a => {
+  a.addEventListener('click', e => {
+    const href = a.getAttribute('href');
+    if (href && href.startsWith('#')) {
+      e.preventDefault();
+      const t = document.querySelector(href);
+      if (t) t.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+  });
+});
+</script>
+</body>
+</html>

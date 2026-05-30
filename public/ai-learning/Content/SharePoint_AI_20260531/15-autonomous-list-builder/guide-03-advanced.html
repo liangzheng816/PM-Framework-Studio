@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Guide 03 · Advanced — Autonomous List Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--accent);
+}
+*,*::before,*::after { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; counter-reset:slide; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);
+  margin:48px 0 6px; font-weight:600; }
+code,.mono { font-family:"JetBrains Mono",monospace; font-size:.82em;
+  background:#ece7db; padding:.08em .38em; border-radius:4px; color:#3a382f; }
+.back { font-family:"JetBrains Mono",monospace; font-size:12px;
+  text-decoration:none; color:var(--ink-soft); display:inline-flex;
+  align-items:center; gap:6px; margin-bottom:22px; border:1px solid var(--rule);
+  border-radius:6px; padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px;
+  letter-spacing:.28em; text-transform:uppercase; color:var(--accent);
+  font-weight:600; margin-bottom:18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(36px,5.5vw,56px);
+  line-height:1.02; margin:0 0 16px; letter-spacing:-.02em; }
+.dek { font-size:20px; color:var(--ink-soft); max-width:720px; margin:0 0 30px; }
+.topnav { position:sticky; top:0; z-index:10; background:var(--paper);
+  border-bottom:1px solid var(--rule); padding:12px 0; margin:24px 0 0;
+  display:flex; flex-wrap:wrap; gap:6px; }
+.topnav a { font-family:"JetBrains Mono",monospace; font-size:11px;
+  font-weight:600; text-decoration:none; color:var(--ink-soft);
+  padding:5px 10px; border-radius:5px; letter-spacing:.05em;
+  text-transform:uppercase; transition:all .12s; }
+.topnav a:hover { background:var(--guide-color); color:#fff; }
+.meta-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:28px 0 12px; }
+@media (max-width:760px) { .meta-grid { grid-template-columns:1fr; } }
+.meta { background:var(--card); border:1px solid var(--rule);
+  border-top:3px solid var(--guide-color); border-radius:10px; padding:18px 20px; }
+.meta .mlbl { font-family:"JetBrains Mono",monospace; font-size:10px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft);
+  margin-bottom:8px; font-weight:600; }
+.meta .mtxt { font-family:"Fraunces",serif; font-weight:600; font-size:18px; line-height:1.3; }
+
+section:not(#quiz):not(#flashcards) {
+  counter-increment: slide;
+  background: var(--card);
+  border: 1.5px solid color-mix(in srgb, var(--guide-color, var(--slate)) 28%, var(--rule));
+  border-radius: 18px;
+  box-shadow: 0 8px 36px -10px rgba(27,26,23,.18), 0 1px 0 rgba(27,26,23,.04);
+  margin: 48px 0; overflow: hidden; position: relative;
+}
+section:not(#quiz):not(#flashcards) h2 {
+  margin: 0; padding: 26px 36px 22px;
+  background: var(--guide-color, var(--slate));
+  color: #fff; font-family: "Fraunces", serif;
+  font-weight: 900; font-size: clamp(20px, 2.8vw, 26px);
+  letter-spacing: -.015em; line-height: 1.1;
+  display: flex; align-items: flex-start; gap: 14px;
+}
+section:not(#quiz):not(#flashcards) h2::before {
+  content: counter(slide, decimal-leading-zero);
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 600; font-size: 12px; letter-spacing: .1em;
+  background: rgba(255,255,255,.16); color: rgba(255,255,255,.9);
+  border: 1px solid rgba(255,255,255,.28);
+  padding: 4px 10px; border-radius: 5px;
+  flex-shrink: 0; margin-top: 3px; white-space: nowrap;
+}
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre {
+  margin-left: 36px; margin-right: 36px;
+}
+section:not(#quiz):not(#flashcards) > p:first-of-type { margin-top: 28px; }
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child { margin-bottom: 34px; }
+section:not(#quiz):not(#flashcards)::after {
+  content: ""; display: block; height: 4px;
+  background: linear-gradient(90deg,
+    var(--guide-color, var(--slate)) 0%,
+    color-mix(in srgb, var(--guide-color, var(--slate)) 30%, transparent) 100%);
+  margin-top: 34px; opacity: .35;
+}
+@media (max-width:680px) {
+  section:not(#quiz):not(#flashcards) h2 { padding:20px 22px 18px; font-size:20px; }
+  section:not(#quiz):not(#flashcards) > p,
+  section:not(#quiz):not(#flashcards) > .insight,
+  section:not(#quiz):not(#flashcards) > .misconception,
+  section:not(#quiz):not(#flashcards) > blockquote { margin-left:22px; margin-right:22px; }
+}
+
+.insight, .misconception { border-radius:10px; padding:18px 22px; margin:22px 0; font-size:17px; line-height:1.5; }
+.insight { border-left:4px solid var(--slate); background:var(--slate-soft); }
+.misconception { border-left:4px solid var(--accent); background:var(--accent-soft); }
+.insight::before { content:"✦ Key insight — "; font-weight:600; color:var(--slate); }
+.misconception::before { content:"✕ Common misconception — "; font-weight:600; color:var(--accent); }
+
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
+.fc { perspective:900px; height:190px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%;
+  transform-style:preserve-3d;
+  transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front, .fc-back { position:absolute; inset:0; border-radius:13px;
+  padding:22px 22px 18px; backface-visibility:hidden;
+  -webkit-backface-visibility:hidden; display:flex; flex-direction:column;
+  justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back { background:#7a5400; }
+.fc[data-g="g3"] .fc-front { border-left:4px solid var(--g3); }
+.fc[data-g="g3"] .fc-back { background:#3a1a10; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc[data-g="g3"] .fc-term { color:var(--g3); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc[data-g="g3"] .fc-def { color:#f5d6ce; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px;
+  color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px;
+  font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+  padding:2px 8px; border-radius:4px; border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent); background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent); background:color-mix(in srgb,var(--g2) 10%,transparent); }
+.gtag.g3 { color:var(--g3); border-color:color-mix(in srgb,var(--g3) 40%,transparent); background:color-mix(in srgb,var(--g3) 10%,transparent); }
+.footnav { margin-top:60px; padding-top:24px; border-top:1px solid var(--rule);
+  display:flex; flex-wrap:wrap; gap:14px; justify-content:space-between;
+  font-family:"JetBrains Mono",monospace; font-size:12px; }
+.footnav a { color:var(--ink-soft); text-decoration:none; padding:8px 14px;
+  border:1px solid var(--rule); border-radius:6px; }
+.footnav a:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+@media (max-width:760px) { .fc-grid { grid-template-columns:1fr 1fr; } }
+@media (max-width:420px) { .fc-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← Library</a>
+  <div class="kicker">03 · Advanced</div>
+  <h1>The autonomous path — Ralph Loop</h1>
+  <p class="dek">The hands-off tier. Upload a self-iterating skill called Ralph, give it a goal, watch it plan, build, grade itself, and retry until it passes its own bar. The AI does the whole job — including the styling — with a few human nudges along the way.</p>
+
+  <nav class="topnav">
+    <a href="#ralph">01 Ralph Loop</a>
+    <a href="#loop-steps">02 R · A · L · P · H</a>
+    <a href="#iteration-cap">03 Iteration cap</a>
+    <a href="#self-grade">04 Self-grading</a>
+    <a href="#human-loop">05 Human in loop</a>
+    <a href="#style-reuse">06 Style reuse</a>
+    <a href="#flashcards">Flashcards</a>
+  </nav>
+
+  <div class="sec-label">Meta takeaways</div>
+  <div class="meta-grid">
+    <div class="meta"><div class="mlbl">Loop</div><div class="mtxt">Ralph plans, acts, looks at the result, probes for gaps, and hardens before it stops.</div></div>
+    <div class="meta"><div class="mlbl">Bound</div><div class="mtxt">A max-iteration cap prevents runaway agents — finite leash on autonomy.</div></div>
+    <div class="meta"><div class="mlbl">Human</div><div class="mtxt">Even an autonomous loop needs human approvals for some persistent changes.</div></div>
+  </div>
+
+  <section id="ralph">
+    <h2>Ralph is a self-iterating loop skill</h2>
+    <p>The author has a skill called the Ralph Loop. It is, in his words, a way to outsource iterative work to SharePoint AI. You give Ralph a goal and a max iteration count; Ralph keeps working until either it grades its own output as passing or the iteration cap kicks in.</p>
+    <div class="insight">Ralph turns one goal into a self-managed work session. Instead of you driving each prompt, Ralph drives them and you watch.</div>
+    <p>Ralph and the style definition skill from Video 14 are uploaded to the same site's skills library. Then a fresh session starts with both skills loaded.</p>
+    <div class="misconception">Ralph isn't a separate AI agent. It's a skill — instructions the regular SharePoint AI follows — that happens to encode "keep going until done."</div>
+  </section>
+
+  <section id="loop-steps">
+    <h2>Reason · Act · Look · Probe · Harden</h2>
+    <p>The Ralph acronym names the five things it does each iteration: <strong>R</strong>eason about the goal and current state, <strong>A</strong>ct on the plan, <strong>L</strong>ook at the result, <strong>P</strong>robe for gaps, <strong>H</strong>arden what works. Each pass refines the output.</p>
+    <div class="insight">The loop isn't just "try again" — it's structured self-review. Each iteration includes an explicit grading step before deciding whether to continue.</div>
+    <p>This is the same shape as agent loops in other AI frameworks. The novelty isn't the pattern; it's that the pattern fits inside a SharePoint AI skill file and runs against a live SharePoint site.</p>
+  </section>
+
+  <section id="iteration-cap">
+    <h2>The iteration cap is your leash</h2>
+    <p>The author starts Ralph with: <em>use Ralph the skill with a max of 15 iterations</em>. Without that cap, an unsatisfied Ralph could keep iterating indefinitely. With it, the agent has a hard upper bound and your tenant doesn't pay for infinite retries.</p>
+    <div class="insight">Always pass a max-iteration cap. The cap is the difference between "agent" and "agent that you trust to run autonomously."</div>
+    <p>15 iterations was enough for this demo. For richer goals you'd raise the cap; for risky changes you'd lower it.</p>
+    <div class="misconception">The iteration cap isn't a quality target — it's a safety bound. The agent might finish at iteration 4 or hit the cap unsuccessfully at 15.</div>
+  </section>
+
+  <section id="self-grade">
+    <h2>The self-grading plan</h2>
+    <p>Each Ralph iteration grades itself against the plan it wrote on iteration 1. The plan defines what "passing" means — list created, views built, sample data populated, styling applied. The grading step checks each criterion and decides whether to iterate again.</p>
+    <div class="insight">The plan is the agent's rubric. Without an explicit plan up front, the loop has nothing to self-grade against.</div>
+    <p>You can see this in the video: iteration 1 outputs a plan describing list structure, workflow, views, styling, then starts executing it.</p>
+    <div class="misconception">Self-grading doesn't make the agent correct. It makes the agent's stopping condition explicit — you still want to spot-check the final output.</div>
+  </section>
+
+  <section id="human-loop">
+    <h2>Human in the loop, even with Ralph</h2>
+    <p>Two moments of human intervention happen during the autonomous run: an approval prompt for a persistent change Ralph wants to make, and a nudge when Ralph navigates between sites and pauses for a green light to continue.</p>
+    <div class="insight">"Autonomous" doesn't mean unsupervised. Persistent or cross-site changes still pause for explicit approval, by design.</div>
+    <p>The author flags this as a positive: knowing where the agent pauses lets you keep guardrails in place even when you've handed off the full job.</p>
+    <div class="misconception">A Ralph run isn't a black box. It surfaces its reasoning, its iteration grading, and the points where it needs human approval — you can watch it work the whole time.</div>
+  </section>
+
+  <section id="style-reuse">
+    <h2>The style definition skill is still in play</h2>
+    <p>The same forest style definition from Video 14 is loaded alongside Ralph. As Ralph iterates, the styling step uses that style definition to make every view on-brand. The list ends up with a beautiful, branded final state — built entirely by the agent.</p>
+    <div class="insight">Skills compose. Ralph drives the iteration; the style definition shapes the output. Neither knows about the other — both apply.</div>
+    <p>This is the punchline of the whole video: with the right two skills loaded, you can hand a single sentence to SharePoint AI and watch it build a finished, on-brand list end to end.</p>
+  </section>
+
+  <section id="flashcards">
+    <div class="sec-label">Flashcards — Advanced</div>
+    <div class="fc-grid">
+
+      <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')">
+        <div class="fc-inner">
+          <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Ralph Loop</div><div class="fc-tap">tap to reveal →</div></div>
+          <div class="fc-back"><div class="fc-def">A skill that traps SharePoint AI in a self-iterating loop. Given a goal and a max-iteration cap, Ralph plans, acts, grades itself, and retries until it passes.</div><div class="fc-tap">← tap to flip back</div></div>
+        </div>
+      </div>
+
+      <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')">
+        <div class="fc-inner">
+          <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Reason · Act · Look · Probe · Harden</div><div class="fc-tap">tap to reveal →</div></div>
+          <div class="fc-back"><div class="fc-def">The five steps Ralph does each iteration — the acronym behind the loop's name. Reason on goal, act on plan, look at result, probe for gaps, harden what works.</div><div class="fc-tap">← tap to flip back</div></div>
+        </div>
+      </div>
+
+      <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')">
+        <div class="fc-inner">
+          <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Iteration cap</div><div class="fc-tap">tap to reveal →</div></div>
+          <div class="fc-back"><div class="fc-def">The max-iterations argument you pass when starting Ralph. Hard upper bound that prevents runaway loops. Your safety leash on autonomous runs.</div><div class="fc-tap">← tap to flip back</div></div>
+        </div>
+      </div>
+
+      <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')">
+        <div class="fc-inner">
+          <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Self-grading plan</div><div class="fc-tap">tap to reveal →</div></div>
+          <div class="fc-back"><div class="fc-def">The plan Ralph writes on iteration 1 and grades against thereafter. Defines what "done" means — list, views, data, styling — and is the loop's stopping rubric.</div><div class="fc-tap">← tap to flip back</div></div>
+        </div>
+      </div>
+
+      <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')">
+        <div class="fc-inner">
+          <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Human-in-the-loop</div><div class="fc-tap">tap to reveal →</div></div>
+          <div class="fc-back"><div class="fc-def">The approval pauses Ralph hits for persistent or cross-site changes. "Autonomous" doesn't mean unsupervised — the agent still asks for sign-off where it matters.</div><div class="fc-tap">← tap to flip back</div></div>
+        </div>
+      </div>
+
+      <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')">
+        <div class="fc-inner">
+          <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Skill composition</div><div class="fc-tap">tap to reveal →</div></div>
+          <div class="fc-back"><div class="fc-def">Ralph and the style definition skill loaded together. Ralph drives the iteration; the style skill shapes each output — neither knows about the other.</div><div class="fc-tap">← tap to flip back</div></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="footnav">
+    <a href="guide-02-applied.html">← Guide 02 · Applied</a>
+    <a href="index.html">Back to library →</a>
+  </div>
+</div>
+</body>
+</html>

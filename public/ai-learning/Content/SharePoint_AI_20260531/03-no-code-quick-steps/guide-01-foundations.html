@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide 01 · Foundations — What Quick Steps Are</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4; --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf; --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00;
+  --guide-color: var(--slate);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; counter-reset: slide; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+.back { font-family:"JetBrains Mono",monospace; font-size:12px; text-decoration:none;
+  color:var(--ink-soft); display:inline-flex; align-items:center; gap:6px;
+  margin:28px 0 22px; border:1px solid var(--rule); border-radius:6px; padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.28em;
+  text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(34px,5vw,52px);
+  line-height:1.05; letter-spacing:-.02em; margin:0 0 18px; }
+.dek { font-size:20px; color:var(--ink-soft); max-width:760px; margin:0 0 28px; }
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--ink-soft); margin:48px 0 6px; font-weight:600; }
+code, .mono { font-family:"JetBrains Mono",monospace; font-size:.82em; background:#ece7db;
+  padding:.08em .38em; border-radius:4px; color:#3a382f; }
+
+.tnav { position:sticky; top:0; z-index:50; background:rgba(244,241,234,.95);
+  backdrop-filter:blur(8px); border-bottom:1px solid var(--rule);
+  padding:12px 0; margin:0 -28px 0; }
+.tnav-inner { max-width:1040px; margin:0 auto; padding:0 28px; display:flex; flex-wrap:wrap; gap:8px; }
+.tnav a { font-family:"JetBrains Mono",monospace; font-size:11px; font-weight:600;
+  letter-spacing:.1em; text-transform:uppercase; text-decoration:none;
+  color:var(--ink-soft); padding:6px 12px; border:1px solid var(--rule); border-radius:6px; transition:all .14s; }
+.tnav a:hover { background:var(--guide-color); color:#fff; border-color:var(--guide-color); }
+
+.meta-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:30px 0 20px; }
+@media (max-width:680px) { .meta-grid { grid-template-columns:1fr; } }
+.meta-card { background:var(--card); border:1px solid var(--rule); border-top:3px solid var(--guide-color);
+  border-radius:10px; padding:18px 20px; }
+.meta-card .mc-l { font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--guide-color); font-weight:600; margin-bottom:8px; }
+.meta-card .mc-t { font-family:"Fraunces",serif; font-weight:600; font-size:18px; line-height:1.25; }
+
+section:not(#quiz):not(#flashcards) {
+  counter-increment: slide; background: var(--card);
+  border: 1.5px solid color-mix(in srgb, var(--guide-color, var(--slate)) 28%, var(--rule));
+  border-radius: 18px;
+  box-shadow: 0 8px 36px -10px rgba(27,26,23,.18), 0 1px 0 rgba(27,26,23,.04);
+  margin: 48px 0; overflow: hidden; position: relative;
+}
+section:not(#quiz):not(#flashcards) h2 {
+  margin: 0; padding: 26px 36px 22px;
+  background: var(--guide-color, var(--slate));
+  color: #fff; font-family: "Fraunces", serif; font-weight: 900;
+  font-size: clamp(20px, 2.8vw, 26px); letter-spacing: -.015em; line-height: 1.1;
+  display: flex; align-items: flex-start; gap: 14px;
+}
+section:not(#quiz):not(#flashcards) h2::before {
+  content: counter(slide, decimal-leading-zero);
+  font-family: "JetBrains Mono", monospace; font-weight: 600;
+  font-size: 12px; letter-spacing: .1em;
+  background: rgba(255,255,255,.16); color: rgba(255,255,255,.9);
+  border: 1px solid rgba(255,255,255,.28);
+  padding: 4px 10px; border-radius: 5px;
+  flex-shrink: 0; margin-top: 3px; white-space: nowrap;
+}
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre {
+  margin-left: 36px; margin-right: 36px;
+}
+section:not(#quiz):not(#flashcards) > p:first-of-type { margin-top: 28px; }
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child { margin-bottom: 34px; }
+section:not(#quiz):not(#flashcards)::after {
+  content: ""; display: block; height: 4px;
+  background: linear-gradient(90deg, var(--guide-color, var(--slate)) 0%,
+    color-mix(in srgb, var(--guide-color, var(--slate)) 30%, transparent) 100%);
+  margin-top: 34px; opacity: .35;
+}
+@media (max-width: 680px) {
+  section:not(#quiz):not(#flashcards) h2 { padding: 20px 22px 18px; font-size: 20px; }
+  section:not(#quiz):not(#flashcards) > p,
+  section:not(#quiz):not(#flashcards) > .insight,
+  section:not(#quiz):not(#flashcards) > .misconception,
+  section:not(#quiz):not(#flashcards) > blockquote { margin-left: 22px; margin-right: 22px; }
+}
+
+.insight, .misconception { border-radius:10px; padding:18px 22px; margin:22px 0;
+  font-size:17px; line-height:1.5; }
+.insight { border-left:4px solid var(--slate); background:var(--slate-soft); }
+.misconception { border-left:4px solid var(--accent); background:var(--accent-soft); }
+.insight::before { content:"✦ Key insight — "; font-weight:600; color:var(--slate); }
+.misconception::before { content:"✕ Common misconception — "; font-weight:600; color:var(--accent); }
+
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; margin-top:24px; }
+.fc { perspective:900px; height:190px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%; transform-style:preserve-3d;
+  transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front, .fc-back { position:absolute; inset:0; border-radius:13px; padding:22px 22px 18px;
+  backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  display:flex; flex-direction:column; justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back { background:#7a5400; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px; font-weight:600;
+  letter-spacing:.08em; text-transform:uppercase; padding:2px 8px; border-radius:4px;
+  border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent); background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent); background:color-mix(in srgb,var(--g2) 10%,transparent); }
+
+.foot { margin-top:60px; padding-top:24px; border-top:1px solid var(--rule);
+  display:flex; flex-wrap:wrap; gap:14px; justify-content:space-between; align-items:center;
+  font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--ink-soft); }
+.foot a { color:var(--accent); text-decoration:none; font-weight:600; }
+.foot a:hover { text-decoration:underline; }
+
+@media (max-width:760px) { .fc-grid { grid-template-columns:1fr 1fr; } }
+@media (max-width:420px) { .fc-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← All guides</a>
+
+  <div class="tnav">
+    <div class="tnav-inner">
+      <a href="#what-quick-step">01 What is a Quick Step</a>
+      <a href="#actions-column">02 Actions Column</a>
+      <a href="#saved-prompt">03 Saved Prompts</a>
+      <a href="#workflow-actions">04 Workflow Actions</a>
+      <a href="#flashcards">Flashcards</a>
+    </div>
+  </div>
+
+  <div class="kicker">Guide 01 · Foundations</div>
+  <h1>Quick Steps — buttons that run AI for your team</h1>
+  <p class="dek">A column of buttons in any SharePoint list. Each button is a saved prompt. Users click; SharePoint AI runs. No one has to know how the AI pane works.</p>
+
+  <div class="meta-grid">
+    <div class="meta-card"><div class="mc-l">Walk away with</div><div class="mc-t">Quick Steps are a column type</div></div>
+    <div class="meta-card"><div class="mc-l">Walk away with</div><div class="mc-t">Buttons are saved prompts</div></div>
+    <div class="meta-card"><div class="mc-l">Walk away with</div><div class="mc-t">No-code action delivery</div></div>
+  </div>
+
+  <section id="what-quick-step">
+    <h2>A Quick Step is a one-click AI action</h2>
+    <p>A Quick Step is a button that sits directly inside a SharePoint list or library row. Click it and the AI in SharePoint pane opens with a prompt already populated and ready to run against that item. The user does not have to type, choose a skill, or even know that an AI exists.</p>
+    <div class="insight">Quick Steps put AI in front of users as a button, not a chat box. Click "Generate socials" — the work happens.</div>
+    <p>The example in the demo is a "Generate Socials" button on a social media library. One click triggers an AI run that produces the social copy for that item. The user never opens a prompt window — they just click the button next to the file.</p>
+    <div class="misconception">"Quick Steps need Power Automate or a custom workflow." They don't. A Quick Step is a built-in SharePoint feature; the AI behavior is configured inline.</div>
+  </section>
+
+  <section id="actions-column">
+    <h2>The Actions column — where Quick Steps live</h2>
+    <p>You add a Quick Step by adding a column of type Quick Step (the demo calls it "actions"). Each row of the library then shows whichever Quick Steps you have defined as a row of clickable buttons. Every item in the library inherits the same buttons by default.</p>
+    <div class="insight">One Quick Step column can hold many buttons. The column is the container; each button is a saved action.</div>
+    <p>This means a single library can offer multiple Quick Steps side by side — Summarize, Standardize Filename, Generate Socials, Convert to Markdown — without cluttering other columns. Users see the actions exactly where the file lives.</p>
+    <div class="misconception">"I need a separate column per button." No — one Quick Step column hosts all of them as inline buttons.</div>
+  </section>
+
+  <section id="saved-prompt">
+    <h2>Each button is a saved prompt</h2>
+    <p>When you create a Quick Step you give it a name, an optional condition, and a prompt. That is the whole thing. "Summarize this file" as the prompt becomes a button labeled Summarize. Click it, and the AI runs the same prompt the author of the column wrote.</p>
+    <div class="insight">A Quick Step is a saved prompt with a button on top. That is also the cheapest way to standardize how a team interacts with AI.</div>
+    <p>This matters more than it sounds. When everyone on the team uses the same Summarize button instead of typing their own prompt, you get consistent outputs across files. Prompt variance disappears.</p>
+    <div class="misconception">"Each click sends a generic AI request." Each click sends <em>your</em> prompt — the exact one the column author saved.</div>
+  </section>
+
+  <section id="workflow-actions">
+    <h2>Beyond AI — workflow actions too</h2>
+    <p>Quick Steps are not exclusively AI buttons. The same column type can host draft-email, start-Teams-chat, and execute-flow actions — the standard workflow primitives SharePoint already shipped. The real power, though, comes from chaining those with AI in SharePoint.</p>
+    <div class="insight">Quick Steps unify workflow-style and AI-style actions into a single button row on every item.</div>
+    <p>The mental model: a Quick Step is "the most common thing you'd want to do with this file." Sometimes that is run an AI skill. Sometimes that is email the owner or start a chat. Either fits inside the same column.</p>
+    <div class="misconception">"Quick Steps replace Power Automate." They do not. Power Automate still owns multi-step orchestration. Quick Steps are for the single-click action you reach for over and over.</div>
+  </section>
+
+  <section id="flashcards">
+    <div class="sec-label">Flashcards — Foundations</div>
+    <div class="fc-grid">
+      <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Quick Step</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">A clickable button inline on a SharePoint list row that runs a saved prompt against that item. The single-click way to expose AI in SharePoint to end users.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Actions Column</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">A column of type Quick Step that holds one or more buttons for each row. The container that surfaces all your Quick Steps alongside the file itself.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Saved Prompt</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">A reusable prompt attached to a button. Clicking the button sends that exact prompt to AI in SharePoint — standardizing how the team triggers a given task.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Workflow Quick Step</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">A non-AI Quick Step — draft email, start Teams chat, execute a flow. Lives in the same Actions column as AI Quick Steps.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Generate Socials Button</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">The opening demo. A single Quick Step button on a social-media library that runs an AI prompt to produce social copy for the selected file.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+    </div>
+  </section>
+
+  <div class="foot">
+    <span>Guide 01 · Foundations · Quick Steps</span>
+    <span><a href="flashcards-index.html">All flashcards →</a></span>
+  </div>
+</div>
+<script>
+function flip(c){ c.classList.toggle('flipped'); }
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{ e.preventDefault();
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+</script>
+</body>
+</html>

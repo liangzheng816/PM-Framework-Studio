@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>02 · Applied — Tracking Unanswered Questions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root { --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4; --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf; --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d; --guide-color: var(--amber); }
+*, *::before, *::after { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; counter-reset:slide; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+.back { font-family:"JetBrains Mono",monospace; font-size:12px; text-decoration:none;
+  color:var(--ink-soft); display:inline-flex; align-items:center; gap:6px;
+  margin-bottom:22px; border:1px solid var(--rule); border-radius:6px;
+  padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.28em;
+  text-transform:uppercase; color:var(--accent); font-weight:600; margin:28px 0 18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(34px,5vw,52px);
+  line-height:1.05; letter-spacing:-.02em; margin:0 0 18px; }
+.dek { font-size:21px; color:var(--ink-soft); max-width:720px; margin:0 0 36px; }
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);
+  margin:48px 0 6px; font-weight:600; }
+code, .mono { font-family:"JetBrains Mono",monospace; font-size:.82em;
+  background:#ece7db; padding:.08em .38em; border-radius:4px; color:#3a382f; }
+.topnav { position:sticky; top:0; z-index:20; background:var(--paper);
+  border-bottom:1px solid var(--rule); margin:0 -28px 30px; padding:12px 28px;
+  display:flex; flex-wrap:wrap; gap:6px; font-family:"JetBrains Mono",monospace; font-size:11px; }
+.topnav a { text-decoration:none; color:var(--ink-soft); border:1px solid var(--rule);
+  border-radius:5px; padding:5px 10px; transition:all .14s; }
+.topnav a:hover { background:var(--guide-color); color:#fff; border-color:var(--guide-color); }
+.takeaways { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:14px 0 30px; }
+@media (max-width:760px) { .takeaways { grid-template-columns:1fr; } }
+.take { background:var(--card); border:1px solid var(--rule); border-top:3px solid var(--guide-color);
+  border-radius:10px; padding:18px 20px; }
+.take .tk-l { font-family:"JetBrains Mono",monospace; font-size:10px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:8px; }
+.take .tk-v { font-family:"Fraunces",serif; font-size:18px; line-height:1.3; font-weight:600; }
+section:not(#quiz):not(#flashcards) { counter-increment:slide; background:var(--card);
+  border:1.5px solid color-mix(in srgb, var(--guide-color, var(--slate)) 28%, var(--rule));
+  border-radius:18px; box-shadow:0 8px 36px -10px rgba(27,26,23,.18), 0 1px 0 rgba(27,26,23,.04);
+  margin:48px 0; overflow:hidden; position:relative; }
+section:not(#quiz):not(#flashcards) h2 { margin:0; padding:26px 36px 22px;
+  background:var(--guide-color, var(--slate)); color:#fff;
+  font-family:"Fraunces",serif; font-weight:900;
+  font-size:clamp(20px,2.8vw,26px); letter-spacing:-.015em; line-height:1.1;
+  display:flex; align-items:flex-start; gap:14px; }
+section:not(#quiz):not(#flashcards) h2::before {
+  content:counter(slide,decimal-leading-zero);
+  font-family:"JetBrains Mono",monospace; font-weight:600; font-size:12px;
+  letter-spacing:.1em; background:rgba(255,255,255,.16); color:rgba(255,255,255,.9);
+  border:1px solid rgba(255,255,255,.28); padding:4px 10px; border-radius:5px;
+  flex-shrink:0; margin-top:3px; white-space:nowrap; }
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre { margin-left:36px; margin-right:36px; }
+section:not(#quiz):not(#flashcards) > p:first-of-type { margin-top:28px; }
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child { margin-bottom:34px; }
+section:not(#quiz):not(#flashcards)::after { content:""; display:block; height:4px;
+  background:linear-gradient(90deg, var(--guide-color, var(--slate)) 0%,
+    color-mix(in srgb, var(--guide-color, var(--slate)) 30%, transparent) 100%);
+  margin-top:34px; opacity:.35; }
+@media (max-width:680px) {
+  section:not(#quiz):not(#flashcards) h2 { padding:20px 22px 18px; font-size:20px; }
+  section:not(#quiz):not(#flashcards) > p,
+  section:not(#quiz):not(#flashcards) > .insight,
+  section:not(#quiz):not(#flashcards) > .misconception,
+  section:not(#quiz):not(#flashcards) > blockquote { margin-left:22px; margin-right:22px; }
+}
+.insight, .misconception { border-radius:10px; padding:18px 22px; margin:22px 0;
+  font-size:17px; line-height:1.5; }
+.insight { border-left:4px solid var(--slate); background:var(--slate-soft); }
+.misconception { border-left:4px solid var(--accent); background:var(--accent-soft); }
+.insight::before { content:"✦ Key insight — "; font-weight:600; color:var(--slate); }
+.misconception::before { content:"✕ Common misconception — "; font-weight:600; color:var(--accent); }
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
+.fc { perspective:900px; height:200px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%; transform-style:preserve-3d;
+  transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front, .fc-back { position:absolute; inset:0; border-radius:13px;
+  padding:22px 22px 18px; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  display:flex; flex-direction:column; justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back { background:#7a5400; }
+.fc[data-g="g3"] .fc-front { border-left:4px solid var(--g3); }
+.fc[data-g="g3"] .fc-back { background:#3a1a10; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc[data-g="g3"] .fc-term { color:var(--g3); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc[data-g="g3"] .fc-def { color:#f5d6ce; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px;
+  color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px; font-weight:600;
+  letter-spacing:.08em; text-transform:uppercase; padding:2px 8px;
+  border-radius:4px; border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent);
+  background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent);
+  background:color-mix(in srgb,var(--g2) 10%,transparent); }
+.gtag.g3 { color:var(--g3); border-color:color-mix(in srgb,var(--g3) 40%,transparent);
+  background:color-mix(in srgb,var(--g3) 10%,transparent); }
+.footer-cross { margin-top:60px; padding:24px 28px; border:1px solid var(--rule);
+  border-radius:11px; background:var(--card); display:flex; flex-wrap:wrap;
+  gap:18px; justify-content:space-between; align-items:center; }
+.footer-cross a { font-family:"JetBrains Mono",monospace; font-size:12px;
+  text-decoration:none; color:var(--amber); font-weight:600;
+  border:1.5px solid var(--amber); padding:7px 14px; border-radius:7px; }
+.footer-cross a:hover { background:var(--amber); color:#fff; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="index.html">← Library home</a>
+<div class="kicker">Guide 02 · Applied</div>
+<h1>Auditing what the agent could not answer</h1>
+<p class="dek">Tell the agent to track every question it cannot answer. The audit file becomes a queue of real gaps you can review later — coached entirely from the context file.</p>
+
+<nav class="topnav">
+  <a href="#unanswered">01 · Unanswered tracking</a>
+  <a href="#audit-pattern">02 · Audit file pattern</a>
+  <a href="#auto-log">03 · Auto-log on failure</a>
+  <a href="#flashcards">Flashcards</a>
+</nav>
+
+<div class="sec-label">3 things to walk away with</div>
+<div class="takeaways">
+  <div class="take"><div class="tk-l">Coach via context</div><div class="tk-v">A few lines in the context file turn the agent into an auditor of its own failures.</div></div>
+  <div class="take"><div class="tk-l">Write to a file</div><div class="tk-v">The "audit file" pattern — name it, declare its purpose, point at it from context — works for any side effect.</div></div>
+  <div class="take"><div class="tk-l">Failure is signal</div><div class="tk-v">An agent that knows when it failed is more useful than one that always answers confidently.</div></div>
+</div>
+
+<section id="unanswered">
+<h2>Unanswered Question Tracking — coach the agent to log its own failures</h2>
+
+<p>Add one rule to the context file: "any time someone asks a question that you cannot answer, append it to <code>unansweredquestions.md</code>." The next session reads that rule. When a user asks something the agent cannot answer — like "who is the legal decider of vendor terminations" — the agent attempts an answer, admits it cannot fully resolve, and writes the question into the file.</p>
+
+<div class="insight">A single line of context turns the agent into a self-auditor. You did not write code, you wrote a rule — and the behavior changed for every session afterward.</div>
+
+<p>The point is not the specific use case. It is the shape: any side-effect behavior you want the agent to perform (log this, route that, save here) can be specified in a few sentences of markdown and it just works.</p>
+
+<div class="misconception">Tracking unanswered questions requires a custom plugin or SharePoint extension. It requires a sentence in the context file pointing the agent at a markdown file to append to.</div>
+</section>
+
+<section id="audit-pattern">
+<h2>The Audit File Pattern — name it, declare it, point the agent at it</h2>
+
+<p>The pattern is simple and reusable: (1) create a markdown file with a descriptive name, (2) add a line to the context file that tells the agent what to write into it and when, (3) tell the agent to create the file (or do it yourself). From then on, the file accumulates entries automatically.</p>
+
+<p>In the demo, the user adds one sentence to context, then says "create this file" in chat. The agent creates <code>unansweredquestions.md</code> in the agent assets library. From that point forward, every session that hits an unanswerable question appends to it — with the date, the question, and what the agent looked at.</p>
+
+<div class="insight">The audit-file pattern generalizes. Want to log every report sent? Every decision made? Every override? Same recipe — name a file, declare the rule, the agent writes.</div>
+
+<div class="misconception">The agent will create the file silently the first time it needs to write. It will not — declare the file's existence (or create it explicitly) so the agent knows where to append.</div>
+</section>
+
+<section id="auto-log">
+<h2>Auto-Log on Failure — the agent calls out what it didn't know</h2>
+
+<p>When the agent encounters a question it cannot resolve, it does three things in one response: (1) attempts an answer with whatever partial information it has, (2) calls out the limitation in the chat ("I'm going to log this as an unanswered question since I wasn't fully able to resolve"), (3) writes the entry to the audit file.</p>
+
+<p>The chat-side narration matters. The user sees the agent reasoning about its own failure in real time — that builds trust and lets them correct it on the spot if they have the answer.</p>
+
+<div class="insight">An agent that names its own failures in chat is more trustworthy than one that always sounds confident. Visibility of "I don't know" is a feature, not a bug.</div>
+
+<div class="misconception">Logging happens silently in the background. The agent narrates it in the same response — the user sees the failure, the log, and the partial answer together.</div>
+</section>
+
+<div class="footer-cross">
+  <div style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink-soft);">Continue:</div>
+  <a href="guide-03-advanced.html">03 · Advanced — Correction-as-lesson →</a>
+  <a href="flashcards-index.html">All flashcards</a>
+</div>
+
+<section id="flashcards">
+  <div class="sec-label">Flashcards — Applied</div>
+  <div class="fc-grid">
+
+    <div class="fc" data-g="g2" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+          <div class="fc-term">Unanswered Question Tracking</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">A context-file rule that makes the agent append every unresolvable question to an audit markdown file. Turns the agent into a self-auditor without code — just a sentence of markdown.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+          <div class="fc-term">Audit File Pattern</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">A reusable recipe: name a markdown file, declare its purpose in the context file, tell the agent when to append. Generalizes to any side effect — logs, decisions, overrides.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+          <div class="fc-term">Auto-Log on Failure</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">The agent's behavior when it cannot resolve a question: attempt a partial answer, narrate the failure in chat, and append the question to the audit file — all in one response.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</div>
+<script>
+function flip(card){ card.classList.toggle('flipped'); }
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { e.preventDefault(); t.scrollIntoView({behavior:'smooth', block:'start'}); }
+  });
+});
+</script>
+</body>
+</html>

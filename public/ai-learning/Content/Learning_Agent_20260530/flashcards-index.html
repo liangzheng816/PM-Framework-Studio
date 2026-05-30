@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>All Flashcards · All Guides — The AI Learning Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+}
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px 120px;}
+
+.back{font-family:"JetBrains Mono",monospace;font-size:12px;text-decoration:none;color:var(--ink-soft);display:inline-flex;align-items:center;gap:6px;margin:32px 0 22px;border:1px solid var(--rule);border-radius:6px;padding:5px 12px;transition:all .14s;}
+.back:hover{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:14px;}
+h1{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(40px,6vw,64px);line-height:1.04;margin:0 0 14px;letter-spacing:-.015em;}
+h1 em{font-style:italic;color:var(--accent);}
+.dek{font-family:"Newsreader",Georgia,serif;font-style:italic;font-size:21px;color:var(--ink-soft);line-height:1.5;margin:0 0 12px;max-width:820px;}
+
+.controls{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin:38px 0 14px;padding:16px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);}
+.filter-tabs{display:flex;gap:8px;flex-wrap:wrap;}
+.ftab{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:6px 14px;border-radius:6px;border:2px solid transparent;cursor:pointer;background:transparent;color:var(--ink-soft);transition:all .14s;}
+.ftab:hover{background:#ece7db;}
+.ftab.active{color:#fff;border-color:transparent;}
+.ftab[data-f="all"].active{background:var(--ink);}
+.ftab[data-f="g1"].active{background:var(--g1);}
+.ftab[data-f="g2"].active{background:var(--g2);}
+.ftab[data-f="g3"].active{background:var(--g3);}
+.ctrl-btns{display:flex;gap:8px;}
+.cbtn{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:7px 14px;border-radius:6px;border:1.5px solid var(--rule);background:transparent;color:var(--ink);cursor:pointer;transition:all .14s;}
+.cbtn:hover{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+
+.counter-bar{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);margin:0 0 22px;letter-spacing:.06em;}
+.counter-bar strong{color:var(--ink);font-weight:600;}
+
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;}
+.fc{perspective:900px;height:200px;cursor:pointer;}
+.fc.hidden{display:none;}
+.fc-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1);}
+.fc.flipped .fc-inner{transform:rotateY(180deg);}
+.fc-front,.fc-back{position:absolute;inset:0;border-radius:13px;padding:18px 18px 14px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;justify-content:space-between;}
+.fc-front{background:var(--card);border:1.5px solid var(--rule);}
+.fc-back{transform:rotateY(180deg);}
+
+.fc[data-g="g1"] .fc-front{border-left:4px solid var(--g1);}
+.fc[data-g="g1"] .fc-back{background:var(--g1);}
+.fc[data-g="g2"] .fc-front{border-left:4px solid var(--g2);}
+.fc[data-g="g2"] .fc-back{background:#7a5400;}
+.fc[data-g="g3"] .fc-front{border-left:4px solid var(--g3);}
+.fc[data-g="g3"] .fc-back{background:#3a1a10;}
+
+.fc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;}
+.gtag{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:4px;border:1.5px solid;line-height:1.6;}
+.gtag.g1{color:var(--g1);border-color:color-mix(in srgb,var(--g1) 40%,transparent);background:color-mix(in srgb,var(--g1) 10%,transparent);}
+.gtag.g2{color:var(--g2);border-color:color-mix(in srgb,var(--g2) 40%,transparent);background:color-mix(in srgb,var(--g2) 10%,transparent);}
+.gtag.g3{color:var(--g3);border-color:color-mix(in srgb,var(--g3) 40%,transparent);background:color-mix(in srgb,var(--g3) 10%,transparent);}
+
+.fc[data-g="g1"] .fc-term{color:var(--g1);}
+.fc[data-g="g2"] .fc-term{color:var(--g2);}
+.fc[data-g="g3"] .fc-term{color:var(--g3);}
+.fc-term{font-family:"JetBrains Mono",monospace;font-weight:600;font-size:13.5px;}
+
+.fc[data-g="g1"] .fc-def{color:#e8f0ef;}
+.fc[data-g="g2"] .fc-def{color:#fff8e6;}
+.fc[data-g="g3"] .fc-def{color:#f5d6ce;}
+.fc-def{font-size:12.5px;line-height:1.42;}
+
+.fc-tap{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--ink-soft);}
+.fc-back .fc-tap{color:rgba(255,255,255,.45);}
+
+@media(max-width:760px){.fc-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:420px){.fc-grid{grid-template-columns:1fr;}}
+
+footer{margin-top:80px;padding-top:28px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid currentColor;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="index.html">← back to library</a>
+
+<div class="kicker">Flashcard Deck · All Guides · 45 Unique Cards</div>
+<h1>All <em>Flashcards</em></h1>
+<p class="dek">Every concept from the three guides, deduplicated and sorted alphabetically. Filter by guide, shuffle the deck, or flip everything at once. Five cards appear in multiple guides — they're tagged with all the guides they cover.</p>
+
+<div class="controls">
+  <div class="filter-tabs">
+    <button class="ftab active" data-f="all" onclick="setFilter('all')">All 45</button>
+    <button class="ftab" data-f="g1" onclick="setFilter('g1')">01 · Foundations (20)</button>
+    <button class="ftab" data-f="g2" onclick="setFilter('g2')">02 · Applied (16)</button>
+    <button class="ftab" data-f="g3" onclick="setFilter('g3')">03 · Advanced (14)</button>
+  </div>
+  <div class="ctrl-btns">
+    <button class="cbtn" onclick="shuffleCards()">⇄ Shuffle</button>
+    <button class="cbtn" id="flip-all-btn" onclick="flipAll()">↻ Flip All</button>
+    <button class="cbtn" onclick="resetAll()">↺ Reset</button>
+  </div>
+</div>
+
+<div class="counter-bar">Showing <strong><span id="visible-count">45</span></strong> cards · <strong><span id="flipped-count">0</span></strong> flipped</div>
+
+<div class="fc-grid" id="card-grid">
+
+  <div class="fc" data-g="g1" data-tags="g1" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Action</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">The step the model chooses to take — a bash command, a JSON tool call, or a Python snippet. Executed by the environment.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g1" data-tags="g1 g2" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Agent loop</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">LLM decides → tool executes → result feeds back, repeated until the goal is met. In Claude Code framing: gather context → take action → verify → repeat. The core of every agent.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g2" data-tags="g2" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Agent SDK</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Library to embed Claude Code's loop in your own apps with full control over tools, permissions, and orchestration logic.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g2" data-tags="g2" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Agent team</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Multiple full agents on parallel workstreams — e.g. one on backend, one on frontend tests — coordinated by a lead agent that merges results.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g2" data-tags="g2" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Agentic harness</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Everything around the model — tools, context management, execution environment — that turns an LLM into a coding agent.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g2" data-tags="g2" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Auto memory</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Learnings Claude saves itself (to MEMORY.md) and reloads across sessions — build commands, debugging insights — no writing required.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g2" data-tags="g2" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Checkpoint</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">A pre-edit file snapshot taken automatically. Press Esc Esc to rewind. Local, separate from git; applies to file changes only.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g2" data-tags="g2" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">CLAUDE.md</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Project-root markdown file of standards, commands, and context — read at the start of every session. Use /init to generate a starter.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g1" data-tags="g1" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">CodeAgent</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">smolagents' default agent type: writes actions as executable Python run in a sandbox. Composable — loops, conditionals, and nesting in one step.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g1" data-tags="g1 g2" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Compaction</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Auto-summarizing or dropping older turns when the context window fills, to keep the goal and key results while shedding stale detail. Steerable via /compact in Claude Code.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g3" data-tags="g3" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Continuous batching</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Token-level dynamic batching of concurrent users' requests to maximize GPU throughput. Standard practice in production LLM serving.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g3" data-tags="g3" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Dreaming / nightly tide</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Offline batch consolidation of memory — scheduled nightly (T+1) instead of real-time writes. Avoids the hard problem of deciding what to write mid-conversation.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g1" data-tags="g1" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Function calling</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Model emits a structured tool call directly; deterministic and predictable. Reasoning happens inside the model, invisible in the output.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g3" data-tags="g3" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Goal drift</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Long-horizon failure where the agent gradually loses or mutates its original objective — often subtle, compounding over many steps.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g3" data-tags="g3" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Harness</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">The engineering shell around the model — tools, context management, sandbox, loop control — everything that is not the model weights. Makes an agent reliable.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g2" data-tags="g2" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Hook</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">A shell command that runs automatically before or after Claude's actions — format-on-edit, lint-before-commit, type-check after any file change.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g3" data-tags="g3" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Human-in-the-loop (HITL)</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">A gate where the loop pauses for human approval or input before continuing — used for risky or irreversible actions.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g3" data-tags="g3" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">KV cache (key-value cache)</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Cached attention data for an unchanged prompt prefix. A cache hit avoids expensive recomputation. Prefix stability = cache hits = lower cost and latency.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g1" data-tags="g1" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">LangChain / CrewAI / AutoGen</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Heavyweight orchestration frameworks. Useful convenience layers once you understand the loop — but starting here hides the fundamentals.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g1" data-tags="g1" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Linear history</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Every step just appends to the message list — nothing hidden, so runs are easy to replay and debug step by step.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g1" data-tags="g1 g2" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span><span class="gtag g2">02 · Applied</span></div><div class="fc-term">MCP</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Model Context Protocol — open standard to connect external data/tools (Jira, Drive, Slack, databases, files) as native tools without bespoke integration glue per service.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g1" data-tags="g1" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Memory vs. context</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Context = live window (RAM) — finite, gone between sessions. Memory = persistence beyond the window (disk) — e.g. a Session Note loaded back in when relevant.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g3" data-tags="g3" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">MicroVM</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Lightweight virtual machine (Firecracker-style) — full VM isolation with near-container startup speed. Used for agent sandboxes to safely run arbitrary code.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g1" data-tags="g1" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Model / env / agent split</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">The clean 3-way separation: which LLM (model), where actions run (environment), and the loop logic (agent) — each replaceable independently.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g1" data-tags="g1" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">MultiStepAgent</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">smolagents' base class implementing the ReAct loop. CodeAgent and ToolCallingAgent both extend it.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g2" data-tags="g2" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Non-interactive mode</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">claude -p "…" — pipes Claude into CI, hooks, and scripts. Use --output-format json for programmatic parsing of results.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g1" data-tags="g1" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Observation</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">The result of executing an action, appended back into context so the model can reason from it on the next step.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g2" data-tags="g2" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Plan mode</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Read-only permission mode — Claude produces a plan for you to approve before making any change. Press Shift+Tab twice to activate.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g3" data-tags="g3" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Prefill / Decode</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Prefill = parallel prompt processing (compute-bound, fast). Decode = token-by-token answer generation (memory-bandwidth-bound, slower). Long answers are the bottleneck.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g3" data-tags="g3" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Prefill intervention</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Steering output by pre-writing the opening tokens of the model's response — strongly nudges the direction or format of what comes next.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g3" data-tags="g3" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Process reward model (PRM)</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">A model that gives step-by-step reward signals during RL training — much denser feedback for long agentic tasks than a final-outcome reward alone.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g3" data-tags="g3" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Progressive disclosure</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Only keep a skill's name and description in context at startup (~60 tokens); load the full body on-demand when triggered. Saves tens of thousands of tokens.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g1" data-tags="g1" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">ReAct</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Reasoning + Acting: the Think → Act → Observe cycle, with reasoning made explicit in text before each action.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g2" data-tags="g2" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Routines</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Scheduled recurring tasks on Anthropic-managed infra — morning PR reviews, overnight CI-failure analysis — run even when your machine is off.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g1" data-tags="g1" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Sandbox</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Isolated environment for running an agent's commands/code safely, away from the host — so mistakes can't do real damage.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g1" data-tags="g1" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Session Note</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">A persisted record of a run's learnings, saved to disk and reloaded in future sessions — one of the simplest forms of long-term memory.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g1" data-tags="g1 g2" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Skill</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">A packaged, on-demand workflow (instructions + optional scripts) the agent loads only when relevant — e.g. /review-pr, /deploy-staging. Keeps context clean until needed.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g3" data-tags="g3" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Snapshot / Resume</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Snapshot = save full machine state. Resume = restore instantly. Together they hide cold-start latency for sandboxes without sacrificing isolation.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g3" data-tags="g3" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Stop reason</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Why generation halted: turn finished, model wants a tool call, or hit max tokens. The harness branches on this signal to decide what to do next.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g2" data-tags="g2" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Subagent</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">A disposable helper with its own context window. Does one scoped job and returns a summary — keeps deep digging from clogging the main session.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g1" data-tags="g1" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">subprocess.run</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">How mini-swe-agent executes each bash action independently — stateless, no persistent shell session, simple to reason about.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g1" data-tags="g1 g3" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">SWE-bench</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Benchmark of real GitHub issues — the agent must produce a patch that makes existing tests pass. Score reflects both model and harness quality. mini-swe-agent scores &gt;74% on the Verified split.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g1" data-tags="g1" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Tool</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">A named, described function the model can invoke (web search, file read, API call) with typed inputs and outputs.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g1" data-tags="g1" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">ToolCallingAgent</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">smolagents variant that writes actions as JSON tool calls — the classic function-calling style. Predictable and easy to govern.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+  <div class="fc" data-g="g2" data-tags="g2" onclick="flip(this)"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Worktree</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">An isolated git checkout so parallel Claude sessions don't collide on edits. The Desktop app manages these visually.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+
+</div>
+
+<footer>
+  <div>45 unique cards · 3 guides · 5 multi-tagged across guides</div>
+  <div><a href="index.html">← back to library</a></div>
+  <div><a href="quiz-index.html">Full Quiz →</a></div>
+</footer>
+
+</div>
+<script>
+let currentFilter = 'all';
+let allFlipped = false;
+const allCards = () => document.querySelectorAll('#card-grid .fc');
+const visibleCards = () => document.querySelectorAll('#card-grid .fc:not(.hidden)');
+
+function flip(card){card.classList.toggle('flipped');updateCounters();}
+
+function setFilter(f){
+  currentFilter = f;
+  document.querySelectorAll('.ftab').forEach(t => t.classList.toggle('active', t.dataset.f === f));
+  allCards().forEach(c => {
+    const tags = (c.dataset.tags || c.dataset.g || '').split(' ');
+    c.classList.toggle('hidden', f !== 'all' && !tags.includes(f));
+  });
+  updateCounters();
+}
+
+function flipAll(){
+  allFlipped = !allFlipped;
+  [...visibleCards()].forEach(c => c.classList.toggle('flipped', allFlipped));
+  document.getElementById('flip-all-btn').textContent = allFlipped ? '↺ Unflip All' : '↻ Flip All';
+  updateCounters();
+}
+
+function shuffleCards(){
+  allFlipped = false;
+  document.getElementById('flip-all-btn').textContent = '↻ Flip All';
+  const grid = document.getElementById('card-grid');
+  const visible = [...grid.querySelectorAll('.fc:not(.hidden)')];
+  const hidden = [...grid.querySelectorAll('.fc.hidden')];
+  visible.forEach(c => c.classList.remove('flipped'));
+  for (let i = visible.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [visible[i], visible[j]] = [visible[j], visible[i]];
+  }
+  [...visible, ...hidden].forEach(c => grid.appendChild(c));
+  updateCounters();
+}
+
+function resetAll(){
+  allCards().forEach(c => c.classList.remove('flipped'));
+  allFlipped = false;
+  document.getElementById('flip-all-btn').textContent = '↻ Flip All';
+  updateCounters();
+}
+
+function updateCounters(){
+  const vis = [...visibleCards()];
+  const flipped = vis.filter(c => c.classList.contains('flipped'));
+  document.getElementById('visible-count').textContent = vis.length;
+  document.getElementById('flipped-count').textContent = flipped.length;
+}
+
+updateCounters();
+</script>
+</body>
+</html>

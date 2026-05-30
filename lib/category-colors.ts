@@ -1,56 +1,60 @@
 import type { CategorySlug } from "./types";
 
-/** Tailwind-safe category color classes (bg, text, border) */
+/**
+ * Token-driven category color classes — single source of truth in app/globals.css.
+ * Each entry emits Tailwind arbitrary-value classes that resolve to `--color-cat-{slug}`
+ * and its `-soft` variant. Callers concatenate these into className strings.
+ */
 export const CATEGORY_COLORS: Record<
   CategorySlug,
   { bg: string; text: string; border: string; dot: string }
 > = {
   "user-insights": {
-    bg: "bg-sky-500/15",
-    text: "text-sky-400",
-    border: "border-sky-500/30",
-    dot: "bg-sky-400",
+    bg: "bg-[var(--color-cat-user-insights-soft)]",
+    text: "text-[var(--color-cat-user-insights)]",
+    border: "border-[var(--color-cat-user-insights)]/30",
+    dot: "bg-[var(--color-cat-user-insights)]",
   },
   "problem-framing": {
-    bg: "bg-purple-500/15",
-    text: "text-purple-400",
-    border: "border-purple-500/30",
-    dot: "bg-purple-400",
+    bg: "bg-[var(--color-cat-problem-framing-soft)]",
+    text: "text-[var(--color-cat-problem-framing)]",
+    border: "border-[var(--color-cat-problem-framing)]/30",
+    dot: "bg-[var(--color-cat-problem-framing)]",
   },
   ideation: {
-    bg: "bg-amber-500/15",
-    text: "text-amber-400",
-    border: "border-amber-500/30",
-    dot: "bg-amber-400",
+    bg: "bg-[var(--color-cat-ideation-soft)]",
+    text: "text-[var(--color-cat-ideation)]",
+    border: "border-[var(--color-cat-ideation)]/30",
+    dot: "bg-[var(--color-cat-ideation)]",
   },
   validation: {
-    bg: "bg-emerald-500/15",
-    text: "text-emerald-400",
-    border: "border-emerald-500/30",
-    dot: "bg-emerald-400",
+    bg: "bg-[var(--color-cat-validation-soft)]",
+    text: "text-[var(--color-cat-validation)]",
+    border: "border-[var(--color-cat-validation)]/30",
+    dot: "bg-[var(--color-cat-validation)]",
   },
   execution: {
-    bg: "bg-orange-500/15",
-    text: "text-orange-400",
-    border: "border-orange-500/30",
-    dot: "bg-orange-400",
+    bg: "bg-[var(--color-cat-execution-soft)]",
+    text: "text-[var(--color-cat-execution)]",
+    border: "border-[var(--color-cat-execution)]/30",
+    dot: "bg-[var(--color-cat-execution)]",
   },
   growth: {
-    bg: "bg-rose-500/15",
-    text: "text-rose-400",
-    border: "border-rose-500/30",
-    dot: "bg-rose-400",
+    bg: "bg-[var(--color-cat-growth-soft)]",
+    text: "text-[var(--color-cat-growth)]",
+    border: "border-[var(--color-cat-growth)]/30",
+    dot: "bg-[var(--color-cat-growth)]",
   },
   "systems-thinking": {
-    bg: "bg-teal-500/15",
-    text: "text-teal-400",
-    border: "border-teal-500/30",
-    dot: "bg-teal-400",
+    bg: "bg-[var(--color-cat-systems-thinking-soft)]",
+    text: "text-[var(--color-cat-systems-thinking)]",
+    border: "border-[var(--color-cat-systems-thinking)]/30",
+    dot: "bg-[var(--color-cat-systems-thinking)]",
   },
   appendix: {
-    bg: "bg-gray-500/15",
-    text: "text-gray-400",
-    border: "border-gray-500/30",
-    dot: "bg-gray-400",
+    bg: "bg-[var(--color-cat-appendix-soft)]",
+    text: "text-[var(--color-cat-appendix)]",
+    border: "border-[var(--color-cat-appendix)]/30",
+    dot: "bg-[var(--color-cat-appendix)]",
   },
 };

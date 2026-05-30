@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide 02 · Applied — Processing 72,000 Rows</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4; --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf; --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--amber);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; counter-reset: slide; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+.back { font-family:"JetBrains Mono",monospace; font-size:12px; text-decoration:none;
+  color:var(--ink-soft); display:inline-flex; align-items:center; gap:6px;
+  margin:28px 0 22px; border:1px solid var(--rule); border-radius:6px; padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.28em;
+  text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(34px,5vw,52px);
+  line-height:1.05; letter-spacing:-.02em; margin:0 0 18px; }
+.dek { font-size:20px; color:var(--ink-soft); max-width:760px; margin:0 0 28px; }
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--ink-soft); margin:48px 0 6px; font-weight:600; }
+code, .mono { font-family:"JetBrains Mono",monospace; font-size:.82em; background:#ece7db;
+  padding:.08em .38em; border-radius:4px; color:#3a382f; }
+
+.tnav { position:sticky; top:0; z-index:50; background:rgba(244,241,234,.95);
+  backdrop-filter:blur(8px); border-bottom:1px solid var(--rule);
+  padding:12px 0; margin:0 -28px 0; }
+.tnav-inner { max-width:1040px; margin:0 auto; padding:0 28px; display:flex; flex-wrap:wrap; gap:8px; }
+.tnav a { font-family:"JetBrains Mono",monospace; font-size:11px; font-weight:600;
+  letter-spacing:.1em; text-transform:uppercase; text-decoration:none;
+  color:var(--ink-soft); padding:6px 12px; border:1px solid var(--rule); border-radius:6px; transition:all .14s; }
+.tnav a:hover { background:var(--guide-color); color:#fff; border-color:var(--guide-color); }
+
+.meta-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:30px 0 20px; }
+@media (max-width:680px) { .meta-grid { grid-template-columns:1fr; } }
+.meta-card { background:var(--card); border:1px solid var(--rule); border-top:3px solid var(--guide-color);
+  border-radius:10px; padding:18px 20px; }
+.meta-card .mc-l { font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--guide-color); font-weight:600; margin-bottom:8px; }
+.meta-card .mc-t { font-family:"Fraunces",serif; font-weight:600; font-size:18px; line-height:1.25; }
+
+section:not(#quiz):not(#flashcards) {
+  counter-increment: slide; background: var(--card);
+  border: 1.5px solid color-mix(in srgb, var(--guide-color, var(--slate)) 28%, var(--rule));
+  border-radius: 18px;
+  box-shadow: 0 8px 36px -10px rgba(27,26,23,.18), 0 1px 0 rgba(27,26,23,.04);
+  margin: 48px 0; overflow: hidden; position: relative;
+}
+section:not(#quiz):not(#flashcards) h2 {
+  margin: 0; padding: 26px 36px 22px;
+  background: var(--guide-color, var(--slate));
+  color: #fff; font-family: "Fraunces", serif; font-weight: 900;
+  font-size: clamp(20px, 2.8vw, 26px); letter-spacing: -.015em; line-height: 1.1;
+  display: flex; align-items: flex-start; gap: 14px;
+}
+section:not(#quiz):not(#flashcards) h2::before {
+  content: counter(slide, decimal-leading-zero);
+  font-family: "JetBrains Mono", monospace; font-weight: 600;
+  font-size: 12px; letter-spacing: .1em;
+  background: rgba(255,255,255,.16); color: rgba(255,255,255,.9);
+  border: 1px solid rgba(255,255,255,.28);
+  padding: 4px 10px; border-radius: 5px;
+  flex-shrink: 0; margin-top: 3px; white-space: nowrap;
+}
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre {
+  margin-left: 36px; margin-right: 36px;
+}
+section:not(#quiz):not(#flashcards) > p:first-of-type { margin-top: 28px; }
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child { margin-bottom: 34px; }
+section:not(#quiz):not(#flashcards)::after {
+  content: ""; display: block; height: 4px;
+  background: linear-gradient(90deg, var(--guide-color, var(--slate)) 0%,
+    color-mix(in srgb, var(--guide-color, var(--slate)) 30%, transparent) 100%);
+  margin-top: 34px; opacity: .35;
+}
+@media (max-width: 680px) {
+  section:not(#quiz):not(#flashcards) h2 { padding: 20px 22px 18px; font-size: 20px; }
+  section:not(#quiz):not(#flashcards) > p,
+  section:not(#quiz):not(#flashcards) > .insight,
+  section:not(#quiz):not(#flashcards) > .misconception,
+  section:not(#quiz):not(#flashcards) > blockquote { margin-left: 22px; margin-right: 22px; }
+}
+
+.insight, .misconception { border-radius:10px; padding:18px 22px; margin:22px 0;
+  font-size:17px; line-height:1.5; }
+.insight { border-left:4px solid var(--slate); background:var(--slate-soft); }
+.misconception { border-left:4px solid var(--accent); background:var(--accent-soft); }
+.insight::before { content:"✦ Key insight — "; font-weight:600; color:var(--slate); }
+.misconception::before { content:"✕ Common misconception — "; font-weight:600; color:var(--accent); }
+
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; margin-top:24px; }
+.fc { perspective:900px; height:190px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%; transform-style:preserve-3d;
+  transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front, .fc-back { position:absolute; inset:0; border-radius:13px; padding:22px 22px 18px;
+  backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  display:flex; flex-direction:column; justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back { background:#7a5400; }
+.fc[data-g="g3"] .fc-front { border-left:4px solid var(--g3); }
+.fc[data-g="g3"] .fc-back { background:#3a1a10; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc[data-g="g3"] .fc-term { color:var(--g3); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc[data-g="g3"] .fc-def { color:#f5d6ce; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px; font-weight:600;
+  letter-spacing:.08em; text-transform:uppercase; padding:2px 8px; border-radius:4px;
+  border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent); background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent); background:color-mix(in srgb,var(--g2) 10%,transparent); }
+.gtag.g3 { color:var(--g3); border-color:color-mix(in srgb,var(--g3) 40%,transparent); background:color-mix(in srgb,var(--g3) 10%,transparent); }
+
+.foot { margin-top:60px; padding-top:24px; border-top:1px solid var(--rule);
+  display:flex; flex-wrap:wrap; gap:14px; justify-content:space-between; align-items:center;
+  font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--ink-soft); }
+.foot a { color:var(--accent); text-decoration:none; font-weight:600; }
+.foot a:hover { text-decoration:underline; }
+
+@media (max-width:760px) { .fc-grid { grid-template-columns:1fr 1fr; } }
+@media (max-width:420px) { .fc-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← All guides</a>
+
+  <div class="tnav">
+    <div class="tnav-inner">
+      <a href="#the-demo">01 The 72K Demo</a>
+      <a href="#context-window">02 Context Window</a>
+      <a href="#tool-storage">03 Tool Storage</a>
+      <a href="#code-not-answer">04 Code, Not Answer</a>
+      <a href="#flashcards">Flashcards</a>
+    </div>
+  </div>
+
+  <div class="kicker">Guide 02 · Applied</div>
+  <h1>Processing 72,000 rows without hallucinating</h1>
+  <p class="dek">A worked example: 12 CSV files, 30 megabytes, one prompt. Why this would crush a chat-based AI — and why AI in SharePoint just runs it.</p>
+
+  <div class="meta-grid">
+    <div class="meta-card"><div class="mc-l">Walk away with</div><div class="mc-t">72K rows beats every context window</div></div>
+    <div class="meta-card"><div class="mc-l">Walk away with</div><div class="mc-t">Data stays in tool storage</div></div>
+    <div class="meta-card"><div class="mc-l">Walk away with</div><div class="mc-t">Code writes the answer</div></div>
+  </div>
+
+  <section id="the-demo">
+    <h2>The demo — 12 files, 35 columns, 72K rows</h2>
+    <p>The demo uses a fake sales dataset for a fake store over one year. Twelve CSV files, 35 columns each, nearly 10,000 rows per file — about 72,000 rows in total. Roughly 30 megabytes of structured data.</p>
+    <p>The prompt does not ask the agent to look at one file or sample results. It asks the agent to read all 12 files, generate a full dataset across them, analyze it, and build a complex interactive report. About seven minutes later, a live HTML report drops into the library — revenue, transactions, units sold, loyalty-card insights, store-by-store margin analysis, hour-by-hour transaction density.</p>
+    <div class="insight">The agent does real math across every row. Numbers in the report match the source data exactly because they came out of actual computation, not an LLM's best guess.</div>
+    <div class="misconception">"Seven minutes is slow for AI." Compare it to the alternative: a human doing the same analysis manually across 12 spreadsheets. Seven minutes for a polished, interactive, mathematically accurate report is fast — it is just not chat-fast.</div>
+  </section>
+
+  <section id="context-window">
+    <h2>Why context windows can't hold 72,000 rows</h2>
+    <p>Current LLM context windows cannot fit 30 megabytes of CSV. Even if you forced it in, the model would get confused, the math would degrade, and you would see classic hallucination — numbers that look plausible but do not reconcile to the source.</p>
+    <div class="insight">You don't want the AI to remember 72,000 rows. You want it to process them with code and only remember the result.</div>
+    <p>This is the "too much information" trap. The bigger the dataset, the more tempting it is to dump it all into the prompt — and the more catastrophically the LLM degrades. RAG systems try to dodge this by retrieving a few relevant chunks, which then misses anything outside those chunks. AI in SharePoint dodges it differently: by never asking the model to remember the data in the first place.</p>
+    <div class="misconception">"A bigger context window would fix this." Bigger windows help, but they do not solve the underlying problem — LLMs still get confused by long, repetitive numeric data and still confabulate sums. Code, not context, fixes that.</div>
+  </section>
+
+  <section id="tool-storage">
+    <h2>Tool storage — data stays server-side</h2>
+    <p>When the agent reads files, the content does not travel into the context window. It lands in <strong>tool storage</strong> — a server-side dataset the agent can reference by handle. The model only sees metadata: "this file has 35 columns and 6,000 rows."</p>
+    <p>The key parameter in the read tool call is <code>content_return: false</code>. Translation: "store the bytes server-side, give me a pointer, don't burn my context." That single flag is what lets the agent operate on gigabyte-scale corpora without ever overflowing its window.</p>
+    <div class="insight">Tool storage is the trick. The model architects; the storage holds the data; the sandbox processes it. The model never tries to "see" all the bytes.</div>
+    <div class="misconception">"The LLM still has to load all the data eventually." It really does not. The LLM only sees shapes and summaries. The actual rows are touched only by the code it writes.</div>
+  </section>
+
+  <section id="code-not-answer">
+    <h2>The model writes the code — it does not write the answer</h2>
+    <p>The strawberry example sums this up. Ask an LLM "how many Rs are in strawberry" and many models will get it wrong. Ask the same LLM to <em>write code</em> that counts the Rs and it will produce a correct, repeatable answer every time.</p>
+    <div class="insight">The model writes the code. The code computes the answer. That separation is what makes the math trustworthy.</div>
+    <p>In the 72K-row demo, the agent writes JavaScript that aggregates revenue, joins on store IDs, computes margins per category, and bins transactions by hour. None of those aggregates pass through the model — they are produced by the code and only the final summary structure (a 27 KB JSON file of analytics) gets used downstream.</p>
+    <div class="misconception">"If the model writes the code, won't the code be wrong?" Code can be wrong, but it is deterministic and inspectable. A bad LLM guess looks confident and is unreadable. Bad code throws an error or produces visible nonsense — and you can fix it.</div>
+  </section>
+
+  <section id="flashcards">
+    <div class="sec-label">Flashcards — Applied</div>
+    <div class="fc-grid">
+      <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">72K Row Demo</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">A worked example: 12 CSV files, 35 columns, ~72,000 rows, 30 MB. AI in SharePoint reads, analyzes, and produces an interactive HTML report in about seven minutes.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Tool Storage</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">Server-side storage that holds file content during an agent run. The model references the data by handle; the bytes never enter the context window.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">content_return: false</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">The read-tool flag that tells SharePoint to keep file content in tool storage instead of returning it to the model. The mechanism that prevents context overflow.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Context Window</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">The token budget the LLM can see at once. Even modern windows cannot fit 30 MB of data — and even if they could, the model still gets confused.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Strawberry Problem</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">The classic "how many Rs in strawberry" failure. Demonstrates why letting the LLM write code, not the answer, produces reliable results for any countable task.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+    </div>
+  </section>
+
+  <div class="foot">
+    <span>Guide 02 · Applied · Processing 72K Rows</span>
+    <span><a href="flashcards-index.html">All flashcards →</a></span>
+  </div>
+</div>
+<script>
+function flip(c){ c.classList.toggle('flipped'); }
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{ e.preventDefault();
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+</script>
+</body>
+</html>

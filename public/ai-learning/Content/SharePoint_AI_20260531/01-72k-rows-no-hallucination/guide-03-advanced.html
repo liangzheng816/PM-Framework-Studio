@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide 03 · Advanced — The Sandbox Pipeline</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4; --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf; --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--accent);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; counter-reset: slide; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+.back { font-family:"JetBrains Mono",monospace; font-size:12px; text-decoration:none;
+  color:var(--ink-soft); display:inline-flex; align-items:center; gap:6px;
+  margin:28px 0 22px; border:1px solid var(--rule); border-radius:6px; padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.28em;
+  text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(34px,5vw,52px);
+  line-height:1.05; letter-spacing:-.02em; margin:0 0 18px; }
+.dek { font-size:20px; color:var(--ink-soft); max-width:760px; margin:0 0 28px; }
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--ink-soft); margin:48px 0 6px; font-weight:600; }
+code, .mono { font-family:"JetBrains Mono",monospace; font-size:.82em; background:#ece7db;
+  padding:.08em .38em; border-radius:4px; color:#3a382f; }
+
+.tnav { position:sticky; top:0; z-index:50; background:rgba(244,241,234,.95);
+  backdrop-filter:blur(8px); border-bottom:1px solid var(--rule);
+  padding:12px 0; margin:0 -28px 0; }
+.tnav-inner { max-width:1040px; margin:0 auto; padding:0 28px; display:flex; flex-wrap:wrap; gap:8px; }
+.tnav a { font-family:"JetBrains Mono",monospace; font-size:11px; font-weight:600;
+  letter-spacing:.1em; text-transform:uppercase; text-decoration:none;
+  color:var(--ink-soft); padding:6px 12px; border:1px solid var(--rule); border-radius:6px; transition:all .14s; }
+.tnav a:hover { background:var(--guide-color); color:#fff; border-color:var(--guide-color); }
+
+.meta-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:30px 0 20px; }
+@media (max-width:680px) { .meta-grid { grid-template-columns:1fr; } }
+.meta-card { background:var(--card); border:1px solid var(--rule); border-top:3px solid var(--guide-color);
+  border-radius:10px; padding:18px 20px; }
+.meta-card .mc-l { font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--guide-color); font-weight:600; margin-bottom:8px; }
+.meta-card .mc-t { font-family:"Fraunces",serif; font-weight:600; font-size:18px; line-height:1.25; }
+
+section:not(#quiz):not(#flashcards) {
+  counter-increment: slide; background: var(--card);
+  border: 1.5px solid color-mix(in srgb, var(--guide-color, var(--slate)) 28%, var(--rule));
+  border-radius: 18px;
+  box-shadow: 0 8px 36px -10px rgba(27,26,23,.18), 0 1px 0 rgba(27,26,23,.04);
+  margin: 48px 0; overflow: hidden; position: relative;
+}
+section:not(#quiz):not(#flashcards) h2 {
+  margin: 0; padding: 26px 36px 22px;
+  background: var(--guide-color, var(--slate));
+  color: #fff; font-family: "Fraunces", serif; font-weight: 900;
+  font-size: clamp(20px, 2.8vw, 26px); letter-spacing: -.015em; line-height: 1.1;
+  display: flex; align-items: flex-start; gap: 14px;
+}
+section:not(#quiz):not(#flashcards) h2::before {
+  content: counter(slide, decimal-leading-zero);
+  font-family: "JetBrains Mono", monospace; font-weight: 600;
+  font-size: 12px; letter-spacing: .1em;
+  background: rgba(255,255,255,.16); color: rgba(255,255,255,.9);
+  border: 1px solid rgba(255,255,255,.28);
+  padding: 4px 10px; border-radius: 5px;
+  flex-shrink: 0; margin-top: 3px; white-space: nowrap;
+}
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre {
+  margin-left: 36px; margin-right: 36px;
+}
+section:not(#quiz):not(#flashcards) > p:first-of-type { margin-top: 28px; }
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child { margin-bottom: 34px; }
+section:not(#quiz):not(#flashcards)::after {
+  content: ""; display: block; height: 4px;
+  background: linear-gradient(90deg, var(--guide-color, var(--slate)) 0%,
+    color-mix(in srgb, var(--guide-color, var(--slate)) 30%, transparent) 100%);
+  margin-top: 34px; opacity: .35;
+}
+@media (max-width: 680px) {
+  section:not(#quiz):not(#flashcards) h2 { padding: 20px 22px 18px; font-size: 20px; }
+  section:not(#quiz):not(#flashcards) > p,
+  section:not(#quiz):not(#flashcards) > .insight,
+  section:not(#quiz):not(#flashcards) > .misconception,
+  section:not(#quiz):not(#flashcards) > blockquote { margin-left: 22px; margin-right: 22px; }
+}
+
+.insight, .misconception { border-radius:10px; padding:18px 22px; margin:22px 0;
+  font-size:17px; line-height:1.5; }
+.insight { border-left:4px solid var(--slate); background:var(--slate-soft); }
+.misconception { border-left:4px solid var(--accent); background:var(--accent-soft); }
+.insight::before { content:"✦ Key insight — "; font-weight:600; color:var(--slate); }
+.misconception::before { content:"✕ Common misconception — "; font-weight:600; color:var(--accent); }
+
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; margin-top:24px; }
+.fc { perspective:900px; height:190px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%; transform-style:preserve-3d;
+  transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front, .fc-back { position:absolute; inset:0; border-radius:13px; padding:22px 22px 18px;
+  backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  display:flex; flex-direction:column; justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back { background:#7a5400; }
+.fc[data-g="g3"] .fc-front { border-left:4px solid var(--g3); }
+.fc[data-g="g3"] .fc-back { background:#3a1a10; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc[data-g="g3"] .fc-term { color:var(--g3); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc[data-g="g3"] .fc-def { color:#f5d6ce; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px; font-weight:600;
+  letter-spacing:.08em; text-transform:uppercase; padding:2px 8px; border-radius:4px;
+  border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent); background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent); background:color-mix(in srgb,var(--g2) 10%,transparent); }
+.gtag.g3 { color:var(--g3); border-color:color-mix(in srgb,var(--g3) 40%,transparent); background:color-mix(in srgb,var(--g3) 10%,transparent); }
+
+.foot { margin-top:60px; padding-top:24px; border-top:1px solid var(--rule);
+  display:flex; flex-wrap:wrap; gap:14px; justify-content:space-between; align-items:center;
+  font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--ink-soft); }
+.foot a { color:var(--accent); text-decoration:none; font-weight:600; }
+.foot a:hover { text-decoration:underline; }
+
+@media (max-width:760px) { .fc-grid { grid-template-columns:1fr 1fr; } }
+@media (max-width:420px) { .fc-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← All guides</a>
+
+  <div class="tnav">
+    <div class="tnav-inner">
+      <a href="#trust-boundary">01 Trust Boundary</a>
+      <a href="#pipeline">02 Five-Step Pipeline</a>
+      <a href="#self-contained">03 Self-Contained HTML</a>
+      <a href="#flashcards">Flashcards</a>
+    </div>
+  </div>
+
+  <div class="kicker">Guide 03 · Advanced</div>
+  <h1>The sandbox pipeline, end to end</h1>
+  <p class="dek">Five tool calls, one trust boundary, one self-contained HTML report. What the agent actually does between your prompt and your file.</p>
+
+  <div class="meta-grid">
+    <div class="meta-card"><div class="mc-l">Walk away with</div><div class="mc-t">Data in, artifact out</div></div>
+    <div class="meta-card"><div class="mc-l">Walk away with</div><div class="mc-t">Five-step tool chain</div></div>
+    <div class="meta-card"><div class="mc-l">Walk away with</div><div class="mc-t">Zero-dependency reports</div></div>
+  </div>
+
+  <section id="trust-boundary">
+    <h2>The trust boundary — what flows in, what flows out</h2>
+    <p>The sandbox sits inside a strict trust boundary. Data and the model's code-execution capability live inside the boundary. The code itself cannot call external services, cannot mutate other content, cannot reach back into SharePoint to delete or rewrite things on your behalf.</p>
+    <div class="insight">Data enters. Code runs against it. Artifacts exit. Nothing else crosses the boundary in either direction.</div>
+    <p>Constraint is the security model. No matter what a user throws at the prompt — even prompt-injection attempts hidden in document content — the worst the sandbox can do is produce a strange output file. It cannot pivot, exfiltrate, or escalate. That property is why Microsoft is comfortable letting users hand it 30 MB of arbitrary data and asking it to "do something useful."</p>
+    <div class="misconception">"Sandboxes are slow and limited — that's why this is restricted." The sandbox is restricted on purpose. It is fast, runs real JavaScript, and can produce images, JSON, or HTML — it just cannot phone home.</div>
+  </section>
+
+  <section id="pipeline">
+    <h2>The five-step tool pipeline</h2>
+    <p>Behind the magic, a typical AI-in-SharePoint run is just a chain of named tool calls. The 72K-row demo runs roughly five steps:</p>
+    <pre><code>1. find_files       → returns metadata for the 12 CSVs (no content)
+2. read_files       → loads bytes into tool storage (content_return: false)
+3. run_in_sandbox   → executes generated JS to aggregate the data → 27 KB JSON
+4. run_in_sandbox   → generates the HTML report (charts, CSS, JS inline)
+5. create_file      → saves the report into the document library</code></pre>
+    <div class="insight">Each step has a narrow job. The model picks the next step based on the last step's output. That is the workflow — there is no hidden second brain.</div>
+    <p>The Unix analogy is exact. <code>find_files</code> is <code>find</code>. <code>read_files</code> is <code>cat</code> with a content-suppression flag. The sandbox steps are <code>node</code> or <code>python</code> invocations on stored data. <code>create_file</code> is <code>cp</code> into a library. The model wires them together based on the prompt.</p>
+    <div class="misconception">"There's a hidden LLM call that 'thinks' over the data between steps." There is not. The model only sees tool inputs, tool outputs, and structural summaries. Heavy lifting always happens inside <code>run_in_sandbox</code>.</div>
+  </section>
+
+  <section id="self-contained">
+    <h2>Self-contained HTML — no CDN, no dependencies</h2>
+    <p>The final HTML report has everything baked in: chart-drawing code, CSS, JavaScript, even a hand-rolled canvas charting engine. There is no <code>&lt;script src="charts.js"&gt;</code> tag pulling from a CDN, because the sandbox cannot reach out to fetch one.</p>
+    <div class="insight">A constraint becomes a feature. Because the sandbox can't depend on external code, every output file is fully portable, shareable, and offline-friendly.</div>
+    <p>This is also why a second sandbox call generates the HTML — the agent has to assemble the JSON analytics from step 3 into a standalone document. The JSON is ~27 KB; the final HTML wraps it with rendering code so anyone can open the file in a browser and interact with the report without any backend.</p>
+    <div class="misconception">"These reports are charts pointing at a live data source." They are not. The report is a snapshot — it has the data baked into it. To refresh, you re-run the agent, which produces a new file.</div>
+  </section>
+
+  <section id="flashcards">
+    <div class="sec-label">Flashcards — Advanced</div>
+    <div class="fc-grid">
+      <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Trust Boundary</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">The strict edge around the sandbox. Data and code-execution stay inside. No outbound network, no mutation of other content, no escape — only the produced artifact crosses out.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">find_files</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">First tool call in a typical run. Returns file metadata matching the prompt — names, sizes, columns — without transferring content.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">run_in_sandbox</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">Executes the JavaScript the model has generated against data in tool storage. Produces a new artifact — JSON analytics, an image, or an HTML file.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Self-Contained Report</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">An HTML file that includes all CSS, JS, and data inline. No CDN dependencies, no live data source. Portable, shareable, snapshot in time.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">create_file</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">Final tool call in the pipeline. Writes the sandbox-generated artifact into the SharePoint document library where the user can open it.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+    </div>
+  </section>
+
+  <div class="foot">
+    <span>Guide 03 · Advanced · The Sandbox Pipeline</span>
+    <span><a href="flashcards-index.html">All flashcards →</a></span>
+  </div>
+</div>
+<script>
+function flip(c){ c.classList.toggle('flipped'); }
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{ e.preventDefault();
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+</script>
+</body>
+</html>

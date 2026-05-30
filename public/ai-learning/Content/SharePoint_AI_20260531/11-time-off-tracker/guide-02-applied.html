@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>02 · Applied — The Ralph Loop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--amber);
+}
+*, *::before, *::after { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; counter-reset:slide; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);
+  margin:48px 0 6px; font-weight:600; }
+code,.mono { font-family:"JetBrains Mono",monospace; font-size:.82em;
+  background:#ece7db; padding:.08em .38em; border-radius:4px; color:#3a382f; }
+.back { font-family:"JetBrains Mono",monospace; font-size:12px;
+  text-decoration:none; color:var(--ink-soft);
+  display:inline-flex; align-items:center; gap:6px;
+  margin-bottom:22px; border:1px solid var(--rule);
+  border-radius:6px; padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px;
+  letter-spacing:.28em; text-transform:uppercase; color:var(--accent);
+  font-weight:600; margin-bottom:18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(34px,5vw,52px);
+  line-height:1.05; letter-spacing:-.02em; margin:0 0 16px; }
+.dek { font-size:20px; color:var(--ink-soft); max-width:680px; margin:0 0 28px;
+  font-family:"Newsreader",serif; font-style:italic; }
+.tnav { position:sticky; top:0; z-index:20; background:rgba(244,241,234,.95);
+  backdrop-filter:blur(8px); border-bottom:1px solid var(--rule);
+  margin:0 -28px 28px; padding:14px 28px; }
+.tnav-inner { display:flex; flex-wrap:wrap; gap:8px 18px; }
+.tnav a { font-family:"JetBrains Mono",monospace; font-size:12px;
+  color:var(--ink-soft); text-decoration:none; padding:4px 10px;
+  border-radius:5px; transition:all .14s; }
+.tnav a:hover { background:var(--guide-color); color:#fff; }
+.meta-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:28px 0 12px; }
+@media (max-width:760px) { .meta-grid { grid-template-columns:1fr; } }
+.mg { background:var(--card); border:1px solid var(--rule); border-left:4px solid var(--guide-color);
+  border-radius:10px; padding:18px 20px; }
+.mg .mg-l { font-family:"JetBrains Mono",monospace; font-size:10px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--guide-color);
+  font-weight:600; margin-bottom:8px; }
+.mg .mg-t { font-family:"Fraunces",serif; font-weight:600; font-size:17px; line-height:1.3; }
+
+section:not(#quiz):not(#flashcards) {
+  counter-increment:slide; background:var(--card);
+  border:1.5px solid color-mix(in srgb, var(--guide-color, var(--slate)) 28%, var(--rule));
+  border-radius:18px;
+  box-shadow:0 8px 36px -10px rgba(27,26,23,.18), 0 1px 0 rgba(27,26,23,.04);
+  margin:48px 0; overflow:hidden; position:relative;
+}
+section:not(#quiz):not(#flashcards) h2 {
+  margin:0; padding:26px 36px 22px;
+  background:var(--guide-color, var(--slate));
+  color:#fff; font-family:"Fraunces",serif; font-weight:900;
+  font-size:clamp(20px,2.8vw,26px); letter-spacing:-.015em; line-height:1.1;
+  display:flex; align-items:flex-start; gap:14px;
+}
+section:not(#quiz):not(#flashcards) h2::before {
+  content: counter(slide, decimal-leading-zero);
+  font-family:"JetBrains Mono",monospace; font-weight:600;
+  font-size:12px; letter-spacing:.1em;
+  background:rgba(255,255,255,.16); color:rgba(255,255,255,.9);
+  border:1px solid rgba(255,255,255,.28);
+  padding:4px 10px; border-radius:5px; flex-shrink:0;
+  margin-top:3px; white-space:nowrap;
+}
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre {
+  margin-left:36px; margin-right:36px;
+}
+section:not(#quiz):not(#flashcards) > p:first-of-type { margin-top:28px; }
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child { margin-bottom:34px; }
+section:not(#quiz):not(#flashcards)::after {
+  content:""; display:block; height:4px;
+  background:linear-gradient(90deg, var(--guide-color, var(--slate)) 0%,
+    color-mix(in srgb, var(--guide-color, var(--slate)) 30%, transparent) 100%);
+  margin-top:34px; opacity:.35;
+}
+@media (max-width:680px) {
+  section:not(#quiz):not(#flashcards) h2 { padding:20px 22px 18px; font-size:20px; }
+  section:not(#quiz):not(#flashcards) > p,
+  section:not(#quiz):not(#flashcards) > .insight,
+  section:not(#quiz):not(#flashcards) > .misconception,
+  section:not(#quiz):not(#flashcards) > blockquote { margin-left:22px; margin-right:22px; }
+}
+
+.insight, .misconception { border-radius:10px; padding:18px 22px; margin:22px 0;
+  font-size:17px; line-height:1.5; }
+.insight { border-left:4px solid var(--slate); background:var(--slate-soft); }
+.misconception { border-left:4px solid var(--accent); background:var(--accent-soft); }
+.insight::before { content:"✦ Key insight — "; font-weight:600; color:var(--slate); }
+.misconception::before { content:"✕ Common misconception — "; font-weight:600; color:var(--accent); }
+
+#flashcards { margin-top:60px; }
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
+.fc { perspective:900px; height:190px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%;
+  transform-style:preserve-3d; transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front, .fc-back { position:absolute; inset:0; border-radius:13px;
+  padding:22px 22px 18px; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  display:flex; flex-direction:column; justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back  { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back  { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back  { background:#7a5400; }
+.fc[data-g="g3"] .fc-front { border-left:4px solid var(--g3); }
+.fc[data-g="g3"] .fc-back  { background:#3a1a10; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc[data-g="g3"] .fc-term { color:var(--g3); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc[data-g="g3"] .fc-def { color:#f5d6ce; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px;
+  color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px;
+  font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+  padding:2px 8px; border-radius:4px; border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent); background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent); background:color-mix(in srgb,var(--g2) 10%,transparent); }
+.gtag.g3 { color:var(--g3); border-color:color-mix(in srgb,var(--g3) 40%,transparent); background:color-mix(in srgb,var(--g3) 10%,transparent); }
+
+footer { margin-top:80px; padding-top:30px; border-top:1px solid var(--rule);
+  font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--ink-soft);
+  display:flex; gap:18px; flex-wrap:wrap; }
+footer a { color:var(--ink); text-decoration:none; border-bottom:1px dotted var(--ink-soft); }
+footer a:hover { color:var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="index.html" class="back">← Library</a>
+
+<div class="kicker">02 · Applied</div>
+<h1>The Ralph Loop</h1>
+<p class="dek">A reusable scaffolding skill that turns "build this" into "build this, then keep improving until it scores at least an 8."</p>
+
+<nav class="tnav"><div class="tnav-inner">
+  <a href="#ralph-loop">01 · What the Ralph Loop is</a>
+  <a href="#success-criteria">02 · Success criteria</a>
+  <a href="#iteration-cap">03 · Iteration cap</a>
+  <a href="#list-formatting">04 · List Formatting skill</a>
+  <a href="#flashcards">Flashcards</a>
+</div></nav>
+
+<div class="meta-grid">
+  <div class="mg"><div class="mg-l">Takeaway 1</div><div class="mg-t">The Ralph Loop wraps the agent in a goal-directed infinite loop with a built-in exit condition.</div></div>
+  <div class="mg"><div class="mg-l">Takeaway 2</div><div class="mg-t">You define what "good enough" means as a score and a target — the loop chooses when to stop.</div></div>
+  <div class="mg"><div class="mg-l">Takeaway 3</div><div class="mg-t">An iteration cap protects you from runaway loops and runaway costs.</div></div>
+</div>
+
+<section id="ralph-loop">
+  <h2>What the Ralph Loop Does</h2>
+  <p>The Ralph Loop is a meta-skill that keeps the agent working toward a goal until a measurable success criterion is met. You hand it a target, success criteria, and a maximum number of tries. The agent attempts the work, self-scores against the criteria, and decides whether to keep going or call it done.</p>
+  <div class="insight">A Ralph Loop turns one-shot prompts into a goal-seeking loop. The agent stops on its own when the work is good enough — you don't have to babysit the process.</div>
+  <p>The author drops a Ralph Loop script into the chat alongside the build prompt. It is itself a published skill — you can find it on the author's GitHub — so any future project can wrap a build phase in the same loop just by referencing it.</p>
+  <div class="misconception">"A Ralph Loop is the same as 'keep trying until you succeed.'" It is sharper — every iteration self-scores against named criteria and exits only when the score crosses the bar (or the iteration cap is hit).</div>
+</section>
+
+<section id="success-criteria">
+  <h2>Success Criteria — The Exit Condition</h2>
+  <p>Success criteria are the named conditions that close the loop. They turn a vague goal into a checklist: needs a workflow, needs status, needs three specific skills, needs sample data. The agent grades each attempt against this checklist and only exits when the score reaches at least your target (the author uses "at least an 8").</p>
+  <div class="insight">Good criteria are short, named, and verifiable on inspection. Bad criteria — "make it good" — give the loop nothing to grade against, so it never knows when to stop.</div>
+  <p>For the time-off list, the criteria included: workflow exists, status column exists, "request time off" skill created, "review pending" skill created, plus sample data. Five concrete checks. Easy to grade, easy to see when the loop has converged.</p>
+</section>
+
+<section id="iteration-cap">
+  <h2>The Iteration Cap</h2>
+  <p>An iteration cap is the maximum number of attempts you'll let the loop make. The author uses "up to five tries" for the request list and "four tries" for the calendar list. If the agent can't hit the score in that many tries, it exits anyway with the best version it produced.</p>
+  <div class="insight">Always cap the loop. Unbounded loops can run for hours and burn credits chasing the last 5% of a score. Capping forces the agent to ship something.</div>
+  <div class="misconception">"Higher caps always produce better results." Sometimes — but often the agent finds its answer in 2–3 iterations. Caps above 5 mostly buy diminishing returns and bigger bills.</div>
+</section>
+
+<section id="list-formatting">
+  <h2>The List Formatting Skill — A Helper Skill</h2>
+  <p>The author also drops in a List Formatting skill — another published, reusable skill — alongside the Ralph Loop. It teaches the agent how to make SharePoint list views look polished: column widths, status pills, conditional colours, header styling. The Ralph Loop calls it as a tool during the formatting phase.</p>
+  <div class="insight">Skills can compose. A build prompt that includes the Ralph Loop and the List Formatting skill gets goal-directed iteration plus pretty output, for free, with no new authoring.</div>
+  <p>This is the real power of the skills library: every reusable skill you publish lowers the bar for the next app you build. The time-off tracker only took 20 minutes precisely because Ralph Loop and List Formatting were already on the shelf.</p>
+</section>
+
+<section id="flashcards">
+  <div class="sec-label">Flashcards — Applied</div>
+  <div class="fc-grid">
+
+    <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+        <div class="fc-term">Ralph Loop</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A reusable meta-skill that wraps the agent in a goal-seeking loop. Each iteration self-scores against named success criteria; the loop exits when the score clears the bar or the iteration cap is hit.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+        <div class="fc-term">Success Criteria</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">The named, verifiable conditions a Ralph Loop attempt must meet to be considered "done." Each criterion is a check the agent can self-grade on inspection.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+        <div class="fc-term">Iteration Cap</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">The maximum attempts a Ralph Loop will make before exiting with its best output. Caps protect against runaway runs and burn — most loops converge in 2 to 4 tries.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+        <div class="fc-term">List Formatting Skill</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A published helper skill that teaches the agent polished list-view styling — column widths, status pills, conditional colours. Reused alongside Ralph Loop in any build.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+  </div>
+</section>
+
+<footer>
+  <a href="index.html">← Library home</a>
+  <a href="flashcards-index.html">All flashcards →</a>
+  <a href="guide-03-advanced.html">Next: Advanced →</a>
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>02 · Applied — Permissions & Persona Access</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--amber);
+}
+*, *::before, *::after { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; counter-reset:slide; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);
+  margin:48px 0 6px; font-weight:600; }
+code,.mono { font-family:"JetBrains Mono",monospace; font-size:.82em;
+  background:#ece7db; padding:.08em .38em; border-radius:4px; color:#3a382f; }
+.back { font-family:"JetBrains Mono",monospace; font-size:12px;
+  text-decoration:none; color:var(--ink-soft);
+  display:inline-flex; align-items:center; gap:6px;
+  margin-bottom:22px; border:1px solid var(--rule);
+  border-radius:6px; padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px;
+  letter-spacing:.28em; text-transform:uppercase; color:var(--accent);
+  font-weight:600; margin-bottom:18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(34px,5vw,52px);
+  line-height:1.05; letter-spacing:-.02em; margin:0 0 16px; }
+.dek { font-size:20px; color:var(--ink-soft); max-width:680px; margin:0 0 28px;
+  font-family:"Newsreader",serif; font-style:italic; }
+
+.tnav { position:sticky; top:0; z-index:20; background:rgba(244,241,234,.95);
+  backdrop-filter:blur(8px); border-bottom:1px solid var(--rule);
+  margin:0 -28px 28px; padding:14px 28px; }
+.tnav-inner { display:flex; flex-wrap:wrap; gap:8px 18px; }
+.tnav a { font-family:"JetBrains Mono",monospace; font-size:12px;
+  color:var(--ink-soft); text-decoration:none; padding:4px 10px;
+  border-radius:5px; transition:all .14s; }
+.tnav a:hover { background:var(--guide-color); color:#fff; }
+
+.meta-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:28px 0 12px; }
+@media (max-width:760px) { .meta-grid { grid-template-columns:1fr; } }
+.mg { background:var(--card); border:1px solid var(--rule); border-left:4px solid var(--guide-color);
+  border-radius:10px; padding:18px 20px; }
+.mg .mg-l { font-family:"JetBrains Mono",monospace; font-size:10px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--guide-color);
+  font-weight:600; margin-bottom:8px; }
+.mg .mg-t { font-family:"Fraunces",serif; font-weight:600; font-size:17px; line-height:1.3; }
+
+/* ===== SLIDE PANELS ===== */
+section:not(#quiz):not(#flashcards) {
+  counter-increment:slide; background:var(--card);
+  border:1.5px solid color-mix(in srgb, var(--guide-color, var(--slate)) 28%, var(--rule));
+  border-radius:18px;
+  box-shadow:0 8px 36px -10px rgba(27,26,23,.18), 0 1px 0 rgba(27,26,23,.04);
+  margin:48px 0; overflow:hidden; position:relative;
+}
+section:not(#quiz):not(#flashcards) h2 {
+  margin:0; padding:26px 36px 22px;
+  background:var(--guide-color, var(--slate));
+  color:#fff; font-family:"Fraunces",serif; font-weight:900;
+  font-size:clamp(20px,2.8vw,26px); letter-spacing:-.015em; line-height:1.1;
+  display:flex; align-items:flex-start; gap:14px;
+}
+section:not(#quiz):not(#flashcards) h2::before {
+  content: counter(slide, decimal-leading-zero);
+  font-family:"JetBrains Mono",monospace; font-weight:600;
+  font-size:12px; letter-spacing:.1em;
+  background:rgba(255,255,255,.16); color:rgba(255,255,255,.9);
+  border:1px solid rgba(255,255,255,.28);
+  padding:4px 10px; border-radius:5px; flex-shrink:0;
+  margin-top:3px; white-space:nowrap;
+}
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre {
+  margin-left:36px; margin-right:36px;
+}
+section:not(#quiz):not(#flashcards) > p:first-of-type { margin-top:28px; }
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child { margin-bottom:34px; }
+section:not(#quiz):not(#flashcards)::after {
+  content:""; display:block; height:4px;
+  background:linear-gradient(90deg, var(--guide-color, var(--slate)) 0%,
+    color-mix(in srgb, var(--guide-color, var(--slate)) 30%, transparent) 100%);
+  margin-top:34px; opacity:.35;
+}
+@media (max-width:680px) {
+  section:not(#quiz):not(#flashcards) h2 { padding:20px 22px 18px; font-size:20px; }
+  section:not(#quiz):not(#flashcards) > p,
+  section:not(#quiz):not(#flashcards) > .insight,
+  section:not(#quiz):not(#flashcards) > .misconception,
+  section:not(#quiz):not(#flashcards) > blockquote { margin-left:22px; margin-right:22px; }
+}
+/* ===== END SLIDE PANELS ===== */
+
+.insight, .misconception { border-radius:10px; padding:18px 22px; margin:22px 0;
+  font-size:17px; line-height:1.5; }
+.insight { border-left:4px solid var(--slate); background:var(--slate-soft); }
+.misconception { border-left:4px solid var(--accent); background:var(--accent-soft); }
+.insight::before { content:"✦ Key insight — "; font-weight:600; color:var(--slate); }
+.misconception::before { content:"✕ Common misconception — "; font-weight:600; color:var(--accent); }
+
+#flashcards { margin-top:60px; }
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
+.fc { perspective:900px; height:190px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%;
+  transform-style:preserve-3d; transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front, .fc-back { position:absolute; inset:0; border-radius:13px;
+  padding:22px 22px 18px; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  display:flex; flex-direction:column; justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back  { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back  { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back  { background:#7a5400; }
+.fc[data-g="g3"] .fc-front { border-left:4px solid var(--g3); }
+.fc[data-g="g3"] .fc-back  { background:#3a1a10; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc[data-g="g3"] .fc-term { color:var(--g3); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc[data-g="g3"] .fc-def { color:#f5d6ce; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px;
+  color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px;
+  font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+  padding:2px 8px; border-radius:4px; border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent); background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent); background:color-mix(in srgb,var(--g2) 10%,transparent); }
+.gtag.g3 { color:var(--g3); border-color:color-mix(in srgb,var(--g3) 40%,transparent); background:color-mix(in srgb,var(--g3) 10%,transparent); }
+
+footer { margin-top:80px; padding-top:30px; border-top:1px solid var(--rule);
+  font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--ink-soft);
+  display:flex; gap:18px; flex-wrap:wrap; }
+footer a { color:var(--ink); text-decoration:none; border-bottom:1px dotted var(--ink-soft); }
+footer a:hover { color:var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="index.html" class="back">← Library</a>
+
+<div class="kicker">02 · Applied</div>
+<h1>Permissions & Persona Access</h1>
+<p class="dek">SharePoint already knows who can do what. Use that to stop the AI from offering skills your users can't actually run.</p>
+
+<nav class="tnav"><div class="tnav-inner">
+  <a href="#why-permissions">01 · Why permissions matter</a>
+  <a href="#skills-library">02 · The Skills Library</a>
+  <a href="#admin-only">03 · Admin-only skills</a>
+  <a href="#visitor-defaults">04 · Persona defaults</a>
+  <a href="#flashcards">Flashcards</a>
+</div></nav>
+
+<div class="meta-grid">
+  <div class="mg"><div class="mg-l">Takeaway 1</div><div class="mg-t">SharePoint permissions already segment users into personas — owners, members, visitors.</div></div>
+  <div class="mg"><div class="mg-l">Takeaway 2</div><div class="mg-t">Skills inherit that model. You can scope a skill to one persona or to a custom group.</div></div>
+  <div class="mg"><div class="mg-l">Takeaway 3</div><div class="mg-t">Hiding skills users can't run keeps the AI from offering them — fewer dead ends, sharper answers.</div></div>
+</div>
+
+<section id="why-permissions">
+  <h2>Why Permissions Belong in Skill Design</h2>
+  <p>SharePoint sites already know who is allowed to do what. A skill that updates payroll only makes sense for HR. A skill that deletes archived files only makes sense for owners. If you leave every skill open to every user, the AI will happily suggest a skill the caller has no rights to actually execute — and the run fails halfway through.</p>
+  <div class="insight">Wire SharePoint's existing permission model into your skills. Don't let the AI suggest a skill the current user can't complete.</div>
+  <p>The author's phrasing in the video: <em>"Don't let users try to execute skills that won't actually work for them."</em> Permissions are a first-class context signal — they tell the agent which moves are even legal for this person.</p>
+</section>
+
+<section id="skills-library">
+  <h2>The Skills Library</h2>
+  <p>The Skills Library is the per-site catalogue of every skill installed in that SharePoint site. Open it and you see a list of skills with their triggers, descriptions, and — crucially — a permission column. Click any skill to manage who can use it, who can edit it, and who can't see it at all.</p>
+  <div class="insight">The Skills Library is also a permission console. Selecting a skill row lets you change persona access in seconds — no policy file, no admin portal.</div>
+  <p>This is where you go to lock down sensitive skills, audit who is using what, or push a permission change after you've added a new skill. The same UI handles install and access.</p>
+</section>
+
+<section id="admin-only">
+  <h2>Admin-Only Skills</h2>
+  <p>An admin-only skill is one whose persona access has been narrowed so only site owners (or another designated group) can call it. In the demo the author creates a skill named "admin only," opens the Skills Library, finds the skill, and removes visitor access — visitors can no longer see or trigger it.</p>
+  <div class="insight">Restricting a skill does more than enforce security. It hides the skill from the AI's menu for that user, so the model never even proposes it.</div>
+  <p>Use this pattern for destructive actions, finance flows, hiring workflows, or anything where a wrong person triggering the skill would cause damage. The skill still lives in the library — it's just invisible to the wrong audience.</p>
+  <div class="misconception">"If I just don't mention the skill, users won't find it." Wrong — the AI surfaces installed skills proactively when an utterance matches. You have to mark the skill as inaccessible for that persona; mere obscurity isn't enough.</div>
+</section>
+
+<section id="visitor-defaults">
+  <h2>Default Persona Behavior</h2>
+  <p>Out of the box, visitors can leverage skills the owner has built but can't edit them. Members can edit. Owners have full control. You can override any of these per-skill — visitor read-only is a default, not a ceiling.</p>
+  <p>Always ask: "Should every persona who can use this site also be able to run this skill?" If the answer is no — even for one persona — open the skill in the Skills Library and tighten its access before publishing.</p>
+  <div class="insight">Default permissions are convenient, not correct. Review them per skill at publish time so the AI's menu matches each user's authority.</div>
+</section>
+
+<section id="flashcards">
+  <div class="sec-label">Flashcards — Applied</div>
+  <div class="fc-grid">
+
+    <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+          <div class="fc-term">Skills Library</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">The per-site catalogue of installed skills. Open it to inspect, edit, or change persona access for any skill on the SharePoint site.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+          <div class="fc-term">Persona Access</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">Per-skill setting that controls which SharePoint personas — owners, members, visitors, or custom groups — can see and run the skill.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+          <div class="fc-term">Admin-Only Skill</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">A skill whose persona access has been narrowed so only owners (or another designated group) can see or invoke it. Other users never see it offered.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+          <div class="fc-term">Visitor Default</div>
+          <div class="fc-tap">tap to reveal →</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-def">By default, visitors can leverage skills but cannot edit them. Owners can override this either way per skill.</div>
+          <div class="fc-tap">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <a href="index.html">← Library home</a>
+  <a href="flashcards-index.html">All flashcards →</a>
+  <a href="guide-03-advanced.html">Next: Advanced →</a>
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,32 +1,61 @@
 @import "tailwindcss";
 
-/* === Design Tokens: Midnight Editorial (PRD §11.6 Option A) === */
+/* === Design Tokens: Warm Editorial (single light theme — see CLAUDE.md "Design tokens are the only truth") === */
 :root {
-  --color-bg: hsl(222 47% 6%);
-  --color-surface: hsl(222 30% 12%);
-  --color-surface-2: hsl(222 25% 16%);
-  --color-surface-3: hsl(222 20% 20%);
-  --color-text: hsl(40 20% 95%);
-  --color-text-muted: hsl(222 15% 60%);
-  --color-text-subtle: hsl(222 12% 45%);
-  --color-accent: hsl(255 80% 72%);
-  --color-accent-hover: hsl(255 80% 78%);
-  --color-accent-2: hsl(15 40% 65%);
-  --color-border: hsl(222 20% 18%);
-  --color-border-strong: hsl(222 20% 25%);
+  /* Foundation */
+  --color-bg: #f4f1ea;          /* paper — page background */
+  --color-surface: #fbf9f4;     /* card — slightly elevated */
+  --color-surface-2: #ece7db;   /* sunken — inline code, subtle blocks */
+  --color-surface-3: #e3dccc;   /* most sunken — disabled/empty states */
 
-  /* Category colors */
-  --color-cat-user-insights: hsl(200 80% 65%);
-  --color-cat-problem-framing: hsl(280 70% 65%);
-  --color-cat-ideation: hsl(45 90% 60%);
-  --color-cat-validation: hsl(150 70% 55%);
-  --color-cat-execution: hsl(15 80% 60%);
-  --color-cat-growth: hsl(340 75% 60%);
-  --color-cat-systems-thinking: hsl(180 60% 55%);
-  --color-cat-appendix: hsl(222 15% 55%);
+  --color-text: #1b1a17;        /* ink — primary text */
+  --color-text-muted: #4a463d;  /* ink-soft — secondary text, dek */
+  --color-text-subtle: #6d6759; /* tertiary text, metadata, footers */
 
-  /* Typography */
-  --font-heading: "Instrument Serif", Georgia, serif;
+  --color-border: #d8d2c4;        /* rule — default dividers, card borders */
+  --color-border-strong: #b8b09e; /* emphasized borders, hovered controls */
+
+  /* Accent — vermillion, used sparingly */
+  --color-accent: #cc3b1d;
+  --color-accent-hover: #a82e15;
+  --color-accent-soft: #f3ddd4;
+  --color-accent-2: #2f5d62;    /* slate teal — secondary accent (hero blobs, decorative SVG) */
+
+  /* Secondary accents — editorial three-color hierarchy */
+  --color-slate: #2f5d62;
+  --color-slate-soft: #dde7e6;
+  --color-amber: #9a6a00;
+  --color-amber-soft: #f4e9cf;
+
+  /* Semantic — confidence labels, save state */
+  --color-confidence-high: #2f6a45;
+  --color-confidence-high-soft: #d8e8de;
+  --color-confidence-moderate: #9a6a00;
+  --color-confidence-moderate-soft: #f4e9cf;
+  --color-saved: #b03050;
+  --color-saved-soft: #f1d8de;
+
+  /* Category — 7 hues calibrated against paper bg, all AA-contrast for text use */
+  --color-cat-user-insights: #3a6a85;
+  --color-cat-user-insights-soft: #dfe7ee;
+  --color-cat-problem-framing: #6a3a85;
+  --color-cat-problem-framing-soft: #e7dfee;
+  --color-cat-ideation: #9a6a00;
+  --color-cat-ideation-soft: #f4e9cf;
+  --color-cat-validation: #2f6a45;
+  --color-cat-validation-soft: #d8e8de;
+  --color-cat-execution: #b54a1a;
+  --color-cat-execution-soft: #f3e0d4;
+  --color-cat-growth: #9a3a55;
+  --color-cat-growth-soft: #efd5dc;
+  --color-cat-systems-thinking: #2f5d62;
+  --color-cat-systems-thinking-soft: #dde7e6;
+  --color-cat-appendix: #6d6759;
+  --color-cat-appendix-soft: #e3dccc;
+
+  /* Typography — display (Fraunces) for h1/h2 + italic accents, body (Inter), mono (JetBrains Mono) for kickers/code */
+  --font-heading: "Fraunces", "Instrument Serif", Georgia, serif;
+  --font-display: "Fraunces", "Instrument Serif", Georgia, serif;
   --font-body: "Inter", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
@@ -46,29 +75,10 @@
   --motion-slow: 360ms;
   --motion-spring: cubic-bezier(0.22, 1, 0.36, 1);
 
-  /* Elevation */
-  --shadow-sm: 0 1px 3px hsl(222 47% 3% / 0.4);
-  --shadow-md: 0 4px 12px hsl(222 47% 3% / 0.5);
-  --shadow-lg: 0 8px 32px hsl(222 47% 3% / 0.6);
-}
-
-/* Light mode */
-[data-theme="light"] {
-  --color-bg: hsl(40 20% 97%);
-  --color-surface: hsl(0 0% 100%);
-  --color-surface-2: hsl(40 15% 96%);
-  --color-surface-3: hsl(40 10% 92%);
-  --color-text: hsl(222 30% 12%);
-  --color-text-muted: hsl(222 15% 45%);
-  --color-text-subtle: hsl(222 10% 60%);
-  --color-accent: hsl(255 70% 55%);
-  --color-accent-hover: hsl(255 70% 48%);
-  --color-accent-2: hsl(15 50% 50%);
-  --color-border: hsl(222 15% 88%);
-  --color-border-strong: hsl(222 15% 80%);
-  --shadow-sm: 0 1px 3px hsl(222 20% 80% / 0.3);
-  --shadow-md: 0 4px 12px hsl(222 20% 80% / 0.2);
-  --shadow-lg: 0 8px 32px hsl(222 20% 80% / 0.25);
+  /* Elevation — softer, warmer shadows tuned for paper background */
+  --shadow-sm: 0 1px 2px rgba(27, 26, 23, 0.04);
+  --shadow-md: 0 4px 16px -4px rgba(27, 26, 23, 0.08);
+  --shadow-lg: 0 18px 40px -16px rgba(27, 26, 23, 0.18);
 }
 
 /* === Tailwind Theme Integration === */
@@ -82,11 +92,40 @@
   --color-text-subtle: var(--color-text-subtle);
   --color-accent: var(--color-accent);
   --color-accent-hover: var(--color-accent-hover);
+  --color-accent-soft: var(--color-accent-soft);
   --color-accent-2: var(--color-accent-2);
+  --color-slate: var(--color-slate);
+  --color-slate-soft: var(--color-slate-soft);
+  --color-amber: var(--color-amber);
+  --color-amber-soft: var(--color-amber-soft);
   --color-border: var(--color-border);
   --color-border-strong: var(--color-border-strong);
+  --color-confidence-high: var(--color-confidence-high);
+  --color-confidence-high-soft: var(--color-confidence-high-soft);
+  --color-confidence-moderate: var(--color-confidence-moderate);
+  --color-confidence-moderate-soft: var(--color-confidence-moderate-soft);
+  --color-saved: var(--color-saved);
+  --color-saved-soft: var(--color-saved-soft);
+
+  --color-cat-user-insights: var(--color-cat-user-insights);
+  --color-cat-user-insights-soft: var(--color-cat-user-insights-soft);
+  --color-cat-problem-framing: var(--color-cat-problem-framing);
+  --color-cat-problem-framing-soft: var(--color-cat-problem-framing-soft);
+  --color-cat-ideation: var(--color-cat-ideation);
+  --color-cat-ideation-soft: var(--color-cat-ideation-soft);
+  --color-cat-validation: var(--color-cat-validation);
+  --color-cat-validation-soft: var(--color-cat-validation-soft);
+  --color-cat-execution: var(--color-cat-execution);
+  --color-cat-execution-soft: var(--color-cat-execution-soft);
+  --color-cat-growth: var(--color-cat-growth);
+  --color-cat-growth-soft: var(--color-cat-growth-soft);
+  --color-cat-systems-thinking: var(--color-cat-systems-thinking);
+  --color-cat-systems-thinking-soft: var(--color-cat-systems-thinking-soft);
+  --color-cat-appendix: var(--color-cat-appendix);
+  --color-cat-appendix-soft: var(--color-cat-appendix-soft);
 
   --font-heading: var(--font-heading);
+  --font-display: var(--font-display);
   --font-body: var(--font-body);
   --font-mono: var(--font-mono);
 }
@@ -102,6 +141,13 @@ body {
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Italic em inside display headings is an automatic vermillion accent */
+h1 em,
+h2 em {
+  color: var(--color-accent);
+  font-style: italic;
 }
 
 /* Reduced motion */
@@ -124,7 +170,7 @@ body {
 
 /* Selection */
 ::selection {
-  background: hsl(255 80% 72% / 0.3);
+  background: var(--color-accent-soft);
   color: var(--color-text);
 }
 

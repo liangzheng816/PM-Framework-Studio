@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide 02 · Applied — Social Media Workflow with SharePoint Skills</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:       #f4f1ea;
+  --ink:         #1b1a17;
+  --ink-soft:    #4a463d;
+  --rule:        #d8d2c4;
+  --accent:      #cc3b1d;
+  --accent-soft: #f3ddd4;
+  --slate:       #2f5d62;
+  --slate-soft:  #dde7e6;
+  --amber:       #9a6a00;
+  --amber-soft:  #f4e9cf;
+  --card:        #fbf9f4;
+  --g1: #2f5d62;
+  --g2: #9a6a00;
+  --g3: #cc3b1d;
+  --guide-color: var(--amber);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: "Newsreader", Georgia, serif; font-size: 18px; line-height: 1.55; -webkit-font-smoothing: antialiased; counter-reset: slide; }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 28px 120px; }
+.sec-label { font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-soft); margin: 48px 0 6px; font-weight: 600; }
+code, .mono { font-family: "JetBrains Mono", monospace; font-size: .82em; background: #ece7db; padding: .08em .38em; border-radius: 4px; color: #3a382f; }
+.back { font-family: "JetBrains Mono", monospace; font-size: 12px; text-decoration: none; color: var(--ink-soft); display: inline-flex; align-items: center; gap: 6px; margin-bottom: 22px; border: 1px solid var(--rule); border-radius: 6px; padding: 5px 12px; transition: all .14s; }
+.back:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.kicker { font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: .28em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 18px; }
+.masthead { padding-top: 32px; border-bottom: 1px solid var(--rule); padding-bottom: 18px; margin-bottom: 12px; }
+.masthead h1 { font-family: "Fraunces", serif; font-weight: 900; font-size: clamp(34px, 5vw, 52px); letter-spacing: -.02em; line-height: 1.05; margin: 6px 0 14px; }
+.masthead .dek { font-size: 20px; color: var(--ink-soft); max-width: 720px; margin: 0; }
+.topic-nav { position: sticky; top: 0; z-index: 10; background: var(--paper); border-bottom: 1px solid var(--rule); padding: 12px 0; margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 6px 14px; font-family: "JetBrains Mono", monospace; font-size: 12px; }
+.topic-nav a { color: var(--ink-soft); text-decoration: none; padding: 4px 8px; border-radius: 5px; }
+.topic-nav a:hover { background: var(--amber-soft); color: var(--amber); }
+.takeaways { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 30px 0 12px; }
+@media (max-width: 760px) { .takeaways { grid-template-columns: 1fr; } }
+.tk { background: var(--card); border: 1px solid var(--rule); border-left: 4px solid var(--guide-color); border-radius: 10px; padding: 18px 20px; }
+.tk .tklbl { font-family: "JetBrains Mono", monospace; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 6px; }
+.tk .tkbody { font-family: "Fraunces", serif; font-weight: 600; font-size: 17px; line-height: 1.35; }
+
+section:not(#quiz):not(#flashcards) { counter-increment: slide; background: var(--card); border: 1.5px solid color-mix(in srgb, var(--guide-color, var(--slate)) 28%, var(--rule)); border-radius: 18px; box-shadow: 0 8px 36px -10px rgba(27,26,23,.18), 0 1px 0 rgba(27,26,23,.04); margin: 48px 0; overflow: hidden; position: relative; }
+section:not(#quiz):not(#flashcards) h2 { margin: 0; padding: 26px 36px 22px; background: var(--guide-color, var(--slate)); color: #fff; font-family: "Fraunces", serif; font-weight: 900; font-size: clamp(20px, 2.8vw, 26px); letter-spacing: -.015em; line-height: 1.1; display: flex; align-items: flex-start; gap: 14px; }
+section:not(#quiz):not(#flashcards) h2::before { content: counter(slide, decimal-leading-zero); font-family: "JetBrains Mono", monospace; font-weight: 600; font-size: 12px; letter-spacing: .1em; background: rgba(255,255,255,.16); color: rgba(255,255,255,.9); border: 1px solid rgba(255,255,255,.28); padding: 4px 10px; border-radius: 5px; flex-shrink: 0; margin-top: 3px; white-space: nowrap; }
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre { margin-left: 36px; margin-right: 36px; }
+section:not(#quiz):not(#flashcards) > p:first-of-type { margin-top: 28px; }
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child { margin-bottom: 34px; }
+section:not(#quiz):not(#flashcards)::after { content: ""; display: block; height: 4px; background: linear-gradient(90deg, var(--guide-color, var(--slate)) 0%, color-mix(in srgb, var(--guide-color, var(--slate)) 30%, transparent) 100%); margin-top: 34px; opacity: .35; }
+@media (max-width: 680px) { section:not(#quiz):not(#flashcards) h2 { padding: 20px 22px 18px; font-size: 20px; } section:not(#quiz):not(#flashcards) > p, section:not(#quiz):not(#flashcards) > .insight, section:not(#quiz):not(#flashcards) > .misconception, section:not(#quiz):not(#flashcards) > blockquote { margin-left: 22px; margin-right: 22px; } }
+
+.insight, .misconception { border-radius: 10px; padding: 18px 22px; margin: 22px 0; font-size: 17px; line-height: 1.5; }
+.insight { border-left: 4px solid var(--slate); background: var(--slate-soft); }
+.misconception { border-left: 4px solid var(--accent); background: var(--accent-soft); }
+.insight::before { content: "✦ Key insight — "; font-weight: 600; color: var(--slate); }
+.misconception::before { content: "✕ Common misconception — "; font-weight: 600; color: var(--accent); }
+
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; margin-top: 18px; }
+.fc { perspective:900px; height:190px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%; transform-style:preserve-3d; transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front, .fc-back { position:absolute; inset:0; border-radius:13px; padding:22px 22px 18px; backface-visibility:hidden; -webkit-backface-visibility:hidden; display:flex; flex-direction:column; justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back  { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back  { background:#7a5400; }
+.fc[data-g="g3"] .fc-front { border-left:4px solid var(--g3); }
+.fc[data-g="g3"] .fc-back  { background:#3a1a10; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc[data-g="g3"] .fc-term { color:var(--g3); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc[data-g="g3"] .fc-def { color:#f5d6ce; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+.gtag { font-family: "JetBrains Mono", monospace; font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; border: 1.5px solid; line-height: 1.6; }
+.gtag.g1 { color: var(--g1); border-color: color-mix(in srgb,var(--g1) 40%,transparent); background: color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color: var(--g2); border-color: color-mix(in srgb,var(--g2) 40%,transparent); background: color-mix(in srgb,var(--g2) 10%,transparent); }
+.gtag.g3 { color: var(--g3); border-color: color-mix(in srgb,var(--g3) 40%,transparent); background: color-mix(in srgb,var(--g3) 10%,transparent); }
+
+footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--rule); font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--ink-soft); display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; }
+footer a { color: var(--accent); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="index.html" class="back">← Back to library</a>
+
+<div class="masthead">
+  <div class="kicker">Guide 02 · Applied</div>
+  <h1>Composing Skills — The "Generate Socials" Chain</h1>
+  <p class="dek">How three small skills (YouTube description, LinkedIn post, generate socials) chain into a single command that drafts an entire post-release content set and writes it back into SharePoint columns.</p>
+</div>
+
+<nav class="topic-nav">
+  <a href="#yt-skill">01 · YouTube Description Skill</a>
+  <a href="#linkedin-skill">02 · LinkedIn Post Skill</a>
+  <a href="#generate-socials">03 · Generate Socials Skill</a>
+  <a href="#timestamps">04 · Timestamp Extraction</a>
+  <a href="#columns">05 · Writing Back to Columns</a>
+  <a href="#flashcards">Flashcards</a>
+</nav>
+
+<div class="takeaways">
+  <div class="tk"><div class="tklbl">Takeaway 01</div><div class="tkbody">Each skill stays narrow; composition is what gives the workflow leverage.</div></div>
+  <div class="tk"><div class="tklbl">Takeaway 02</div><div class="tkbody">A composing skill chains other skills and asks the user clarifying questions.</div></div>
+  <div class="tk"><div class="tklbl">Takeaway 03</div><div class="tkbody">Output writes back to SharePoint columns next to the source file.</div></div>
+</div>
+
+<section id="yt-skill">
+  <h2>The YouTube Description Skill</h2>
+  <p>This skill produces a draft YouTube description from the transcript and suggests several title candidates. The user picks one. The description includes the standard structure the author uses: a hook, a summary, key chapter points.</p>
+  <div class="insight">A skill that "suggests three names" is doing the heavy creative work — the human still chooses. That keeps voice with the author.</div>
+  <p>Critically, this skill also extracts timestamps from the transcript and formats them as YouTube-style chapter markers. That is a chore the author identified as painful and worth automating.</p>
+</section>
+
+<section id="linkedin-skill">
+  <h2>The LinkedIn Post Skill</h2>
+  <p>The LinkedIn skill was trained on a batch of the author's previous posts. He fed them to Claude, asked Claude to extract his tone, voice, and format, and the resulting pattern is encoded inside the skill. The skill also appends his standard set of links at the bottom of every post.</p>
+  <div class="insight">A skill is the place to encode "do it the way I always do it." Boilerplate, link blocks, formatting conventions — all of it lives inside the skill, not in the author's head.</div>
+  <div class="misconception">The LinkedIn skill does not invent content from nothing. It reads the transcript, applies the trained voice pattern, and produces a draft. The author still edits before publishing.</div>
+</section>
+
+<section id="generate-socials">
+  <h2>The Generate Socials Composing Skill</h2>
+  <p>Generate Socials is a thin orchestrator. It is simple — it just looks for certain keywords, runs the LinkedIn post skill, runs the YouTube description and title skill, asks the user clarifying questions when needed, and inserts the results into SharePoint columns.</p>
+  <div class="insight">The composing skill is small. The intelligence lives in the leaf skills; the orchestrator just glues them and handles user prompts.</div>
+  <p>This is the leverage moment. The author selects a video file in SharePoint, says "generate socials for this," and the chain runs: LinkedIn draft, YouTube description, three title candidates, all written back into the file's columns.</p>
+</section>
+
+<section id="timestamps">
+  <h2>Timestamp Extraction From Transcripts</h2>
+  <p>YouTube descriptions need chapter timestamps. The author found doing this by hand painful — he had to scrub the video to find each section boundary, then format it. The skill reads the transcript, identifies topic shifts, and emits formatted timestamp lines.</p>
+  <div class="insight">Transcripts are time-stamped text. That makes them perfect for an LLM to identify chapter breaks — it has both the language signal and the time anchor in one document.</div>
+</section>
+
+<section id="columns">
+  <h2>Writing Back to SharePoint Columns</h2>
+  <p>The skills do not produce a Word doc or an email. They write their output directly into SharePoint columns on the same list item as the source file. The LinkedIn draft, the YouTube description, the chosen title — all become column values you can review in the list view.</p>
+  <div class="insight">The SharePoint item is the unit of work. Source file in, generated content alongside it, all in the same row. No copy-paste between apps.</div>
+  <div class="misconception">This is not "AI publishes for you." Nothing is posted automatically. Writing back to columns is a staging step — the author copies from the column into LinkedIn or YouTube when he is ready to publish.</div>
+</section>
+
+<section id="flashcards">
+  <div class="sec-label">Flashcards — Guide 02</div>
+  <div class="fc-grid">
+    <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">YouTube Description Skill</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A skill that drafts a YouTube description from a transcript, suggests title candidates, and extracts chapter timestamps. The user picks the final title.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">LinkedIn Post Skill</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A skill trained on the author's prior posts that drafts a LinkedIn post matching his tone, format, and standard footer link block.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Generate Socials</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A thin composing skill that detects keywords, runs the LinkedIn and YouTube skills, asks clarifying questions, and writes results back into SharePoint columns.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Skill Composition</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A pattern where one skill calls other skills as building blocks. Intelligence lives in the leaf skills; the composer handles routing and user input.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Chapter Timestamps</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">YouTube chapter markers extracted from the transcript by detecting topic shifts. Replaces manual scrubbing of the video for section boundaries.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Write-Back to Columns</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">The pattern of saving skill output as column values on the SharePoint list item. Stages drafts for human review; nothing publishes automatically.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Clarifying Questions</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A pause in a composing skill where it asks the user for input (e.g. pick a title) before continuing. Keeps the human in the loop on irreversible choices.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+  </div>
+</section>
+
+<footer>
+  <span>Guide 02 · Applied — Social Media Workflow</span>
+  <span><a href="flashcards-index.html">All flashcards →</a></span>
+</footer>
+
+</div>
+<script>
+function flip(card){ card.classList.toggle('flipped'); }
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+</body>
+</html>

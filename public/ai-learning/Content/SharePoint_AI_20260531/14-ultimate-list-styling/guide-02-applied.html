@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Guide 02 · Applied — Ultimate List Styling</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--amber);
+}
+*,*::before,*::after { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; counter-reset:slide; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);
+  margin:48px 0 6px; font-weight:600; }
+code,.mono { font-family:"JetBrains Mono",monospace; font-size:.82em;
+  background:#ece7db; padding:.08em .38em; border-radius:4px; color:#3a382f; }
+.back { font-family:"JetBrains Mono",monospace; font-size:12px;
+  text-decoration:none; color:var(--ink-soft); display:inline-flex;
+  align-items:center; gap:6px; margin-bottom:22px; border:1px solid var(--rule);
+  border-radius:6px; padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px;
+  letter-spacing:.28em; text-transform:uppercase; color:var(--accent);
+  font-weight:600; margin-bottom:18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(36px,5.5vw,56px);
+  line-height:1.02; margin:0 0 16px; letter-spacing:-.02em; }
+.dek { font-size:20px; color:var(--ink-soft); max-width:720px; margin:0 0 30px; }
+.topnav { position:sticky; top:0; z-index:10; background:var(--paper);
+  border-bottom:1px solid var(--rule); padding:12px 0; margin:24px 0 0;
+  display:flex; flex-wrap:wrap; gap:6px; }
+.topnav a { font-family:"JetBrains Mono",monospace; font-size:11px;
+  font-weight:600; text-decoration:none; color:var(--ink-soft);
+  padding:5px 10px; border-radius:5px; letter-spacing:.05em;
+  text-transform:uppercase; transition:all .12s; }
+.topnav a:hover { background:var(--guide-color); color:#fff; }
+.meta-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:28px 0 12px; }
+@media (max-width:760px) { .meta-grid { grid-template-columns:1fr; } }
+.meta { background:var(--card); border:1px solid var(--rule);
+  border-top:3px solid var(--guide-color); border-radius:10px; padding:18px 20px; }
+.meta .mlbl { font-family:"JetBrains Mono",monospace; font-size:10px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft);
+  margin-bottom:8px; font-weight:600; }
+.meta .mtxt { font-family:"Fraunces",serif; font-weight:600; font-size:18px; line-height:1.3; }
+
+section:not(#quiz):not(#flashcards) {
+  counter-increment: slide;
+  background: var(--card);
+  border: 1.5px solid color-mix(in srgb, var(--guide-color, var(--slate)) 28%, var(--rule));
+  border-radius: 18px;
+  box-shadow: 0 8px 36px -10px rgba(27,26,23,.18), 0 1px 0 rgba(27,26,23,.04);
+  margin: 48px 0; overflow: hidden; position: relative;
+}
+section:not(#quiz):not(#flashcards) h2 {
+  margin: 0; padding: 26px 36px 22px;
+  background: var(--guide-color, var(--slate));
+  color: #fff; font-family: "Fraunces", serif;
+  font-weight: 900; font-size: clamp(20px, 2.8vw, 26px);
+  letter-spacing: -.015em; line-height: 1.1;
+  display: flex; align-items: flex-start; gap: 14px;
+}
+section:not(#quiz):not(#flashcards) h2::before {
+  content: counter(slide, decimal-leading-zero);
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 600; font-size: 12px; letter-spacing: .1em;
+  background: rgba(255,255,255,.16); color: rgba(255,255,255,.9);
+  border: 1px solid rgba(255,255,255,.28);
+  padding: 4px 10px; border-radius: 5px;
+  flex-shrink: 0; margin-top: 3px; white-space: nowrap;
+}
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre {
+  margin-left: 36px; margin-right: 36px;
+}
+section:not(#quiz):not(#flashcards) > p:first-of-type { margin-top: 28px; }
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child { margin-bottom: 34px; }
+section:not(#quiz):not(#flashcards)::after {
+  content: ""; display: block; height: 4px;
+  background: linear-gradient(90deg,
+    var(--guide-color, var(--slate)) 0%,
+    color-mix(in srgb, var(--guide-color, var(--slate)) 30%, transparent) 100%);
+  margin-top: 34px; opacity: .35;
+}
+@media (max-width:680px) {
+  section:not(#quiz):not(#flashcards) h2 { padding:20px 22px 18px; font-size:20px; }
+  section:not(#quiz):not(#flashcards) > p,
+  section:not(#quiz):not(#flashcards) > .insight,
+  section:not(#quiz):not(#flashcards) > .misconception,
+  section:not(#quiz):not(#flashcards) > blockquote { margin-left:22px; margin-right:22px; }
+}
+
+.insight, .misconception { border-radius:10px; padding:18px 22px; margin:22px 0; font-size:17px; line-height:1.5; }
+.insight { border-left:4px solid var(--slate); background:var(--slate-soft); }
+.misconception { border-left:4px solid var(--accent); background:var(--accent-soft); }
+.insight::before { content:"✦ Key insight — "; font-weight:600; color:var(--slate); }
+.misconception::before { content:"✕ Common misconception — "; font-weight:600; color:var(--accent); }
+
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
+.fc { perspective:900px; height:190px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%;
+  transform-style:preserve-3d;
+  transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front, .fc-back { position:absolute; inset:0; border-radius:13px;
+  padding:22px 22px 18px; backface-visibility:hidden;
+  -webkit-backface-visibility:hidden; display:flex; flex-direction:column;
+  justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back { background:#7a5400; }
+.fc[data-g="g3"] .fc-front { border-left:4px solid var(--g3); }
+.fc[data-g="g3"] .fc-back { background:#3a1a10; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc[data-g="g3"] .fc-term { color:var(--g3); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc[data-g="g3"] .fc-def { color:#f5d6ce; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px;
+  color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px;
+  font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+  padding:2px 8px; border-radius:4px; border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent); background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent); background:color-mix(in srgb,var(--g2) 10%,transparent); }
+.gtag.g3 { color:var(--g3); border-color:color-mix(in srgb,var(--g3) 40%,transparent); background:color-mix(in srgb,var(--g3) 10%,transparent); }
+.footnav { margin-top:60px; padding-top:24px; border-top:1px solid var(--rule);
+  display:flex; flex-wrap:wrap; gap:14px; justify-content:space-between;
+  font-family:"JetBrains Mono",monospace; font-size:12px; }
+.footnav a { color:var(--ink-soft); text-decoration:none; padding:8px 14px;
+  border:1px solid var(--rule); border-radius:6px; }
+.footnav a:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+@media (max-width:760px) { .fc-grid { grid-template-columns:1fr 1fr; } }
+@media (max-width:420px) { .fc-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← Library</a>
+  <div class="kicker">02 · Applied</div>
+  <h1>Driving the styling skill</h1>
+  <p class="dek">A four-word prompt — <em>style this as a timeline</em> — triggers the skill, loads the reference, and produces a styled list. Each run lands on something slightly different, which is a feature, not a bug.</p>
+
+  <nav class="topnav">
+    <a href="#first-prompt">01 First prompt</a>
+    <a href="#variability">02 Variability</a>
+    <a href="#forest-style">03 Forest style</a>
+    <a href="#anatomy">04 Style anatomy</a>
+    <a href="#flashcards">Flashcards</a>
+  </nav>
+
+  <div class="sec-label">Meta takeaways</div>
+  <div class="meta-grid">
+    <div class="meta"><div class="mlbl">Prompt</div><div class="mtxt">Short and intent-shaped — "style this as a timeline" — is enough.</div></div>
+    <div class="meta"><div class="mlbl">Outcome</div><div class="mtxt">Every run produces a fresh take. The skill is creative, not deterministic.</div></div>
+    <div class="meta"><div class="mlbl">Layer</div><div class="mtxt">A second skill — the style definition — gives the AI brand rules to honour.</div></div>
+  </div>
+
+  <section id="first-prompt">
+    <h2>The first prompt: "style this as a timeline"</h2>
+    <p>The author opens the product launch milestones list and types one short instruction: <em>style this as a timeline</em>. SharePoint's AI sees the styling intent, the skill activates, the reference file loads, and the AI picks a timeline pattern from the PnP catalog.</p>
+    <div class="insight">The prompt doesn't have to name a pattern from the catalog. It describes the intent. The skill picks the matching pattern.</div>
+    <p>The result: a timeline view with styled state indicators on the milestones. Done in one prompt, with the AI reaching into the reference file for everything beyond what it already knew about timelines in SharePoint.</p>
+    <div class="misconception">A "style as a timeline" request doesn't pick a single canned timeline JSON and paste it in. The AI reads the catalog patterns and adapts them to the list's actual columns.</div>
+  </section>
+
+  <section id="variability">
+    <h2>Every run gives a different result</h2>
+    <p>The author notes that running the same prompt twice gives different styled outputs. The skill is reading the reference and making creative choices each time — picking a slightly different timeline variant, different colour treatments, different status iconography.</p>
+    <div class="insight">Non-determinism is intentional. The skill is exploring the design space, not retrieving a fixed template.</div>
+    <p>For a team that wants consistency across many lists, this is a problem. Which is exactly the problem the next concept — a style definition skill — solves.</p>
+    <div class="misconception">Variability isn't the skill being unreliable. It's the skill respecting the breadth of the PnP catalog — but it does mean you need a second layer if you want brand consistency.</div>
+  </section>
+
+  <section id="forest-style">
+    <h2>Add the forest style skill</h2>
+    <p>The author has a second skill in his GitHub repo: a style definition. It encodes a brand he calls "forest" — colour palette, typography, iconography, spacing, and layout rules. Uploaded to the same skills directory as the formatting skill.</p>
+    <div class="insight">A style definition skill turns brand consistency from a copy-paste discipline into a thing the AI can apply automatically.</div>
+    <p>With both skills present, the AI now has two pieces of knowledge to load — the technical reference (how SharePoint formatting works) and the forest style (what your brand wants). Run the same <em>style this as a timeline</em> prompt on a replica list and the output is now consistently on-brand.</p>
+  </section>
+
+  <section id="anatomy">
+    <h2>What's actually inside a style definition</h2>
+    <p>The author opens the forest style file and lists what it contains: a colour palette with role assignments, typography rules, iconography choices, spacing conventions, and layout rules. Not a single template — a set of design tokens and the rules for using them.</p>
+    <div class="insight">Think of the style definition as design tokens plus usage rules. The AI uses those tokens when it generates the formatting JSON.</div>
+    <p>Because the style definition is generic — it doesn't know about lists or libraries specifically — the same skill can guide formatting for Word documents, lists, or any other content surface the AI styles.</p>
+    <div class="misconception">A style definition skill isn't just a colour swatch. It encodes when to use which colour, which typeface, which icon set, and what spacing rhythm — the rules a designer would normally enforce by hand.</div>
+  </section>
+
+  <section id="flashcards">
+    <div class="sec-label">Flashcards — Applied</div>
+    <div class="fc-grid">
+
+      <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')">
+        <div class="fc-inner">
+          <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Intent-shaped prompt</div><div class="fc-tap">tap to reveal →</div></div>
+          <div class="fc-back"><div class="fc-def">A short, intent-naming instruction like "style this as a timeline" — names the goal, lets the skill pick the matching pattern from the catalog.</div><div class="fc-tap">← tap to flip back</div></div>
+        </div>
+      </div>
+
+      <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')">
+        <div class="fc-inner">
+          <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Output variability</div><div class="fc-tap">tap to reveal →</div></div>
+          <div class="fc-back"><div class="fc-def">Same prompt, different result on each run. The AI explores the catalog rather than retrieving a fixed template — intentional creativity.</div><div class="fc-tap">← tap to flip back</div></div>
+        </div>
+      </div>
+
+      <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')">
+        <div class="fc-inner">
+          <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Forest style</div><div class="fc-tap">tap to reveal →</div></div>
+          <div class="fc-back"><div class="fc-def">The author's example brand definition skill — earthy palette, defined typography and iconography, spacing rules. Used to make every styled list on-brand.</div><div class="fc-tap">← tap to flip back</div></div>
+        </div>
+      </div>
+
+      <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')">
+        <div class="fc-inner">
+          <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Style definition skill</div><div class="fc-tap">tap to reveal →</div></div>
+          <div class="fc-back"><div class="fc-def">A skill that encodes a brand's design tokens and usage rules — colour, typography, iconography, spacing, layout. Generic enough for any content surface.</div><div class="fc-tap">← tap to flip back</div></div>
+        </div>
+      </div>
+
+      <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')">
+        <div class="fc-inner">
+          <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Design tokens</div><div class="fc-tap">tap to reveal →</div></div>
+          <div class="fc-back"><div class="fc-def">The named values inside a style definition — primary colour, body type, default spacing. The AI plugs them into the formatting JSON it generates.</div><div class="fc-tap">← tap to flip back</div></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="footnav">
+    <a href="guide-01-foundations.html">← Guide 01 · Foundations</a>
+    <a href="guide-03-advanced.html">Guide 03 · Advanced →</a>
+  </div>
+</div>
+</body>
+</html>

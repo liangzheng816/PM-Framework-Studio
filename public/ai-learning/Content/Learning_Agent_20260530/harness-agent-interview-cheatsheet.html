@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Infrastructure Deep Dive — AI Learning Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--accent);  /* GUIDE 3 = accent/red */
+}
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.6;-webkit-font-smoothing:antialiased;counter-reset:slide;}
+.wrap{max-width:1040px;margin:0 auto;padding:0 28px 120px;}
+code,.mono{font-family:"JetBrains Mono",monospace;font-size:.82em;background:#ece7db;padding:.08em .38em;border-radius:4px;color:#3a382f;}
+a{color:inherit;}
+
+.back{font-family:"JetBrains Mono",monospace;font-size:12px;text-decoration:none;color:var(--ink-soft);display:inline-flex;align-items:center;gap:6px;margin:32px 0 22px;border:1px solid var(--rule);border-radius:6px;padding:5px 12px;transition:all .14s;}
+.back:hover{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--guide-color);font-weight:600;margin-bottom:14px;}
+h1{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(38px,6vw,64px);line-height:1.04;margin:0 0 14px;letter-spacing:-.015em;}
+h1 em{font-style:italic;color:var(--guide-color);}
+.dek{font-family:"Newsreader",Georgia,serif;font-style:italic;font-size:21px;color:var(--ink-soft);line-height:1.5;margin:0 0 12px;max-width:780px;}
+
+.topic-nav{position:sticky;top:0;background:var(--paper);border-bottom:1px solid var(--rule);margin:40px -28px 0;padding:14px 28px;z-index:50;display:flex;gap:18px;flex-wrap:wrap;}
+.topic-nav a{font-family:"JetBrains Mono",monospace;font-size:11.5px;font-weight:600;text-decoration:none;color:var(--ink-soft);letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-radius:5px;transition:all .14s;}
+.topic-nav a:hover{background:var(--ink);color:var(--paper);}
+
+.meta-takeaway{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:46px 0 8px;}
+@media(max-width:760px){.meta-takeaway{grid-template-columns:1fr;}}
+.mt{background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--guide-color);border-radius:11px;padding:22px 24px;}
+.mt .mt-num{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--guide-color);font-weight:600;letter-spacing:.18em;margin-bottom:8px;}
+.mt h4{font-family:"Fraunces",serif;font-weight:600;font-size:19px;margin:0 0 8px;line-height:1.3;}
+.mt p{margin:0;font-size:15.5px;line-height:1.5;color:var(--ink-soft);}
+
+/* ===== SLIDE PANELS ===== */
+section:not(#quiz):not(#flashcards){counter-increment:slide;background:var(--card);border:1.5px solid color-mix(in srgb, var(--guide-color) 28%, var(--rule));border-radius:18px;box-shadow:0 8px 36px -10px rgba(27,26,23,.18),0 1px 0 rgba(27,26,23,.04);margin:48px 0;overflow:hidden;position:relative;}
+section:not(#quiz):not(#flashcards) h2{margin:0;padding:26px 36px 22px;background:var(--guide-color);color:#fff;font-family:"Fraunces",serif;font-weight:900;font-size:clamp(20px,2.8vw,26px);letter-spacing:-.015em;line-height:1.1;display:flex;align-items:flex-start;gap:14px;}
+section:not(#quiz):not(#flashcards) h2::before{content:counter(slide,decimal-leading-zero);font-family:"JetBrains Mono",monospace;font-weight:600;font-size:12px;letter-spacing:.1em;background:rgba(255,255,255,.16);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.28);padding:4px 10px;border-radius:5px;flex-shrink:0;margin-top:3px;white-space:nowrap;}
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre,
+section:not(#quiz):not(#flashcards) > h4,
+section:not(#quiz):not(#flashcards) > ul,
+section:not(#quiz):not(#flashcards) > ol,
+section:not(#quiz):not(#flashcards) > .tblwrap{margin-left:36px;margin-right:36px;}
+section:not(#quiz):not(#flashcards) > p:first-of-type{margin-top:28px;}
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child,
+section:not(#quiz):not(#flashcards) > .insight:last-child,
+section:not(#quiz):not(#flashcards) > .tblwrap:last-child{margin-bottom:34px;}
+section:not(#quiz):not(#flashcards)::after{content:"";display:block;height:4px;background:linear-gradient(90deg,var(--guide-color) 0%,color-mix(in srgb,var(--guide-color) 30%,transparent) 100%);margin-top:34px;opacity:.35;}
+@media(max-width:680px){
+  section:not(#quiz):not(#flashcards) h2{padding:20px 22px 18px;font-size:20px;}
+  section:not(#quiz):not(#flashcards) > *{margin-left:22px !important;margin-right:22px !important;}
+}
+/* ===== END SLIDE PANELS ===== */
+
+section:not(#quiz):not(#flashcards) h4{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);margin-top:24px;margin-bottom:10px;font-weight:600;}
+section:not(#quiz):not(#flashcards) ul,
+section:not(#quiz):not(#flashcards) ol{padding-left:0;list-style:none;margin-top:0;}
+section:not(#quiz):not(#flashcards) li{padding:5px 0 5px 22px;position:relative;font-size:16.5px;line-height:1.5;}
+section:not(#quiz):not(#flashcards) li::before{content:"▸";position:absolute;left:0;color:var(--guide-color);font-size:14px;top:7px;}
+section:not(#quiz):not(#flashcards) li b{font-weight:600;}
+
+.insight,.misconception{border-radius:10px;padding:18px 22px;margin:22px 0;font-size:17px;line-height:1.5;}
+.insight{border-left:4px solid var(--slate);background:var(--slate-soft);}
+.misconception{border-left:4px solid var(--accent);background:var(--accent-soft);}
+.insight::before{content:"✦ Key insight — ";font-weight:600;color:var(--slate);}
+.misconception::before{content:"✕ Common misconception — ";font-weight:600;color:var(--accent);}
+
+.tblwrap{overflow-x:auto;margin:18px 0;}
+table{border-collapse:collapse;width:100%;font-size:15.5px;}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top;}
+thead th{font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--ink);font-weight:600;}
+tbody tr:nth-child(even){background:rgba(255,255,255,.4);}
+
+.sec-label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin:54px 0 6px;font-weight:600;}
+#quiz, #flashcards{margin-top:60px;}
+.q-item{margin:18px 0;padding:22px 26px;background:var(--card);border:1.5px solid var(--rule);border-radius:12px;}
+.q-item.correct{border-color:#2f5d62;background:#f0f6f5;}
+.q-item.wrong{border-color:#cc3b1d;background:#fdf3f0;}
+.q-item .qnum{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--guide-color);font-weight:600;margin-bottom:8px;}
+.q-text{font-size:17px;font-weight:600;margin-bottom:14px;}
+.options{display:flex;flex-direction:column;gap:9px;margin-bottom:14px;}
+.options label{display:flex;align-items:flex-start;gap:10px;font-size:16px;cursor:pointer;padding:9px 14px;border-radius:7px;border:1.5px solid var(--rule);background:var(--paper);transition:background .12s;line-height:1.45;}
+.options label:hover{background:#ede9e0;}
+.q-item.correct label:has(input[data-correct]){background:#dde7e6;border-color:#2f5d62;}
+.q-item.wrong label:has(input:checked:not([data-correct])){background:#fde8e3;border-color:#cc3b1d;}
+.check-btn{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:8px 18px;border-radius:7px;border:1.5px solid var(--guide-color);background:transparent;color:var(--guide-color);cursor:pointer;transition:all .14s;}
+.check-btn:hover:not(:disabled){background:var(--guide-color);color:#fff;}
+.check-btn:disabled{opacity:.4;cursor:not-allowed;}
+.explanation{margin-top:14px;padding:12px 16px;background:var(--accent-soft);border-left:3px solid var(--guide-color);border-radius:6px;font-size:15px;color:var(--ink-soft);}
+
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:18px;}
+.fc{perspective:900px;height:170px;cursor:pointer;}
+.fc-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1);}
+.fc.flipped .fc-inner{transform:rotateY(180deg);}
+.fc-front,.fc-back{position:absolute;inset:0;border-radius:11px;padding:18px 18px 14px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;justify-content:space-between;}
+.fc-front{background:var(--card);border:1.5px solid var(--rule);border-left:4px solid var(--guide-color);}
+.fc-back{transform:rotateY(180deg);background:#3a1a10;}
+.fc-term{font-family:"JetBrains Mono",monospace;font-weight:600;font-size:14px;color:var(--guide-color);}
+.fc-def{color:#f5d6ce;font-size:13px;line-height:1.4;}
+.fc-tap{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--ink-soft);}
+.fc-back .fc-tap{color:rgba(255,255,255,.45);}
+
+footer{margin-top:90px;padding-top:28px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+footer a{color:var(--guide-color);text-decoration:none;border-bottom:1px solid currentColor;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<a class="back" href="index.html">← Back to Library</a>
+<div class="kicker">03 · Advanced</div>
+<h1>Agent Infrastructure <em>Deep Dive</em></h1>
+<p class="dek">The 11 areas of the engineering layer that turns a capable model into a reliable agent — memory, skills, sandboxes, the harness, loop control, inference optimization, post-training, long-horizon execution, evaluation, and model-native orchestration.</p>
+
+<nav class="topic-nav">
+  <a href="#t1">1 Memory</a>
+  <a href="#t2">2 Skills</a>
+  <a href="#t3">3 Sandbox</a>
+  <a href="#t4">4 Frameworks</a>
+  <a href="#t5">5 Harness</a>
+  <a href="#t6">6 Loop</a>
+  <a href="#t7">7 Inference</a>
+  <a href="#t8">8 Post-train</a>
+  <a href="#t9">9 Long-horizon</a>
+  <a href="#t10">10 Eval</a>
+  <a href="#t11">11 Swarm</a>
+  <a href="#quiz">Quiz</a>
+  <a href="#flashcards">Flashcards</a>
+</nav>
+
+<div class="meta-takeaway">
+  <div class="mt">
+    <div class="mt-num">01 · CORE</div>
+    <h4>Master the core five first</h4>
+    <p>Memory, Skills, Harness, frameworks &amp; long-horizon execution underpin everything else. Master these first.</p>
+  </div>
+  <div class="mt">
+    <div class="mt-num">02 · HANDS-ON</div>
+    <h4>Build a coding agent yourself</h4>
+    <p>It's the fastest way to internalize these ideas. Getting hands-on with sandboxes gives you the deepest intuition.</p>
+  </div>
+  <div class="mt">
+    <div class="mt-num">03 · MODEL SIDE</div>
+    <h4>Know the model side, but go shallow</h4>
+    <p>You don't need to go very deep — understanding how post-training shapes model behavior inside the harness is enough.</p>
+  </div>
+</div>
+
+<!-- 1 -->
+<section id="t1">
+  <h2>Memory — the persistent state system</h2>
+  <p><strong>One line:</strong> Memory is the agent's "sustainable state system" — what lets it carry knowledge across turns and sessions beyond the context window.</p>
+  <p><em>Think of the agent as a person with a small desk and a big filing cabinet.</em> The <b>desk</b> is the context window — what it can see right now, but it's tiny and gets wiped at the end of each session. The <b>filing cabinet</b> is long-term memory: a database it can write notes into and pull from later. Memory has three jobs — <b>write</b> (save a note), <b>read/retrieve</b> (find the right note and lay it on the desk), and <b>manage</b> (tidy the cabinet: merge duplicates, toss stale notes, fix contradictions). Reading is mostly solved; the hard parts are deciding <i>what's worth writing down</i> and keeping the cabinet clean — which is why many teams do the tidying overnight in a batch ("dreaming") rather than scribbling notes mid-conversation.</p>
+  <h4>Key concepts to understand</h4>
+  <ul>
+    <li><b>Layered design — split memory by lifespan and by type.</b> By lifespan: working memory (what sits in the context window right now) versus a long-term store (a database that survives across sessions). By type: episodic memory (specific past events), semantic memory (stable facts), and procedural memory (reusable how-to rules and skills).</li>
+    <li><b>The three core operations.</b> Retrieval — deciding which stored memories are relevant now. Injection — physically placing those memories into the prompt. Update / write-back — persisting new information so it survives the session. Each is a separate engineering problem with its own failure modes.</li>
+    <li><b>Evaluation axes.</b> Recall relevance (does it surface the right memories?), conflict resolution (what happens when two memories disagree?), local / partial update versus full rewrite, and provenance / traceability (can you explain where a memory came from?).</li>
+    <li><b>The self-improvement loop.</b> A memory-rule mechanism distils raw experience into reusable rules; offline consolidation — the "nightly tide" — merges and de-duplicates memories on a schedule; experience extraction pulls lessons out of completed tasks so the agent slowly improves.</li>
+  </ul>
+  <div class="insight">Retrieval and update have decent patterns now; <b>writing is the unsolved part</b> — give a model a memory tool and it over-writes everything, unsure what matters. <b>Strong approach:</b> avoid real-time writes; do scheduled next-day ("T+1") nightly "dreaming" consolidation so the problem degrades into a single global fold-and-merge update. Scope it too: a personal long-term memory writes very differently from a per-workspace working memory.</div>
+</section>
+
+<!-- 2 -->
+<section id="t2">
+  <h2>Skill System — loadable capabilities</h2>
+  <p><strong>One line:</strong> Skills are packaged, on-demand capabilities (instructions + optional scripts/resources) the agent discovers and pulls into context when relevant.</p>
+  <p><em>Picture a shelf of how-to binders.</em> The agent doesn't read every binder up front — that would bury its tiny desk (context window) before any work starts. At startup it only reads the <b>table of contents</b>: each binder's title + one-line description (~60 tokens each). When a task matches, it pulls just that one binder off the shelf and reads it fully; deeper appendices load only if needed. This staged reveal is called <b>progressive disclosure</b> — and the savings are huge: ~8 skills cost about <b>500 tokens</b> at startup instead of <b>70,000</b> if you'd dumped them all in.</p>
+  <h4>Key concepts to understand</h4>
+  <ul>
+    <li><b>The full skill lifecycle:</b> manage (register and version available skills) → discover (agent recognises a skill is relevant) → load (read its instructions into context) → inject (apply them to the work) → unload (drop them to free space). The unload step is the trickiest to get right.</li>
+    <li><b>Progressive disclosure</b> is the core efficiency trick. At startup only each skill's name and one-line description sit in context (~60 tokens each). The full instruction body loads only when triggered, and deeper reference files load only if needed.</li>
+    <li><b>A skill is fundamentally just files</b> — a markdown instruction file plus optional scripts and resources — so it doesn't have to be bound to a sandbox. The same skill can be loaded independently of where code eventually runs.</li>
+  </ul>
+  <div class="insight">Unloading mid-conversation invalidates the <b>key-value cache</b> (see topic 7) — a real cache-miss cost. In controlled experiments, loading with no unload is roughly equivalent in quality. Don't over-engineer it. <b>Nuance:</b> unloading is mostly a <b>passive</b> process governed by the harness. If the harness compresses context frequently, inject a short note recording the loaded skill's identifier into the post-compression summary, so the agent remembers it already used that skill.</div>
+</section>
+
+<!-- 3 -->
+<section id="t3">
+  <h2>Sandbox &amp; Virtualization — safe execution environments</h2>
+  <p><strong>One line:</strong> The isolated environment where the agent runs tools/code without endangering the host — the biggest skill-builder if you've actually constructed one.</p>
+  <p><em>It's a disposable, sealed playroom — a little throwaway computer</em> where the agent can run code, install things, and even break stuff without touching the real system. The lifecycle is about speed versus cost: <b>cold start</b> = building the playroom from scratch (slow); <b>snapshot</b> = taking a photo of a fully set-up room so you can recreate it instantly; <b>resume</b> = reopening a paused room; <b>idle</b> = a room sitting empty, which you pause to stop paying for it. A <b>MicroVM</b> is a playroom with bank-vault walls (genuine isolation) that still opens in well under a second.</p>
+  <h4>Key concepts to understand</h4>
+  <ul>
+    <li><b>Lifecycle states and their cost / latency trade-offs.</b> Cold start = building fresh (slowest, most expensive). Resume = reopening a paused environment (much faster). Snapshot = saving a frozen copy so it can be recreated almost instantly. Idle = running-but-unused; pause it to stop paying.</li>
+    <li><b>Distributed scheduling.</b> In production you're juggling thousands of environments across many machines — you need a scheduler that places, balances, and recycles them. Pooling (keeping a stock of ready environments) and pre-warming (booting before anyone asks) are the standard ways to hide cold-start latency.</li>
+    <li><b>MicroVM isolation (Firecracker-style).</b> Genuine virtual-machine-level security with near-container startup speed. Snapshotting the entire machine state enables fast resume, and pausing idle sessions reclaims cost.</li>
+  </ul>
+  <div class="insight">The tension is between cold-start latency and isolation strength. The practical answer: pre-warmed pools plus snapshot-and-restore to get fast resume without giving up full virtual-machine isolation.</div>
+</section>
+
+<!-- 4 -->
+<section id="t4">
+  <h2>Framework Comparison — Claude Code vs. Codex vs. OpenClaw</h2>
+  <p><strong>One line:</strong> Know each framework's design philosophy and where it's strong/weak — and the deeper axis: <b>model-driven</b> versus <b>role-driven</b> orchestration.</p>
+  <p><em>These are the "operating systems" for coding agents</em> — each one is a different opinion on how to run an agent. <b>Claude Code</b> is fast and highly controllable (lots of knobs: hooks, sub-agents, skills). <b>Codex</b> is prized for a disciplined run-loop and clean code structure. <b>OpenClaw</b> is a personal Swiss-army-knife that plugs into all your chat apps via one gateway — flexible, but the sprawling plugin ecosystem gets messy and risky to maintain. The deeper question: <i>who decides how to split up the work?</i> Fixed, human-designed roles (Claude Code, Codex) or <b>the model itself</b> deciding on the fly (Kimi Swarm, #11).</p>
+  <div class="tblwrap"><table>
+    <thead><tr><th>Framework</th><th>Strong at</th><th>Watch-outs</th></tr></thead>
+    <tbody>
+      <tr><td><b>Claude Code</b></td><td>Agentic control plane + iteration speed</td><td>Opinionated; hooks/subagents/skills give fine control</td></tr>
+      <tr><td><b>Codex</b></td><td>Agent Loop + code architecture</td><td>Loop discipline is the headline strength</td></tr>
+      <tr><td><b>OpenClaw</b></td><td>Personal use, extensions, gateway</td><td>Poor maintainability — sprawling plugin/channel ecosystem, security surface</td></tr>
+    </tbody>
+  </table></div>
+  <div class="insight">Claude Code &amp; Codex use <b>predefined roles</b> for orchestration; Kimi's Swarm pushes orchestration <b>into the model</b> (see #11). That model-versus-role contrast is the discriminating idea.</div>
+</section>
+
+<!-- 5 -->
+<section id="t5">
+  <h2>The Harness — THE central concept</h2>
+  <p><strong>One line:</strong> The engineering <b>shell around the model</b> that makes an agent <b>reliably</b> finish tasks — everything that is <i>not</i> the model weights.</p>
+  <p><em>The model is a brilliant but forgetful contractor; the harness is the entire job site that makes them productive.</em> The schedule that orders the work, the toolbox with safety locks, the checklist, the supervisor who re-checks the output, and the system for handing off across shifts — that's the harness. Drop a genius contractor onto a site with none of that and they wander off, repeat mistakes, or blow the budget. The key insight: <b>as models get smarter, the job site is increasingly what decides whether the project actually ships</b> — reliably, cheaply, and safely.</p>
+  <h4>The seven things a harness owns</h4>
+  <ul>
+    <li><b>Task scheduling</b> — breaking a big goal into smaller subtasks (decomposition), deciding which agent or tool handles each one (dispatch), and choosing the order they run in.</li>
+    <li><b>Context control</b> — assembling exactly what the model sees on each turn and compressing it when it grows too large. This is the single most active job the harness does.</li>
+    <li><b>Action environment and tool safety</b> — giving the model a safe place to act (sandbox), controlling what it's allowed to touch (permissions), and wrapping dangerous operations in guardrails.</li>
+    <li><b>Agent loop and collaboration</b> — running the core think-act-observe cycle, and coordinating control flow whether there is one agent or several.</li>
+    <li><b>Verification and the evaluation closed-loop</b> — checking whether the work is actually correct and feeding results back into the next step, so the agent self-corrects.</li>
+    <li><b>Self-evolution</b> — letting the agent learn from its own past runs and improve over time; this is where Memory (topic 1) and Skills (topic 2) plug in.</li>
+    <li><b>Long-horizon execution</b> — keeping the agent coherent across tasks that run for hours or days without losing the thread (covered in depth in topic 9).</li>
+  </ul>
+  <div class="insight">Model = the brain; harness = the nervous system, body, and environment. As models get stronger, <b>the harness is what decides reliability, cost, latency and safety</b>.</div>
+</section>
+
+<!-- 6 -->
+<section id="t6">
+  <h2>Loop Controllability — steering the agent loop</h2>
+  <p><strong>One line:</strong> How precisely you can steer, intercept and recover within the run-loop — the practical craft of a good harness.</p>
+  <p><em>An agent runs in a cycle: think → use a tool → read the result → think again.</em> "Loop controllability" is how tightly you can supervise that cycle. The levers: build the prompt the <b>same way every time</b> (predictability); <b>catch and retry</b> when a tool returns garbage; drop in <b>checkpoints (hooks)</b> before/after each step; <b>trim the conversation</b> without confusing the model; <b>pause for a human's OK</b> on risky actions; and even <b>start the model's answer for it</b> to nudge direction (prefill).</p>
+  <h4>The levers to understand</h4>
+  <ul>
+    <li><b>Context-assembly stability</b> — building the prompt the same deterministic, reproducible way every turn. Unstable prompt construction breaks debugging and keeps invalidating the cache (see topic 7).</li>
+    <li><b>Tool-error control</b> — validating what a tool returns, retrying when it fails, and degrading gracefully when output is malformed, instead of letting one bad result derail the entire run.</li>
+    <li><b>Hooks and middleware</b> — insertion points where you can intercept and act at fixed moments (before/after a tool call, before/after a turn) to log, modify, approve, or block what's happening.</li>
+    <li><b>Compression strategy together with the key-value cache</b> — shrinking a growing conversation without destroying the cache. Condense the old part while leaving the stable beginning untouched.</li>
+    <li><b>Stop-reason handling plus human-in-the-loop</b> — reading why the model stopped generating (finished, wants a tool call, or hit a length limit) and branching correctly on each case.</li>
+    <li><b>Prefill intervention</b> — steering the model by pre-writing the opening tokens of its response, which strongly nudges the direction or format of what it produces next.</li>
+  </ul>
+  <div class="insight">"How do you compress while keeping the cache?" → keep a <b>stable prefix</b> and only mutate the <b>tail</b>; never rewrite earlier tokens, or you invalidate the whole prefix cache and pay for a full recompute.</div>
+</section>
+
+<!-- 7 -->
+<section id="t7">
+  <h2>Inference Optimization — prefill, decode &amp; caching</h2>
+  <p><strong>One line:</strong> Understand the two phases and how the harness exploits them — this is <i>why</i> prefix stability matters so much.</p>
+  <p><em>Answering happens in two stages.</em> <b>Prefill</b> is the model "reading" the whole prompt — fast, done in parallel, like skimming a page at a glance. <b>Decode</b> is "writing" the answer one word at a time — slower. The big money-saver is <b>prompt caching</b>: if the start of the prompt is identical to last time, the system reuses its earlier "reading" instead of re-doing it (a <b>cache hit</b>) — which is exactly why a good harness keeps the <i>beginning</i> of the prompt stable. <b>Continuous batching</b> squeezes many users together word-by-word to keep the GPU busy. Takeaway: <b>stable prompt prefixes turn directly into lower cost and faster responses.</b></p>
+  <h4>Key concepts to understand</h4>
+  <ul>
+    <li><b>Prefill vs. decode.</b> Prefill reads the entire prompt at once in parallel (compute-bound). Decode writes the answer one token at a time (memory-bandwidth-bound). A long prompt is cheap to read; a long answer is slow to write.</li>
+    <li><b>Key-value cache hit (prefix caching).</b> When the beginning of a prompt is identical to a previous request, the system reuses the cached attention data for that prefix. This is the single biggest lever for cutting agent latency and cost.</li>
+    <li><b>Vendor-side cache management.</b> Model providers expose caching controls through their APIs, so part of the job is designing prompts so the reusable portion stays in a fixed position.</li>
+    <li><b>Continuous batching.</b> A serving technique where many users' requests are grouped at the token level, keeping the GPU busy and raising overall throughput.</li>
+  </ul>
+  <div class="insight">This is exactly why the harness keeps a stable prefix and compresses only the tail (#6): every prefix change is a cache miss = real money + real latency.</div>
+</section>
+
+<!-- 8 -->
+<section id="t8">
+  <h2>Post-training — fitting the model to the agent environment</h2>
+  <p><strong>One line:</strong> Making a <b>base model fit the agentic environment</b> — not deep model research, just enough to understand the mechanism.</p>
+  <p><em>A base model is a brilliant new-grad who's read the whole internet but never held this specific job.</em> Post-training is the on-the-job training: first show it thousands of worked examples of doing the task the right way (supervised fine-tuning), then let it practice in a realistic setup and reward good outcomes (reinforcement learning) — for example, "did the code it wrote actually pass the tests?" The goal isn't to redesign the model; it's to make it <b>fluent in <i>your</i> tools, your loop, and your conventions</b>, and good at recovering when a tool fails.</p>
+  <h4>Key concepts to understand</h4>
+  <ul>
+    <li><b>Supervised fine-tuning on agent trajectories</b> — showing the model thousands of recorded examples of an agent doing the task correctly (the right tool-call format, the loop conventions, how to recover after an error) so it learns to imitate good behaviour.</li>
+    <li><b>Reinforcement learning in real environments</b> — letting the model practise in realistic settings (a terminal, a GUI, a code repository) and rewarding good outcomes. A process reward model scores the quality of each individual step, not just the final result.</li>
+    <li><b>Learning from live deployment traffic</b> — for example, asynchronous reinforcement learning that turns ordinary production conversations into training signal, so the model keeps improving from real usage.</li>
+  </ul>
+  <div class="insight">You don't need the math — what matters is understanding <i>why</i> post-training shapes how the model behaves inside your harness. The model's <i>habits</i> as an agent are shaped here: its tool-call conventions, error-recovery patterns, and loop discipline.</div>
+</section>
+
+<!-- 9 -->
+<section id="t9">
+  <h2>Long-horizon Tasks — keeping coherence over many steps</h2>
+  <p><strong>One line:</strong> Keeping an agent coherent over many steps / hours / days — the failure modes plus the compression playbook.</p>
+  <p><em>It's project management for a job that runs for days, not minutes.</em> Four ways it derails: the agent <b>forgets the original goal</b> (goal drift), its notes <b>pile up until the desk overflows</b> (context explosion), <b>nobody double-checks</b> the work (weak verification), and <b>small early mistakes snowball</b> (error accumulation). The main fix is smart note-condensing (<b>compaction</b>): when the desk fills, summarize the old stuff into a tight recap and carry on. Real systems do this in <b>tiers</b> — light cleanup → full summary → a pre-saved notes file — and <b>time it carefully</b>, ideally at a natural task boundary.</p>
+  <h4>The four failure modes</h4>
+  <ul>
+    <li><b>Goal drift</b> — over a long run the agent gradually forgets or quietly mutates the original objective.</li>
+    <li><b>Context explosion</b> — the window fills with stale, low-value detail, crowding out what actually matters now.</li>
+    <li><b>Insufficient verification</b> — without a closed loop that checks each result, errors pass through unnoticed.</li>
+    <li><b>Error accumulation</b> — small individual mistakes compound across many steps.</li>
+  </ul>
+  <h4>The compression playbook</h4>
+  <ul>
+    <li><b>Compress by timing</b> — before a turn (pre-turn), in the middle (mid-turn), or after (post-turn). Compressing mid-thought can lose fragile in-progress context.</li>
+    <li><b>Compress by level</b> — level 1: light trim (drop stale tool output); level 2: fuller summary written by the model; level 3: hard re-grounding that rebuilds working context from scratch. Claude Code's micro/full/session-memory tiers are a concrete example.</li>
+    <li><b>Model-switch handoff</b> — cleanly transferring task state when you swap models or hand off between agents mid-task.</li>
+  </ul>
+</section>
+
+<!-- 10 -->
+<section id="t10">
+  <h2>Coding Agent Evaluation — benchmarks &amp; eval pipelines</h2>
+  <p><strong>One line:</strong> Know the benchmarks <i>and</i> the eval pipeline that runs them — and why the harness is part of what's being measured.</p>
+  <p><em>It's a standardized exam for coding agents.</em> <b>SWE-bench</b> hands the agent a real GitHub bug report and checks whether its fix makes the project's existing tests pass — graded automatically. The <b>eval pipeline</b> is the exam hall: spin up a fresh sandbox per question, apply the agent's patch, run the tests, tally the score (often "pass@k" — did it succeed on any of N tries). A critical insight: <b>the same model can score very differently depending on the harness wrapped around it</b> — so a benchmark number reflects the scaffolding as much as the model itself.</p>
+  <h4>Key concepts to understand</h4>
+  <ul>
+    <li><b>The benchmarks.</b> SWE-bench (and its variants: Verified, Multimodal, Live) is the headline one. Terminal-Bench tests command-line tasks. Understanding what each actually measures matters more than reciting scores.</li>
+    <li><b>The evaluation pipeline.</b> For each task: spin up a fresh sandbox, apply the patch, run the test suite, score. Scores are often reported as "pass@k" — probability of success within k attempts.</li>
+  </ul>
+  <div class="insight"><b>Harness sensitivity</b> — the same model scores very differently under different harnesses. Also watch for benchmark contamination (training data including test cases). A score without knowing the harness tells you only half the story.</div>
+</section>
+
+<!-- 11 -->
+<section id="t11">
+  <h2>Kimi Swarm — model-native orchestration</h2>
+  <p><strong>One line:</strong> Moonshot's <b>Agent Swarm</b> bakes multi-agent orchestration <i>into the model</i> — a concrete example of model-driven versus role-driven orchestration.</p>
+  <p><em>Instead of one worker grinding through a big job step-by-step,</em> the model acts like a <b>team lead</b> that instantly "hires" a swarm of temp workers, hands each a slice of the task, lets them work <b>in parallel</b>, then stitches their results back together — and crucially, <i>the model itself</i> decides the split, not a fixed org chart. Kimi scaled this from ~100 parallel workers (K2.5) to ~300 (K2.6). <b>Claw Groups</b> lets workers on different devices and even different underlying models — plus humans — join the same job.</p>
+  <h4>Key concepts to understand</h4>
+  <ul>
+    <li><b>The core idea.</b> The model itself breaks a complex task into pieces (self-decomposition), spawns specialised sub-agents to work those pieces in parallel, then synthesises their outputs — all without an external orchestration framework like LangGraph or CrewAI defining the workflow by hand.</li>
+    <li><b>The scale jump.</b> K2.5 coordinated ~100 sub-agents across ~1,500 steps; K2.6 raised that to ~300 sub-agents across ~4,000 coordinated steps, sustaining autonomous runs for many hours.</li>
+    <li><b>Claw Groups.</b> A shared workspace where sub-agents on different devices, different underlying models, and human collaborators all work on the same task — the model acts as an adaptive coordinator that assigns work by skill.</li>
+    <li><b>The contrast to hold onto.</b> Orchestration is model-driven here, versus the role-driven approach of Claude Code and Codex where humans pre-define the roles. Known weakness: the swarm can collapse back into a single-agent loop, and a meaningful share of tool calls failed during long loops — reliability is still an open problem.</li>
+  </ul>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<div class="sec-label" id="quiz">✦ Quiz — check your understanding (8 questions)</div>
+<p style="font-size:16.5px;color:var(--ink-soft);margin:0 0 10px">Pick an answer and hit "Check" to see if you've got it. These questions cover the most important concepts across all 11 topics.</p>
+
+<div class="q-item" id="q3_1">
+  <div class="qnum">Question 1 of 8</div>
+  <p class="q-text">What are the seven things a harness owns?</p>
+  <div class="options">
+    <label><input type="radio" name="q3_1" value="a"> Models, weights, APIs, latency, throughput, cost, and reliability</label>
+    <label><input type="radio" name="q3_1" value="b" data-correct="true"> Task scheduling, context control, tool safety/environment, agent loop/collaboration, verification, self-evolution, and long-horizon execution</label>
+    <label><input type="radio" name="q3_1" value="c"> Prompts, tools, memory, output, errors, logs, and tests</label>
+    <label><input type="radio" name="q3_1" value="d"> Read, write, execute, connect, verify, compress, and terminate</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q3_1')">Check answer</button>
+  <div class="explanation" style="display:none">These seven responsibilities are what distinguish a harness from a bare model call. The model = the brain; the harness = the entire job site that makes it productive and reliable.</div>
+</div>
+
+<div class="q-item" id="q3_2">
+  <div class="qnum">Question 2 of 8</div>
+  <p class="q-text">What is "progressive disclosure" in the context of the Skill System?</p>
+  <div class="options">
+    <label><input type="radio" name="q3_2" value="a"> Gradually showing users more features as they learn the product</label>
+    <label><input type="radio" name="q3_2" value="b"> Loading all skill documentation upfront so the model is always prepared</label>
+    <label><input type="radio" name="q3_2" value="c" data-correct="true"> Only loading a skill's name and one-line description at startup (~60 tokens); the full body loads only when the skill is actually triggered</label>
+    <label><input type="radio" name="q3_2" value="d"> Revealing tool outputs to the user progressively rather than all at once</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q3_2')">Check answer</button>
+  <div class="explanation" style="display:none">This saves enormous context: ~8 skills cost ~500 tokens at startup instead of ~70,000 if you'd dumped them all in. The full body loads on-demand when a task matches.</div>
+</div>
+
+<div class="q-item" id="q3_3">
+  <div class="qnum">Question 3 of 8</div>
+  <p class="q-text">What is the difference between Prefill and Decode in model inference?</p>
+  <div class="options">
+    <label><input type="radio" name="q3_3" value="a"> Prefill writes the answer; Decode reads it back to the user</label>
+    <label><input type="radio" name="q3_3" value="b"> Prefill is for short prompts; Decode is for long ones</label>
+    <label><input type="radio" name="q3_3" value="c" data-correct="true"> Prefill reads the entire prompt in parallel (compute-bound); Decode writes the answer one token at a time (memory-bandwidth-bound)</label>
+    <label><input type="radio" name="q3_3" value="d"> Prefill caches the response; Decode sends it over the network</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q3_3')">Check answer</button>
+  <div class="explanation" style="display:none">Prefill is fast (parallel processing, compute-bound). Decode is slower (sequential, memory-bandwidth-bound). A long prompt is cheap to read; a long answer is slow to write.</div>
+</div>
+
+<div class="q-item" id="q3_4">
+  <div class="qnum">Question 4 of 8</div>
+  <p class="q-text">What are the four failure modes of long-horizon tasks?</p>
+  <div class="options">
+    <label><input type="radio" name="q3_4" value="a"> Timeout, memory leak, token overflow, and hallucination</label>
+    <label><input type="radio" name="q3_4" value="b"> Model degradation, tool failure, cost overrun, and user abandonment</label>
+    <label><input type="radio" name="q3_4" value="c" data-correct="true"> Goal drift, context explosion, insufficient verification, and error accumulation</label>
+    <label><input type="radio" name="q3_4" value="d"> Loop termination, cache miss, skill unload, and prefill cost</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q3_4')">Check answer</button>
+  <div class="explanation" style="display:none">These four compound on each other: drifting goals compound with growing context, weak verification lets errors pass, and small mistakes snowball over dozens of steps.</div>
+</div>
+
+<div class="q-item" id="q3_5">
+  <div class="qnum">Question 5 of 8</div>
+  <p class="q-text">What is "dreaming" in the context of agent memory management?</p>
+  <div class="options">
+    <label><input type="radio" name="q3_5" value="a"> The agent hallucinating facts that don't exist in its knowledge base</label>
+    <label><input type="radio" name="q3_5" value="b"> A metaphor for the model's creative reasoning capabilities</label>
+    <label><input type="radio" name="q3_5" value="c" data-correct="true"> Scheduled offline batch consolidation of memories (e.g. nightly) instead of risky real-time writes</label>
+    <label><input type="radio" name="q3_5" value="d"> The idle state of a paused sandbox waiting for the next task</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q3_5')">Check answer</button>
+  <div class="explanation" style="display:none">Writing in real-time is risky (models over-write indiscriminately). Deferring to a nightly batch ("T+1") turns the problem into a single global fold-and-merge update — much more tractable.</div>
+</div>
+
+<div class="q-item" id="q3_6">
+  <div class="qnum">Question 6 of 8</div>
+  <p class="q-text">What is a MicroVM (like Firecracker), and why is it used for agent sandboxes?</p>
+  <div class="options">
+    <label><input type="radio" name="q3_6" value="a"> A very small Python virtual environment used to isolate dependencies</label>
+    <label><input type="radio" name="q3_6" value="b"> A microservice that manages VM provisioning in the cloud</label>
+    <label><input type="radio" name="q3_6" value="c" data-correct="true"> A lightweight virtual machine with full VM-level isolation but near-container startup speed — safe and fast</label>
+    <label><input type="radio" name="q3_6" value="d"> A compressed container image that reduces startup time by 10×</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q3_6')">Check answer</button>
+  <div class="explanation" style="display:none">MicroVMs give you genuine VM isolation (the agent's code can't touch the host) while starting in milliseconds — the best of both worlds for agent sandboxes running arbitrary code.</div>
+</div>
+
+<div class="q-item" id="q3_7">
+  <div class="qnum">Question 7 of 8</div>
+  <p class="q-text">Why do prefix-stable prompts matter for inference cost and speed?</p>
+  <div class="options">
+    <label><input type="radio" name="q3_7" value="a"> Stable prompts are shorter, so they use fewer tokens</label>
+    <label><input type="radio" name="q3_7" value="b"> They prevent the model from hallucinating</label>
+    <label><input type="radio" name="q3_7" value="c" data-correct="true"> An unchanged prompt prefix lets the system reuse cached attention data (KV cache hit), avoiding expensive recomputation</label>
+    <label><input type="radio" name="q3_7" value="d"> They allow the model to batch multiple requests together</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q3_7')">Check answer</button>
+  <div class="explanation" style="display:none">Every prefix change is a cache miss — the system must recompute the attention keys and values from scratch, costing real money and adding latency. This is why the harness keeps the beginning of the prompt rock-stable.</div>
+</div>
+
+<div class="q-item" id="q3_8">
+  <div class="qnum">Question 8 of 8</div>
+  <p class="q-text">What is the key difference between how Claude Code/Codex and Kimi Swarm handle multi-agent orchestration?</p>
+  <div class="options">
+    <label><input type="radio" name="q3_8" value="a"> Claude Code uses Python; Kimi Swarm uses Go</label>
+    <label><input type="radio" name="q3_8" value="b"> Claude Code runs locally; Kimi Swarm runs in the cloud</label>
+    <label><input type="radio" name="q3_8" value="c" data-correct="true"> Claude Code/Codex use predefined human-designed roles; Kimi Swarm has the model itself decide how to decompose and delegate work</label>
+    <label><input type="radio" name="q3_8" value="d"> Claude Code supports more concurrent agents than Kimi Swarm</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q3_8')">Check answer</button>
+  <div class="explanation" style="display:none">This is the model-driven vs. role-driven axis: Claude Code/Codex have humans pre-define the roles; Kimi Swarm has the model itself break the task into pieces and assign sub-agents dynamically. Both approaches have trade-offs.</div>
+</div>
+
+<!-- ============ FLASHCARDS ============ -->
+<div class="sec-label" id="flashcards">🃏 Flashcards — tap any card to reveal the definition</div>
+<p style="font-size:16.5px;color:var(--ink-soft);margin:0 0 14px">14 key terms from this guide. Tap to flip.</p>
+<div class="fc-grid">
+  <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">Harness</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">The engineering shell around the model — tools, context management, sandbox, loop control — everything that is not the model weights. Makes an agent reliable.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">KV cache (key-value cache)</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Cached attention data for an unchanged prompt prefix. A cache hit avoids expensive recomputation. Prefix stability = cache hits = lower cost and latency.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">Prefill / Decode</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Prefill = parallel prompt processing (compute-bound, fast). Decode = token-by-token answer generation (memory-bandwidth-bound, slower). Long answers are the bottleneck.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">Continuous batching</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Token-level dynamic batching of concurrent users' requests to maximize GPU throughput. Standard practice in production LLM serving.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">MicroVM</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Lightweight virtual machine (Firecracker-style) — full VM isolation with near-container startup speed. Used for agent sandboxes to safely run arbitrary code.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">Snapshot / Resume</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Snapshot = save full machine state. Resume = restore instantly. Together they hide cold-start latency for sandboxes without sacrificing isolation.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">Human-in-the-loop (HITL)</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">A gate where the loop pauses for human approval or input before continuing — used for risky or irreversible actions.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">Stop reason</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Why generation halted: turn finished, model wants a tool call, or hit max tokens. The harness branches on this signal to decide what to do next.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">Prefill intervention</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Steering output by pre-writing the opening tokens of the model's response — strongly nudges the direction or format of what comes next.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">Progressive disclosure</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Only keep a skill's name and description in context at startup (~60 tokens); load the full body on-demand when triggered. Saves tens of thousands of tokens.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">Dreaming / nightly tide</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Offline batch consolidation of memory — scheduled nightly (T+1) instead of real-time writes. Avoids the hard problem of deciding what to write mid-conversation.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">Process reward model (PRM)</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">A model that gives step-by-step reward signals during RL training — much denser feedback for long agentic tasks than a final-outcome reward alone.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">SWE-bench</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Benchmark of real GitHub issues. The agent must produce a patch that passes the repository's existing tests. Score reflects both model and harness quality.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+  <div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-front"><div class="fc-term">Goal drift</div><div class="fc-tap">tap to reveal →</div></div>
+    <div class="fc-back"><div class="fc-def">Long-horizon failure where the agent gradually loses or mutates its original objective — often subtle, compounding over many steps.</div><div class="fc-tap">← tap to flip back</div></div>
+  </div></div>
+</div>
+
+<footer>
+  <div>THE AI LEARNING LIBRARY · ADVANCED GUIDE · BUILT MAY 2026</div>
+  <div>
+    <a href="index.html">Library index</a> ·
+    <a href="claude-code-workflow-cheatsheet.html">← Prev: Claude Code workflow</a> ·
+    <a href="flashcards-index.html">Flashcards index</a>
+  </div>
+</footer>
+
+</div>
+
+<script>
+function checkQ(id) {
+  const item = document.getElementById(id);
+  const selected = item.querySelector('input[type=radio]:checked');
+  if (!selected) { alert('Please select an answer first.'); return; }
+  item.classList.remove('correct','wrong');
+  const isCorrect = selected.hasAttribute('data-correct');
+  item.classList.add(isCorrect ? 'correct' : 'wrong');
+  item.querySelector('.check-btn').disabled = true;
+  item.querySelectorAll('input[type=radio]').forEach(r => r.disabled = true);
+  const exp = item.querySelector('.explanation');
+  if (exp) exp.style.display = 'block';
+}
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    e.preventDefault();
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t)t.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+</script>
+</body>
+</html>

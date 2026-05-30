@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How an Agent Actually Runs — AI Learning Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--slate);  /* GUIDE 1 = slate */
+}
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.6;-webkit-font-smoothing:antialiased;counter-reset:slide;}
+.wrap{max-width:1040px;margin:0 auto;padding:0 28px 120px;}
+code,.mono{font-family:"JetBrains Mono",monospace;font-size:.82em;background:#ece7db;padding:.08em .38em;border-radius:4px;color:#3a382f;}
+a{color:inherit;}
+
+.back{font-family:"JetBrains Mono",monospace;font-size:12px;text-decoration:none;color:var(--ink-soft);display:inline-flex;align-items:center;gap:6px;margin:32px 0 22px;border:1px solid var(--rule);border-radius:6px;padding:5px 12px;transition:all .14s;}
+.back:hover{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--guide-color);font-weight:600;margin-bottom:14px;}
+h1{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(38px,6vw,64px);line-height:1.04;margin:0 0 14px;letter-spacing:-.015em;}
+h1 em{font-style:italic;color:var(--guide-color);}
+.dek{font-family:"Newsreader",Georgia,serif;font-style:italic;font-size:21px;color:var(--ink-soft);line-height:1.5;margin:0 0 12px;max-width:780px;}
+
+.topic-nav{position:sticky;top:0;background:var(--paper);border-bottom:1px solid var(--rule);margin:40px -28px 0;padding:14px 28px;z-index:50;display:flex;gap:18px;flex-wrap:wrap;}
+.topic-nav a{font-family:"JetBrains Mono",monospace;font-size:11.5px;font-weight:600;text-decoration:none;color:var(--ink-soft);letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-radius:5px;transition:all .14s;}
+.topic-nav a:hover{background:var(--ink);color:var(--paper);}
+
+.meta-takeaway{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:46px 0 8px;}
+@media(max-width:760px){.meta-takeaway{grid-template-columns:1fr;}}
+.mt{background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--guide-color);border-radius:11px;padding:22px 24px;}
+.mt .mt-num{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--guide-color);font-weight:600;letter-spacing:.18em;margin-bottom:8px;}
+.mt h4{font-family:"Fraunces",serif;font-weight:600;font-size:19px;margin:0 0 8px;line-height:1.3;}
+.mt p{margin:0;font-size:15.5px;line-height:1.5;color:var(--ink-soft);}
+
+/* ===== SLIDE PANELS ===== */
+section:not(#quiz):not(#flashcards){counter-increment:slide;background:var(--card);border:1.5px solid color-mix(in srgb, var(--guide-color) 28%, var(--rule));border-radius:18px;box-shadow:0 8px 36px -10px rgba(27,26,23,.18),0 1px 0 rgba(27,26,23,.04);margin:48px 0;overflow:hidden;position:relative;}
+section:not(#quiz):not(#flashcards) h2{margin:0;padding:26px 36px 22px;background:var(--guide-color);color:#fff;font-family:"Fraunces",serif;font-weight:900;font-size:clamp(20px,2.8vw,26px);letter-spacing:-.015em;line-height:1.1;display:flex;align-items:flex-start;gap:14px;}
+section:not(#quiz):not(#flashcards) h2::before{content:counter(slide,decimal-leading-zero);font-family:"JetBrains Mono",monospace;font-weight:600;font-size:12px;letter-spacing:.1em;background:rgba(255,255,255,.16);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.28);padding:4px 10px;border-radius:5px;flex-shrink:0;margin-top:3px;white-space:nowrap;}
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre,
+section:not(#quiz):not(#flashcards) > h4,
+section:not(#quiz):not(#flashcards) > ul,
+section:not(#quiz):not(#flashcards) > ol,
+section:not(#quiz):not(#flashcards) > .tblwrap{margin-left:36px;margin-right:36px;}
+section:not(#quiz):not(#flashcards) > p:first-of-type{margin-top:28px;}
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child,
+section:not(#quiz):not(#flashcards) > .insight:last-child,
+section:not(#quiz):not(#flashcards) > .tblwrap:last-child{margin-bottom:34px;}
+section:not(#quiz):not(#flashcards)::after{content:"";display:block;height:4px;background:linear-gradient(90deg,var(--guide-color) 0%,color-mix(in srgb,var(--guide-color) 30%,transparent) 100%);margin-top:34px;opacity:.35;}
+@media(max-width:680px){
+  section:not(#quiz):not(#flashcards) h2{padding:20px 22px 18px;font-size:20px;}
+  section:not(#quiz):not(#flashcards) > *{margin-left:22px !important;margin-right:22px !important;}
+}
+/* ===== END SLIDE PANELS ===== */
+
+section:not(#quiz):not(#flashcards) h4{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);margin-top:24px;margin-bottom:10px;font-weight:600;}
+section:not(#quiz):not(#flashcards) ul{padding-left:0;list-style:none;margin-top:0;}
+section:not(#quiz):not(#flashcards) li{padding:5px 0 5px 22px;position:relative;font-size:16.5px;line-height:1.5;}
+section:not(#quiz):not(#flashcards) li::before{content:"▸";position:absolute;left:0;color:var(--guide-color);font-size:14px;top:7px;}
+section:not(#quiz):not(#flashcards) li b{font-weight:600;}
+
+.insight,.misconception{border-radius:10px;padding:18px 22px;margin:22px 0;font-size:17px;line-height:1.5;}
+.insight{border-left:4px solid var(--slate);background:var(--slate-soft);}
+.misconception{border-left:4px solid var(--accent);background:var(--accent-soft);}
+.insight::before{content:"✦ Key insight — ";font-weight:600;color:var(--slate);}
+.misconception::before{content:"✕ Common misconception — ";font-weight:600;color:var(--accent);}
+
+.tblwrap{overflow-x:auto;margin:18px 0;}
+table{border-collapse:collapse;width:100%;font-size:15.5px;}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top;}
+thead th{font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--ink);font-weight:600;}
+tbody tr:nth-child(even){background:rgba(255,255,255,.4);}
+
+/* Quiz */
+.sec-label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin:54px 0 6px;font-weight:600;}
+#quiz, #flashcards{margin-top:60px;}
+.q-item{margin:18px 0;padding:22px 26px;background:var(--card);border:1.5px solid var(--rule);border-radius:12px;}
+.q-item.correct{border-color:#2f5d62;background:#f0f6f5;}
+.q-item.wrong{border-color:#cc3b1d;background:#fdf3f0;}
+.q-item .qnum{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--guide-color);font-weight:600;margin-bottom:8px;}
+.q-text{font-size:17px;font-weight:600;margin-bottom:14px;}
+.options{display:flex;flex-direction:column;gap:9px;margin-bottom:14px;}
+.options label{display:flex;align-items:flex-start;gap:10px;font-size:16px;cursor:pointer;padding:9px 14px;border-radius:7px;border:1.5px solid var(--rule);background:var(--paper);transition:background .12s;line-height:1.45;}
+.options label:hover{background:#ede9e0;}
+.q-item.correct label:has(input[data-correct]){background:#dde7e6;border-color:#2f5d62;}
+.q-item.wrong label:has(input:checked:not([data-correct])){background:#fde8e3;border-color:#cc3b1d;}
+.check-btn{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:8px 18px;border-radius:7px;border:1.5px solid var(--guide-color);background:transparent;color:var(--guide-color);cursor:pointer;transition:all .14s;}
+.check-btn:hover:not(:disabled){background:var(--guide-color);color:#fff;}
+.check-btn:disabled{opacity:.4;cursor:not-allowed;}
+.explanation{margin-top:14px;padding:12px 16px;background:#f0f6f5;border-left:3px solid var(--guide-color);border-radius:6px;font-size:15px;color:var(--ink-soft);}
+
+/* Flashcards */
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:18px;}
+.fc{perspective:900px;height:170px;cursor:pointer;}
+.fc-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1);}
+.fc.flipped .fc-inner{transform:rotateY(180deg);}
+.fc-front,.fc-back{position:absolute;inset:0;border-radius:11px;padding:18px 18px 14px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;justify-content:space-between;}
+.fc-front{background:var(--card);border:1.5px solid var(--rule);border-left:4px solid var(--guide-color);}
+.fc-back{transform:rotateY(180deg);background:var(--guide-color);}
+.fc-term{font-family:"JetBrains Mono",monospace;font-weight:600;font-size:14px;color:var(--guide-color);}
+.fc-def{color:#e8f0ef;font-size:13px;line-height:1.4;}
+.fc-tap{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--ink-soft);}
+.fc-back .fc-tap{color:rgba(255,255,255,.45);}
+
+footer{margin-top:90px;padding-top:28px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+footer a{color:var(--guide-color);text-decoration:none;border-bottom:1px solid currentColor;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<a class="back" href="index.html">← Back to Library</a>
+<div class="kicker">01 · Foundations</div>
+<h1>How an <em>Agent</em> Actually Runs</h1>
+<p class="dek">A bottom-up route to understanding agents — not by chasing big frameworks, but by reading three small open-source projects until the agent loop, tools, memory, context compaction, and MCP all click.</p>
+
+<div class="meta-takeaway">
+  <div class="mt">
+    <div class="mt-num">TAKEAWAY 01</div>
+    <h4>An Agent = a loop</h4>
+    <p>At heart it's "LLM decides → tool executes → result feeds back," repeated until the task is done. Not magic — a control loop around a model.</p>
+  </div>
+  <div class="mt">
+    <div class="mt-num">TAKEAWAY 02</div>
+    <h4>Read small before big</h4>
+    <p>Don't start with LangChain/CrewAI/AutoGen. Get one minimal agent running, then layer on tools, ReAct, then memory/skills/MCP.</p>
+  </div>
+  <div class="mt">
+    <div class="mt-num">TAKEAWAY 03</div>
+    <h4>Three projects, three lenses</h4>
+    <p>mini-swe-agent = the <em>skeleton</em>; smolagents = <em>tools &amp; ReAct</em>; a full Mini-Agent = the <em>engineering</em> (memory, context, MCP).</p>
+  </div>
+</div>
+
+<nav class="topic-nav">
+  <a href="#core">Agent loop</a>
+  <a href="#p1">mini-swe-agent</a>
+  <a href="#p2">smolagents</a>
+  <a href="#p3">Mini-Agent</a>
+  <a href="#method">Method</a>
+  <a href="#frameworks">Frameworks</a>
+  <a href="#quiz">Quiz</a>
+  <a href="#flashcards">Flashcards</a>
+</nav>
+
+<section id="core">
+  <h2>The agent loop — the thing to see through</h2>
+  <p><strong>One line:</strong> An agent isn't a mysterious system — it's the cycle of <b>LLM decision + tool execution + result feedback</b>, running until the goal is met.</p>
+  <p><em>Imagine giving a smart assistant a task and a keyboard.</em> It <b>receives the task</b>, the model <b>proposes the next action</b> (e.g. a command to run), that action is <b>executed</b> (via bash / a subprocess / a tool), and the <b>observation</b> (what came back) is <b>pasted back into the conversation</b> so the model can decide the next step. That's the whole engine. The five things worth tracing in any codebase: <i>how the task comes in, how the model picks the next action, how the action executes, how the observation re-enters context, and how the loop knows when to stop.</i></p>
+  <h4>The five questions to answer in any agent's code</h4>
+  <ul>
+    <li><b>How does the agent receive the task?</b> (the initial prompt + system prompt)</li>
+    <li><b>How does the model generate the next action?</b> (free-text command, JSON tool call, or Python code)</li>
+    <li><b>How does the action execute?</b> (bash / <code>subprocess</code> / a registered tool function)</li>
+    <li><b>How does the observation get fed back?</b> (appended to the message history)</li>
+    <li><b>Why is a linear history easier to debug?</b> (every step just appends — you can replay exactly what the model saw)</li>
+  </ul>
+  <div class="insight">A <b>chatbot</b> answers and waits. An <b>agent</b> takes actions in the world (runs commands, calls tools), reads the results, and loops — pursuing a goal across many steps rather than replying once.</div>
+</section>
+
+<section id="p1">
+  <h2>mini-swe-agent — the minimal runnable skeleton</h2>
+  <p><strong>One line:</strong> ~100 lines of Python that solve real GitHub issues — the cleanest way to see an agent loop with zero scaffolding.</p>
+  <p><em>It's the "hello world" of coding agents.</em> Built by the Princeton/Stanford team behind <b>SWE-bench</b> and SWE-agent, it deliberately strips everything away: <b>no custom tools, no plugins, no vector DB</b> — the agent's only action is to <b>run a bash command</b>, and each command runs independently via <code>subprocess.run</code>. Despite that, it scores <b>&gt;74% on SWE-bench Verified</b>. The lesson: as models got better at agentic coding, most of the old scaffolding became unnecessary — so this is the perfect baseline to study because the <i>model</i>, not the framework, is doing the work.</p>
+  <h4>What to trace here</h4>
+  <ul>
+    <li><b>The bare loop</b> — prompt in, model emits a bash command, it runs, output appends to history, repeat.</li>
+    <li><b>Linear history</b> — every step just appends to the message list; nothing hidden, trivially replayable (why it's easy to debug).</li>
+    <li><b>Stateless execution</b> — <code>subprocess.run</code> per action, no persistent shell session to reason about.</li>
+    <li><b>The 3-way decoupling</b> — <b>model</b> (which LLM), <b>environment</b> (where commands run: local / Docker), and <b>agent</b> (the loop) are cleanly separated.</li>
+    <li><b>No tool-calling interface needed</b> — works with any model because actions are just text commands, not a special API.</li>
+  </ul>
+  <div class="insight">"Just tell the model to figure it out" — minimal scaffold, maximum reliance on model capability. A clean baseline that puts the LM, not the harness, at the center.</div>
+</section>
+
+<section id="p2">
+  <h2>smolagents — ReAct, tools &amp; CodeAgent</h2>
+  <p><strong>One line:</strong> HuggingFace's ~1,000-line framework — more reusable than mini-swe-agent, and the best place to internalize ReAct and tool design.</p>
+  <p><em>If mini-swe-agent shows the skeleton, smolagents shows the reusable body.</em> Every agent here is a <code>MultiStepAgent</code> — an implementation of <b>ReAct</b>, the loop of <b>Think → Act → Observe</b>. Its signature idea: the default <b>CodeAgent writes its actions as Python code</b> (run in a sandbox) instead of emitting JSON — which lets one step combine tools, loop, and use conditionals naturally, and research suggests models act more effectively in code than in JSON. The alternative <b>ToolCallingAgent</b> writes actions as JSON tool calls, the classic style.</p>
+  <h4>What to focus on</h4>
+  <ul>
+    <li><b>The ReAct cycle in code</b> — how Think / Act / Observe actually map to functions and the message log.</li>
+    <li><b>Defining a Tool</b> — how a tool is declared and how the model is told it can call it.</li>
+    <li><b>Why CodeAgent writes Python</b> — composability (nesting, loops, conditionals) and fewer round-trips than JSON calls.</li>
+    <li><b>Built-in &amp; custom tools</b> — e.g. a web-search tool; how to write your own and adapt different models.</li>
+    <li><b>CodeAgent vs ToolCallingAgent</b> — code-as-action vs JSON-as-action (see the table below).</li>
+  </ul>
+  <div class="tblwrap"><table>
+    <thead><tr><th>Dimension</th><th>CodeAgent (default)</th><th>ToolCallingAgent</th></tr></thead>
+    <tbody>
+      <tr><td><b>Action format</b></td><td>Python code snippet</td><td>JSON / structured tool call</td></tr>
+      <tr><td><b>Strength</b></td><td>Composable: loops, conditionals, nesting in one step</td><td>Predictable, deterministic, easy to govern</td></tr>
+      <tr><td><b>Executes via</b></td><td>Sandbox (Docker / E2B / Modal)</td><td>Model's native tool-calling API</td></tr>
+      <tr><td><b>Best for</b></td><td>Multi-step, computational, dynamic logic</td><td>Production integrations, fixed APIs</td></tr>
+    </tbody>
+  </table></div>
+  <div class="misconception">CodeAgent writing actions <i>as code</i> is different from "an agent that helps you write code." Here the <b>code IS the action language</b> — the model's tool call literally is a Python snippet that gets executed.</div>
+</section>
+
+<section id="p3">
+  <h2>Mini-Agent — the full engineering structure</h2>
+  <p><strong>One line:</strong> The first two teach <i>principles</i>; this one shows the <i>engineering</i> — what a real agent needs to run long tasks reliably.</p>
+  <p><em>A toy loop works for one quick task; a real agent has to survive a long one.</em> That means solving the engineering problems around the loop: <b>what to do when context gets too long</b> (summarize/compact it), <b>how to remember things across runs</b> (a persistent "Session Note"), <b>how to plug in reusable workflows</b> (Skills) <b>and external tools</b> (MCP), and <b>how to organize logs, config, and the CLI</b> so it's debuggable and operable. The thing to truly internalize: a long-running agent isn't just "calls tools" — it must also handle <b>context, memory, observability, and extensibility</b>.</p>
+  <h4>What to study</h4>
+  <ul>
+    <li><b>The complete agent execution loop</b> — the full version, with all the production concerns wired in.</li>
+    <li><b>Filesystem &amp; Shell tools</b> — how real file/command tools are exposed safely.</li>
+    <li><b>Context compaction</b> — when the conversation gets too long, how it summarizes/compresses to stay under the window.</li>
+    <li><b>Session Note (persistent memory)</b> — how learnings survive across sessions, distinct from the in-context history.</li>
+    <li><b>Skills</b> — how reusable workflows are plugged in.</li>
+    <li><b>MCP</b> — how external tools are extended in via a standard protocol.</li>
+    <li><b>Logs / config / CLI</b> — how the project is organized for operability.</li>
+  </ul>
+  <div class="insight"><b>Context</b> = what's in the model's window <i>right now</i> (this conversation, recent tool output) — finite and wiped between sessions. <b>Memory</b> = what persists <i>beyond</i> the window (a Session Note, a store) and gets selectively loaded back in. Compaction manages context; memory manages persistence.</div>
+</section>
+
+<section id="method">
+  <h2>The learning method — one mainline per project</h2>
+  <p><strong>One line:</strong> Don't read the whole codebase. Per project, follow a single thread — and finish by changing something small yourself.</p>
+  <h4>The reading thread</h4>
+  <ul>
+    <li><b>Run the demo first</b> — get it working before reading anything.</li>
+    <li><b>Find the entry file</b> — where execution starts.</li>
+    <li><b>Read down the agent loop</b> — follow the loop, ignore the rest at first.</li>
+    <li><b>Draw the flow</b> — sketch "model input → tool execution → result returned."</li>
+    <li><b>Then change one small thing</b> — this is what turns reading into understanding.</li>
+  </ul>
+  <h4>Suggested small modifications (to prove you get it)</h4>
+  <ul>
+    <li>Add a simple <b>constraint</b> to mini-swe-agent (e.g. limit which commands it may run).</li>
+    <li>Write a <b>custom Tool</b> for smolagents.</li>
+    <li>Run a task on Mini-Agent <b>with memory / context-compaction</b> turned on.</li>
+  </ul>
+  <div class="insight">mini-swe-agent for the <b>skeleton</b> → smolagents for <b>tools &amp; ReAct</b> → Mini-Agent for <b>memory, Skills, MCP</b>. Small agent first; frameworks later.</div>
+</section>
+
+<section id="frameworks">
+  <h2>The framework landscape — and why to delay it</h2>
+  <p><strong>One line:</strong> The big orchestration frameworks are powerful but heavy — learn the loop first so they're not a black box.</p>
+  <p><em>These are the "batteries-included" toolkits everyone reaches for.</em> They're useful, but starting here hides the loop you actually need to understand. The advice: get a minimal agent running, learn tools and ReAct, then study memory/skills/MCP — <i>then</i> a framework is just a convenience layer you can reason about.</p>
+  <div class="tblwrap"><table>
+    <thead><tr><th>Framework</th><th>What it's known for</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td><b>LangChain</b></td><td>The broadest ecosystem of chains, tools, integrations</td><td>Powerful but heavy; lots of abstraction to see through</td></tr>
+      <tr><td><b>CrewAI</b></td><td>Role-based multi-agent "crews" that collaborate</td><td>Good for team-of-agents patterns</td></tr>
+      <tr><td><b>AutoGen</b></td><td>Multi-agent conversations &amp; orchestration (Microsoft)</td><td>Strong on agent-to-agent messaging</td></tr>
+    </tbody>
+  </table></div>
+  <div class="insight">"Don't pile on LangChain / CrewAI / AutoGen on day one." Skeleton → tools &amp; ReAct → memory/skills/MCP. Frameworks last, once the loop is second nature.</div>
+</section>
+
+<section id="quiz">
+  <div class="sec-label">Quiz — How an Agent Actually Runs</div>
+
+  <div class="q-item" id="q1_1">
+    <div class="qnum">Question 1 of 10</div>
+    <div class="q-text">What is the fundamental difference between an Agent and a Chatbot?</div>
+    <div class="options">
+      <label><input type="radio" name="q1_1"> An agent uses a database; a chatbot doesn't</label>
+      <label><input type="radio" name="q1_1" data-correct="true"> An agent acts and loops with tools; a chatbot responds and stops</label>
+      <label><input type="radio" name="q1_1"> An agent is always more accurate than a chatbot</label>
+      <label><input type="radio" name="q1_1"> A chatbot can run code; an agent cannot</label>
+    </div>
+    <button class="check-btn" onclick="checkQ('q1_1')">Check answer</button>
+    <div class="explanation" style="display:none">The defining additions are tool use, a feedback loop, and multi-step autonomy. A chatbot replies once; an agent loops until a goal is met.</div>
+  </div>
+
+  <div class="q-item" id="q1_2">
+    <div class="qnum">Question 2 of 10</div>
+    <div class="q-text">What is the core flow of ReAct?</div>
+    <div class="options">
+      <label><input type="radio" name="q1_2"> Plan → Execute → Review</label>
+      <label><input type="radio" name="q1_2"> Read → Act → Terminate</label>
+      <label><input type="radio" name="q1_2" data-correct="true"> Think → Act → Observe (repeated)</label>
+      <label><input type="radio" name="q1_2"> Prompt → Response → Evaluate</label>
+    </div>
+    <button class="check-btn" onclick="checkQ('q1_2')">Check answer</button>
+    <div class="explanation" style="display:none">ReAct = <strong>Reasoning + Acting</strong>. The model writes a reasoning step (Think), chooses an action (Act), the action runs and returns a result (Observe), and that result feeds the next Think step.</div>
+  </div>
+
+  <div class="q-item" id="q1_3">
+    <div class="qnum">Question 3 of 10</div>
+    <div class="q-text">Why does smolagents' CodeAgent write its actions as Python code rather than JSON?</div>
+    <div class="options">
+      <label><input type="radio" name="q1_3"> Python is the only language the model supports</label>
+      <label><input type="radio" name="q1_3"> JSON is too verbose for large payloads</label>
+      <label><input type="radio" name="q1_3" data-correct="true"> Python allows composability — loops, conditionals, and tool nesting in one step</label>
+      <label><input type="radio" name="q1_3"> JSON requires an internet connection; Python doesn't</label>
+    </div>
+    <button class="check-btn" onclick="checkQ('q1_3')">Check answer</button>
+    <div class="explanation" style="display:none">Code-as-action lets a single step combine tools, iterate with loops, and use conditionals naturally — reducing round-trips and giving the model more expressive power than a single JSON call.</div>
+  </div>
+
+  <div class="q-item" id="q1_4">
+    <div class="qnum">Question 4 of 10</div>
+    <div class="q-text">What is "context compaction" in the context of a long-running agent?</div>
+    <div class="options">
+      <label><input type="radio" name="q1_4"> Deleting old conversations permanently from storage</label>
+      <label><input type="radio" name="q1_4" data-correct="true"> Summarizing or dropping older turns when the window fills, to stay under the context limit</label>
+      <label><input type="radio" name="q1_4"> Compressing binary data sent to the model API</label>
+      <label><input type="radio" name="q1_4"> A technique to speed up model inference on long inputs</label>
+    </div>
+    <button class="check-btn" onclick="checkQ('q1_4')">Check answer</button>
+    <div class="explanation" style="display:none">Compaction preserves the goal and key results while dropping or summarizing stale low-value turns — keeping the agent focused and within its context window.</div>
+  </div>
+
+  <div class="q-item" id="q1_5">
+    <div class="qnum">Question 5 of 10</div>
+    <div class="q-text">What is the difference between memory and context in an agent?</div>
+    <div class="options">
+      <label><input type="radio" name="q1_5"> They're the same thing — both refer to the conversation history</label>
+      <label><input type="radio" name="q1_5"> Memory holds code; context holds text</label>
+      <label><input type="radio" name="q1_5" data-correct="true"> Context is the live window (finite, wiped between sessions); memory persists beyond it like a Session Note</label>
+      <label><input type="radio" name="q1_5"> Memory is faster to access than context</label>
+    </div>
+    <button class="check-btn" onclick="checkQ('q1_5')">Check answer</button>
+    <div class="explanation" style="display:none">Think of it as: context = RAM (what the model sees right now), memory = disk (what survives between sessions and gets selectively reloaded).</div>
+  </div>
+
+  <div class="q-item" id="q1_6">
+    <div class="qnum">Question 6 of 10</div>
+    <div class="q-text">What problem does the Model Context Protocol (MCP) solve?</div>
+    <div class="options">
+      <label><input type="radio" name="q1_6"> Making models write better code</label>
+      <label><input type="radio" name="q1_6"> Speeding up inference on long prompts</label>
+      <label><input type="radio" name="q1_6" data-correct="true"> Standardizing how agents connect to external tools so capabilities are pluggable without bespoke glue per service</label>
+      <label><input type="radio" name="q1_6"> Providing a graphical interface for running agents</label>
+    </div>
+    <button class="check-btn" onclick="checkQ('q1_6')">Check answer</button>
+    <div class="explanation" style="display:none">Instead of hardcoding each integration, MCP is an open standard — tools are discovered and called through one protocol, so capabilities are reusable across agents.</div>
+  </div>
+
+  <div class="q-item" id="q1_7">
+    <div class="qnum">Question 7 of 10</div>
+    <div class="q-text">What should happen when a tool execution fails in a well-designed agent?</div>
+    <div class="options">
+      <label><input type="radio" name="q1_7"> The agent crashes and must restart from the beginning</label>
+      <label><input type="radio" name="q1_7" data-correct="true"> The error is captured and fed back as an observation so the model can adapt (retry, change approach)</label>
+      <label><input type="radio" name="q1_7"> The action is silently retried indefinitely</label>
+      <label><input type="radio" name="q1_7"> A human must intervene immediately before any further steps</label>
+    </div>
+    <button class="check-btn" onclick="checkQ('q1_7')">Check answer</button>
+    <div class="explanation" style="display:none">The loop itself is the recovery mechanism — a failed step is just another observation. Add validation, retries with limits, and timeouts so one bad result doesn't derail the run.</div>
+  </div>
+
+  <div class="q-item" id="q1_8">
+    <div class="qnum">Question 8 of 10</div>
+    <div class="q-text">Why is mini-swe-agent a good first agent to study?</div>
+    <div class="options">
+      <label><input type="radio" name="q1_8"> It has the most features of any open-source agent</label>
+      <label><input type="radio" name="q1_8"> It uses the most advanced frameworks available</label>
+      <label><input type="radio" name="q1_8" data-correct="true"> It strips away all scaffolding to show the bare loop — the model, not the framework, is doing the work</label>
+      <label><input type="radio" name="q1_8"> It only works on simple tasks, making it easy to follow</label>
+    </div>
+    <button class="check-btn" onclick="checkQ('q1_8')">Check answer</button>
+    <div class="explanation" style="display:none">At ~100 lines with no custom tools or plugins, it's the ideal baseline — it shows what's truly essential in an agent loop while still scoring &gt;74% on SWE-bench Verified.</div>
+  </div>
+
+  <div class="q-item" id="q1_9">
+    <div class="qnum">Question 9 of 10</div>
+    <div class="q-text">What is a Session Note in Mini-Agent?</div>
+    <div class="options">
+      <label><input type="radio" name="q1_9"> A real-time log of all tool calls during the current session</label>
+      <label><input type="radio" name="q1_9" data-correct="true"> A persistent record of a run's learnings, saved to disk and reloaded in future sessions — a simple long-term memory</label>
+      <label><input type="radio" name="q1_9"> A summary shown to the user when a session ends</label>
+      <label><input type="radio" name="q1_9"> A configuration file for the agent loop settings</label>
+    </div>
+    <button class="check-btn" onclick="checkQ('q1_9')">Check answer</button>
+    <div class="explanation" style="display:none">The Session Note is one of the simplest forms of long-term memory — it's what lets an agent know what it learned in previous runs, not just the current conversation.</div>
+  </div>
+
+  <div class="q-item" id="q1_10">
+    <div class="qnum">Question 10 of 10</div>
+    <div class="q-text">Why does a coding agent need a sandbox?</div>
+    <div class="options">
+      <label><input type="radio" name="q1_10"> To improve model reasoning performance</label>
+      <label><input type="radio" name="q1_10"> To store code files permanently across sessions</label>
+      <label><input type="radio" name="q1_10" data-correct="true"> To isolate arbitrary code and command execution from the host system, protecting it from mistakes</label>
+      <label><input type="radio" name="q1_10"> To provide a UI for the agent to interact with</label>
+    </div>
+    <button class="check-btn" onclick="checkQ('q1_10')">Check answer</button>
+    <div class="explanation" style="display:none">An agent runs arbitrary commands/code, so you isolate execution to protect the host and contain mistakes. Logs serve the complementary need: observability for long autonomous runs.</div>
+  </div>
+
+</section>
+
+<section id="flashcards">
+  <div class="sec-label">Flashcards — How an Agent Actually Runs</div>
+  <div class="fc-grid">
+    <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-term">Agent loop</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">LLM decides → tool executes → result feeds back, repeated until the goal is met. The core of every agent.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-term">ReAct</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Reasoning + Acting: the Think → Act → Observe cycle, with reasoning made explicit in text before each action.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-term">Action</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">The step the model chooses to take — a bash command, a JSON tool call, or a Python snippet. Executed by the environment.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-term">Observation</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">The result of executing an action, appended back into context so the model can reason from it on the next step.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-term">Linear history</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Every step just appends to the message list — nothing hidden, so runs are easy to replay and debug step by step.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-term">Tool</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A named, described function the model can invoke (web search, file read, API call) with typed inputs and outputs.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-term">Function calling</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Model emits a structured tool call directly; deterministic and predictable. Reasoning happens inside the model, invisible in the output.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-term">CodeAgent</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">smolagents' default agent type: writes actions as executable Python run in a sandbox. Composable — loops, conditionals, and nesting in one step.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-term">ToolCallingAgent</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">smolagents variant that writes actions as JSON tool calls — the classic function-calling style. Predictable and easy to govern.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-term">MultiStepAgent</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">smolagents' base class implementing the ReAct loop. CodeAgent and ToolCallingAgent both extend it.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-term">subprocess.run</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">How mini-swe-agent executes each bash action independently — stateless, no persistent shell session, simple to reason about.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-term">SWE-bench</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Benchmark of real GitHub issues; the agent must produce a patch that makes existing tests pass. mini-swe-agent scores &gt;74% on the Verified split.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-term">Context compaction</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Summarizing or dropping older turns when the context window fills, to keep the goal and key results while shedding stale detail.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-term">Memory vs. context</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Context = live window (RAM) — finite, gone between sessions. Memory = persistence beyond the window (disk) — e.g. a Session Note loaded back in when relevant.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-term">Session Note</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A persisted record of a run's learnings, saved to disk and reloaded in future sessions — one of the simplest forms of long-term memory.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-term">Skills</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Reusable, pluggable workflows the agent can load when relevant — packaged as files with instructions and optional scripts.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-term">MCP</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Model Context Protocol — open standard to connect external tools and data without bespoke integration glue per service.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-term">Sandbox</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Isolated environment for running an agent's commands/code safely, away from the host — so mistakes can't do real damage.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-term">Model / env / agent split</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">The clean 3-way separation: which LLM (model), where actions run (environment), and the loop logic (agent) — each replaceable independently.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+    <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-term">LangChain / CrewAI / AutoGen</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Heavyweight orchestration frameworks. Useful convenience layers once you understand the loop — but starting here hides the fundamentals.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+  </div>
+</section>
+
+<footer>
+  <a href="index.html">← Library index</a>
+  <a href="flashcards-index.html">All flashcards</a>
+  <a href="claude-code-workflow-cheatsheet.html">Next: Claude Code workflow →</a>
+</footer>
+
+</div>
+
+<script>
+function checkQ(id) {
+  const item = document.getElementById(id);
+  const selected = item.querySelector('input[type=radio]:checked');
+  if (!selected) { alert('Please select an answer first.'); return; }
+  item.classList.remove('correct','wrong');
+  const isCorrect = selected.hasAttribute('data-correct');
+  item.classList.add(isCorrect ? 'correct' : 'wrong');
+  item.querySelector('.check-btn').disabled = true;
+  item.querySelectorAll('input[type=radio]').forEach(r => r.disabled = true);
+  const exp = item.querySelector('.explanation');
+  if (exp) exp.style.display = 'block';
+}
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    e.preventDefault();
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t)t.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+</script>
+</body>
+</html>

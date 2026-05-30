@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Applied · Why AI Fails Your Document Library</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--amber);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; counter-reset: slide; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);
+  margin:48px 0 6px; font-weight:600; }
+code, .mono { font-family:"JetBrains Mono",monospace; font-size:.82em;
+  background:#ece7db; padding:.08em .38em; border-radius:4px; color:#3a382f; }
+
+.back { font-family:"JetBrains Mono",monospace; font-size:12px;
+  text-decoration:none; color:var(--ink-soft); display:inline-flex;
+  align-items:center; gap:6px; margin-bottom:22px; border:1px solid var(--rule);
+  border-radius:6px; padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px;
+  letter-spacing:.28em; text-transform:uppercase; color:var(--accent);
+  font-weight:600; margin-bottom:18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(34px,5.4vw,56px);
+  line-height:1.05; letter-spacing:-.02em; margin:6px 0 16px; }
+.dek { font-size:20px; color:var(--ink-soft); max-width:720px; margin:0 0 36px; }
+
+.topnav { position:sticky; top:0; z-index:10; background:var(--paper);
+  border-bottom:1px solid var(--rule); margin:28px -28px 36px; padding:14px 28px;
+  display:flex; gap:18px; flex-wrap:wrap; }
+.topnav a { font-family:"JetBrains Mono",monospace; font-size:12px;
+  text-decoration:none; color:var(--ink-soft); font-weight:600;
+  letter-spacing:.04em; }
+.topnav a:hover { color:var(--guide-color); }
+
+.takeaways { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:14px; margin:30px 0 8px; }
+.tk { background:var(--card); border:1px solid var(--rule);
+  border-left:4px solid var(--guide-color); border-radius:10px; padding:18px 20px; }
+.tk-lbl { font-family:"JetBrains Mono",monospace; font-size:10px;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--guide-color);
+  font-weight:600; margin-bottom:6px; }
+.tk-body { font-size:15.5px; line-height:1.45; }
+
+/* ===== SLIDE PANELS ===== */
+section:not(#quiz):not(#flashcards) {
+  counter-increment: slide;
+  background: var(--card);
+  border: 1.5px solid color-mix(in srgb, var(--guide-color, var(--slate)) 28%, var(--rule));
+  border-radius: 18px;
+  box-shadow: 0 8px 36px -10px rgba(27,26,23,.18), 0 1px 0 rgba(27,26,23,.04);
+  margin: 48px 0; overflow: hidden; position: relative;
+}
+section:not(#quiz):not(#flashcards) h2 {
+  margin: 0; padding: 26px 36px 22px;
+  background: var(--guide-color, var(--slate)); color: #fff;
+  font-family: "Fraunces", serif; font-weight: 900;
+  font-size: clamp(20px, 2.8vw, 26px);
+  letter-spacing: -.015em; line-height: 1.1;
+  display: flex; align-items: flex-start; gap: 14px;
+}
+section:not(#quiz):not(#flashcards) h2::before {
+  content: counter(slide, decimal-leading-zero);
+  font-family: "JetBrains Mono", monospace; font-weight: 600;
+  font-size: 12px; letter-spacing: .1em;
+  background: rgba(255,255,255,.16); color: rgba(255,255,255,.9);
+  border: 1px solid rgba(255,255,255,.28);
+  padding: 4px 10px; border-radius: 5px;
+  flex-shrink: 0; margin-top: 3px; white-space: nowrap;
+}
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre {
+  margin-left: 36px; margin-right: 36px;
+}
+section:not(#quiz):not(#flashcards) > p:first-of-type { margin-top: 28px; }
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child { margin-bottom: 34px; }
+section:not(#quiz):not(#flashcards)::after {
+  content: ""; display: block; height: 4px;
+  background: linear-gradient(90deg,
+    var(--guide-color, var(--slate)) 0%,
+    color-mix(in srgb, var(--guide-color, var(--slate)) 30%, transparent) 100%);
+  margin-top: 34px; opacity: .35;
+}
+@media (max-width: 680px) {
+  section:not(#quiz):not(#flashcards) h2 { padding: 20px 22px 18px; font-size: 20px; }
+  section:not(#quiz):not(#flashcards) > p,
+  section:not(#quiz):not(#flashcards) > .insight,
+  section:not(#quiz):not(#flashcards) > .misconception,
+  section:not(#quiz):not(#flashcards) > blockquote { margin-left: 22px; margin-right: 22px; }
+}
+/* ===== END SLIDE PANELS ===== */
+
+.insight, .misconception { border-radius:10px; padding:18px 22px;
+  margin:22px 0; font-size:17px; line-height:1.5; }
+.insight { border-left:4px solid var(--slate); background:var(--slate-soft); }
+.misconception { border-left:4px solid var(--accent); background:var(--accent-soft); }
+.insight::before { content:"✦ Key insight — "; font-weight:600; color:var(--slate); }
+.misconception::before { content:"✕ Common misconception — "; font-weight:600; color:var(--accent); }
+
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
+.fc { perspective:900px; height:190px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%;
+  transform-style:preserve-3d; transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front, .fc-back { position:absolute; inset:0; border-radius:13px;
+  padding:22px 22px 18px; backface-visibility:hidden;
+  -webkit-backface-visibility:hidden; display:flex; flex-direction:column;
+  justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back { background:#7a5400; }
+.fc[data-g="g3"] .fc-front { border-left:4px solid var(--g3); }
+.fc[data-g="g3"] .fc-back { background:#3a1a10; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc[data-g="g3"] .fc-term { color:var(--g3); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc[data-g="g3"] .fc-def { color:#f5d6ce; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px;
+  color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px;
+  font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+  padding:2px 8px; border-radius:4px; border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent); background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent); background:color-mix(in srgb,var(--g2) 10%,transparent); }
+.gtag.g3 { color:var(--g3); border-color:color-mix(in srgb,var(--g3) 40%,transparent); background:color-mix(in srgb,var(--g3) 10%,transparent); }
+
+.xlink { display:flex; gap:14px; flex-wrap:wrap; margin:48px 0 0;
+  padding:22px; border:1px solid var(--rule); border-radius:11px;
+  background:var(--card); }
+.xlink a { font-family:"JetBrains Mono",monospace; font-size:13px;
+  text-decoration:none; color:var(--ink); padding:8px 16px;
+  border:1.5px solid var(--guide-color); border-radius:7px; font-weight:600; }
+.xlink a:hover { background:var(--guide-color); color:#fff; }
+
+footer { margin-top:60px; padding-top:24px; border-top:1px solid var(--rule);
+  font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--ink-soft); }
+
+@media (max-width: 760px) { .fc-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 420px) { .fc-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="index.html">← Back to library</a>
+<div class="kicker">Guide 02 · Applied</div>
+<h1>The Three Reasons to Extract Metadata Up Front</h1>
+<p class="dek">Scale, consistency, and unanswerable-without-metadata questions. Each one alone justifies the extraction pipeline; together they make it non-negotiable.</p>
+
+<nav class="topnav">
+  <a href="#scale">01 · Scale</a>
+  <a href="#consistency">02 · Consistency</a>
+  <a href="#deterministic">03 · Deterministic Filter</a>
+  <a href="#high-risk">04 · High-Risk Example</a>
+  <a href="#flashcards">Flashcards ↓</a>
+</nav>
+
+<div class="takeaways">
+  <div class="tk"><div class="tk-lbl">Takeaway 01</div><div class="tk-body">Scale: extract once, filter forever — re-reading every doc is a bill, not a feature.</div></div>
+  <div class="tk"><div class="tk-lbl">Takeaway 02</div><div class="tk-body">Consistency: governed extraction prompts produce stable, auditable answers.</div></div>
+  <div class="tk"><div class="tk-lbl">Takeaway 03</div><div class="tk-body">Filtering on metadata is deterministic. The answer is "all of them," not "best guess."</div></div>
+</div>
+
+<section id="scale">
+  <h2>Scale — The Cost of Re-Reading Every Document</h2>
+  <p>You don't have one contract. You have hundreds, maybe thousands. Reading every document fresh for every question isn't a chat experience — it's a bill. Every prompt that streams a whole library through the model burns tokens, time, and patience.</p>
+  <div class="insight">Metadata turns reading into filtering. A whole-library question that took minutes (and might have failed) becomes a column filter that returns in one second.</div>
+  <p>The same logic that made databases beat flat files in 1980 applies to AI on libraries in 2025. Pre-compute the shape once; query it many times. The economics flip overnight.</p>
+</section>
+
+<section id="consistency">
+  <h2>Consistency — Lock the Answer In</h2>
+  <p>If you ask AI to classify risk level by reading a contract fresh each time, you might get a slightly different answer depending on how the question was phrased that day. Same contract, different sessions, different verdicts. That's not a foundation legal and compliance teams can act on.</p>
+  <div class="insight">Extract once with a carefully tuned prompt, stamp the value, govern it. The classification is locked. Every downstream consumer sees the same answer.</div>
+  <p>You spend real time on the extraction prompt because it runs against every new document and defines the canonical answer. The investment pays off forever, because every query downstream — Copilot, Power Automate, list filters — inherits a stable, defensible value.</p>
+  <div class="misconception">Many teams assume "AI is the same model, so the answer will be the same." It isn't. Prompt phrasing, context, recent system updates — every call has variance. Extraction-time stamping eliminates that variance.</div>
+</section>
+
+<section id="deterministic">
+  <h2>Deterministic Filters — Not Best Guesses</h2>
+  <p>When you ask AI to find all contracts classified as high risk and the AI filters the risk column directly, you get a database-style query, not a best guess. It returns every single matching document. The result is complete, auditable, and repeatable.</p>
+  <div class="insight">Search returns "what looks relevant." A metadata filter returns "all of them." For compliance, auditing, and reporting, only the second answer is acceptable.</div>
+  <p>This is the property that makes the system usable in regulated workflows. You can run the query today, run it again next month, and prove that the same contract universe was used both times — because the answer comes from a column, not from a probabilistic search.</p>
+</section>
+
+<section id="high-risk">
+  <h2>Worked Example — All High-Risk Contracts</h2>
+  <p>The narrator asks SharePoint to "find all contracts that are classified as high risk." The AI finds the Contract Risk Tier field, filters it, and returns all eight high-risk contracts in seconds. No best guess, no search-result ranking — just retrieval against a structured column.</p>
+  <div class="insight">"Found 8 of 8" is the kind of answer that lets legal teams actually use the system. They can audit it, repeat it, and trust it for the next meeting.</div>
+  <p>The same query works in SharePoint, in Copilot, anywhere in M365 that understands metadata. The pipeline is one — extract once at upload, expose as a column, and every Microsoft surface gets the same filterable layer for free.</p>
+  <div class="misconception">A natural assumption is that the AI is doing something clever to find these eight documents. It's not — and that's the point. The cleverness happened at upload time. Query time is just retrieval.</div>
+</section>
+
+<section id="flashcards">
+  <div class="sec-label">Flashcards — Applied</div>
+  <div class="fc-grid">
+    <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')">
+      <div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Scale Argument</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">The reason to extract metadata up front rather than re-read documents per query. Hundreds of files times every prompt equals an unsustainable token bill — and slow answers.</div><div class="fc-tap">← tap to flip back</div></div></div>
+    </div>
+    <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')">
+      <div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Consistency Argument</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">The reason to lock metadata in via extraction. AI re-classification varies per call; stamped metadata gives one stable, governed, auditable answer.</div><div class="fc-tap">← tap to flip back</div></div></div>
+    </div>
+    <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')">
+      <div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Deterministic Filter</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A query against a metadata column that returns the complete, exact set — not a search-ranked best guess. The property that makes the system usable for compliance.</div><div class="fc-tap">← tap to flip back</div></div></div>
+    </div>
+    <div class="fc" data-g="g2" onclick="this.classList.toggle('flipped')">
+      <div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Business Intelligence Query</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A repeatable, structured query that uses metadata columns to answer questions traditional chat AI cannot — like "how many high-risk contracts did we sign last quarter?"</div><div class="fc-tap">← tap to flip back</div></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="xlink">
+  <a href="flashcards-index.html">All Flashcards →</a>
+  <a href="guide-01-foundations.html">← Previous: Foundations</a>
+  <a href="guide-03-advanced.html">Next: Advanced →</a>
+</div>
+
+<footer>Guide 02 of 03 · Why AI Fails Your Document Library</footer>
+
+</div>
+</body>
+</html>

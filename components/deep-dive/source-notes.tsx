@@ -36,8 +36,8 @@ export function SourceNotes({
           <div
             className={`flex items-center justify-center w-8 h-8 rounded-full ${
               isCanonical
-                ? "bg-emerald-500/10 text-emerald-400"
-                : "bg-amber-500/10 text-amber-400"
+                ? "bg-[var(--color-confidence-high-soft)] text-[var(--color-confidence-high)]"
+                : "bg-[var(--color-confidence-moderate-soft)] text-[var(--color-confidence-moderate)]"
             }`}
           >
             <svg
@@ -97,10 +97,10 @@ export function SourceNotes({
                   Confidence
                 </span>
                 <span
-                  className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded-[var(--radius-sm)] font-medium ${
+                  className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded-[var(--radius-sm)] font-medium border ${
                     isCanonical
-                      ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                      : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
+                      ? "bg-[var(--color-confidence-high-soft)] text-[var(--color-confidence-high)] border-[var(--color-confidence-high)]/25"
+                      : "bg-[var(--color-confidence-moderate-soft)] text-[var(--color-confidence-moderate)] border-[var(--color-confidence-moderate)]/25"
                   }`}
                 >
                   {isCanonical ? "High — Canonical" : "Moderate — Adapted/Synthesized"}

@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>03 · Advanced — Customizing the Council & Sharing Skills</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4; --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf; --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--accent);
+}
+*,*::before,*::after { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; counter-reset:slide; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+.back { font-family:"JetBrains Mono",monospace; font-size:12px;
+  text-decoration:none; color:var(--ink-soft); display:inline-flex;
+  align-items:center; gap:6px; margin:30px 0 22px; border:1px solid var(--rule);
+  border-radius:6px; padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px;
+  letter-spacing:.28em; text-transform:uppercase; color:var(--accent);
+  font-weight:600; margin-bottom:18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(34px,5vw,52px);
+  letter-spacing:-.02em; line-height:1.05; margin:0 0 14px; }
+.dek { font-size:20px; color:var(--ink-soft); max-width:720px; margin:0 0 28px; }
+.topic-nav { position:sticky; top:0; z-index:10; background:var(--paper);
+  border-bottom:1px solid var(--rule); margin:0 -28px 32px; padding:14px 28px;
+  display:flex; flex-wrap:wrap; gap:8px 18px; font-family:"JetBrains Mono",monospace;
+  font-size:12px; font-weight:600; }
+.topic-nav a { color:var(--ink-soft); text-decoration:none; padding:4px 10px;
+  border:1px solid var(--rule); border-radius:5px; transition:all .14s; }
+.topic-nav a:hover { background:var(--guide-color); color:#fff; border-color:var(--guide-color); }
+.meta-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:24px 0 40px; }
+@media (max-width:680px) { .meta-grid { grid-template-columns:1fr; } }
+.meta { background:var(--card); border:1px solid var(--rule); border-radius:10px;
+  padding:18px 20px; border-top:3px solid var(--guide-color); }
+.meta .ml { font-family:"JetBrains Mono",monospace; font-size:10px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:6px; }
+.meta .mb { font-family:"Fraunces",serif; font-weight:600; font-size:18px; line-height:1.3; }
+section:not(#quiz):not(#flashcards) {
+  counter-increment:slide; background:var(--card);
+  border:1.5px solid color-mix(in srgb, var(--guide-color, var(--slate)) 28%, var(--rule));
+  border-radius:18px;
+  box-shadow:0 8px 36px -10px rgba(27,26,23,.18), 0 1px 0 rgba(27,26,23,.04);
+  margin:48px 0; overflow:hidden; position:relative;
+}
+section:not(#quiz):not(#flashcards) h2 {
+  margin:0; padding:26px 36px 22px;
+  background:var(--guide-color, var(--slate)); color:#fff;
+  font-family:"Fraunces",serif; font-weight:900;
+  font-size:clamp(20px,2.8vw,26px); letter-spacing:-.015em; line-height:1.1;
+  display:flex; align-items:flex-start; gap:14px;
+}
+section:not(#quiz):not(#flashcards) h2::before {
+  content:counter(slide, decimal-leading-zero);
+  font-family:"JetBrains Mono",monospace; font-weight:600; font-size:12px;
+  letter-spacing:.1em; background:rgba(255,255,255,.16);
+  color:rgba(255,255,255,.9); border:1px solid rgba(255,255,255,.28);
+  padding:4px 10px; border-radius:5px; flex-shrink:0; margin-top:3px; white-space:nowrap;
+}
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre,
+section:not(#quiz):not(#flashcards) > ul { margin-left:36px; margin-right:36px; }
+section:not(#quiz):not(#flashcards) > p:first-of-type { margin-top:28px; }
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child { margin-bottom:34px; }
+section:not(#quiz):not(#flashcards)::after {
+  content:""; display:block; height:4px;
+  background:linear-gradient(90deg, var(--guide-color, var(--slate)) 0%,
+    color-mix(in srgb, var(--guide-color, var(--slate)) 30%, transparent) 100%);
+  margin-top:34px; opacity:.35;
+}
+@media (max-width:680px) {
+  section:not(#quiz):not(#flashcards) h2 { padding:20px 22px 18px; font-size:20px; }
+  section:not(#quiz):not(#flashcards) > p,
+  section:not(#quiz):not(#flashcards) > .insight,
+  section:not(#quiz):not(#flashcards) > .misconception,
+  section:not(#quiz):not(#flashcards) > blockquote,
+  section:not(#quiz):not(#flashcards) > ul { margin-left:22px; margin-right:22px; }
+}
+.insight, .misconception { border-radius:10px; padding:18px 22px; margin:22px 0;
+  font-size:17px; line-height:1.5; }
+.insight { border-left:4px solid var(--slate); background:var(--slate-soft); }
+.misconception { border-left:4px solid var(--accent); background:var(--accent-soft); }
+.insight::before { content:"✦ Key insight — "; font-weight:600; color:var(--slate); }
+.misconception::before { content:"✕ Common misconception — "; font-weight:600; color:var(--accent); }
+code,.mono { font-family:"JetBrains Mono",monospace; font-size:.82em;
+  background:#ece7db; padding:.08em .38em; border-radius:4px; color:#3a382f; }
+ul { line-height:1.5; }
+ul li { margin:6px 0; }
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);
+  margin:48px 0 6px; font-weight:600; }
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
+.fc { perspective:900px; height:190px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%;
+  transform-style:preserve-3d; transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front,.fc-back { position:absolute; inset:0; border-radius:13px;
+  padding:22px 22px 18px; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  display:flex; flex-direction:column; justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back { background:#7a5400; }
+.fc[data-g="g3"] .fc-front { border-left:4px solid var(--g3); }
+.fc[data-g="g3"] .fc-back { background:#3a1a10; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc[data-g="g3"] .fc-term { color:var(--g3); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc[data-g="g3"] .fc-def { color:#f5d6ce; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px; font-weight:600;
+  letter-spacing:.08em; text-transform:uppercase; padding:2px 8px; border-radius:4px;
+  border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent);
+  background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent);
+  background:color-mix(in srgb,var(--g2) 10%,transparent); }
+.gtag.g3 { color:var(--g3); border-color:color-mix(in srgb,var(--g3) 40%,transparent);
+  background:color-mix(in srgb,var(--g3) 10%,transparent); }
+footer { margin-top:80px; padding-top:30px; border-top:1px solid var(--rule);
+  font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--ink-soft);
+  display:flex; flex-wrap:wrap; gap:18px; justify-content:space-between; }
+footer a { color:var(--ink-soft); text-decoration:underline; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="index.html">← Back to library</a>
+
+<div class="kicker">03 · Advanced</div>
+<h1>Customize the council, work across formats, share with the community</h1>
+<p class="dek">The reason Review Council is the author's favorite skill: it's highly customizable, it runs against any content format, and it's now a community asset other people will build on.</p>
+
+<nav class="topic-nav">
+  <a href="#customize-roster">Customize roster</a>
+  <a href="#cross-format">Cross-format input</a>
+  <a href="#multiple-lenses">Multiple lenses</a>
+  <a href="#sharing-practice">Sharing as practice</a>
+  <a href="#flashcards">Flashcards</a>
+</nav>
+
+<div class="meta-grid">
+  <div class="meta"><div class="ml">Takeaway 1</div><div class="mb">Swap personas by editing the referenced file — no skill rewrite needed.</div></div>
+  <div class="meta"><div class="ml">Takeaway 2</div><div class="mb">The skill runs against decks, docs, PDFs — whatever you point it at.</div></div>
+  <div class="meta"><div class="ml">Takeaway 3</div><div class="mb">Sharing skills upward is what makes the community library compound.</div></div>
+</div>
+
+<section id="customize-roster">
+  <h2>Customize the council by editing one file</h2>
+  <p>The seven personas the skill ships with are a starting point, not a finished roster. Because the council reads from a referenced file, customization is a content edit: add a Compliance Officer, drop the Strategist, replace the Operator with a Field Engineer who matters more for your team's content.</p>
+  <p>You can also tune voice — make the Adversary sharper, soften the Storyteller, change the rubric each persona scores against. The skill itself stays the same; the file does the heavy lifting.</p>
+  <div class="insight">Skills with separated configuration files are the most reusable. The data file is your knob; the prompt logic stays constant.</div>
+  <div class="misconception">Customizing a skill doesn't mean forking the skill. Edit the sidecar, leave the engine alone.</div>
+</section>
+
+<section id="cross-format">
+  <h2>Run it against decks, docs, or PDFs</h2>
+  <p>The demo runs Review Council against three different artifacts: an AI-transforming-small-business deck, a future-of-content-AI deck, and an employee feedback transformation PDF. All three flow through the same skill. The output structure is identical; only the content changes.</p>
+  <p>For the PDF, the review references "pages" instead of "slides" — but it still calls out specific pages that need rework. The skill adapts its vocabulary to the format without losing the structured output.</p>
+  <div class="insight">Format-agnostic skills are leverage. Write one skill, point it at anything in the document library, get consistent structured feedback.</div>
+</section>
+
+<section id="multiple-lenses">
+  <h2>The real value: multiple reference frames</h2>
+  <p>The author's framing: "this is one of the most valuable things of AI, where you can get this broad set of perspectives just by coaching." The council forces you to step back and think about your content in different reference frames — Adversary first, then Strategist, then Storyteller — even when you didn't think to.</p>
+  <p>Most reviews collapse into one person's lens. The council resists that collapse by definition. The discomfort of reading the Adversary's snort is the work — it surfaces an angle you would have rationalized away on your own.</p>
+  <div class="insight">A panel of lenses is cheap to run and hard to dismiss. Even when you disagree with a persona, you've thought through the angle.</div>
+  <div class="misconception">More reviewers don't usually mean better feedback — that's the people-meeting problem. With personas, more lenses are pure upside because each one is forced to commit a take.</div>
+</section>
+
+<section id="sharing-practice">
+  <h2>Sharing skills is the practice</h2>
+  <p>The video closes with a call: customize Review Council, then share what you build back with the PMP community. "Sharing is caring" isn't decoration — it's the entire premise of the skills library. Each contributed skill saves the next team from rebuilding it.</p>
+  <p>This is the meta point of the video. The Review Council skill itself is impressive, but the larger story is the community library that holds it and the practice of submitting your customizations upward.</p>
+  <div class="insight">The skills library compounds. Every customization that gets contributed back raises the floor for the next person who searches for "review skill."</div>
+</section>
+
+
+<section id="flashcards">
+<div class="sec-label">Flashcards — Advanced</div>
+<div class="fc-grid">
+
+<div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')">
+  <div class="fc-inner">
+    <div class="fc-front">
+      <div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div>
+      <div class="fc-term">Customizable Roster</div>
+      <div class="fc-tap">tap to reveal →</div>
+    </div>
+    <div class="fc-back">
+      <div class="fc-def">The set of personas the council uses, defined in a referenced file. Edit the file to add, drop, or retune reviewers — no change to the skill engine itself.</div>
+      <div class="fc-tap">← tap to flip back</div>
+    </div>
+  </div>
+</div>
+
+<div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')">
+  <div class="fc-inner">
+    <div class="fc-front">
+      <div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div>
+      <div class="fc-term">Cross-Format Input</div>
+      <div class="fc-tap">tap to reveal →</div>
+    </div>
+    <div class="fc-back">
+      <div class="fc-def">The skill accepts decks, docs, or PDFs through the same interface. Output structure stays consistent; vocabulary adapts (slides vs. pages) to the format.</div>
+      <div class="fc-tap">← tap to flip back</div>
+    </div>
+  </div>
+</div>
+
+<div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')">
+  <div class="fc-inner">
+    <div class="fc-front">
+      <div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div>
+      <div class="fc-term">Multiple Reference Frames</div>
+      <div class="fc-tap">tap to reveal →</div>
+    </div>
+    <div class="fc-back">
+      <div class="fc-def">The council's actual value — forced exposure to angles you'd otherwise rationalize away. Each persona commits a take, even when their lens makes you uncomfortable.</div>
+      <div class="fc-tap">← tap to flip back</div>
+    </div>
+  </div>
+</div>
+
+<div class="fc" data-g="g3" onclick="this.classList.toggle('flipped')">
+  <div class="fc-inner">
+    <div class="fc-front">
+      <div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div>
+      <div class="fc-term">Sharing as Practice</div>
+      <div class="fc-tap">tap to reveal →</div>
+    </div>
+    <div class="fc-back">
+      <div class="fc-def">Contributing customized skills back to the PMP library so the next team doesn't rebuild from scratch. The compounding effect that makes a shared skill library worth more than the sum of its parts.</div>
+      <div class="fc-tap">← tap to flip back</div>
+    </div>
+  </div>
+</div>
+
+</div>
+</section>
+
+<footer>
+  <span>Panel of Experts · Guide 03 · Advanced</span>
+  <span><a href="flashcards-index.html">All flashcards →</a></span>
+</footer>
+
+</div>
+</body>
+</html>

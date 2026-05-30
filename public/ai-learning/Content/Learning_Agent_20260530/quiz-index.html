@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Full Quiz · All Guides — The AI Learning Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+}
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:1040px;margin:0 auto;padding:0 28px 120px;}
+code,.mono{font-family:"JetBrains Mono",monospace;font-size:.82em;background:#ece7db;padding:.08em .38em;border-radius:4px;color:#3a382f;}
+
+.back{font-family:"JetBrains Mono",monospace;font-size:12px;text-decoration:none;color:var(--ink-soft);display:inline-flex;align-items:center;gap:6px;margin:32px 0 22px;border:1px solid var(--rule);border-radius:6px;padding:5px 12px;transition:all .14s;}
+.back:hover{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:14px;}
+h1{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(40px,6vw,64px);line-height:1.04;margin:0 0 14px;letter-spacing:-.015em;}
+h1 em{font-style:italic;color:var(--accent);}
+.dek{font-family:"Newsreader",Georgia,serif;font-style:italic;font-size:21px;color:var(--ink-soft);line-height:1.5;margin:0 0 12px;max-width:780px;}
+
+.dashboard{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:38px 0 14px;}
+@media(max-width:680px){.dashboard{grid-template-columns:1fr;}}
+.dash-stat{background:var(--card);border:1px solid var(--rule);border-radius:11px;padding:18px 22px;position:relative;overflow:hidden;}
+.ds-v{font-family:"Fraunces",serif;font-weight:900;font-size:34px;line-height:1;color:var(--accent);}
+.ds-l{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-top:8px;}
+.dbar{margin-top:10px;height:6px;background:#ece7db;border-radius:3px;overflow:hidden;}
+.dbar-fill{height:100%;background:linear-gradient(90deg,var(--g1),var(--g2),var(--g3));width:0%;transition:width .35s;}
+
+.guide-section-head{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin:46px 0 4px;padding-bottom:10px;border-bottom:1.5px solid var(--rule);}
+.gsec-badge{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:11px;letter-spacing:.16em;text-transform:uppercase;padding:5px 11px;border-radius:5px;color:#fff;}
+.gsec-badge.g1{background:var(--g1);}
+.gsec-badge.g2{background:var(--g2);}
+.gsec-badge.g3{background:var(--g3);}
+.gsec-title{font-family:"Fraunces",serif;font-weight:600;font-size:22px;color:var(--ink);flex:1 1 auto;}
+.gsec-score{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);letter-spacing:.06em;}
+
+.q-item{margin:14px 0;padding:22px 26px;background:var(--card);border:1.5px solid var(--rule);border-radius:12px;}
+.q-item.correct{border-color:#2f5d62;background:#f0f6f5;}
+.q-item.wrong{border-color:#cc3b1d;background:#fdf3f0;}
+.q-item .qnum{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;margin-bottom:8px;}
+.q-text{font-size:17px;font-weight:600;margin-bottom:14px;}
+.options{display:flex;flex-direction:column;gap:9px;margin-bottom:14px;}
+.options label{display:flex;align-items:flex-start;gap:10px;font-size:16px;cursor:pointer;padding:9px 14px;border-radius:7px;border:1.5px solid var(--rule);background:var(--paper);transition:background .12s;line-height:1.45;}
+.options label:hover{background:#ede9e0;}
+.q-item.correct label:has(input[data-correct]){background:#dde7e6;border-color:#2f5d62;}
+.q-item.wrong label:has(input:checked:not([data-correct])){background:#fde8e3;border-color:#cc3b1d;}
+.check-btn{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:8px 18px;border-radius:7px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;transition:all .14s;}
+.check-btn:hover:not(:disabled){background:var(--ink);color:#fff;}
+.check-btn:disabled{opacity:.4;cursor:not-allowed;}
+.explanation{margin-top:14px;padding:12px 16px;background:#f0f6f5;border-left:3px solid var(--slate);border-radius:6px;font-size:15px;color:var(--ink-soft);}
+
+#final-panel{margin-top:54px;padding:36px 38px;background:var(--ink);color:#fff;border-radius:14px;}
+.final-score{display:flex;align-items:baseline;gap:18px;margin-bottom:24px;}
+.fs-pct{font-family:"Fraunces",serif;font-weight:900;font-size:64px;color:var(--accent);line-height:1;}
+.fs-label{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.7);}
+.breakdown-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;}
+@media(max-width:680px){.breakdown-grid{grid-template-columns:1fr;}}
+.bk{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:16px 20px;}
+.bk-label{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:6px;}
+.bk-val{font-family:"Fraunces",serif;font-weight:600;font-size:22px;}
+#final-panel button{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:9px 20px;border-radius:7px;border:1.5px solid rgba(255,255,255,.35);background:transparent;color:#fff;cursor:pointer;transition:all .14s;}
+#final-panel button:hover{background:#fff;color:var(--ink);}
+
+footer{margin-top:80px;padding-top:28px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid currentColor;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="index.html">← back to library</a>
+
+<div class="kicker">Multiple Choice · All Guides · 26 Questions</div>
+<h1>Full <em>Quiz</em></h1>
+<p class="dek">All 26 questions across the three guides in one sitting. The dashboard updates live as you answer. When every question is done you get a per-guide breakdown.</p>
+
+<div class="dashboard">
+  <div class="dash-stat"><div class="ds-v" id="d-answered">0</div><div class="ds-l">Answered</div></div>
+  <div class="dash-stat"><div class="ds-v" id="d-correct">0</div><div class="ds-l">Correct</div></div>
+  <div class="dash-stat"><div class="ds-v" id="d-pct">0%</div><div class="ds-l">Score</div><div class="dbar"><div class="dbar-fill" id="dbar-fill"></div></div></div>
+</div>
+
+<!-- ====== GUIDE 1 ====== -->
+<div class="guide-section-head">
+  <span class="gsec-badge g1">01 · Foundations</span>
+  <span class="gsec-title">How an Agent Actually Runs</span>
+  <span class="gsec-score" id="score-g1">0 / 0 correct</span>
+</div>
+
+<div class="q-item" id="q1_1">
+  <div class="qnum">G1 · Question 1</div>
+  <p class="q-text">What is the fundamental difference between an Agent and a Chatbot?</p>
+  <div class="options">
+    <label><input type="radio" name="q1_1" value="a"> An agent uses a database; a chatbot doesn't</label>
+    <label><input type="radio" name="q1_1" value="b" data-correct="true"> An agent acts and loops with tools; a chatbot responds and stops</label>
+    <label><input type="radio" name="q1_1" value="c"> An agent is always more accurate than a chatbot</label>
+    <label><input type="radio" name="q1_1" value="d"> A chatbot can run code; an agent cannot</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q1_1','g1',10)">Check answer</button>
+  <div class="explanation" style="display:none">The defining additions are tool use, a feedback loop, and multi-step autonomy. A chatbot replies once; an agent loops until a goal is met.</div>
+</div>
+
+<div class="q-item" id="q1_2">
+  <div class="qnum">G1 · Question 2</div>
+  <p class="q-text">What is the core flow of ReAct?</p>
+  <div class="options">
+    <label><input type="radio" name="q1_2" value="a"> Plan → Execute → Review</label>
+    <label><input type="radio" name="q1_2" value="b"> Read → Act → Terminate</label>
+    <label><input type="radio" name="q1_2" value="c" data-correct="true"> Think → Act → Observe (repeated)</label>
+    <label><input type="radio" name="q1_2" value="d"> Prompt → Response → Evaluate</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q1_2','g1',10)">Check answer</button>
+  <div class="explanation" style="display:none">ReAct = Reasoning + Acting. The model writes a reasoning step (Think), chooses an action (Act), the action runs and returns a result (Observe), and that result feeds the next Think step.</div>
+</div>
+
+<div class="q-item" id="q1_3">
+  <div class="qnum">G1 · Question 3</div>
+  <p class="q-text">Why does smolagents' CodeAgent write its actions as Python code rather than JSON?</p>
+  <div class="options">
+    <label><input type="radio" name="q1_3" value="a"> Python is the only language the model supports</label>
+    <label><input type="radio" name="q1_3" value="b"> JSON is too verbose for large payloads</label>
+    <label><input type="radio" name="q1_3" value="c" data-correct="true"> Python allows composability — loops, conditionals, and tool nesting in one step</label>
+    <label><input type="radio" name="q1_3" value="d"> JSON requires an internet connection; Python doesn't</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q1_3','g1',10)">Check answer</button>
+  <div class="explanation" style="display:none">Code-as-action lets a single step combine tools, iterate with loops, and use conditionals naturally — reducing round-trips and giving the model more expressive power than a single JSON call.</div>
+</div>
+
+<div class="q-item" id="q1_4">
+  <div class="qnum">G1 · Question 4</div>
+  <p class="q-text">What is "context compaction" in the context of a long-running agent?</p>
+  <div class="options">
+    <label><input type="radio" name="q1_4" value="a"> Deleting old conversations permanently from storage</label>
+    <label><input type="radio" name="q1_4" value="b" data-correct="true"> Summarizing or dropping older turns when the window fills, to stay under the context limit</label>
+    <label><input type="radio" name="q1_4" value="c"> Compressing binary data sent to the model API</label>
+    <label><input type="radio" name="q1_4" value="d"> A technique to speed up model inference on long inputs</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q1_4','g1',10)">Check answer</button>
+  <div class="explanation" style="display:none">Compaction preserves the goal and key results while dropping or summarizing stale low-value turns — keeping the agent focused and within its context window.</div>
+</div>
+
+<div class="q-item" id="q1_5">
+  <div class="qnum">G1 · Question 5</div>
+  <p class="q-text">What is the difference between memory and context in an agent?</p>
+  <div class="options">
+    <label><input type="radio" name="q1_5" value="a"> They're the same thing — both refer to the conversation history</label>
+    <label><input type="radio" name="q1_5" value="b"> Memory holds code; context holds text</label>
+    <label><input type="radio" name="q1_5" value="c" data-correct="true"> Context is the live window (finite, wiped between sessions); memory persists beyond it like a Session Note</label>
+    <label><input type="radio" name="q1_5" value="d"> Memory is faster to access than context</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q1_5','g1',10)">Check answer</button>
+  <div class="explanation" style="display:none">Think of it as: context = RAM (what the model sees right now), memory = disk (what survives between sessions and gets selectively reloaded).</div>
+</div>
+
+<div class="q-item" id="q1_6">
+  <div class="qnum">G1 · Question 6</div>
+  <p class="q-text">What problem does the Model Context Protocol (MCP) solve?</p>
+  <div class="options">
+    <label><input type="radio" name="q1_6" value="a"> Making models write better code</label>
+    <label><input type="radio" name="q1_6" value="b"> Speeding up inference on long prompts</label>
+    <label><input type="radio" name="q1_6" value="c" data-correct="true"> Standardizing how agents connect to external tools so capabilities are pluggable without bespoke glue per service</label>
+    <label><input type="radio" name="q1_6" value="d"> Providing a graphical interface for running agents</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q1_6','g1',10)">Check answer</button>
+  <div class="explanation" style="display:none">Instead of hardcoding each integration, MCP is an open standard — tools are discovered and called through one protocol, so capabilities are reusable across agents.</div>
+</div>
+
+<div class="q-item" id="q1_7">
+  <div class="qnum">G1 · Question 7</div>
+  <p class="q-text">What should happen when a tool execution fails in a well-designed agent?</p>
+  <div class="options">
+    <label><input type="radio" name="q1_7" value="a"> The agent crashes and must restart from the beginning</label>
+    <label><input type="radio" name="q1_7" value="b" data-correct="true"> The error is captured and fed back as an observation so the model can adapt (retry, change approach)</label>
+    <label><input type="radio" name="q1_7" value="c"> The action is silently retried indefinitely</label>
+    <label><input type="radio" name="q1_7" value="d"> A human must intervene immediately before any further steps</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q1_7','g1',10)">Check answer</button>
+  <div class="explanation" style="display:none">The loop itself is the recovery mechanism — a failed step is just another observation. Add validation, retries with limits, and timeouts so one bad result doesn't derail the run.</div>
+</div>
+
+<div class="q-item" id="q1_8">
+  <div class="qnum">G1 · Question 8</div>
+  <p class="q-text">Why is mini-swe-agent a good first agent to study?</p>
+  <div class="options">
+    <label><input type="radio" name="q1_8" value="a"> It has the most features of any open-source agent</label>
+    <label><input type="radio" name="q1_8" value="b"> It uses the most advanced frameworks available</label>
+    <label><input type="radio" name="q1_8" value="c" data-correct="true"> It strips away all scaffolding to show the bare loop — the model, not the framework, is doing the work</label>
+    <label><input type="radio" name="q1_8" value="d"> It only works on simple tasks, making it easy to follow</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q1_8','g1',10)">Check answer</button>
+  <div class="explanation" style="display:none">At ~100 lines with no custom tools or plugins, it's the ideal baseline — it shows what's truly essential in an agent loop while still scoring &gt;74% on SWE-bench Verified.</div>
+</div>
+
+<div class="q-item" id="q1_9">
+  <div class="qnum">G1 · Question 9</div>
+  <p class="q-text">What is a Session Note in Mini-Agent?</p>
+  <div class="options">
+    <label><input type="radio" name="q1_9" value="a"> A real-time log of all tool calls during the current session</label>
+    <label><input type="radio" name="q1_9" value="b" data-correct="true"> A persistent record of a run's learnings, saved to disk and reloaded in future sessions — a simple long-term memory</label>
+    <label><input type="radio" name="q1_9" value="c"> A summary shown to the user when a session ends</label>
+    <label><input type="radio" name="q1_9" value="d"> A configuration file for the agent loop settings</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q1_9','g1',10)">Check answer</button>
+  <div class="explanation" style="display:none">The Session Note is one of the simplest forms of long-term memory — it's what lets an agent know what it learned in previous runs, not just the current conversation.</div>
+</div>
+
+<div class="q-item" id="q1_10">
+  <div class="qnum">G1 · Question 10</div>
+  <p class="q-text">Why does a coding agent need a sandbox?</p>
+  <div class="options">
+    <label><input type="radio" name="q1_10" value="a"> To improve model reasoning performance</label>
+    <label><input type="radio" name="q1_10" value="b"> To store code files permanently across sessions</label>
+    <label><input type="radio" name="q1_10" value="c" data-correct="true"> To isolate arbitrary code and command execution from the host system, protecting it from mistakes</label>
+    <label><input type="radio" name="q1_10" value="d"> To provide a UI for the agent to interact with</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q1_10','g1',10)">Check answer</button>
+  <div class="explanation" style="display:none">An agent runs arbitrary commands/code, so you isolate execution to protect the host and contain mistakes. Logs serve the complementary need: observability for long autonomous runs.</div>
+</div>
+
+<!-- ====== GUIDE 2 ====== -->
+<div class="guide-section-head">
+  <span class="gsec-badge g2">02 · Applied</span>
+  <span class="gsec-title">The Claude Code Workflow</span>
+  <span class="gsec-score" id="score-g2">0 / 0 correct</span>
+</div>
+
+<div class="q-item" id="q2_1">
+  <div class="qnum">G2 · Question 1</div>
+  <p class="q-text">What is Claude Code's core agentic loop?</p>
+  <div class="options">
+    <label><input type="radio" name="q2_1" value="a"> Prompt → Edit → Review → Merge</label>
+    <label><input type="radio" name="q2_1" value="b"> Read → Write → Test</label>
+    <label><input type="radio" name="q2_1" value="c" data-correct="true"> Gather context → Take action → Verify results → repeat</label>
+    <label><input type="radio" name="q2_1" value="d"> Plan → Code → Deploy</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q2_1','g2',8)">Check answer</button>
+  <div class="explanation" style="display:none">Every task in Claude Code follows this cycle: gather context (read files, pull git state), take action (edit, run commands), verify results (run tests, check output), then repeat as needed.</div>
+</div>
+
+<div class="q-item" id="q2_2">
+  <div class="qnum">G2 · Question 2</div>
+  <p class="q-text">Where should durable project rules be written so they survive context compaction?</p>
+  <div class="options">
+    <label><input type="radio" name="q2_2" value="a"> At the start of every chat message</label>
+    <label><input type="radio" name="q2_2" value="b" data-correct="true"> In CLAUDE.md — read at the start of every session</label>
+    <label><input type="radio" name="q2_2" value="c"> In a .env file in the project root</label>
+    <label><input type="radio" name="q2_2" value="d"> Nowhere — Claude remembers everything automatically</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q2_2','g2',8)">Check answer</button>
+  <div class="explanation" style="display:none">CLAUDE.md is read at the start of every session, so rules here survive compaction. Chat history can get summarized away; CLAUDE.md cannot.</div>
+</div>
+
+<div class="q-item" id="q2_3">
+  <div class="qnum">G2 · Question 3</div>
+  <p class="q-text">Which permission mode is read-only and best suited for reviewing changes to production code?</p>
+  <div class="options">
+    <label><input type="radio" name="q2_3" value="a"> Default mode</label>
+    <label><input type="radio" name="q2_3" value="b"> Auto-accept edits mode</label>
+    <label><input type="radio" name="q2_3" value="c" data-correct="true"> Plan mode</label>
+    <label><input type="radio" name="q2_3" value="d"> Auto mode</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q2_3','g2',8)">Check answer</button>
+  <div class="explanation" style="display:none">Plan mode is read-only — Claude produces a plan for you to approve before any change is made. This makes autonomous operation trustworthy on production code.</div>
+</div>
+
+<div class="q-item" id="q2_4">
+  <div class="qnum">G2 · Question 4</div>
+  <p class="q-text">What does a Subagent do differently from the main agent in a Claude Code session?</p>
+  <div class="options">
+    <label><input type="radio" name="q2_4" value="a"> It runs on a different model (always Haiku)</label>
+    <label><input type="radio" name="q2_4" value="b"> It can edit files the main agent cannot</label>
+    <label><input type="radio" name="q2_4" value="c" data-correct="true"> It works in its own isolated context window on a scoped job, then returns a summary</label>
+    <label><input type="radio" name="q2_4" value="d"> It runs multiple tasks in sequence before reporting back</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q2_4','g2',8)">Check answer</button>
+  <div class="explanation" style="display:none">Subagents are disposable helpers with their own context — deep digging doesn't clog the main conversation, and they hand back a concise summary when done.</div>
+</div>
+
+<div class="q-item" id="q2_5">
+  <div class="qnum">G2 · Question 5</div>
+  <p class="q-text">What is the key benefit of the Explore → Plan → Code → Commit workflow?</p>
+  <div class="options">
+    <label><input type="radio" name="q2_5" value="a"> It makes Claude run faster by parallelizing tasks</label>
+    <label><input type="radio" name="q2_5" value="b"> It reduces the number of files Claude needs to read</label>
+    <label><input type="radio" name="q2_5" value="c" data-correct="true"> It surfaces misunderstandings before any code is written — cheaper to fix a plan than a pile of edits</label>
+    <label><input type="radio" name="q2_5" value="d"> It prevents Claude from needing to run tests</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q2_5','g2',8)">Check answer</button>
+  <div class="explanation" style="display:none">Separating research from implementation is the key insight: small misunderstandings caught at the plan stage are far cheaper to fix than after code has been written.</div>
+</div>
+
+<div class="q-item" id="q2_6">
+  <div class="qnum">G2 · Question 6</div>
+  <p class="q-text">What is "compaction" in Claude Code's context management?</p>
+  <div class="options">
+    <label><input type="radio" name="q2_6" value="a"> Minifying code to reduce file sizes</label>
+    <label><input type="radio" name="q2_6" value="b"> Deleting old sessions permanently to free storage</label>
+    <label><input type="radio" name="q2_6" value="c" data-correct="true"> Auto-summarizing older context when the window fills so the agent stays sharp</label>
+    <label><input type="radio" name="q2_6" value="d"> A compression algorithm applied to files before editing</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q2_6','g2',8)">Check answer</button>
+  <div class="explanation" style="display:none">When the context window fills, Claude first clears old tool outputs, then summarizes the conversation if needed. Your code and requests survive; stale instructions from early in the session may not — which is why CLAUDE.md exists.</div>
+</div>
+
+<div class="q-item" id="q2_7">
+  <div class="qnum">G2 · Question 7</div>
+  <p class="q-text">What does a Hook do in Claude Code?</p>
+  <div class="options">
+    <label><input type="radio" name="q2_7" value="a"> It captures the model's reasoning before each response</label>
+    <label><input type="radio" name="q2_7" value="b"> It lets the user interrupt Claude mid-task</label>
+    <label><input type="radio" name="q2_7" value="c" data-correct="true"> It runs a shell command automatically before or after Claude's actions</label>
+    <label><input type="radio" name="q2_7" value="d"> It connects Claude to external APIs via MCP</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q2_7','g2',8)">Check answer</button>
+  <div class="explanation" style="display:none">Hooks are shell commands that fire at fixed lifecycle points — before/after a tool call or turn. Classic uses: auto-format on edit, lint before commit, run type-checker after any file change.</div>
+</div>
+
+<div class="q-item" id="q2_8">
+  <div class="qnum">G2 · Question 8</div>
+  <p class="q-text">What does MCP (Model Context Protocol) do in the context of Claude Code?</p>
+  <div class="options">
+    <label><input type="radio" name="q2_8" value="a"> It controls how much context the model is allowed to use</label>
+    <label><input type="radio" name="q2_8" value="b"> It manages the model's internal memory weights</label>
+    <label><input type="radio" name="q2_8" value="c" data-correct="true"> It connects external tools and data (Jira, Drive, Slack) to Claude via a standard protocol</label>
+    <label><input type="radio" name="q2_8" value="d"> It is a protocol for compressing context before sending to the model</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q2_8','g2',8)">Check answer</button>
+  <div class="explanation" style="display:none">MCP = Model Context Protocol. It's an open standard so external tools/data can be connected without bespoke glue per service. Claude can read a Jira ticket or a Google Doc as if they were built-in tools.</div>
+</div>
+
+<!-- ====== GUIDE 3 ====== -->
+<div class="guide-section-head">
+  <span class="gsec-badge g3">03 · Advanced</span>
+  <span class="gsec-title">Agent Infrastructure Deep Dive</span>
+  <span class="gsec-score" id="score-g3">0 / 0 correct</span>
+</div>
+
+<div class="q-item" id="q3_1">
+  <div class="qnum">G3 · Question 1</div>
+  <p class="q-text">What are the seven things a harness owns?</p>
+  <div class="options">
+    <label><input type="radio" name="q3_1" value="a"> Models, weights, APIs, latency, throughput, cost, and reliability</label>
+    <label><input type="radio" name="q3_1" value="b" data-correct="true"> Task scheduling, context control, tool safety/environment, agent loop/collaboration, verification, self-evolution, and long-horizon execution</label>
+    <label><input type="radio" name="q3_1" value="c"> Prompts, tools, memory, output, errors, logs, and tests</label>
+    <label><input type="radio" name="q3_1" value="d"> Read, write, execute, connect, verify, compress, and terminate</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q3_1','g3',8)">Check answer</button>
+  <div class="explanation" style="display:none">These seven responsibilities are what distinguish a harness from a bare model call. The model = the brain; the harness = the entire job site that makes it productive and reliable.</div>
+</div>
+
+<div class="q-item" id="q3_2">
+  <div class="qnum">G3 · Question 2</div>
+  <p class="q-text">What is "progressive disclosure" in the context of the Skill System?</p>
+  <div class="options">
+    <label><input type="radio" name="q3_2" value="a"> Gradually showing users more features as they learn the product</label>
+    <label><input type="radio" name="q3_2" value="b"> Loading all skill documentation upfront so the model is always prepared</label>
+    <label><input type="radio" name="q3_2" value="c" data-correct="true"> Only loading a skill's name and one-line description at startup (~60 tokens); the full body loads only when the skill is actually triggered</label>
+    <label><input type="radio" name="q3_2" value="d"> Revealing tool outputs to the user progressively rather than all at once</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q3_2','g3',8)">Check answer</button>
+  <div class="explanation" style="display:none">This saves enormous context: ~8 skills cost ~500 tokens at startup instead of ~70,000 if you'd dumped them all in. The full body loads on-demand when a task matches.</div>
+</div>
+
+<div class="q-item" id="q3_3">
+  <div class="qnum">G3 · Question 3</div>
+  <p class="q-text">What is the difference between Prefill and Decode in model inference?</p>
+  <div class="options">
+    <label><input type="radio" name="q3_3" value="a"> Prefill writes the answer; Decode reads it back to the user</label>
+    <label><input type="radio" name="q3_3" value="b"> Prefill is for short prompts; Decode is for long ones</label>
+    <label><input type="radio" name="q3_3" value="c" data-correct="true"> Prefill reads the entire prompt in parallel (compute-bound); Decode writes the answer one token at a time (memory-bandwidth-bound)</label>
+    <label><input type="radio" name="q3_3" value="d"> Prefill caches the response; Decode sends it over the network</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q3_3','g3',8)">Check answer</button>
+  <div class="explanation" style="display:none">Prefill is fast (parallel processing, compute-bound). Decode is slower (sequential, memory-bandwidth-bound). A long prompt is cheap to read; a long answer is slow to write.</div>
+</div>
+
+<div class="q-item" id="q3_4">
+  <div class="qnum">G3 · Question 4</div>
+  <p class="q-text">What are the four failure modes of long-horizon tasks?</p>
+  <div class="options">
+    <label><input type="radio" name="q3_4" value="a"> Timeout, memory leak, token overflow, and hallucination</label>
+    <label><input type="radio" name="q3_4" value="b"> Model degradation, tool failure, cost overrun, and user abandonment</label>
+    <label><input type="radio" name="q3_4" value="c" data-correct="true"> Goal drift, context explosion, insufficient verification, and error accumulation</label>
+    <label><input type="radio" name="q3_4" value="d"> Loop termination, cache miss, skill unload, and prefill cost</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q3_4','g3',8)">Check answer</button>
+  <div class="explanation" style="display:none">These four compound on each other: drifting goals compound with growing context, weak verification lets errors pass, and small mistakes snowball over dozens of steps.</div>
+</div>
+
+<div class="q-item" id="q3_5">
+  <div class="qnum">G3 · Question 5</div>
+  <p class="q-text">What is "dreaming" in the context of agent memory management?</p>
+  <div class="options">
+    <label><input type="radio" name="q3_5" value="a"> The agent hallucinating facts that don't exist in its knowledge base</label>
+    <label><input type="radio" name="q3_5" value="b"> A metaphor for the model's creative reasoning capabilities</label>
+    <label><input type="radio" name="q3_5" value="c" data-correct="true"> Scheduled offline batch consolidation of memories (e.g. nightly) instead of risky real-time writes</label>
+    <label><input type="radio" name="q3_5" value="d"> The idle state of a paused sandbox waiting for the next task</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q3_5','g3',8)">Check answer</button>
+  <div class="explanation" style="display:none">Writing in real-time is risky (models over-write indiscriminately). Deferring to a nightly batch ("T+1") turns the problem into a single global fold-and-merge update — much more tractable.</div>
+</div>
+
+<div class="q-item" id="q3_6">
+  <div class="qnum">G3 · Question 6</div>
+  <p class="q-text">What is a MicroVM (like Firecracker), and why is it used for agent sandboxes?</p>
+  <div class="options">
+    <label><input type="radio" name="q3_6" value="a"> A very small Python virtual environment used to isolate dependencies</label>
+    <label><input type="radio" name="q3_6" value="b"> A microservice that manages VM provisioning in the cloud</label>
+    <label><input type="radio" name="q3_6" value="c" data-correct="true"> A lightweight virtual machine with full VM-level isolation but near-container startup speed — safe and fast</label>
+    <label><input type="radio" name="q3_6" value="d"> A compressed container image that reduces startup time by 10×</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q3_6','g3',8)">Check answer</button>
+  <div class="explanation" style="display:none">MicroVMs give you genuine VM isolation (the agent's code can't touch the host) while starting in milliseconds — the best of both worlds for agent sandboxes running arbitrary code.</div>
+</div>
+
+<div class="q-item" id="q3_7">
+  <div class="qnum">G3 · Question 7</div>
+  <p class="q-text">Why do prefix-stable prompts matter for inference cost and speed?</p>
+  <div class="options">
+    <label><input type="radio" name="q3_7" value="a"> Stable prompts are shorter, so they use fewer tokens</label>
+    <label><input type="radio" name="q3_7" value="b"> They prevent the model from hallucinating</label>
+    <label><input type="radio" name="q3_7" value="c" data-correct="true"> An unchanged prompt prefix lets the system reuse cached attention data (KV cache hit), avoiding expensive recomputation</label>
+    <label><input type="radio" name="q3_7" value="d"> They allow the model to batch multiple requests together</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q3_7','g3',8)">Check answer</button>
+  <div class="explanation" style="display:none">Every prefix change is a cache miss — the system must recompute the attention keys and values from scratch, costing real money and adding latency. This is why the harness keeps the beginning of the prompt rock-stable.</div>
+</div>
+
+<div class="q-item" id="q3_8">
+  <div class="qnum">G3 · Question 8</div>
+  <p class="q-text">What is the key difference between how Claude Code/Codex and Kimi Swarm handle multi-agent orchestration?</p>
+  <div class="options">
+    <label><input type="radio" name="q3_8" value="a"> Claude Code uses Python; Kimi Swarm uses Go</label>
+    <label><input type="radio" name="q3_8" value="b"> Claude Code runs locally; Kimi Swarm runs in the cloud</label>
+    <label><input type="radio" name="q3_8" value="c" data-correct="true"> Claude Code/Codex use predefined human-designed roles; Kimi Swarm has the model itself decide how to decompose and delegate work</label>
+    <label><input type="radio" name="q3_8" value="d"> Claude Code supports more concurrent agents than Kimi Swarm</label>
+  </div>
+  <button class="check-btn" onclick="checkQ('q3_8','g3',8)">Check answer</button>
+  <div class="explanation" style="display:none">This is the model-driven vs. role-driven axis: Claude Code/Codex have humans pre-define the roles; Kimi Swarm has the model itself break the task into pieces and assign sub-agents dynamically. Both approaches have trade-offs.</div>
+</div>
+
+<div id="final-panel" style="display:none">
+  <div class="final-score">
+    <div class="fs-pct" id="fs-pct">—%</div>
+    <div class="fs-label">Final Score · 26 questions</div>
+  </div>
+  <div class="breakdown-grid">
+    <div class="bk"><div class="bk-label">01 · Foundations</div><div class="bk-val" id="bk1-val">—</div></div>
+    <div class="bk"><div class="bk-label">02 · Applied</div><div class="bk-val" id="bk2-val">—</div></div>
+    <div class="bk"><div class="bk-label">03 · Advanced</div><div class="bk-val" id="bk3-val">—</div></div>
+  </div>
+  <button onclick="resetAll()">↺ Try again</button>
+</div>
+
+<footer>
+  <div>26 questions · 3 guides · Live scoring</div>
+  <div><a href="index.html">← back to library</a></div>
+  <div><a href="flashcards-index.html">Flashcards →</a></div>
+</footer>
+
+</div>
+<script>
+const answers = {};
+
+function checkQ(id, group, total) {
+  const item = document.getElementById(id);
+  const selected = item.querySelector('input[type=radio]:checked');
+  if (!selected) { alert('Please select an answer first.'); return; }
+  const isCorrect = selected.hasAttribute('data-correct');
+  item.classList.remove('correct','wrong');
+  item.classList.add(isCorrect ? 'correct' : 'wrong');
+  item.querySelector('.check-btn').disabled = true;
+  item.querySelectorAll('input[type=radio]').forEach(r => r.disabled = true);
+  const exp = item.querySelector('.explanation');
+  if (exp) exp.style.display = 'block';
+  answers[id] = isCorrect;
+  updateDashboard();
+  updateSectionScore(group, total);
+  const totalQuestions = document.querySelectorAll('.q-item').length;
+  if (Object.keys(answers).length === totalQuestions) setTimeout(showFinal, 400);
+}
+
+function updateDashboard() {
+  const vals = Object.values(answers);
+  const answered = vals.length;
+  const correct = vals.filter(Boolean).length;
+  const pct = answered ? Math.round(correct / answered * 100) : 0;
+  document.getElementById('d-answered').textContent = answered;
+  document.getElementById('d-correct').textContent = correct;
+  document.getElementById('d-pct').textContent = pct + '%';
+  document.getElementById('dbar-fill').style.width = pct + '%';
+}
+
+function updateSectionScore(group, total) {
+  const prefix = group.replace('g','q');
+  const keys = Object.keys(answers).filter(k => k.startsWith(prefix + '_'));
+  const correct = keys.filter(k => answers[k]).length;
+  const el = document.getElementById('score-' + group);
+  if (el) el.textContent = correct + ' / ' + keys.length + ' correct';
+}
+
+function countGroup(group) {
+  const prefix = group.replace('g','q');
+  const keys = Object.keys(answers).filter(k => k.startsWith(prefix + '_'));
+  return { answered: keys.length, correct: keys.filter(k => answers[k]).length };
+}
+
+function showFinal() {
+  const panel = document.getElementById('final-panel');
+  panel.style.display = 'block';
+  panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  const vals = Object.values(answers);
+  const pct = Math.round(vals.filter(Boolean).length / vals.length * 100);
+  document.getElementById('fs-pct').textContent = pct + '%';
+  ['g1','g2','g3'].forEach(g => {
+    const { answered, correct } = countGroup(g);
+    const el = document.getElementById('bk' + g.slice(1) + '-val');
+    if (el) el.textContent = answered ? correct + ' / ' + answered : '—';
+  });
+}
+
+function resetAll() {
+  Object.keys(answers).forEach(k => delete answers[k]);
+  document.querySelectorAll('.q-item').forEach(item => {
+    item.classList.remove('correct','wrong');
+    item.querySelectorAll('input[type=radio]').forEach(r => { r.checked = false; r.disabled = false; });
+    const btn = item.querySelector('.check-btn');
+    if (btn) btn.disabled = false;
+    const exp = item.querySelector('.explanation');
+    if (exp) exp.style.display = 'none';
+  });
+  document.getElementById('d-answered').textContent = '0';
+  document.getElementById('d-correct').textContent = '0';
+  document.getElementById('d-pct').textContent = '0%';
+  document.getElementById('dbar-fill').style.width = '0%';
+  document.getElementById('final-panel').style.display = 'none';
+  ['g1','g2','g3'].forEach(g => {
+    const el = document.getElementById('score-' + g);
+    if (el) el.textContent = '0 / 0 correct';
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

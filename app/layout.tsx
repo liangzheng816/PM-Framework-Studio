@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Instrument_Serif, JetBrains_Mono } from "next/font/google";
+import { Inter, Fraunces, JetBrains_Mono } from "next/font/google";
 import { NavBar } from "@/components/layout/navbar";
 import { FooterGuard } from "@/components/layout/footer-guard";
 import { ClientShell } from "@/components/layout/client-shell";
@@ -16,10 +16,11 @@ const inter = Inter({
   display: "swap",
 });
 
-const instrumentSerif = Instrument_Serif({
-  weight: "400",
+const fraunces = Fraunces({
+  weight: ["400", "600", "900"],
+  style: ["normal", "italic"],
   subsets: ["latin"],
-  variable: "--font-instrument-serif",
+  variable: "--font-fraunces",
   display: "swap",
 });
 
@@ -46,7 +47,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable}`}
+      className={`${inter.variable} ${fraunces.variable} ${jetbrainsMono.variable}`}
     >
       {/* Plausible Analytics — uncomment and set data-domain once deployed:
       <head>

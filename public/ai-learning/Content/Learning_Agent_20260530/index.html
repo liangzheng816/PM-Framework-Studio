@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The AI Learning Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,450;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+}
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:1040px;margin:0 auto;padding:0 28px 120px;}
+code,.mono{font-family:"JetBrains Mono",monospace;font-size:.82em;background:#ece7db;padding:.08em .38em;border-radius:4px;color:#3a382f;}
+a{color:inherit;}
+
+.hero{padding:90px 0 24px;position:relative;}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:16px;}
+.hero h1{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(46px,7vw,80px);line-height:1.0;margin:0 0 22px;letter-spacing:-.02em;max-width:880px;}
+.hero h1 em{font-style:italic;color:var(--accent);}
+.hero .dek{font-family:"Newsreader",Georgia,serif;font-style:italic;font-size:23px;color:var(--ink-soft);line-height:1.5;margin:0 0 22px;max-width:760px;}
+.loop{position:absolute;top:96px;right:0;width:120px;height:120px;opacity:.85;}
+@media(max-width:880px){.loop{display:none;}}
+
+.stats{display:flex;flex-wrap:wrap;margin:38px 0 6px;border:1px solid var(--rule);border-radius:11px;overflow:hidden;background:var(--card);}
+.stats .s{flex:1 1 140px;padding:18px 22px;border-right:1px solid var(--rule);}
+.stats .s:last-child{border-right:none;}
+.stats .s .v{font-family:"Fraunces",serif;font-weight:900;font-size:30px;color:var(--accent);line-height:1;}
+.stats .s .l{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-top:7px;}
+
+.sec-label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin:54px 0 8px;font-weight:600;}
+
+.practice-hub{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:14px 0 0;}
+@media(max-width:680px){.practice-hub{grid-template-columns:1fr;}}
+.hub-card{display:block;text-decoration:none;color:inherit;border-radius:16px;padding:36px 36px;position:relative;overflow:hidden;transition:transform .18s ease,box-shadow .18s ease;}
+.hub-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px -14px rgba(27,26,23,.32);}
+.hub-card.quiz{background:var(--slate);color:#fff;}
+.hub-card.flash{background:#1b1a17;color:#fff;}
+.hub-card .hc-wm{position:absolute;top:-30px;right:-10px;font-family:"Fraunces",serif;font-weight:900;font-size:180px;line-height:1;opacity:.08;pointer-events:none;color:#fff;}
+.hub-card .hc-type{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:10px;font-weight:600;}
+.hub-card h2{font-family:"Fraunces",serif;font-weight:600;font-size:38px;line-height:1.05;margin:0 0 12px;letter-spacing:-.015em;}
+.hub-card h2 em{font-style:italic;color:var(--accent);}
+.hub-card.quiz h2 em{color:#fff;opacity:.85;}
+.hub-card p{margin:0 0 22px;font-size:17px;color:rgba(255,255,255,.85);line-height:1.5;max-width:36ch;}
+.hub-stat{display:flex;gap:28px;margin:14px 0 24px;flex-wrap:wrap;}
+.hs{display:flex;flex-direction:column;}
+.hv{font-family:"Fraunces",serif;font-weight:600;font-size:26px;color:#fff;line-height:1;}
+.hl{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:rgba(255,255,255,.55);letter-spacing:.14em;text-transform:uppercase;margin-top:5px;}
+.hub-cta{display:inline-flex;align-items:center;gap:8px;font-family:"JetBrains Mono",monospace;font-size:13px;font-weight:600;padding:11px 22px;border-radius:8px;transition:all .15s;}
+.hub-card.quiz .hub-cta{background:#fff;color:var(--slate);}
+.hub-card.flash .hub-cta{background:var(--accent);color:#fff;}
+
+.pathline{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0 12px;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-soft);}
+.pathline b{color:var(--ink);font-weight:600;}
+.pathline .arr{color:var(--accent);}
+
+.card{display:block;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--rule);border-left:5px solid var(--c,var(--slate));border-radius:12px;padding:28px 32px 30px;margin:18px 0;position:relative;overflow:hidden;transition:transform .16s ease,box-shadow .16s ease;}
+.card:hover{transform:translateY(-3px);box-shadow:0 10px 30px -12px rgba(27,26,23,.28);}
+.card .wm{position:absolute;top:-22px;right:6px;font-family:"Fraunces",serif;font-weight:900;font-size:145px;line-height:1;color:var(--c,var(--slate));opacity:.06;pointer-events:none;}
+.lvl-1{--c:var(--g1);--cs:var(--slate-soft);}
+.lvl-2{--c:var(--g2);--cs:var(--amber-soft);}
+.lvl-3{--c:var(--g3);--cs:var(--accent-soft);}
+.card .lvl{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--c);font-weight:600;margin-bottom:8px;}
+.card h3{font-family:"Fraunces",serif;font-weight:600;font-size:30px;line-height:1.12;margin:0 0 4px;letter-spacing:-.01em;}
+.card h3 .en{display:block;font-style:italic;font-weight:400;font-size:18px;color:var(--ink-soft);margin-top:6px;}
+.card .d{margin:14px 0 16px;font-size:16.5px;color:var(--ink-soft);max-width:680px;line-height:1.5;}
+.card .tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;}
+.card .tags span{font-family:"JetBrains Mono",monospace;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:5px;color:var(--c);border:1.5px solid color-mix(in srgb,var(--c) 35%,transparent);background:color-mix(in srgb,var(--c) 8%,transparent);}
+.card .open{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:var(--c);letter-spacing:.06em;}
+.card .arw{display:inline-block;margin-left:4px;transition:transform .15s;}
+.card:hover .arw{transform:translateX(4px);}
+
+.howto{background:var(--card);border:1px solid var(--rule);border-radius:11px;padding:24px 28px;margin:36px 0 0;}
+.howto h4{font-family:"Fraunces",serif;font-weight:600;font-size:20px;margin:0 0 10px;}
+.howto ul{margin:0;padding-left:0;list-style:none;}
+.howto li{padding:6px 0 6px 22px;position:relative;font-size:16px;line-height:1.5;color:var(--ink-soft);}
+.howto li::before{content:"▸";position:absolute;left:0;color:var(--accent);font-size:14px;top:8px;}
+.howto a{color:var(--accent);text-decoration:none;border-bottom:1px solid currentColor;}
+
+footer{margin-top:80px;padding-top:28px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-soft);line-height:1.6;}
+
+@media(max-width:760px){
+  .hero{padding:60px 0 16px;}
+  .hub-card{padding:28px 24px;}
+  .hub-card h2{font-size:30px;}
+  .card{padding:22px 22px 24px;}
+  .card h3{font-size:24px;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <svg class="loop" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M45 14 A36 36 0 1 1 17.5 34" stroke="#cc3b1d" stroke-width="5" stroke-linecap="round"/>
+    <path d="M16 16 L17.5 34 L35 30" stroke="#cc3b1d" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="45" cy="45" r="6" fill="#2f5d62"/>
+  </svg>
+  <div class="kicker">Learning Resource · AI Agent Engineering</div>
+  <h1>The AI Learning <em>Library</em></h1>
+  <p class="dek">A structured collection of guides for understanding how AI agents actually work — from the bare loop all the way to production infrastructure. Read, quiz yourself, and drill concepts with flashcards.</p>
+</header>
+
+<div class="stats">
+  <div class="s"><div class="v">3</div><div class="l">Learning Guides</div></div>
+  <div class="s"><div class="v">45</div><div class="l">Concepts Covered</div></div>
+  <div class="s"><div class="v">26</div><div class="l">Quiz Questions</div></div>
+  <div class="s"><div class="v">45</div><div class="l">Flashcards</div></div>
+</div>
+
+<div class="sec-label">Practice — test &amp; drill what you've learned</div>
+
+<div class="practice-hub">
+
+  <a class="hub-card quiz" href="quiz-index.html">
+    <div class="hc-wm">?</div>
+    <div class="hc-type">Multiple Choice · All Guides</div>
+    <h2>Full <em>Quiz</em></h2>
+    <p>All 26 questions in one sitting — live score tracks as you go, with a per-guide breakdown at the end.</p>
+    <div class="hub-stat">
+      <div class="hs"><span class="hv">26</span><span class="hl">Questions</span></div>
+      <div class="hs"><span class="hv">3</span><span class="hl">Guides</span></div>
+      <div class="hs"><span class="hv">Live</span><span class="hl">Score</span></div>
+    </div>
+    <span class="hub-cta">Start Quiz →</span>
+  </a>
+
+  <a class="hub-card flash" href="flashcards-index.html">
+    <div class="hc-wm">🃏</div>
+    <div class="hc-type">Flip Cards · All Guides</div>
+    <h2>All <em>Flashcards</em></h2>
+    <p>45 unique flip cards across all three guides — 5 are tagged across guides. Filter by topic, shuffle the deck, or flip everything at once.</p>
+    <div class="hub-stat">
+      <div class="hs"><span class="hv">45</span><span class="hl">Cards</span></div>
+      <div class="hs"><span class="hv">3</span><span class="hl">Guides</span></div>
+      <div class="hs"><span class="hv">Shuffle</span><span class="hl">+ Filter</span></div>
+    </div>
+    <span class="hub-cta">Browse Cards →</span>
+  </a>
+
+</div>
+
+<div class="sec-label">The curriculum — read in order, or dip in anywhere</div>
+<div class="pathline">
+  <b>Foundations</b> <span class="arr">→</span> <b>Applied</b> <span class="arr">→</span> <b>Advanced</b>
+  &nbsp;·&nbsp; each guide stands alone, but they build on each other.
+</div>
+
+<a class="card lvl-1" href="agents-from-scratch-cheatsheet.html">
+  <div class="wm">01</div>
+  <div class="lvl">01 · Foundations</div>
+  <h3>How an Agent Actually Runs<span class="en">Learning agents from scratch — the bottom-up route</span></h3>
+  <p class="d">Strip away the frameworks and see the loop: LLM decides → tool executes → result feeds back. A study path through three small open-source projects — mini-swe-agent, smolagents, and a full Mini-Agent — plus a 10-question quiz and 20 flashcards covering the entire glossary.</p>
+  <div class="tags"><span>agent loop</span><span>ReAct</span><span>tools</span><span>CodeAgent vs ToolCalling</span><span>memory vs context</span><span>MCP</span><span>10 questions · 20 cards</span></div>
+  <span class="open">Read guide <span class="arw">→</span></span>
+</a>
+
+<a class="card lvl-2" href="claude-code-workflow-cheatsheet.html">
+  <div class="wm">02</div>
+  <div class="lvl">02 · Applied</div>
+  <h3>The Claude Code Workflow<span class="en">How a real agentic coding tool works, end to end</span></h3>
+  <p class="d">Take the loop into production. The agentic harness, the workflow primitives (CLAUDE.md, permissions, Skills/MCP/Hooks/Subagents, context management), the Explore → Plan → Code → Commit pattern, and quantified enterprise case studies from Ramp, Rakuten, cubic and more.</p>
+  <div class="tags"><span>agentic harness</span><span>gather→act→verify</span><span>CLAUDE.md</span><span>permission modes</span><span>subagents</span><span>enterprise cases</span><span>8 questions · 16 cards</span></div>
+  <span class="open">Read guide <span class="arw">→</span></span>
+</a>
+
+<a class="card lvl-3" href="harness-agent-interview-cheatsheet.html">
+  <div class="wm">03</div>
+  <div class="lvl">03 · Advanced</div>
+  <h3>Agent Infrastructure Deep Dive<span class="en">The engineering layer that makes agents reliable</span></h3>
+  <p class="d">The 11 high-frequency areas of agent infrastructure — memory write-back, skill loading, sandboxes, the harness, loop controllability, inference &amp; KV-cache, post-training, long-horizon execution, eval, and model-native orchestration (Kimi Swarm). Each topic explained from first principles with quiz and flashcards.</p>
+  <div class="tags"><span>memory</span><span>skills</span><span>sandbox</span><span>harness</span><span>KV-cache</span><span>long-horizon</span><span>eval</span><span>Kimi Swarm</span><span>8 questions · 14 cards</span></div>
+  <span class="open">Read guide <span class="arw">→</span></span>
+</a>
+
+<div class="sec-label">How to use this library</div>
+<div class="howto">
+  <h4>Suggested flow</h4>
+  <ul>
+    <li><b>Read a guide section</b> — each guide has a sticky topic-nav at the top for quick jumps. Content is presented as auto-numbered slide panels.</li>
+    <li><b>Quiz yourself</b> immediately after — use the per-guide quiz at the bottom of each guide, or jump straight to the <a href="quiz-index.html">Full Quiz</a> for all 26 questions at once.</li>
+    <li><b>Drill flashcards</b> — tap any card to flip it. The <a href="flashcards-index.html">Flashcard Deck</a> has all 45 cards with guide filtering and shuffle for spaced repetition.</li>
+    <li><b>Print to PDF</b> from any guide for an offline reference sheet — the slide-panel layouts are print-friendly.</li>
+  </ul>
+</div>
+
+<footer>
+  THE AI LEARNING LIBRARY · A PERSONAL LEARNING RESOURCE · REGENERATED 2026-05-30<br>
+  CONTENTS SYNTHESIZED FROM PUBLIC DOCS, ENGINEERING BLOGS &amp; FIELD NOTES — VERIFY FAST-MOVING SPECIFICS AGAINST CURRENT SOURCES BEFORE RELYING ON THEM.
+</footer>
+
+</div>
+</body>
+</html>

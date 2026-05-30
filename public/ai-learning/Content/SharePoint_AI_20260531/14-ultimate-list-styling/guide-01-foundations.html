@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Guide 01 · Foundations — Ultimate List Styling</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--slate);
+}
+*,*::before,*::after { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; counter-reset:slide; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 28px 120px; }
+.sec-label { font-family:"JetBrains Mono",monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);
+  margin:48px 0 6px; font-weight:600; }
+code,.mono { font-family:"JetBrains Mono",monospace; font-size:.82em;
+  background:#ece7db; padding:.08em .38em; border-radius:4px; color:#3a382f; }
+.back { font-family:"JetBrains Mono",monospace; font-size:12px;
+  text-decoration:none; color:var(--ink-soft); display:inline-flex;
+  align-items:center; gap:6px; margin-bottom:22px; border:1px solid var(--rule);
+  border-radius:6px; padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px;
+  letter-spacing:.28em; text-transform:uppercase; color:var(--accent);
+  font-weight:600; margin-bottom:18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(36px,5.5vw,56px);
+  line-height:1.02; margin:0 0 16px; letter-spacing:-.02em; }
+.dek { font-size:20px; color:var(--ink-soft); max-width:720px; margin:0 0 30px; }
+.topnav { position:sticky; top:0; z-index:10; background:var(--paper);
+  border-bottom:1px solid var(--rule); padding:12px 0; margin:24px 0 0;
+  display:flex; flex-wrap:wrap; gap:6px; }
+.topnav a { font-family:"JetBrains Mono",monospace; font-size:11px;
+  font-weight:600; text-decoration:none; color:var(--ink-soft);
+  padding:5px 10px; border-radius:5px; letter-spacing:.05em;
+  text-transform:uppercase; transition:all .12s; }
+.topnav a:hover { background:var(--guide-color); color:#fff; }
+.meta-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:28px 0 12px; }
+@media (max-width:760px) { .meta-grid { grid-template-columns:1fr; } }
+.meta { background:var(--card); border:1px solid var(--rule);
+  border-top:3px solid var(--guide-color); border-radius:10px; padding:18px 20px; }
+.meta .mlbl { font-family:"JetBrains Mono",monospace; font-size:10px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft);
+  margin-bottom:8px; font-weight:600; }
+.meta .mtxt { font-family:"Fraunces",serif; font-weight:600; font-size:18px; line-height:1.3; }
+
+section:not(#quiz):not(#flashcards) {
+  counter-increment: slide;
+  background: var(--card);
+  border: 1.5px solid color-mix(in srgb, var(--guide-color, var(--slate)) 28%, var(--rule));
+  border-radius: 18px;
+  box-shadow: 0 8px 36px -10px rgba(27,26,23,.18), 0 1px 0 rgba(27,26,23,.04);
+  margin: 48px 0; overflow: hidden; position: relative;
+}
+section:not(#quiz):not(#flashcards) h2 {
+  margin: 0; padding: 26px 36px 22px;
+  background: var(--guide-color, var(--slate));
+  color: #fff; font-family: "Fraunces", serif;
+  font-weight: 900; font-size: clamp(20px, 2.8vw, 26px);
+  letter-spacing: -.015em; line-height: 1.1;
+  display: flex; align-items: flex-start; gap: 14px;
+}
+section:not(#quiz):not(#flashcards) h2::before {
+  content: counter(slide, decimal-leading-zero);
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 600; font-size: 12px; letter-spacing: .1em;
+  background: rgba(255,255,255,.16); color: rgba(255,255,255,.9);
+  border: 1px solid rgba(255,255,255,.28);
+  padding: 4px 10px; border-radius: 5px;
+  flex-shrink: 0; margin-top: 3px; white-space: nowrap;
+}
+section:not(#quiz):not(#flashcards) > p,
+section:not(#quiz):not(#flashcards) > .insight,
+section:not(#quiz):not(#flashcards) > .misconception,
+section:not(#quiz):not(#flashcards) > blockquote,
+section:not(#quiz):not(#flashcards) > pre {
+  margin-left: 36px; margin-right: 36px;
+}
+section:not(#quiz):not(#flashcards) > p:first-of-type { margin-top: 28px; }
+section:not(#quiz):not(#flashcards) > p:last-of-type,
+section:not(#quiz):not(#flashcards) > blockquote:last-child,
+section:not(#quiz):not(#flashcards) > .misconception:last-child { margin-bottom: 34px; }
+section:not(#quiz):not(#flashcards)::after {
+  content: ""; display: block; height: 4px;
+  background: linear-gradient(90deg,
+    var(--guide-color, var(--slate)) 0%,
+    color-mix(in srgb, var(--guide-color, var(--slate)) 30%, transparent) 100%);
+  margin-top: 34px; opacity: .35;
+}
+@media (max-width:680px) {
+  section:not(#quiz):not(#flashcards) h2 { padding:20px 22px 18px; font-size:20px; }
+  section:not(#quiz):not(#flashcards) > p,
+  section:not(#quiz):not(#flashcards) > .insight,
+  section:not(#quiz):not(#flashcards) > .misconception,
+  section:not(#quiz):not(#flashcards) > blockquote { margin-left:22px; margin-right:22px; }
+}
+
+.insight, .misconception { border-radius:10px; padding:18px 22px; margin:22px 0; font-size:17px; line-height:1.5; }
+.insight { border-left:4px solid var(--slate); background:var(--slate-soft); }
+.misconception { border-left:4px solid var(--accent); background:var(--accent-soft); }
+.insight::before { content:"✦ Key insight — "; font-weight:600; color:var(--slate); }
+.misconception::before { content:"✕ Common misconception — "; font-weight:600; color:var(--accent); }
+
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
+.fc { perspective:900px; height:190px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%;
+  transform-style:preserve-3d;
+  transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front, .fc-back { position:absolute; inset:0; border-radius:13px;
+  padding:22px 22px 18px; backface-visibility:hidden;
+  -webkit-backface-visibility:hidden; display:flex; flex-direction:column;
+  justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back { background:#7a5400; }
+.fc[data-g="g3"] .fc-front { border-left:4px solid var(--g3); }
+.fc[data-g="g3"] .fc-back { background:#3a1a10; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc[data-g="g3"] .fc-term { color:var(--g3); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc[data-g="g3"] .fc-def { color:#f5d6ce; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px;
+  color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px;
+  font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+  padding:2px 8px; border-radius:4px; border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent); background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent); background:color-mix(in srgb,var(--g2) 10%,transparent); }
+.gtag.g3 { color:var(--g3); border-color:color-mix(in srgb,var(--g3) 40%,transparent); background:color-mix(in srgb,var(--g3) 10%,transparent); }
+.footnav { margin-top:60px; padding-top:24px; border-top:1px solid var(--rule);
+  display:flex; flex-wrap:wrap; gap:14px; justify-content:space-between;
+  font-family:"JetBrains Mono",monospace; font-size:12px; }
+.footnav a { color:var(--ink-soft); text-decoration:none; padding:8px 14px;
+  border:1px solid var(--rule); border-radius:6px; }
+.footnav a:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+@media (max-width:760px) { .fc-grid { grid-template-columns:1fr 1fr; } }
+@media (max-width:420px) { .fc-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← Library</a>
+  <div class="kicker">01 · Foundations</div>
+  <h1>The PnP samples, packaged for AI</h1>
+  <p class="dek">SharePoint can do far more list styling than anyone uses, because the JSON is hard to write by hand. The Pattern and Practices community has built a sample library. This guide turns it into a skill the AI can consult.</p>
+
+  <nav class="topnav">
+    <a href="#pnp">01 PnP samples</a>
+    <a href="#tech-ref">02 Tech reference</a>
+    <a href="#skill-gate">03 Skill gate</a>
+    <a href="#demo-library">04 Demo setup</a>
+    <a href="#flashcards">Flashcards</a>
+  </nav>
+
+  <div class="sec-label">Meta takeaways</div>
+  <div class="meta-grid">
+    <div class="meta"><div class="mlbl">Source</div><div class="mtxt">Pattern and Practices GitHub is the catalog of SharePoint list formatting recipes.</div></div>
+    <div class="meta"><div class="mlbl">Bridge</div><div class="mtxt">A reference file turns those recipes into something the AI can read on demand.</div></div>
+    <div class="meta"><div class="mlbl">Trigger</div><div class="mtxt">A skill tells the AI when to read that file — when a styling request shows up.</div></div>
+  </div>
+
+  <section id="pnp">
+    <h2>The PnP samples library is the unlock</h2>
+    <p>SharePoint has an enormous set of formatting capabilities that most users never see, because writing the JSON by hand is hard. The Microsoft Pattern and Practices (PnP) community has published a public GitHub library full of working formatting samples — the kind of designs you wouldn't think SharePoint could do.</p>
+    <div class="insight">The capabilities have been in SharePoint all along. The PnP library makes them discoverable and copy-pasteable, which is the real unlock.</div>
+    <p>The video uses this library as raw material. The goal: turn the catalog into something an AI can use without you having to wire each sample into a prompt by hand.</p>
+  </section>
+
+  <section id="tech-ref">
+    <h2>The technical reference file</h2>
+    <p>The author generated a single document — a list formatting technical reference — from the PnP data set. It describes, in detail aimed at an AI, every kind of formatting you can do on a SharePoint list or library: timelines, galleries, card layouts, status colours, row backgrounds, all of it.</p>
+    <div class="insight">The reference file is the AI-readable version of the PnP catalog. One file, every pattern, written so the model can pick the right one for any styling request.</div>
+    <p>This is heavy content. You don't want it in every prompt — only when a styling request actually needs it.</p>
+    <div class="misconception">This reference isn't a fixed set of templates. It teaches the AI the patterns so it can adapt them to the columns and data the user actually has.</div>
+  </section>
+
+  <section id="skill-gate">
+    <h2>A skill tells the AI when to read it</h2>
+    <p>Alongside the technical reference, the author wrote a small skill. The skill's only job is to tell SharePoint's AI: "when the user asks to design or style a list, go read the reference file before doing anything." Without the skill, the AI doesn't know the file exists.</p>
+    <div class="insight">The skill is a trigger. The reference file is the knowledge. The two together turn a one-shot prompt into a reliable styling capability.</div>
+    <p>Both files — the skill and the reference — live in the SharePoint site's Agent Assets Library. The author has published them on GitHub so anyone can drop them into their own tenant.</p>
+  </section>
+
+  <section id="demo-library">
+    <h2>The demo library setup</h2>
+    <p>The demo starts with a fresh SharePoint site containing a few lists — product launch milestones is the first one. The skill and its reference file have been uploaded to the site's skills library. From there, every list in the site can call the same styling skill.</p>
+    <div class="insight">You install the skill once at the site level. Every list in that site can use it. The AI looks up the skill the moment a styling request mentions design.</div>
+    <p>The first prompt in the demo is intentionally simple: <em>style this as a timeline</em>. The skill activates, reads the reference, picks a timeline pattern, and applies it to the milestones list.</p>
+    <div class="misconception">You don't have to point at the reference file by name. The skill knows to load it whenever a design or styling intent is detected.</div>
+  </section>
+
+  <section id="flashcards">
+    <div class="sec-label">Flashcards — Foundations</div>
+    <div class="fc-grid">
+
+      <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')">
+        <div class="fc-inner">
+          <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">PnP samples library</div><div class="fc-tap">tap to reveal →</div></div>
+          <div class="fc-back"><div class="fc-def">The Microsoft Pattern and Practices GitHub catalog of SharePoint list and library formatting recipes — timelines, galleries, status colours, more.</div><div class="fc-tap">← tap to flip back</div></div>
+        </div>
+      </div>
+
+      <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')">
+        <div class="fc-inner">
+          <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Technical reference file</div><div class="fc-tap">tap to reveal →</div></div>
+          <div class="fc-back"><div class="fc-def">A single AI-readable document distilled from the PnP catalog. Describes every list-formatting pattern in detail so the model can pick one per request.</div><div class="fc-tap">← tap to flip back</div></div>
+        </div>
+      </div>
+
+      <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')">
+        <div class="fc-inner">
+          <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Skill gate</div><div class="fc-tap">tap to reveal →</div></div>
+          <div class="fc-back"><div class="fc-def">A small skill that tells SharePoint's AI to load the technical reference whenever a styling or design request comes in. The trigger for the knowledge.</div><div class="fc-tap">← tap to flip back</div></div>
+        </div>
+      </div>
+
+      <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')">
+        <div class="fc-inner">
+          <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Agent Assets Library</div><div class="fc-tap">tap to reveal →</div></div>
+          <div class="fc-back"><div class="fc-def">The per-site SharePoint location where skill files and their reference docs live. Once uploaded, every list in the site can call those skills.</div><div class="fc-tap">← tap to flip back</div></div>
+        </div>
+      </div>
+
+      <div class="fc" data-g="g1" onclick="this.classList.toggle('flipped')">
+        <div class="fc-inner">
+          <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Demo library</div><div class="fc-tap">tap to reveal →</div></div>
+          <div class="fc-back"><div class="fc-def">The starter SharePoint site used in the video — a small set of lists (product launch milestones first) used to exercise the styling skill end to end.</div><div class="fc-tap">← tap to flip back</div></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="footnav">
+    <a href="index.html">← Back to library</a>
+    <a href="guide-02-applied.html">Guide 02 · Applied →</a>
+  </div>
+</div>
+</body>
+</html>

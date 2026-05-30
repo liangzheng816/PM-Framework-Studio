@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flashcard Deck — Building a Dashboard from SharePoint Data with AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root { --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4; --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf; --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d; }
+*, *::before, *::after { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader",Georgia,serif; font-size:18px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; }
+.wrap { max-width:1180px; margin:0 auto; padding:0 28px 120px; }
+.back { font-family:"JetBrains Mono",monospace; font-size:12px; text-decoration:none;
+  color:var(--ink-soft); display:inline-flex; align-items:center; gap:6px;
+  margin:28px 0 22px; border:1px solid var(--rule); border-radius:6px;
+  padding:5px 12px; transition:all .14s; }
+.back:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.kicker { font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.28em;
+  text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:18px; }
+h1 { font-family:"Fraunces",serif; font-weight:900; font-size:clamp(34px,5vw,52px);
+  line-height:1.05; letter-spacing:-.02em; margin:0 0 18px; }
+.dek { font-size:21px; color:var(--ink-soft); max-width:720px; margin:0 0 36px; }
+.controls { display:flex; flex-wrap:wrap; gap:14px; justify-content:space-between;
+  align-items:center; padding:18px 22px; background:var(--card);
+  border:1px solid var(--rule); border-radius:11px; margin:24px 0 14px; }
+.filter-tabs { display:flex; flex-wrap:wrap; gap:6px; }
+.ftab { font-family:"JetBrains Mono",monospace; font-size:12px; font-weight:600;
+  padding:6px 14px; border-radius:6px; border:2px solid transparent;
+  cursor:pointer; background:transparent; color:var(--ink-soft); transition:all .14s; }
+.ftab:hover { background:#ece7db; }
+.ftab.active { color:#fff; border-color:transparent; }
+.ftab[data-f="all"].active { background:var(--ink); }
+.ftab[data-f="g1"].active { background:var(--g1); }
+.ftab[data-f="g2"].active { background:var(--g2); }
+.ftab[data-f="g3"].active { background:var(--g3); }
+.ctrl-btns { display:flex; gap:8px; }
+.cbtn { font-family:"JetBrains Mono",monospace; font-size:12px; font-weight:600;
+  padding:7px 14px; border-radius:7px; border:1.5px solid var(--rule);
+  background:transparent; cursor:pointer; color:var(--ink); transition:all .14s; }
+.cbtn:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.counter-bar { font-family:"JetBrains Mono",monospace; font-size:12px;
+  color:var(--ink-soft); margin:0 0 22px; padding:0 4px; }
+.fc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
+.fc { perspective:900px; height:210px; cursor:pointer; }
+.fc.hidden { display:none; }
+.fc-inner { position:relative; width:100%; height:100%; transform-style:preserve-3d;
+  transition:transform .45s cubic-bezier(.4,0,.2,1); }
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-front, .fc-back { position:absolute; inset:0; border-radius:13px;
+  padding:22px 22px 18px; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  display:flex; flex-direction:column; justify-content:space-between; }
+.fc-front { background:var(--card); border:1.5px solid var(--rule); }
+.fc-back { transform:rotateY(180deg); }
+.fc[data-g="g1"] .fc-front { border-left:4px solid var(--g1); }
+.fc[data-g="g1"] .fc-back { background:var(--g1); }
+.fc[data-g="g2"] .fc-front { border-left:4px solid var(--g2); }
+.fc[data-g="g2"] .fc-back { background:#7a5400; }
+.fc[data-g="g3"] .fc-front { border-left:4px solid var(--g3); }
+.fc[data-g="g3"] .fc-back { background:#3a1a10; }
+.fc[data-g="g1"] .fc-term { color:var(--g1); }
+.fc[data-g="g2"] .fc-term { color:var(--g2); }
+.fc[data-g="g3"] .fc-term { color:var(--g3); }
+.fc-term { font-family:"JetBrains Mono",monospace; font-weight:600; font-size:14px; }
+.fc[data-g="g1"] .fc-def { color:#e8f0ef; }
+.fc[data-g="g2"] .fc-def { color:#fff8e6; }
+.fc[data-g="g3"] .fc-def { color:#f5d6ce; }
+.fc-def { font-size:13.5px; line-height:1.45; }
+.fc-tap { font-family:"JetBrains Mono",monospace; font-size:11px;
+  color:var(--ink-soft); margin-top:auto; }
+.fc-back .fc-tap { color:rgba(255,255,255,.45); }
+.fc-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.gtag { font-family:"JetBrains Mono",monospace; font-size:10px; font-weight:600;
+  letter-spacing:.08em; text-transform:uppercase; padding:2px 8px;
+  border-radius:4px; border:1.5px solid; line-height:1.6; }
+.gtag.g1 { color:var(--g1); border-color:color-mix(in srgb,var(--g1) 40%,transparent);
+  background:color-mix(in srgb,var(--g1) 10%,transparent); }
+.gtag.g2 { color:var(--g2); border-color:color-mix(in srgb,var(--g2) 40%,transparent);
+  background:color-mix(in srgb,var(--g2) 10%,transparent); }
+.gtag.g3 { color:var(--g3); border-color:color-mix(in srgb,var(--g3) 40%,transparent);
+  background:color-mix(in srgb,var(--g3) 10%,transparent); }
+.footer-cross { margin-top:60px; padding:24px 28px; border:1px solid var(--rule);
+  border-radius:11px; background:var(--card); display:flex; flex-wrap:wrap;
+  gap:18px; justify-content:space-between; align-items:center; }
+.footer-cross a { font-family:"JetBrains Mono",monospace; font-size:12px;
+  text-decoration:none; color:var(--slate); font-weight:600;
+  border:1.5px solid var(--slate); padding:7px 14px; border-radius:7px; }
+.footer-cross a:hover { background:var(--slate); color:#fff; }
+@media (max-width:760px) { .fc-grid { grid-template-columns:1fr 1fr; } }
+@media (max-width:420px) { .fc-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="index.html">← Library home</a>
+<div class="kicker">Flashcard Deck · All Guides · 10 Unique Cards</div>
+<h1>All flashcards — dashboard from data</h1>
+<p class="dek">Every concept across the three guides, alphabetical, flip-to-reveal. Filter by guide, shuffle, or flip them all open at once.</p>
+
+<div class="controls">
+  <div class="filter-tabs">
+    <button class="ftab active" data-f="all" onclick="setFilter('all')">All 10</button>
+    <button class="ftab" data-f="g1" onclick="setFilter('g1')">01 · Foundations</button>
+    <button class="ftab" data-f="g2" onclick="setFilter('g2')">02 · Applied</button>
+    <button class="ftab" data-f="g3" onclick="setFilter('g3')">03 · Advanced</button>
+  </div>
+  <div class="ctrl-btns">
+    <button class="cbtn" onclick="shuffleCards()">⇄ Shuffle</button>
+    <button class="cbtn" id="flip-all-btn" onclick="flipAll()">↻ Flip All</button>
+    <button class="cbtn" onclick="resetAll()">↺ Reset</button>
+  </div>
+</div>
+
+<div class="counter-bar">
+  Showing <span id="visible-count">10</span> cards · <span id="flipped-count">0</span> flipped
+</div>
+
+<div class="fc-grid" id="card-grid">
+
+  <div class="fc" data-g="g1" onclick="flip(this)">
+    <div class="fc-inner">
+      <div class="fc-front">
+        <div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div>
+        <div class="fc-term">AI Skill</div>
+        <div class="fc-tap">tap to reveal →</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-def">A named, reusable agent capability defined in plain language. Turns a multi-step workflow (read data, compute, render dashboard) into a one-line invocation any authorized user can call.</div>
+        <div class="fc-tap">← tap to flip back</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fc" data-g="g2" onclick="flip(this)">
+    <div class="fc-inner">
+      <div class="fc-front">
+        <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+        <div class="fc-term">Beating Context-Window Limits</div>
+        <div class="fc-tap">tap to reveal →</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-def">By processing large lists with sandboxed code instead of stuffing rows into the prompt, the agent handles SharePoint datasets of any size. The model only holds the code and the summary, never the raw data.</div>
+        <div class="fc-tap">← tap to flip back</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fc" data-g="g2" onclick="flip(this)">
+    <div class="fc-inner">
+      <div class="fc-front">
+        <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+        <div class="fc-term">Code-in-Sandbox Execution</div>
+        <div class="fc-tap">tap to reveal →</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-def">The worker-agent's signature move: write actual code, run it in a sandbox, use the computed results. Numbers in the dashboard come from real execution, not LLM arithmetic — which is what makes them trustworthy.</div>
+        <div class="fc-tap">← tap to flip back</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fc" data-g="g3" onclick="flip(this)">
+    <div class="fc-inner">
+      <div class="fc-front">
+        <div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div>
+        <div class="fc-term">Format Transformation</div>
+        <div class="fc-tap">tap to reveal →</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-def">Asking the agent to reshape an existing artifact (e.g. HTML dashboard) into a different format (PowerPoint, PDF). Reads the source, emits the target — no re-running the analysis pipeline.</div>
+        <div class="fc-tap">← tap to flip back</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fc" data-g="g1" onclick="flip(this)">
+    <div class="fc-inner">
+      <div class="fc-front">
+        <div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div>
+        <div class="fc-term">Hiring Pipeline Use Case</div>
+        <div class="fc-tap">tap to reveal →</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-def">The demo scenario: messy SharePoint lists of candidates and open roles, a one-sentence invocation, and a polished interactive HTML dashboard back — assembled by an AI Skill the user defined earlier.</div>
+        <div class="fc-tap">← tap to flip back</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fc" data-g="g2" onclick="flip(this)">
+    <div class="fc-inner">
+      <div class="fc-front">
+        <div class="fc-tags"><span class="gtag g2">02 · Applied</span></div>
+        <div class="fc-term">Live HTML Dashboard</div>
+        <div class="fc-tap">tap to reveal →</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-def">The Skill's output: a self-contained HTML file with embedded JavaScript dropped into SharePoint. Interactive, shareable, archivable, re-openable — a durable artifact, not a chat reply that vanishes.</div>
+        <div class="fc-tap">← tap to flip back</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fc" data-g="g3" onclick="flip(this)">
+    <div class="fc-inner">
+      <div class="fc-front">
+        <div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div>
+        <div class="fc-term">Per-Format Skills</div>
+        <div class="fc-tap">tap to reveal →</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-def">Layering Skills by output format: one Skill produces analytical HTML, another remixes it into an executive PPT, another a one-pager. Skills compose into pipelines; each stays small and tunable.</div>
+        <div class="fc-tap">← tap to flip back</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fc" data-g="g1" onclick="flip(this)">
+    <div class="fc-inner">
+      <div class="fc-front">
+        <div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div>
+        <div class="fc-term">Repeatability</div>
+        <div class="fc-tap">tap to reveal →</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-def">The actual reason to package work as a Skill. Locks the output shape so quarter-over-quarter comparisons are visually direct. The data changes every run; the structure does not.</div>
+        <div class="fc-tap">← tap to flip back</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fc" data-g="g3" onclick="flip(this)">
+    <div class="fc-inner">
+      <div class="fc-front">
+        <div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div>
+        <div class="fc-term">Sankey Diagram Output</div>
+        <div class="fc-tap">tap to reveal →</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-def">A flow visualization showing how candidates move through hiring stages. Renders properly in HTML thanks to JavaScript; falls back to a bar chart in PPT because the format can't host the interactive view.</div>
+        <div class="fc-tap">← tap to flip back</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fc" data-g="g1" onclick="flip(this)">
+    <div class="fc-inner">
+      <div class="fc-front">
+        <div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div>
+        <div class="fc-term">Skill Definition</div>
+        <div class="fc-tap">tap to reveal →</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-def">The author's spec inside a Skill: data sources, metrics that matter, output shape (header, metric bar, charts), and explicit stages or thresholds. Opinionated about structure, flexible about data.</div>
+        <div class="fc-tap">← tap to flip back</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer-cross">
+  <div style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink-soft);">Back to:</div>
+  <a href="index.html">Library home</a>
+  <a href="guide-01-foundations.html">01 · Foundations</a>
+  <a href="guide-02-applied.html">02 · Applied</a>
+  <a href="guide-03-advanced.html">03 · Advanced</a>
+</div>
+
+</div>
+
+<script>
+let currentFilter = 'all';
+let allFlipped = false;
+const allCards = () => document.querySelectorAll('#card-grid .fc');
+const visibleCards = () => document.querySelectorAll('#card-grid .fc:not(.hidden)');
+
+function flip(card){ card.classList.toggle('flipped'); updateCounters(); }
+function setFilter(f){
+  currentFilter = f;
+  document.querySelectorAll('.ftab').forEach(t => t.classList.toggle('active', t.dataset.f === f));
+  allCards().forEach(c => c.classList.toggle('hidden', f !== 'all' && c.dataset.g !== f));
+  updateCounters();
+}
+function flipAll(){
+  allFlipped = !allFlipped;
+  [...visibleCards()].forEach(c => c.classList.toggle('flipped', allFlipped));
+  document.getElementById('flip-all-btn').textContent = allFlipped ? '↺ Unflip All' : '↻ Flip All';
+  updateCounters();
+}
+function shuffleCards(){
+  allFlipped = false;
+  document.getElementById('flip-all-btn').textContent = '↻ Flip All';
+  const grid = document.getElementById('card-grid');
+  const visible = [...grid.querySelectorAll('.fc:not(.hidden)')];
+  const hidden = [...grid.querySelectorAll('.fc.hidden')];
+  visible.forEach(c => c.classList.remove('flipped'));
+  for (let i = visible.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [visible[i], visible[j]] = [visible[j], visible[i]];
+  }
+  [...visible, ...hidden].forEach(c => grid.appendChild(c));
+  updateCounters();
+}
+function resetAll(){
+  allCards().forEach(c => c.classList.remove('flipped'));
+  allFlipped = false;
+  document.getElementById('flip-all-btn').textContent = '↻ Flip All';
+  updateCounters();
+}
+function updateCounters(){
+  const vis = [...visibleCards()];
+  const flipped = vis.filter(c => c.classList.contains('flipped'));
+  document.getElementById('visible-count').textContent = vis.length;
+  document.getElementById('flipped-count').textContent = flipped.length;
+}
+updateCounters();
+</script>
+</body>
+</html>

@@ -33,8 +33,8 @@ export function SaveButton({ slug, size = "sm", className = "" }: SaveButtonProp
       onClick={handleClick}
       className={`${padding} rounded-[var(--radius-md)] transition-all duration-[var(--motion-fast)] cursor-pointer ${
         saved
-          ? "text-rose-400 hover:text-rose-300"
-          : "text-[var(--color-text-subtle)] hover:text-rose-400"
+          ? "text-[var(--color-saved)] hover:text-[var(--color-accent-hover)]"
+          : "text-[var(--color-text-subtle)] hover:text-[var(--color-saved)]"
       } hover:bg-[var(--color-surface-2)] ${className}`}
       aria-label={saved ? "Remove from saved" : "Save framework"}
       title={saved ? "Remove from saved" : "Save framework"}
