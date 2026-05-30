@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Weekly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,450;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+}
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:1040px;margin:0 auto;padding:0 28px 120px;}
+code,.mono{font-family:"JetBrains Mono",monospace;font-size:.82em;background:#ece7db;padding:.08em .38em;border-radius:4px;color:#3a382f;}
+a{color:inherit;}
+
+.hero{padding:90px 0 24px;position:relative;}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:16px;}
+.hero h1{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(46px,7vw,80px);line-height:1.0;margin:0 0 22px;letter-spacing:-.02em;max-width:880px;}
+.hero h1 em{font-style:italic;color:var(--accent);}
+.hero .dek{font-family:"Newsreader",Georgia,serif;font-style:italic;font-size:23px;color:var(--ink-soft);line-height:1.5;margin:0 0 22px;max-width:760px;}
+.spark{position:absolute;top:96px;right:0;width:120px;height:120px;opacity:.85;}
+@media(max-width:880px){.spark{display:none;}}
+
+.stats{display:flex;flex-wrap:wrap;margin:38px 0 6px;border:1px solid var(--rule);border-radius:11px;overflow:hidden;background:var(--card);}
+.stats .s{flex:1 1 140px;padding:18px 22px;border-right:1px solid var(--rule);}
+.stats .s:last-child{border-right:none;}
+.stats .s .v{font-family:"Fraunces",serif;font-weight:900;font-size:30px;color:var(--accent);line-height:1;}
+.stats .s .l{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-top:7px;}
+
+.sec-label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin:54px 0 8px;font-weight:600;}
+
+.issues{margin:14px 0 0;display:grid;gap:16px;}
+.issue{display:block;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--rule);border-left:5px solid var(--c,var(--slate));border-radius:13px;padding:26px 30px 24px;transition:transform .16s ease,box-shadow .16s ease;}
+.issue:hover{transform:translateY(-3px);box-shadow:0 14px 34px -14px rgba(27,26,23,.26);}
+.issue.cat-agent{--c:var(--slate);}
+.issue.cat-applied{--c:var(--amber);}
+.issue.cat-advanced{--c:var(--accent);}
+.i-meta{display:flex;align-items:center;gap:11px;flex-wrap:wrap;margin-bottom:11px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--c);font-weight:600;}
+.i-meta .dot{width:5px;height:5px;border-radius:50%;background:var(--c);opacity:.55;}
+.i-meta .date{color:var(--ink-soft);}
+.issue h3{font-family:"Fraunces",serif;font-weight:600;font-size:27px;line-height:1.12;margin:0 0 14px;letter-spacing:-.012em;}
+.i-stats{display:flex;gap:26px;flex-wrap:wrap;margin:0 0 16px;padding:13px 0 0;border-top:1px dashed var(--rule);}
+.i-stats .is{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);}
+.i-stats .is b{font-family:"Fraunces",serif;font-weight:600;font-size:19px;color:var(--c);letter-spacing:0;margin-right:5px;}
+.issue .open{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:var(--c);letter-spacing:.05em;}
+.issue .arw{display:inline-block;margin-left:4px;transition:transform .15s;}
+.issue:hover .arw{transform:translateX(4px);}
+
+.empty-slot{border:1.5px dashed var(--rule);border-radius:13px;padding:30px 32px;color:var(--ink-soft);font-style:italic;text-align:center;background:transparent;}
+.empty-slot .es-k{font-family:"JetBrains Mono",monospace;font-style:normal;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);display:block;margin-bottom:8px;font-weight:600;opacity:.8;}
+.empty-slot .es-t{font-family:"Fraunces",serif;font-style:normal;font-size:21px;color:var(--ink);font-weight:600;display:block;margin-bottom:6px;}
+
+.howto{background:var(--card);border:1px solid var(--rule);border-radius:11px;padding:24px 28px;margin:36px 0 0;}
+.howto h4{font-family:"Fraunces",serif;font-weight:600;font-size:20px;margin:0 0 10px;}
+.howto ul{margin:0;padding-left:0;list-style:none;}
+.howto li{padding:6px 0 6px 22px;position:relative;font-size:16px;line-height:1.5;color:var(--ink-soft);}
+.howto li::before{content:"▸";position:absolute;left:0;color:var(--accent);font-size:14px;top:8px;}
+.howto code{font-size:.78em;}
+
+footer{margin-top:80px;padding-top:28px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--ink-soft);line-height:1.6;}
+
+@media(max-width:760px){
+  .hero{padding:60px 0 16px;}
+  .issue{padding:22px 20px;}
+  .issue h3{font-size:23px;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <svg class="spark" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M50 8 L57 42 L92 50 L57 58 L50 92 L43 58 L8 50 L43 42 Z" fill="#cc3b1d" opacity=".85"/>
+    <circle cx="50" cy="50" r="6" fill="#2f5d62"/>
+  </svg>
+  <div class="kicker">Personal Intelligence Brief · AI</div>
+  <h1>AI <em>Weekly</em></h1>
+  <p class="dek">A running shelf of AI Intelligence digests — each issue ranks the week's most important papers, releases, and videos across dozens of sources. Newest issue sits up top; the archive runs below.</p>
+</header>
+
+<!-- AUTO-INDEX:STATS:START -->
+<div class="stats">
+  <div class="s"><div class="v">1</div><div class="l">Issues</div></div>
+  <div class="s"><div class="v">05/30</div><div class="l">Latest Issue</div></div>
+  <div class="s"><div class="v">29</div><div class="l">Sources Tracked</div></div>
+  <div class="s"><div class="v">20</div><div class="l">Ranked This Week</div></div>
+</div>
+<!-- AUTO-INDEX:STATS:END -->
+
+<div class="sec-label">Every issue — newest first, click to open</div>
+
+<!-- AUTO-INDEX:ISSUES:START -->
+<div class="issues">
+    <a class="issue cat-agent" href="pages/ai-weekly-digest-20260530-225115.html">
+      <div class="i-meta">
+        <span>Issue 01</span><span class="dot"></span>
+        <span class="date">2026 · 05 · 30</span><span class="dot"></span>
+        <span>14:51 UTC</span>
+      </div>
+      <h3>AI Intelligence Weekly Digest</h3>
+      <div class="i-stats">
+        <span class="is"><b>20</b> ranked</span>
+        <span class="is"><b>29</b> sources</span>
+        <span class="is"><b>58</b> candidates</span>
+      </div>
+      <span class="open">Open digest · 20 of 58 candidates <span class="arw">→</span></span>
+    </a>
+    <div class="empty-slot">
+      <span class="es-k">Next issue</span>
+      <span class="es-t">Drop a new dashboard into <code>RAW/</code></span>
+      Name it <code>ai-intel-dashboard-YYYYMMDD-HHMMSS.html</code>, then run <code>npm run build:ai-weekly</code>. It sorts to the top automatically.
+    </div>
+</div>
+<!-- AUTO-INDEX:ISSUES:END -->
+
+<div class="sec-label">How this index works</div>
+<div class="howto">
+  <h4>Conventions</h4>
+  <ul>
+    <li><b>One file per issue</b> — source dashboards live (pristine) in <code>RAW/</code> named <code>ai-intel-dashboard-YYYYMMDD-HHMMSS.html</code>. The timestamp sorts freshness.</li>
+    <li><b>This page is generated</b> — run <code>npm run build:ai-weekly</code> after adding a dashboard. It rebuilds the cards and stats, and writes a site-themed copy of the dashboard into <code>pages/</code>.</li>
+    <li><b>Self-contained</b> — each dashboard bundles its own data, filters, and sort. The index only links to the themed <code>pages/</code> copies.</li>
+    <li><b>Theming is automatic</b> — the generator copies each <code>RAW/</code> dashboard into <code>pages/</code> as <code>ai-weekly-digest-YYYYMMDD-HHMMSS.html</code> with the editorial palette and a back-to-index strip applied. <code>RAW/</code> stays untouched.</li>
+  </ul>
+</div>
+
+<footer>
+  AI WEEKLY · PERSONAL INTELLIGENCE BRIEF · 2026<br>
+  EACH ISSUE IS A SNAPSHOT — VERIFY FAST-MOVING SPECIFICS AGAINST CURRENT SOURCES BEFORE RELYING ON THEM.
+</footer>
+
+</div>
+</body>
+</html>

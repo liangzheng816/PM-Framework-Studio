@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { href: "/compare", label: "Compare" },
   { href: "/collections", label: "Saved" },
   { href: "/ai-learning/index.html", label: "AI Learning" },
+  { href: "/ai-weekly/index.html", label: "AI Weekly" },
   { href: "/about", label: "About" },
 ];
 

@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Intelligence Weekly Digest - 2026-05-30 14:51 UTC</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --panel-soft: #f8fafc;
+      --text: #111827;
+      --muted: #64748b;
+      --line: #d7dee8;
+      --line-strong: #cbd5e1;
+      --head: #eef4f8;
+      --accent: #0f766e;
+      --accent-soft: #d9f5ef;
+      --shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      line-height: 1.45;
+    }
+    main {
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      padding: 28px clamp(16px, 2vw, 36px) 40px;
+    }
+    .report-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 22px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 18px;
+    }
+    .eyebrow {
+      margin: 0 0 6px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(26px, 3vw, 42px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+    .timestamp {
+      color: var(--muted);
+      display: block;
+      font-size: clamp(16px, 1.4vw, 20px);
+      font-weight: 600;
+      margin-top: 8px;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      max-width: 980px;
+    }
+    .meta li {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 650;
+      padding: 7px 11px;
+    }
+    .filters {
+      align-items: end;
+      background: var(--panel);
+      border: 1px solid var(--line-strong);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding: 16px;
+    }
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    label {
+      color: #334155;
+      display: grid;
+      font-size: 12px;
+      font-weight: 800;
+      gap: 6px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    select {
+      appearance: none;
+      background:
+        linear-gradient(45deg, transparent 50%, #64748b 50%) calc(100% - 17px) 55% / 6px 6px no-repeat,
+        linear-gradient(135deg, #64748b 50%, transparent 50%) calc(100% - 12px) 55% / 6px 6px no-repeat,
+        #ffffff;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      color: var(--text);
+      font: inherit;
+      font-size: 14px;
+      font-weight: 650;
+      min-width: 220px;
+      padding: 10px 34px 10px 12px;
+    }
+    select:focus-visible, button:focus-visible {
+      outline: 3px solid var(--accent-soft);
+      outline-offset: 2px;
+    }
+    .filter-actions {
+      align-items: center;
+      display: flex;
+      gap: 12px;
+      margin-left: auto;
+    }
+    .filter-count {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+    button {
+      background: #0f172a;
+      border: 0;
+      border-radius: 8px;
+      color: #ffffff;
+      cursor: pointer;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 10px 13px;
+    }
+    button:disabled {
+      background: #cbd5e1;
+      cursor: not-allowed;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      width: 100%;
+      background: var(--panel);
+      border: 1px solid var(--line-strong);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+    }
+    table {
+      width: max(100%, 1800px);
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    col.rank-col { width: 64px; }
+    col.title-col { width: 320px; }
+    col.content-type-col { width: 130px; }
+    col.source-col { width: 230px; }
+    col.summary-col { width: 520px; }
+    col.published-col { width: 205px; }
+    col.processed-col { width: 205px; }
+    col.score-col { width: 92px; }
+    col.confidence-col { width: 122px; }
+    col.topics-col { width: 230px; }
+    col.signals-col { width: 300px; }
+    thead {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 14px 16px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 13.5px;
+    }
+    th {
+      background: var(--head);
+      color: #334155;
+      font-weight: 800;
+      white-space: nowrap;
+      border-bottom-color: var(--line-strong);
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+    }
+    th.sortable {
+      cursor: pointer;
+      user-select: none;
+    }
+    th.sortable:hover {
+      color: var(--accent);
+    }
+    th.sortable .sort-indicator {
+      font-size: 9px;
+      color: var(--accent);
+    }
+    tbody tr:nth-child(even) {
+      background: var(--panel-soft);
+    }
+    tbody tr:hover {
+      background: #f0fdfa;
+    }
+    tbody tr[hidden] {
+      display: none;
+    }
+    .rank, .score-cell {
+      text-align: right;
+      white-space: nowrap;
+    }
+    .title-cell {
+      font-weight: 750;
+      color: #0f172a;
+    }
+    .title-link {
+      color: #0f172a;
+      text-decoration-color: rgba(15, 118, 110, 0.32);
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+    }
+    .title-link:hover {
+      color: var(--accent);
+      text-decoration-color: currentColor;
+    }
+    .source-cell, .topics-cell, .signals-cell, .time-cell {
+      color: var(--muted);
+    }
+    .type-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      font-weight: 800;
+      min-width: 72px;
+      padding: 4px 10px;
+    }
+    .type-paper {
+      background: #ede9fe;
+      color: #5b21b6;
+    }
+    .type-post {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+    .type-page {
+      background: #e2e8f0;
+      color: #334155;
+    }
+    .type-video {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    .summary-cell {
+      color: #1f2937;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    .summary-main {
+      margin-bottom: 8px;
+    }
+    .summary-teaser {
+      background: #f8fafc;
+      border-left: 3px solid var(--accent);
+      border-radius: 8px;
+      color: #475569;
+      font-size: 13px;
+      line-height: 1.55;
+      padding: 8px 10px;
+    }
+    .summary-teaser-label {
+      color: var(--accent);
+      display: block;
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: 0.06em;
+      margin-bottom: 3px;
+      text-transform: uppercase;
+    }
+    .score {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 56px;
+      border-radius: 999px;
+      background: #e0f2fe;
+      color: #075985;
+      font-weight: 800;
+      padding: 4px 8px;
+    }
+    .confidence {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      font-weight: 800;
+      padding: 4px 9px;
+      text-transform: capitalize;
+    }
+    .confidence-high {
+      background: #dcfce7;
+      color: #166534;
+    }
+    .confidence-medium {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    .confidence-low, .confidence-unknown {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    a {
+      color: var(--accent);
+      font-weight: 800;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 900px) {
+      .report-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      .meta {
+        justify-content: flex-start;
+      }
+      .filter-actions {
+        margin-left: 0;
+      }
+      select {
+        min-width: min(100%, 280px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header class="report-header">
+      <div>
+        <p class="eyebrow">AI Intelligence Report</p>
+        <h1>AI Intelligence Weekly Digest<span class="timestamp">2026-05-30 14:51 UTC</span></h1>
+      </div>
+      <ul class="meta">
+<li>Processed at: 2026-05-30T14:51:16.800953+00:00</li>
+<li>As of: 2026-05-30T14:30:00+00:00</li>
+<li>Window: not specified</li>
+<li>Sources: AI Explained, All About AI, Anthropic News, Anthropic Research, Bloomberg Technology, Cole Medin, David Ondrej, Hugging Face, Hugging Face Papers, Hugging Face Papers / X snapshot, LangChain, Latent Space, Lenny&#x27;s Newsletter, Matt Wolfe, Matthew Berman, Microsoft Research, Microsoft Research Blog, OpenAI, OpenAI News, Sequoia Capital, Silicon Valley Product Group, Superhuman AI, TED, Two Minute Papers, Wes Roth, X via Digg snapshot, X via Hugging Face discussion, X via Trendshift, X via Xiaoliu BOT brief</li>
+<li>Showing: top 20 of 58 deduplicated candidates</li>
+      </ul>
+    </header>
+    <section class="filters" aria-label="Report filters">
+      <div class="filter-group">
+        <label for="content-type-filter">
+          Content Type
+          <select id="content-type-filter">
+            <option value="">All content types</option>
+          <option value="Page">Page</option>
+          <option value="Paper">Paper</option>
+          <option value="Video">Video</option>
+          </select>
+        </label>
+        <label for="source-filter">
+          Source
+          <select id="source-filter">
+            <option value="">All sources</option>
+          <option value="AI Explained">AI Explained</option>
+          <option value="All About AI">All About AI</option>
+          <option value="Anthropic News">Anthropic News</option>
+          <option value="David Ondrej">David Ondrej</option>
+          <option value="Hugging Face Papers">Hugging Face Papers</option>
+          <option value="Hugging Face Papers / X snapshot">Hugging Face Papers / X snapshot</option>
+          <option value="Matt Wolfe">Matt Wolfe</option>
+          <option value="Matthew Berman">Matthew Berman</option>
+          <option value="OpenAI">OpenAI</option>
+          <option value="OpenAI News">OpenAI News</option>
+          <option value="Wes Roth">Wes Roth</option>
+          </select>
+        </label>
+      </div>
+      <div class="filter-actions">
+        <span class="filter-count" id="filter-count">20 of 20 shown</span>
+        <button type="button" id="reset-filters" disabled>Reset</button>
+      </div>
+    </section>
+    <div class="table-wrap">
+      <table>
+        <colgroup>
+          <col class="rank-col">
+          <col class="title-col">
+          <col class="content-type-col">
+          <col class="source-col">
+          <col class="published-col">
+          <col class="summary-col">
+          <col class="processed-col">
+          <col class="score-col">
+          <col class="confidence-col">
+          <col class="topics-col">
+          <col class="signals-col">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Title</th>
+            <th>Content Type</th>
+            <th>Source</th>
+            <th class="sortable" id="sort-published" role="button" tabindex="0" aria-sort="none" title="Sort by published date">Published <span class="sort-indicator" aria-hidden="true"></span></th>
+            <th>Summary</th>
+            <th>Processed</th>
+            <th>Score</th>
+            <th>Confidence</th>
+            <th>Topics</th>
+            <th>Signals</th>
+          </tr>
+        </thead>
+        <tbody>
+<tr data-content-type="Paper" data-source="Hugging Face Papers / X snapshot"><td class="rank">1</td><td class="title-cell"><a class="title-link" href="https://huggingface.co/papers/2605.25624">CUA-Gym: Scaling Verifiable Training Environments and Tasks for Computer-Use Agents</a></td><td><span class="type-badge type-paper">Paper</span></td><td class="source-cell">Hugging Face Papers / X snapshot</td><td class="time-cell" data-published="2026-05-25T00:00:00+00:00">2026-05-25</td><td class="summary-cell"><div class="summary-main">Scalable synthesis engine for verifiable RLVR data in computer-use agents, covering 32,122 tasks across 110 desktop and web environments.</div><div class="summary-teaser"><span class="summary-teaser-label">Teaser</span>Scan the method, benchmark setup, and reproducibility signals around computer-use agents, RLVR, benchmark, GUI agents. Signals: upvotes=20, stars=45, reposts=35.</div></td><td class="time-cell">2026-05-30T14:51:16.800953+00:00</td><td class="score-cell"><span class="score">89.0</span></td><td><span class="confidence confidence-high">high</span></td><td class="topics-cell">computer-use agents, RLVR, benchmark, GUI agents</td><td class="signals-cell">bookmarks=125, cross_source_mentions=3, importance=80, reposts=35, stars=45, upvotes=20, views=21700</td></tr>
+<tr data-content-type="Paper" data-source="Hugging Face Papers"><td class="rank">2</td><td class="title-cell"><a class="title-link" href="https://huggingface.co/papers/2605.26114">MobileGym: A Verifiable and Highly Parallel Simulation Platform for Mobile GUI Agent Research</a></td><td><span class="type-badge type-paper">Paper</span></td><td class="source-cell">Hugging Face Papers</td><td class="time-cell" data-published="2026-05-25T00:00:00+00:00">2026-05-25</td><td class="summary-cell"><div class="summary-main">Browser-hosted mobile environment for GUI-agent research with deterministic JSON-state judging, parallel rollout support, and a 416-template benchmark over 28 apps.</div><div class="summary-teaser"><span class="summary-teaser-label">Teaser</span>Scan the method, benchmark setup, and reproducibility signals around GUI agents, mobile, reinforcement learning, benchmark. Signals: upvotes=57, stars=76, cross_source_mentions=2.</div></td><td class="time-cell">2026-05-30T14:51:16.800953+00:00</td><td class="score-cell"><span class="score">78.07</span></td><td><span class="confidence confidence-high">high</span></td><td class="topics-cell">GUI agents, mobile, reinforcement learning, benchmark</td><td class="signals-cell">cross_source_mentions=2, importance=83, stars=76, upvotes=57</td></tr>
+<tr data-content-type="Paper" data-source="Hugging Face Papers"><td class="rank">3</td><td class="title-cell"><a class="title-link" href="https://huggingface.co/papers/2605.25874">WBench: A Comprehensive Multi-turn Benchmark for Interactive Video World Model Evaluation</a></td><td><span class="type-badge type-paper">Paper</span></td><td class="source-cell">Hugging Face Papers</td><td class="time-cell" data-published="2026-05-25T00:00:00+00:00">2026-05-25</td><td class="summary-cell"><div class="summary-main">Benchmark for interactive world models with 289 test cases and 1,058 multi-turn interactions across video quality, instruction adherence, consistency, and physics compliance.</div><div class="summary-teaser"><span class="summary-teaser-label">Teaser</span>Scan the method, benchmark setup, and reproducibility signals around world models, video, benchmark, multimodal. Signals: upvotes=90, stars=47, cross_source_mentions=2.</div></td><td class="time-cell">2026-05-30T14:51:16.800953+00:00</td><td class="score-cell"><span class="score">77.76</span></td><td><span class="confidence confidence-high">high</span></td><td class="topics-cell">world models, video, benchmark, multimodal</td><td class="signals-cell">cross_source_mentions=2, importance=76, stars=47, upvotes=90</td></tr>
+<tr data-content-type="Paper" data-source="Hugging Face Papers"><td class="rank">4</td><td class="title-cell"><a class="title-link" href="https://huggingface.co/papers/2605.28293">ProRL: Effective Reinforcement Learning for Proactive Recommendation via Rectified Policy Gradient Estimation</a></td><td><span class="type-badge type-paper">Paper</span></td><td class="source-cell">Hugging Face Papers</td><td class="time-cell" data-published="2026-05-27T00:00:00+00:00">2026-05-27</td><td class="summary-cell"><div class="summary-main">Rectifies policy-gradient training for proactive recommender systems by centering step rewards and estimating position-specific advantages to avoid length bias and high variance.</div><div class="summary-teaser"><span class="summary-teaser-label">Teaser</span>Scan the method, benchmark setup, and reproducibility signals around reinforcement learning, recommendation, agents. Signals: upvotes=76, stars=36, cross_source_mentions=2.</div></td><td class="time-cell">2026-05-30T14:51:16.800953+00:00</td><td class="score-cell"><span class="score">77.11</span></td><td><span class="confidence confidence-high">high</span></td><td class="topics-cell">reinforcement learning, recommendation, agents</td><td class="signals-cell">cross_source_mentions=2, importance=78, stars=36, upvotes=76</td></tr>
+<tr data-content-type="Video" data-source="AI Explained"><td class="rank">5</td><td class="title-cell"><a class="title-link" href="https://www.youtube.com/watch?v=aJvP3nXWkwM">New Claude Opus 4.8: 15 Things You May’ve Missed</a></td><td><span class="type-badge type-video">Video</span></td><td class="source-cell">AI Explained</td><td class="time-cell" data-published="2026-05-29T15:07:35+00:00">2026-05-29</td><td class="summary-cell"><div class="summary-main">The ‘best’ generally available AI model just dropped, but there is plenty I bet you missed about what it is, how it performs, and what the release tells us.</div><div class="summary-teaser"><span class="summary-teaser-label">Teaser</span>Watch for AI, LLM, AI infrastructure signals from AI Explained; traction sample: 49,234 views, 2,111 views/hour, 250,000 channel subscribers; runtime: 22m 29s.</div></td><td class="time-cell">2026-05-30T14:51:16.800953+00:00</td><td class="score-cell"><span class="score">77.0</span></td><td><span class="confidence confidence-medium">medium</span></td><td class="topics-cell">AI, LLM, AI infrastructure, research</td><td class="signals-cell">ai_anchor_relevance=4, ai_relevance=5, ai_title_anchor_relevance=1, channel_subscribers=250000, comments=0, cross_source_mentions=1, duration_minutes=22.48, duration_seconds=1349, importance=91, likes=0, views=49234, views_per_hour=2111.11</td></tr>
+<tr data-content-type="Video" data-source="Wes Roth"><td class="rank">6</td><td class="title-cell"><a class="title-link" href="https://www.youtube.com/watch?v=hGCrvDDpl5w">Ghost AI let&#x27;s AI Agents build disposable worlds</a></td><td><span class="type-badge type-video">Video</span></td><td class="source-cell">Wes Roth</td><td class="time-cell" data-published="2026-05-30T02:53:11+00:00">2026-05-30</td><td class="summary-cell"><div class="summary-main">Try it at: ______________________________________________ My Links 🔗 ➡️ Twitter: ➡️ AI Newsletter: Want to work with me?</div><div class="summary-teaser"><span class="summary-teaser-label">Teaser</span>Watch for AI, LLM, agents signals from Wes Roth; traction sample: 9,180 views, 794 views/hour, 250,000 channel subscribers; runtime: 25m 53s.</div></td><td class="time-cell">2026-05-30T14:51:16.800953+00:00</td><td class="score-cell"><span class="score">76.86</span></td><td><span class="confidence confidence-medium">medium</span></td><td class="topics-cell">AI, LLM, agents</td><td class="signals-cell">ai_anchor_relevance=4, ai_relevance=3, ai_title_anchor_relevance=2, channel_subscribers=250000, comments=0, cross_source_mentions=1, duration_minutes=25.88, duration_seconds=1553, importance=82, likes=0, views=9180, views_per_hour=794.02</td></tr>
+<tr data-content-type="Paper" data-source="Hugging Face Papers"><td class="rank">7</td><td class="title-cell"><a class="title-link" href="https://huggingface.co/papers/2605.28774">Agent Explorative Policy Optimization for Multimodal Agentic Reasoning</a></td><td><span class="type-badge type-paper">Paper</span></td><td class="source-cell">Hugging Face Papers</td><td class="time-cell" data-published="2026-05-27T00:00:00+00:00">2026-05-27</td><td class="summary-cell"><div class="summary-main">AXPO targets the thinking-acting gap in multimodal agents by resampling tool calls from failed rollouts, improving tool-use learning signals for vision-language reasoning.</div><div class="summary-teaser"><span class="summary-teaser-label">Teaser</span>Scan the method, benchmark setup, and reproducibility signals around multimodal, agents, reinforcement learning, tool use. Signals: upvotes=74, cross_source_mentions=3.</div></td><td class="time-cell">2026-05-30T14:51:16.800953+00:00</td><td class="score-cell"><span class="score">76.49</span></td><td><span class="confidence confidence-high">high</span></td><td class="topics-cell">multimodal, agents, reinforcement learning, tool use</td><td class="signals-cell">cross_source_mentions=3, importance=84, upvotes=74</td></tr>
+<tr data-content-type="Video" data-source="David Ondrej"><td class="rank">8</td><td class="title-cell"><a class="title-link" href="https://www.youtube.com/watch?v=8jDXI4_rJOE">This 100% open-source terminal is insane… just watch</a></td><td><span class="type-badge type-video">Video</span></td><td class="source-cell">David Ondrej</td><td class="time-cell" data-published="2026-05-29T23:02:44+00:00">2026-05-29</td><td class="summary-cell"><div class="summary-main">Recent YouTube video from David Ondrej focused on AI, agents, multimodal.</div><div class="summary-teaser"><span class="summary-teaser-label">Teaser</span>Watch for AI, agents, multimodal signals from David Ondrej; traction sample: 11,095 views, 720 views/hour, 50,000 channel subscribers; runtime: 25m 23s.</div></td><td class="time-cell">2026-05-30T14:51:16.800953+00:00</td><td class="score-cell"><span class="score">76.08</span></td><td><span class="confidence confidence-medium">medium</span></td><td class="topics-cell">AI, agents, multimodal</td><td class="signals-cell">ai_anchor_relevance=2, ai_relevance=3, ai_title_anchor_relevance=0, channel_subscribers=50000, comments=0, cross_source_mentions=1, duration_minutes=25.38, duration_seconds=1523, importance=81, likes=0, views=11095, views_per_hour=720.35</td></tr>
+<tr data-content-type="Page" data-source="Anthropic News"><td class="rank">9</td><td class="title-cell"><a class="title-link" href="https://www.anthropic.com/news/claude-opus-4-8">Introducing Claude Opus 4.8</a></td><td><span class="type-badge type-page">Page</span></td><td class="source-cell">Anthropic News</td><td class="time-cell" data-published="2026-05-28T00:00:00+00:00">2026-05-28</td><td class="summary-cell"><div class="summary-main">Anthropic released Claude Opus 4.8 with stronger coding, agentic, reasoning, and computer-use behavior, plus Claude Code dynamic workflows and effort controls.</div><div class="summary-teaser"><span class="summary-teaser-label">Teaser</span>Read for product, policy, or market implications from Anthropic across model release, Claude, agents, coding. Signals: cross_source_mentions=4.</div></td><td class="time-cell">2026-05-30T14:51:16.800953+00:00</td><td class="score-cell"><span class="score">75.47</span></td><td><span class="confidence confidence-high">high</span></td><td class="topics-cell">model release, Claude, agents, coding</td><td class="signals-cell">cross_source_mentions=4, importance=96</td></tr>
+<tr data-content-type="Paper" data-source="Hugging Face Papers"><td class="rank">10</td><td class="title-cell"><a class="title-link" href="https://huggingface.co/papers/2605.28814">Self-Improving Language Models with Bidirectional Evolutionary Search</a></td><td><span class="type-badge type-paper">Paper</span></td><td class="source-cell">Hugging Face Papers</td><td class="time-cell" data-published="2026-05-27T00:00:00+00:00">2026-05-27</td><td class="summary-cell"><div class="summary-main">Bidirectional Evolutionary Search combines forward candidate evolution with backward goal decomposition to improve post-training data generation and inference-time problem solving.</div><div class="summary-teaser"><span class="summary-teaser-label">Teaser</span>Scan the method, benchmark setup, and reproducibility signals around self-improvement, search, language models, agents. Signals: upvotes=48, stars=17, cross_source_mentions=2.</div></td><td class="time-cell">2026-05-30T14:51:16.800953+00:00</td><td class="score-cell"><span class="score">75.27</span></td><td><span class="confidence confidence-high">high</span></td><td class="topics-cell">self-improvement, search, language models, agents</td><td class="signals-cell">cross_source_mentions=2, importance=78, stars=17, upvotes=48</td></tr>
+<tr data-content-type="Page" data-source="OpenAI News"><td class="rank">11</td><td class="title-cell"><a class="title-link" href="https://openai.com/index/openai-frontier-governance-framework/">OpenAI&#x27;s Frontier Governance Framework</a></td><td><span class="type-badge type-page">Page</span></td><td class="source-cell">OpenAI News</td><td class="time-cell" data-published="2026-05-28T00:00:00+00:00">2026-05-28</td><td class="summary-cell"><div class="summary-main">OpenAI published a governance framework mapping its safety and security practices to frontier AI legal requirements, including risk assessment, mitigation, reporting, incident response, and security management.</div><div class="summary-teaser"><span class="summary-teaser-label">Teaser</span>Read for product, policy, or market implications from OpenAI across AI safety, governance, policy, frontier models. Signals: cross_source_mentions=3.</div></td><td class="time-cell">2026-05-30T14:51:16.800953+00:00</td><td class="score-cell"><span class="score">74.97</span></td><td><span class="confidence confidence-high">high</span></td><td class="topics-cell">AI safety, governance, policy, frontier models</td><td class="signals-cell">cross_source_mentions=3, importance=95</td></tr>
+<tr data-content-type="Page" data-source="Anthropic News"><td class="rank">12</td><td class="title-cell"><a class="title-link" href="https://www.anthropic.com/news/series-h">Anthropic raises $65B in Series H funding at $965B post-money valuation</a></td><td><span class="type-badge type-page">Page</span></td><td class="source-cell">Anthropic News</td><td class="time-cell" data-published="2026-05-28T00:00:00+00:00">2026-05-28</td><td class="summary-cell"><div class="summary-main">Anthropic announced a major funding round to expand safety and interpretability research, compute capacity, and enterprise products such as Claude Code and Cowork.</div><div class="summary-teaser"><span class="summary-teaser-label">Teaser</span>Read for product, policy, or market implications from Anthropic across AI business, Claude, compute, funding. Signals: cross_source_mentions=3.</div></td><td class="time-cell">2026-05-30T14:51:16.800953+00:00</td><td class="score-cell"><span class="score">74.94</span></td><td><span class="confidence confidence-high">high</span></td><td class="topics-cell">AI business, Claude, compute, funding</td><td class="signals-cell">cross_source_mentions=3, importance=91</td></tr>
+<tr data-content-type="Page" data-source="OpenAI News"><td class="rank">13</td><td class="title-cell"><a class="title-link" href="https://openai.com/index/endava/">How Endava builds an agentic organization with Codex</a></td><td><span class="type-badge type-page">Page</span></td><td class="source-cell">OpenAI News</td><td class="time-cell" data-published="2026-05-28T00:00:00+00:00">2026-05-28</td><td class="summary-cell"><div class="summary-main">Endava describes using Codex to codify senior engineering judgment, compress requirements and design work, and extend agentic workflows beyond code generation.</div><div class="summary-teaser"><span class="summary-teaser-label">Teaser</span>Read for product, policy, or market implications from OpenAI / Endava across Codex, enterprise AI, agents, software engineering. Signals: cross_source_mentions=3.</div></td><td class="time-cell">2026-05-30T14:51:16.800953+00:00</td><td class="score-cell"><span class="score">74.91</span></td><td><span class="confidence confidence-high">high</span></td><td class="topics-cell">Codex, enterprise AI, agents, software engineering</td><td class="signals-cell">cross_source_mentions=3, importance=88</td></tr>
+<tr data-content-type="Video" data-source="OpenAI"><td class="rank">14</td><td class="title-cell"><a class="title-link" href="https://www.youtube.com/watch?v=8QKqENa_eQQ">Builders Unscripted: Ep. 3 - Matias Castello, Product Leader at Alchemy</a></td><td><span class="type-badge type-video">Video</span></td><td class="source-cell">OpenAI</td><td class="time-cell" data-published="2026-05-29T20:29:25+00:00">2026-05-29</td><td class="summary-cell"><div class="summary-main">Builders Unscripted spotlights the stories behind real projects and the mindset that makes them possible: you can just build things.</div><div class="summary-teaser"><span class="summary-teaser-label">Teaser</span>Watch for AI, LLM, agents signals from OpenAI; traction sample: 3,313 views, 184 views/hour, 250,000 channel subscribers; runtime: 29m 49s.</div></td><td class="time-cell">2026-05-30T14:51:16.800953+00:00</td><td class="score-cell"><span class="score">74.21</span></td><td><span class="confidence confidence-medium">medium</span></td><td class="topics-cell">AI, LLM, agents, AI coding, AI startups, research</td><td class="signals-cell">ai_anchor_relevance=2, ai_relevance=7, ai_title_anchor_relevance=0, channel_subscribers=250000, comments=0, cross_source_mentions=1, duration_minutes=29.82, duration_seconds=1789, importance=83, likes=0, views=3313, views_per_hour=184.49</td></tr>
+<tr data-content-type="Video" data-source="Matt Wolfe"><td class="rank">15</td><td class="title-cell"><a class="title-link" href="https://www.youtube.com/watch?v=7TG78vIYI-Q">AI News: Claude Opus 4.8, Insane Omni Use-Case, and A Dog Translator?</a></td><td><span class="type-badge type-video">Video</span></td><td class="source-cell">Matt Wolfe</td><td class="time-cell" data-published="2026-05-29T14:00:14+00:00">2026-05-29</td><td class="summary-cell"><div class="summary-main">Here&#x27;s the AI News from this past week. Launch your own AI agents with Hermes at and get 10% off with code MATTWOLFE Discover More: 🛠️ Explore AI Tools &amp; News: 📰 Weekly Newsletter: Socials: ❌ Twiter/X: 🖼️ Instagram: 🧵 Threads: 🟦 LinkedIn: 👍 Facebook...</div><div class="summary-teaser"><span class="summary-teaser-label">Teaser</span>Watch for AI, LLM, agents signals from Matt Wolfe; traction sample: 39,328 views, 1,609 views/hour, 500,000 channel subscribers; runtime: 22m 56s.</div></td><td class="time-cell">2026-05-30T14:51:16.800953+00:00</td><td class="score-cell"><span class="score">74.0</span></td><td><span class="confidence confidence-medium">medium</span></td><td class="topics-cell">AI, LLM, agents, multimodal, robotics</td><td class="signals-cell">ai_anchor_relevance=6, ai_relevance=8, ai_title_anchor_relevance=2, channel_subscribers=500000, comments=0, cross_source_mentions=1, duration_minutes=22.93, duration_seconds=1376, importance=91, likes=0, views=39328, views_per_hour=1608.91</td></tr>
+<tr data-content-type="Video" data-source="Matthew Berman"><td class="rank">16</td><td class="title-cell"><a class="title-link" href="https://www.youtube.com/watch?v=t3uBGhpii6w">Anthropic just dropped Opus 4.8... (WOAH)</a></td><td><span class="type-badge type-video">Video</span></td><td class="source-cell">Matthew Berman</td><td class="time-cell" data-published="2026-05-29T01:01:34+00:00">2026-05-29</td><td class="summary-cell"><div class="summary-main">Recent YouTube video from Matthew Berman focused on AI, LLM, agents.</div><div class="summary-teaser"><span class="summary-teaser-label">Teaser</span>Watch for AI, LLM, agents signals from Matthew Berman; traction sample: 59,207 views, 1,582 views/hour, 250,000 channel subscribers; runtime: 19m 14s.</div></td><td class="time-cell">2026-05-30T14:51:16.800953+00:00</td><td class="score-cell"><span class="score">74.0</span></td><td><span class="confidence confidence-medium">medium</span></td><td class="topics-cell">AI, LLM, agents</td><td class="signals-cell">ai_anchor_relevance=4, ai_relevance=3, ai_title_anchor_relevance=1, channel_subscribers=250000, comments=0, cross_source_mentions=1, duration_minutes=19.23, duration_seconds=1154, importance=87, likes=0, views=59207, views_per_hour=1582.16</td></tr>
+<tr data-content-type="Video" data-source="Wes Roth"><td class="rank">17</td><td class="title-cell"><a class="title-link" href="https://www.youtube.com/watch?v=F_6go08nHv4">Claude Opus 4.8 Is Too Smart… and TOO HONEST</a></td><td><span class="type-badge type-video">Video</span></td><td class="source-cell">Wes Roth</td><td class="time-cell" data-published="2026-05-28T20:52:09+00:00">2026-05-28</td><td class="summary-cell"><div class="summary-main">DETAILS, LINKS etc: ______________________________________________ My Links 🔗 ➡️ Twitter: ➡️ AI Newsletter: Want to work with me?</div><div class="summary-teaser"><span class="summary-teaser-label">Teaser</span>Watch for AI, LLM signals from Wes Roth; traction sample: 72,323 views, 1,739 views/hour, 250,000 channel subscribers; runtime: 17m 00s.</div></td><td class="time-cell">2026-05-30T14:51:16.800953+00:00</td><td class="score-cell"><span class="score">74.0</span></td><td><span class="confidence confidence-medium">medium</span></td><td class="topics-cell">AI, LLM</td><td class="signals-cell">ai_anchor_relevance=5, ai_relevance=3, ai_title_anchor_relevance=1, channel_subscribers=250000, comments=0, cross_source_mentions=1, duration_minutes=17.0, duration_seconds=1020, importance=87, likes=0, views=72323, views_per_hour=1739.43</td></tr>
+<tr data-content-type="Video" data-source="Matthew Berman"><td class="rank">18</td><td class="title-cell"><a class="title-link" href="https://www.youtube.com/watch?v=4n_pxHZfTC8">OPUS 4.8!!! (also maybe GPT5.6??)</a></td><td><span class="type-badge type-video">Video</span></td><td class="source-cell">Matthew Berman</td><td class="time-cell" data-published="2026-05-28T19:43:28+00:00">2026-05-28</td><td class="summary-cell"><div class="summary-main">Download The 25 OpenClaw Use Cases eBook 👇🏼 Join My Newsletter for Regular AI Updates 👇🏼 My Links 🔗 👉🏻 X: 👉🏻 Forward Future X: 👉🏻 Instagram: 👉🏻 Discord: 👉🏻 Spotify: Media/Sponsorship Inquiries ✅</div><div class="summary-teaser"><span class="summary-teaser-label">Teaser</span>Watch for AI signals from Matthew Berman; traction sample: 35,421 views, 829 views/hour, 250,000 channel subscribers; runtime: 2h 34m.</div></td><td class="time-cell">2026-05-30T14:51:16.800953+00:00</td><td class="score-cell"><span class="score">74.0</span></td><td><span class="confidence confidence-medium">medium</span></td><td class="topics-cell">AI</td><td class="signals-cell">ai_anchor_relevance=1, ai_relevance=1, ai_title_anchor_relevance=0, channel_subscribers=250000, comments=0, cross_source_mentions=1, duration_minutes=154.28, duration_seconds=9257, importance=81, likes=0, views=35421, views_per_hour=829.08</td></tr>
+<tr data-content-type="Video" data-source="Matthew Berman"><td class="rank">19</td><td class="title-cell"><a class="title-link" href="https://www.youtube.com/watch?v=6LwQ8RbU9as">Finally a good benchmark (DeepSWE)</a></td><td><span class="type-badge type-video">Video</span></td><td class="source-cell">Matthew Berman</td><td class="time-cell" data-published="2026-05-27T16:03:45+00:00">2026-05-27</td><td class="summary-cell"><div class="summary-main">Check out HeyGen to create your own free avatar: For HyperFrames, visit: Download The 25 OpenClaw Use Cases eBook 👇🏼 Join My Newsletter for Regular AI Updates 👇🏼 My Links 🔗 👉🏻 X: 👉🏻 Forward Future X: 👉🏻 Instagram: 👉🏻 Discord: 👉🏻 Spotify: Media/Sponsorship Inquiries ✅ Links:</div><div class="summary-teaser"><span class="summary-teaser-label">Teaser</span>Watch for AI, research signals from Matthew Berman; traction sample: 60,747 views, 863 views/hour, 250,000 channel subscribers; runtime: 17m 03s.</div></td><td class="time-cell">2026-05-30T14:51:16.800953+00:00</td><td class="score-cell"><span class="score">74.0</span></td><td><span class="confidence confidence-medium">medium</span></td><td class="topics-cell">AI, research</td><td class="signals-cell">ai_anchor_relevance=1, ai_relevance=2, ai_title_anchor_relevance=0, channel_subscribers=250000, comments=0, cross_source_mentions=1, duration_minutes=17.05, duration_seconds=1023, importance=81, likes=0, views=60747, views_per_hour=863.06</td></tr>
+<tr data-content-type="Video" data-source="All About AI"><td class="rank">20</td><td class="title-cell"><a class="title-link" href="https://www.youtube.com/watch?v=wlqvB0ccQhQ">Claude Opus 4.8 Agentic AI Trading Agent First Test</a></td><td><span class="type-badge type-video">Video</span></td><td class="source-cell">All About AI</td><td class="time-cell" data-published="2026-05-29T17:00:33+00:00">2026-05-29</td><td class="summary-cell"><div class="summary-main">Claude Opus 4.8 Agentic AI Trading Agent First Test x: AI_automata Discord: 👊 Become a YouTube Member to Support Me: For Agents: www.skillsmd.store My AI Video Course: Website: Business Inquiries: kbfseo@gmail.com​</div><div class="summary-teaser"><span class="summary-teaser-label">Teaser</span>Watch for AI, LLM, agents signals from All About AI; traction sample: 2,806 views, 131 views/hour, 250,000 channel subscribers; runtime: 10m 31s.</div></td><td class="time-cell">2026-05-30T14:51:16.800953+00:00</td><td class="score-cell"><span class="score">73.59</span></td><td><span class="confidence confidence-medium">medium</span></td><td class="topics-cell">AI, LLM, agents, multimodal</td><td class="signals-cell">ai_anchor_relevance=5, ai_relevance=5, ai_title_anchor_relevance=4, channel_subscribers=250000, comments=0, cross_source_mentions=1, duration_minutes=10.52, duration_seconds=631, importance=80, likes=0, views=2806, views_per_hour=130.89</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+  <script>
+    (() => {
+      const contentTypeFilter = document.getElementById("content-type-filter");
+      const sourceFilter = document.getElementById("source-filter");
+      const resetButton = document.getElementById("reset-filters");
+      const count = document.getElementById("filter-count");
+      const rows = Array.from(document.querySelectorAll("tbody tr"));
+
+      function applyFilters() {
+        const selectedType = contentTypeFilter.value;
+        const selectedSource = sourceFilter.value;
+        let visible = 0;
+
+        for (const row of rows) {
+          const matchesType = !selectedType || row.dataset.contentType === selectedType;
+          const matchesSource = !selectedSource || row.dataset.source === selectedSource;
+          const shouldShow = matchesType && matchesSource;
+          row.hidden = !shouldShow;
+          if (shouldShow) {
+            visible += 1;
+          }
+        }
+
+        count.textContent = `${visible} of ${rows.length} shown`;
+        resetButton.disabled = !selectedType && !selectedSource;
+      }
+
+      contentTypeFilter.addEventListener("change", applyFilters);
+      sourceFilter.addEventListener("change", applyFilters);
+      resetButton.addEventListener("click", () => {
+        contentTypeFilter.value = "";
+        sourceFilter.value = "";
+        applyFilters();
+      });
+      applyFilters();
+
+      const sortHeader = document.getElementById("sort-published");
+      const tbody = document.querySelector("tbody");
+      const indicator = sortHeader ? sortHeader.querySelector(".sort-indicator") : null;
+      let sortDir = 0;
+
+      function publishedValue(row) {
+        const cell = row.querySelector("td[data-published]");
+        return cell ? cell.dataset.published : "";
+      }
+
+      function sortByPublished() {
+        sortDir = sortDir <= 0 ? 1 : -1;
+        const sorted = [...rows].sort((a, b) => {
+          const av = publishedValue(a);
+          const bv = publishedValue(b);
+          if (av === bv) return 0;
+          if (!av) return 1;
+          if (!bv) return -1;
+          return sortDir * (av < bv ? -1 : 1);
+        });
+        for (const row of sorted) {
+          tbody.appendChild(row);
+        }
+        sortHeader.setAttribute("aria-sort", sortDir === 1 ? "ascending" : "descending");
+        if (indicator) {
+          indicator.textContent = sortDir === 1 ? "▲" : "▼";
+        }
+      }
+
+      if (sortHeader) {
+        sortHeader.addEventListener("click", sortByPublished);
+        sortHeader.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            sortByPublished();
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -27,9 +27,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ├── content/en/frameworks/      # 100 migrated MDX files with enriched frontmatter
 ├── data/                       # categories.ts, search-index.json, map-positions.json
 ├── lib/                        # Core modules: frameworks.ts, types.ts, collections.ts, coach-types.ts
-├── scripts/                    # migrate-content.ts, generate-map-positions.ts
+├── scripts/                    # migrate-content.ts, generate-map-positions.ts, build-ai-learning-index.ts, build-ai-weekly-index.ts
 ├── public/                     # robots.txt, static assets
-│   └── ai-learning/            # Self-contained static "AI Learning" library (centralized index.html + Content/ collections). Single source of truth — linked from the navbar as /ai-learning/index.html. Edit here directly; do NOT keep a second copy at repo root.
+│   ├── ai-learning/            # Self-contained static "AI Learning" library (centralized index.html + Content/ collections). Single source of truth — linked from the navbar as /ai-learning/index.html. Edit here directly; do NOT keep a second copy at repo root. index.html is GENERATED from each Content/<folder>/collection.json — never hand-edit the cards/stats; run `npm run build:ai-index` (auto-runs on prebuild). See /update-ai-learning-index.
+│   └── ai-weekly/              # Self-contained static "AI Weekly" library — linked from the navbar as /ai-weekly/index.html. Source dashboards live (pristine, never modified) in RAW/ named ai-intel-dashboard-YYYYMMDD-HHMMSS.html (timestamp sorts freshness). `npm run build:ai-weekly` (auto-runs on prebuild) GENERATES index.html AND writes a site-themed copy of each dashboard into pages/ named ai-weekly-digest-YYYYMMDD-HHMMSS.html (same timestamp suffix); the index cards link to pages/. Never hand-edit index.html or the generated pages/ files. See /update-ai-weekly-index.
 └── .github/workflows/          # CI/CD (SWA deploy + Container API deploy)
 ```
 

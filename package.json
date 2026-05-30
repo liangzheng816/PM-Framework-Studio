@@ -4,11 +4,16 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "npm run build:ai-index && npm run build:ai-weekly",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "validate": "npm run lint && npm run typecheck"
+    "validate": "npm run lint && npm run typecheck",
+    "build:ai-index": "tsx scripts/build-ai-learning-index.ts",
+    "check:ai-index": "tsx scripts/build-ai-learning-index.ts --check",
+    "build:ai-weekly": "tsx scripts/build-ai-weekly-index.ts",
+    "check:ai-weekly": "tsx scripts/build-ai-weekly-index.ts --check"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",

@@ -1,0 +1,160 @@
+{
+  "order": 2,
+  "category": "applied",
+  "collectionLabel": "SharePoint AI in Practice",
+  "date": "2026-05-31",
+  "title": "SharePoint AI <em>in Practice</em>",
+  "subtitle": "Twenty-one hands-on sites on putting AI and Copilot to work inside SharePoint.",
+  "home": "index.html",
+  "quizQuestions": 0,
+  "flashcards": 0,
+  "pages": [
+    {
+      "num": "01",
+      "title": "72,000 Rows Without Hallucinating",
+      "desc": "How AI in SharePoint processes 12 files and 30 MB of data by writing code in a sandbox instead of guessing in chat.",
+      "href": "01-72k-rows-no-hallucination/index.html",
+      "cta": "Open site"
+    },
+    {
+      "num": "02",
+      "title": "Beautiful Libraries with Copilot",
+      "desc": "Turn ordinary document libraries into Bento grids, blueprints, and whatever else you can describe — \"that can't be SharePoint?!\"",
+      "href": "02-beautiful-libraries-copilot/index.html",
+      "cta": "Open site"
+    },
+    {
+      "num": "03",
+      "title": "No-Code Quick Steps",
+      "desc": "One-click buttons inside any list that quietly run AI in SharePoint — for users who never need to know it's there.",
+      "href": "03-no-code-quick-steps/index.html",
+      "cta": "Open site"
+    },
+    {
+      "num": "04",
+      "title": "A Living Knowledge Base",
+      "desc": "Document library, submissions folder, gap list, expert directory, and context file working as one organism — driven by four AI Skills.",
+      "href": "04-living-knowledge-base/index.html",
+      "cta": "Open site"
+    },
+    {
+      "num": "05",
+      "title": "Learn From Its Mistakes",
+      "desc": "Group-scope context lets you write learning rules that turn every correction into a permanent lesson. Audit failures, then teach.",
+      "href": "05-learn-from-mistakes/index.html",
+      "cta": "Open site"
+    },
+    {
+      "num": "06",
+      "title": "A Dashboard From Your Data",
+      "desc": "A reusable hiring-pipeline Skill turns messy SharePoint lists into an interactive HTML dashboard — and a PowerPoint on demand.",
+      "href": "06-dashboard-from-data/index.html",
+      "cta": "Open site"
+    },
+    {
+      "num": "07",
+      "title": "AI-Generated Demo Videos",
+      "desc": "A two-guide library on the new <code>--record</code> flag for producing polished demo videos of SharePoint AI in minutes.",
+      "href": "07-ai-demo-videos/index.html",
+      "cta": "Open site"
+    },
+    {
+      "num": "08",
+      "title": "A Social Media Workflow",
+      "desc": "Narrow, composable skills draft LinkedIn posts, YouTube descriptions, chapter timestamps, and titles — all from one transcript.",
+      "href": "08-social-media-workflow/index.html",
+      "cta": "Open site"
+    },
+    {
+      "num": "09",
+      "title": "The Demo Runner Tool",
+      "desc": "A three-guide library on the free, GitHub-hosted demo runner — the launcher, the demo file format, and a clean on-stage widget UI.",
+      "href": "09-demo-runner-tool/index.html",
+      "cta": "Open site"
+    },
+    {
+      "num": "10",
+      "title": "Three Ways to Improve",
+      "desc": "Reference files to keep context tight. Permissions to scope the AI's menu. Evals to let skills optimize themselves.",
+      "href": "10-three-ways-improve/index.html",
+      "cta": "Open site"
+    },
+    {
+      "num": "11",
+      "title": "An Autonomous Time-Off Tracker",
+      "desc": "Two lists, four skills, one calendar, one homepage — built end-to-end with a Ralph Loop in about 20 minutes.",
+      "href": "11-time-off-tracker/index.html",
+      "cta": "Open site"
+    },
+    {
+      "num": "12",
+      "title": "Getting Started with AI Skills",
+      "desc": "Build, edit, and list skills with plain-language utterances. Promote any ad-hoc action into a permanent, scoped skill.",
+      "href": "12-getting-started/index.html",
+      "cta": "Open site"
+    },
+    {
+      "num": "13",
+      "title": "Branching Skills, Smart Formatting",
+      "desc": "One parent skill, two reference files, three prompts — choosing column formatting, view formatting, or both before it touches your list.",
+      "href": "13-branching-skills/index.html",
+      "cta": "Open site"
+    },
+    {
+      "num": "14",
+      "title": "The Ultimate List Styling",
+      "desc": "The Patterns &amp; Practices catalog packaged as a skill, your brand layered on top — every list styled on-brand with no JSON by hand.",
+      "href": "14-ultimate-list-styling/index.html",
+      "cta": "Open site"
+    },
+    {
+      "num": "15",
+      "title": "The Autonomous List Builder",
+      "desc": "One conference list, three tiers. The Agentic Builder scaffolds it in a prompt; the Ralph Loop plans, builds, grades, and ships it.",
+      "href": "15-autonomous-list-builder/index.html",
+      "cta": "Open site"
+    },
+    {
+      "num": "16",
+      "title": "Stop Sorting Files Manually",
+      "desc": "Let SharePoint AI scan a messy library, propose folder schemes, and rename the worst offenders — with you in control of every move.",
+      "href": "16-stop-sorting-files/index.html",
+      "cta": "Open site"
+    },
+    {
+      "num": "17",
+      "title": "Metadata Fixes Your Library",
+      "desc": "AI can summarize a contract in seconds but can't find every one missing a clause. Metadata — extracted at upload — is the missing layer.",
+      "href": "17-metadata-fixes-ai/index.html",
+      "cta": "Open site"
+    },
+    {
+      "num": "18",
+      "title": "Automated Brand Compliance",
+      "desc": "Encode a brand guide as a reusable Skill, run it across a whole library in one prompt, and wire it to a Quick Step button.",
+      "href": "18-brand-compliance/index.html",
+      "cta": "Open site"
+    },
+    {
+      "num": "19",
+      "title": "An Auto-Cited Brief",
+      "desc": "List Creator, Assertion Extractor, and Citation Finder chain together to turn an uncited brief into a fully sourced table.",
+      "href": "19-auto-cited-brief/index.html",
+      "cta": "Open site"
+    },
+    {
+      "num": "20",
+      "title": "Organize a Resume Collection",
+      "desc": "A pile of resumes becomes a structured candidate library through seven conversational prompts — extract, categorize, alert, track, color.",
+      "href": "20-resume-collection/index.html",
+      "cta": "Open site"
+    },
+    {
+      "num": "21",
+      "title": "Review Like a Panel of Experts",
+      "desc": "A Review Council skill channels seven reviewer personas — Adversary, Analyst, Storyteller, and more — in a single pass over your content.",
+      "href": "21-panel-of-experts/index.html",
+      "cta": "Open site"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "order": 1,
+  "category": "agent",
+  "collectionLabel": "AI Agent Engineering",
+  "date": "2026-05-30",
+  "title": "The AI Learning <em>Library</em>",
+  "subtitle": "How agents actually work — from the bare loop to production infrastructure.",
+  "home": "index.html",
+  "quizQuestions": 26,
+  "flashcards": 45,
+  "pages": [
+    {
+      "num": "GUIDE 01",
+      "title": "How an Agent Actually Runs",
+      "desc": "The agent loop from scratch — mini-swe-agent, smolagents, and Mini-Agent. ReAct, tools, and the read-think-act cycle laid bare.",
+      "href": "agents-from-scratch-cheatsheet.html",
+      "cta": "Open guide"
+    },
+    {
+      "num": "GUIDE 02",
+      "title": "The Claude Code Workflow",
+      "desc": "End-to-end: the harness, CLAUDE.md, Skills, MCP, Hooks, and Subagents — plus enterprise cases for putting it all to work.",
+      "href": "claude-code-workflow-cheatsheet.html",
+      "cta": "Open guide"
+    },
+    {
+      "num": "GUIDE 03",
+      "title": "Agent Infrastructure Deep Dive",
+      "desc": "Memory, sandboxes, KV-cache, long-horizon execution, and the Kimi Swarm — the plumbing behind agents that run for hours.",
+      "href": "harness-agent-interview-cheatsheet.html",
+      "cta": "Open guide"
+    },
+    {
+      "num": "PRACTICE",
+      "title": "Full Quiz · All Guides",
+      "desc": "26 questions spanning all three guides, F → A difficulty. Test recall on the agent loop, the harness, and infrastructure.",
+      "href": "quiz-index.html",
+      "cta": "Open quiz",
+      "practice": true
+    },
+    {
+      "num": "PRACTICE",
+      "title": "All Flashcards · All Guides",
+      "desc": "45 flip-cards across every guide for fast spaced review of the key terms, patterns, and mechanisms.",
+      "href": "flashcards-index.html",
+      "cta": "Open flashcards",
+      "practice": true
+    }
+  ]
+}
