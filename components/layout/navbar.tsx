@@ -10,7 +10,7 @@ const NAV_LINKS = [
   { href: "/map", label: "Map" },
   { href: "/compare", label: "Compare" },
   { href: "/collections", label: "Saved" },
-  { href: "/ai-learning/index.html", label: "AI Learning" },
+  { href: "/ai-learning/", label: "AI Learning" },
   { href: "/ai-weekly/index.html", label: "AI Weekly" },
   { href: "/about", label: "About" },
 ];
@@ -42,7 +42,7 @@ export function NavBar() {
                 ? "text-[var(--color-accent)] bg-[var(--color-accent)]/10"
                 : "text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-2)]"
             }`;
-            // Static HTML targets (e.g. /ai-learning/index.html) bypass next/link to avoid prefetch + client routing on a non-route URL.
+            // Static HTML targets (e.g. /ai-weekly/index.html) bypass next/link to avoid prefetch + client routing on a non-route URL.
             if (link.href.endsWith(".html")) {
               return (
                 <a key={link.href} href={link.href} className={className}>
@@ -96,7 +96,8 @@ export function NavBar() {
       {mobileOpen && (
         <div className="md:hidden border-t border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3">
           {NAV_LINKS.map((link) => {
-            const isActive = pathname === link.href;
+            const isActive = pathname === link.href ||
+              (link.href !== "/" && pathname.startsWith(link.href));
             const className = `block px-3 py-2.5 text-sm rounded-[var(--radius-md)] ${
               isActive
                 ? "text-[var(--color-accent)] bg-[var(--color-accent)]/10"
