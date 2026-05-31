@@ -1,0 +1,42 @@
+{
+  "order": 3,
+  "category": "advanced",
+  "collectionLabel": "AI on Youtube",
+  "date": "2026-06-01",
+  "title": "AI <em>on Youtube</em>",
+  "subtitle": "A parent collection for YouTube-based AI learning tracks. Current track: FDE Deep Dive.",
+  "home": "site/index.html",
+  "quizQuestions": 0,
+  "flashcards": 18,
+  "pages": [
+    {
+      "num": "GUIDE 01",
+      "title": "Why FDE Exists",
+      "desc": "Defines forward deployed engineering, where it outperforms vanilla SaaS playbooks, and why the AI era makes it newly relevant.",
+      "href": "site/guide-01-fde-foundations.html",
+      "cta": "Open guide"
+    },
+    {
+      "num": "GUIDE 02",
+      "title": "How to Run FDE",
+      "desc": "Covers team structure, deployment cadence, customer alignment, and field-to-product translation loops that keep momentum.",
+      "href": "site/guide-02-operating-model.html",
+      "cta": "Open guide"
+    },
+    {
+      "num": "GUIDE 03",
+      "title": "Scale Without Services Drift",
+      "desc": "Explains how to expand contract value and product leverage while avoiding the consulting trap as the motion scales.",
+      "href": "site/guide-03-scaling-and-moats.html",
+      "cta": "Open guide"
+    },
+    {
+      "num": "PRACTICE",
+      "title": "All Flashcards · FDE Deep Dive",
+      "desc": "An 18-card deck across foundations, operating model, and scaling mechanics for rapid review and spaced repetition.",
+      "href": "site/flashcards-index.html",
+      "cta": "Open flashcards",
+      "practice": true
+    }
+  ]
+}
