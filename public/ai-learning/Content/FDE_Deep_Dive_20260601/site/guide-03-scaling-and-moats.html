@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Guide 03 - Scaling and Moats</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{--paper:#f4f1ea;--ink:#1b1a17;--ink-soft:#4a463d;--rule:#d8d2c4;--accent:#cc3b1d;--accent-soft:#f3ddd4;--slate:#2f5d62;--slate-soft:#dde7e6;--amber:#9a6a00;--amber-soft:#f4e9cf;--card:#fbf9f4;--guide-color:var(--accent)}
+    *,*::before,*::after{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;counter-reset:slide}
+    .wrap{max-width:1040px;margin:0 auto;padding:0 28px 110px}h1,h2,h3{font-family:"Fraunces",serif;margin:0}
+    .top{padding:32px 0 10px}.back,.kicker,.sec-label,.counter,.topic-nav a,.gtag,.fc-tap{font-family:"JetBrains Mono",monospace}
+    .back{font-size:12px;color:var(--ink-soft);text-decoration:none}.kicker,.sec-label{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+    .hero h1{margin-top:8px;font-size:clamp(34px,5vw,56px);line-height:1.05}.dek{margin:10px 0 12px;color:var(--ink-soft);max-width:75ch}
+    .topic-nav{position:sticky;top:0;z-index:10;background:rgba(244,241,234,.92);border-bottom:1px solid var(--rule);margin:18px -28px 18px;padding:12px 28px;display:flex;flex-wrap:wrap;gap:14px}
+    .topic-nav a{text-decoration:none;color:var(--ink-soft);font-size:12px;border:1px solid var(--rule);border-radius:999px;padding:4px 10px;background:var(--card)}
+    .meta-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0 16px}.meta-card{border:1px solid var(--rule);background:var(--card);border-radius:10px;padding:12px 14px;color:var(--ink-soft);font-size:16px}
+
+    section:not(#flashcards){counter-increment:slide;background:var(--card);border:1.5px solid color-mix(in srgb,var(--guide-color,var(--slate)) 28%,var(--rule));border-radius:18px;box-shadow:0 8px 36px -10px rgba(27,26,23,.18),0 1px 0 rgba(27,26,23,.04);margin:48px 0;overflow:hidden;position:relative}
+    section:not(#flashcards) h2{margin:0;padding:26px 36px 22px;background:var(--guide-color,var(--slate));color:#fff;font-family:"Fraunces",serif;font-weight:900;font-size:clamp(20px,2.8vw,26px);letter-spacing:-.015em;line-height:1.1;display:flex;align-items:flex-start;gap:14px}
+    section:not(#flashcards) h2::before{content:counter(slide,decimal-leading-zero);font-family:"JetBrains Mono",monospace;font-weight:600;font-size:12px;letter-spacing:.1em;background:rgba(255,255,255,.16);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.28);padding:4px 10px;border-radius:5px;flex-shrink:0;margin-top:3px;white-space:nowrap}
+    section:not(#flashcards)>p,section:not(#flashcards)>.insight,section:not(#flashcards)>.misconception{margin-left:36px;margin-right:36px}
+    section:not(#flashcards)>p:first-of-type{margin-top:28px}
+    section:not(#flashcards)::after{content:"";display:block;height:4px;background:linear-gradient(90deg,var(--guide-color,var(--slate)) 0%,color-mix(in srgb,var(--guide-color,var(--slate)) 30%,transparent) 100%);margin-top:34px;opacity:.35}
+    .insight,.misconception{border-radius:10px;padding:18px 22px;margin:22px 0;font-size:17px;line-height:1.5}
+    .insight{border-left:4px solid var(--slate);background:var(--slate-soft)}.misconception{border-left:4px solid var(--accent);background:var(--accent-soft)}
+    .insight::before{content:"✦ Key insight - ";font-weight:600;color:var(--slate)}.misconception::before{content:"✕ Common misconception - ";font-weight:600;color:var(--accent)}
+
+    #flashcards{margin-top:40px;padding:0;border:1.5px solid var(--rule);border-radius:12px;background:var(--card)}
+    #flashcards .head{padding:20px 24px 6px}.counter{font-size:12px;color:var(--ink-soft);margin-top:6px}
+    .fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;padding:14px 20px 22px}
+    .fc{perspective:900px;height:188px;cursor:pointer}.fc-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1)}.fc.flipped .fc-inner{transform:rotateY(180deg)}
+    .fc-front,.fc-back{position:absolute;inset:0;border-radius:13px;padding:18px 18px 16px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;justify-content:space-between}
+    .fc-front{background:var(--paper);border:1.5px solid var(--rule)}.fc-back{transform:rotateY(180deg);background:#3a1a10;color:#fff}
+    .gtag{font-size:11px;border-radius:999px;border:1px solid var(--rule);display:inline-block;padding:3px 8px;margin-right:6px;color:var(--ink-soft)}
+    .fc-term{font-family:"Fraunces",serif;font-size:24px;line-height:1.1}.fc-def{font-size:16px;line-height:1.4}.fc-tap{font-size:11px;letter-spacing:.04em;color:var(--ink-soft)}.fc-back .fc-tap{color:rgba(255,255,255,.86)}
+    .footer{margin-top:24px;color:var(--ink-soft);font-size:15px}
+    @media (max-width:680px){.wrap{padding:0 18px 90px}.topic-nav{margin:14px -18px 14px;padding:10px 18px}.meta-grid{grid-template-columns:1fr}section:not(#flashcards) h2{padding:20px 22px 18px;font-size:20px}section:not(#flashcards)>p,section:not(#flashcards)>.insight,section:not(#flashcards)>.misconception{margin-left:22px;margin-right:22px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top hero">
+      <a class="back" href="index.html">← Back to learning library</a>
+      <div class="kicker">Guide 03 · Advanced</div>
+      <h1>Scale Without Services Drift</h1>
+      <p class="dek">How to turn FDE from fragile custom delivery into a durable growth engine with measurable leverage and defensible moats.</p>
+    </header>
+
+    <nav class="topic-nav">
+      <a href="#consulting-risk">Services trap</a>
+      <a href="#value-curve">Value realization</a>
+      <a href="#leverage-metrics">Product leverage metrics</a>
+      <a href="#learning-org">Learning company discipline</a>
+      <a href="#flashcards">Flashcards</a>
+    </nav>
+
+    <div class="meta-grid">
+      <div class="meta-card"><strong>Objective:</strong> Learn how to keep FDE economically and strategically scalable.</div>
+      <div class="meta-card"><strong>Use:</strong> Evaluate whether your deployment motion is building a software moat or a labor-intensive services business.</div>
+      <div class="meta-card"><strong>Source:</strong> Interview sections on pricing, contract growth, margin trajectory, and organizational learning.</div>
+    </div>
+
+    <section id="consulting-risk">
+      <h2>Recognizing and avoiding the services trap</h2>
+      <p>FDE can degrade into consulting if each account requires persistent bespoke engineering with little reusable output. The transcript calls this a real risk, not a strawman criticism.</p>
+      <div class="insight">The anti-trap rule is simple: every major field customization should either become reusable product capability or be intentionally retired.</div>
+      <p>Operationally, teams need explicit abstraction checkpoints where product and field leaders decide what graduates into platform and what stays account-local.</p>
+      <div class="misconception">High-touch delivery is not itself the trap; zero leverage accumulation is the trap.</div>
+    </section>
+
+    <section id="value-curve">
+      <h2>Value realization and contract expansion</h2>
+      <p>The FDE strategy favors growing contract value over time by solving larger and more central customer problems. Early deployments may be margin-negative while trust and capability are being established.</p>
+      <div class="insight">Healthy FDE economics look like a curve: early pain, then stronger margins as product fit and account depth increase.</div>
+      <p>As outcomes become more valuable, pricing flexibility improves and expansion conversations shift from software access to business impact ownership.</p>
+      <div class="misconception">Flat contract sizes with growing deployment complexity are not disciplined FDE growth; they are warning signs.</div>
+    </section>
+
+    <section id="leverage-metrics">
+      <h2>Measure product leverage, not effort alone</h2>
+      <p>The transcript recommends tracking two signals simultaneously: value of outcomes delivered and product leverage used to deliver them. Teams that improve both signals are compounding.</p>
+      <div class="insight">Leverage means the same or smaller FDE footprint can deliver larger outcomes because reusable platform capability keeps improving.</div>
+      <p>A practical diagnostic is replication speed: when a similar workflow appears at a second customer, does delivery become materially easier and faster?</p>
+      <div class="misconception">Cost reduction alone is not enough. Cutting effort while value stagnates weakens strategic position.</div>
+    </section>
+
+    <section id="learning-org">
+      <h2>Operate as a learning company</h2>
+      <p>FDE leadership is judgment-heavy because teams rarely have complete information early. The organization must keep learning loops active across deployment, product, and commercial functions.</p>
+      <div class="insight">A learning company institutionalizes uncertainty handling: experimentation, cross-account synthesis, and fast correction become normal operations.</div>
+      <p>The interview frames this as one reason FDE alumni often become founders: they repeatedly practice high-ambiguity decision making under real customer stakes.</p>
+      <div class="misconception">Mature scale does not eliminate learning needs in frontier markets; it often hides failure until it becomes expensive.</div>
+    </section>
+
+    <section id="flashcards">
+      <div class="head"><div class="sec-label">Flashcards - Guide 03</div><div class="counter"><span id="card-count">6</span> cards</div></div>
+      <div class="fc-grid">
+        <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div><span class="gtag">03 · Advanced</span></div><div class="fc-term">Services Trap</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Failure mode where account work stays bespoke and labor-heavy, preventing reusable product leverage and scalable economics.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+        <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div><span class="gtag">03 · Advanced</span></div><div class="fc-term">Contract Expansion</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Growth pattern where account value increases as teams solve progressively higher-impact business problems over time.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+        <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div><span class="gtag">03 · Advanced</span></div><div class="fc-term">Value Realization Curve</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Trajectory where early deployments may lose money, then trend positive as product fit and account depth improve.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+        <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div><span class="gtag">03 · Advanced</span></div><div class="fc-term">Product Leverage</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Ability of platform capability to let field teams deliver greater outcomes with less incremental custom engineering effort.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+        <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div><span class="gtag">03 · Advanced</span></div><div class="fc-term">Two-Speed Build</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Operating mode where fast field prototypes coexist with slower, reusable platform productization for long-term scale.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+        <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div><span class="gtag">03 · Advanced</span></div><div class="fc-term">Learning Company</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Organization that continually updates product and go-to-market decisions using live field evidence rather than static assumptions.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+      </div>
+    </section>
+
+    <footer class="footer">Return to <a href="index.html">library home</a> or open the <a href="flashcards-index.html">full flashcard deck</a>. Source: https://www.youtube.com/watch?v=Zyw-YA0k3xo</footer>
+  </div>
+  <script>
+    function flip(card){ card.classList.toggle('flipped'); }
+    const countEl = document.getElementById('card-count');
+    if(countEl){ countEl.textContent = document.querySelectorAll('.fc').length; }
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        const t = document.querySelector(a.getAttribute('href'));
+        if(t){ t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      });
+    });
+  </script>
+</body>
+</html>

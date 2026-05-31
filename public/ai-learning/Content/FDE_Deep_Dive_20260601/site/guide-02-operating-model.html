@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Guide 02 - FDE Operating Model</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper:#f4f1ea;--ink:#1b1a17;--ink-soft:#4a463d;--rule:#d8d2c4;--accent:#cc3b1d;--accent-soft:#f3ddd4;--slate:#2f5d62;--slate-soft:#dde7e6;--amber:#9a6a00;--amber-soft:#f4e9cf;--card:#fbf9f4;--guide-color:var(--amber);
+    }
+    *,*::before,*::after{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;counter-reset:slide}
+    .wrap{max-width:1040px;margin:0 auto;padding:0 28px 110px}h1,h2,h3{font-family:"Fraunces",serif;margin:0}
+    .top{padding:32px 0 10px}.back,.kicker,.sec-label,.counter,.topic-nav a,.gtag,.fc-tap{font-family:"JetBrains Mono",monospace}
+    .back{font-size:12px;color:var(--ink-soft);text-decoration:none}.kicker,.sec-label{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+    .hero h1{margin-top:8px;font-size:clamp(34px,5vw,56px);line-height:1.05}.dek{margin:10px 0 12px;color:var(--ink-soft);max-width:75ch}
+    .topic-nav{position:sticky;top:0;z-index:10;background:rgba(244,241,234,.92);border-bottom:1px solid var(--rule);margin:18px -28px 18px;padding:12px 28px;display:flex;flex-wrap:wrap;gap:14px}
+    .topic-nav a{text-decoration:none;color:var(--ink-soft);font-size:12px;border:1px solid var(--rule);border-radius:999px;padding:4px 10px;background:var(--card)}
+    .meta-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0 16px}
+    .meta-card{border:1px solid var(--rule);background:var(--card);border-radius:10px;padding:12px 14px;color:var(--ink-soft);font-size:16px}
+
+    section:not(#flashcards){counter-increment:slide;background:var(--card);border:1.5px solid color-mix(in srgb,var(--guide-color,var(--slate)) 28%,var(--rule));border-radius:18px;box-shadow:0 8px 36px -10px rgba(27,26,23,.18),0 1px 0 rgba(27,26,23,.04);margin:48px 0;overflow:hidden;position:relative}
+    section:not(#flashcards) h2{margin:0;padding:26px 36px 22px;background:var(--guide-color,var(--slate));color:#fff;font-family:"Fraunces",serif;font-weight:900;font-size:clamp(20px,2.8vw,26px);letter-spacing:-.015em;line-height:1.1;display:flex;align-items:flex-start;gap:14px}
+    section:not(#flashcards) h2::before{content:counter(slide,decimal-leading-zero);font-family:"JetBrains Mono",monospace;font-weight:600;font-size:12px;letter-spacing:.1em;background:rgba(255,255,255,.16);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.28);padding:4px 10px;border-radius:5px;flex-shrink:0;margin-top:3px;white-space:nowrap}
+    section:not(#flashcards)>p,section:not(#flashcards)>.insight,section:not(#flashcards)>.misconception{margin-left:36px;margin-right:36px}
+    section:not(#flashcards)>p:first-of-type{margin-top:28px}
+    section:not(#flashcards)::after{content:"";display:block;height:4px;background:linear-gradient(90deg,var(--guide-color,var(--slate)) 0%,color-mix(in srgb,var(--guide-color,var(--slate)) 30%,transparent) 100%);margin-top:34px;opacity:.35}
+    .insight,.misconception{border-radius:10px;padding:18px 22px;margin:22px 0;font-size:17px;line-height:1.5}
+    .insight{border-left:4px solid var(--slate);background:var(--slate-soft)}.misconception{border-left:4px solid var(--accent);background:var(--accent-soft)}
+    .insight::before{content:"✦ Key insight - ";font-weight:600;color:var(--slate)}.misconception::before{content:"✕ Common misconception - ";font-weight:600;color:var(--accent)}
+
+    #flashcards{margin-top:40px;padding:0;border:1.5px solid var(--rule);border-radius:12px;background:var(--card)}
+    #flashcards .head{padding:20px 24px 6px}.counter{font-size:12px;color:var(--ink-soft);margin-top:6px}
+    .fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;padding:14px 20px 22px}
+    .fc{perspective:900px;height:188px;cursor:pointer}.fc-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1)}.fc.flipped .fc-inner{transform:rotateY(180deg)}
+    .fc-front,.fc-back{position:absolute;inset:0;border-radius:13px;padding:18px 18px 16px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;justify-content:space-between}
+    .fc-front{background:var(--paper);border:1.5px solid var(--rule)}.fc-back{transform:rotateY(180deg);background:#7a5400;color:#fff}
+    .gtag{font-size:11px;border-radius:999px;border:1px solid var(--rule);display:inline-block;padding:3px 8px;margin-right:6px;color:var(--ink-soft)}
+    .fc-term{font-family:"Fraunces",serif;font-size:24px;line-height:1.1}.fc-def{font-size:16px;line-height:1.4}.fc-tap{font-size:11px;letter-spacing:.04em;color:var(--ink-soft)}.fc-back .fc-tap{color:rgba(255,255,255,.86)}
+    .footer{margin-top:24px;color:var(--ink-soft);font-size:15px}
+    @media (max-width:680px){.wrap{padding:0 18px 90px}.topic-nav{margin:14px -18px 14px;padding:10px 18px}.meta-grid{grid-template-columns:1fr}section:not(#flashcards) h2{padding:20px 22px 18px;font-size:20px}section:not(#flashcards)>p,section:not(#flashcards)>.insight,section:not(#flashcards)>.misconception{margin-left:22px;margin-right:22px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top hero">
+      <a class="back" href="index.html">← Back to learning library</a>
+      <div class="kicker">Guide 02 · Applied</div>
+      <h1>How to Run FDE</h1>
+      <p class="dek">Operational mechanics for turning field work into repeatable account growth and product improvement.</p>
+    </header>
+
+    <nav class="topic-nav">
+      <a href="#team-design">Echo and Delta</a>
+      <a href="#deployment-cadence">Deployment cadence</a>
+      <a href="#field-to-product">Field-to-product loop</a>
+      <a href="#demo-discipline">Demo discipline</a>
+      <a href="#flashcards">Flashcards</a>
+    </nav>
+
+    <div class="meta-grid">
+      <div class="meta-card"><strong>Objective:</strong> Understand team structure and execution loops required for reliable FDE delivery.</div>
+      <div class="meta-card"><strong>Use:</strong> Build your first FDE pod and avoid role confusion between account, product, and engineering work.</div>
+      <div class="meta-card"><strong>Source:</strong> Interview sections on Echo/Delta model and deployment playbook.</div>
+    </div>
+
+    <section id="team-design">
+      <h2>Echo and Delta role design</h2>
+      <p>The transcript describes two core roles: Echo teams embedded with users and relationships, and Delta teams that ship software quickly under deployment pressure. The roles are complementary and intentionally asymmetric.</p>
+      <div class="insight">Echo protects problem quality; Delta protects solution velocity. Collapsing both into one profile usually weakens both functions.</div>
+      <p>Echo profiles combine domain fluency with challenger behavior, while Delta profiles emphasize rapid prototyping and tolerance for iterative rewrites. This division creates fast feedback without losing technical throughput.</p>
+      <div class="misconception">FDE hiring is not generic "strong engineer" hiring. Role-specific traits drive performance more than raw technical pedigree.</div>
+    </section>
+
+    <section id="deployment-cadence">
+      <h2>Deployment cadence and expansion</h2>
+      <p>A typical motion starts with one high-value use case, timeboxed execution, and leadership review. If that milestone lands, the team expands scope across adjacent problems in the same account.</p>
+      <div class="insight">Land-and-expand in FDE is not random upsell. It is staged expansion based on proven outcome credibility.</div>
+      <p>Execution quality depends on continuous account-level discovery after initial success. Teams should treat each newly opened workflow as both revenue opportunity and product learning opportunity.</p>
+      <div class="misconception">Initial deployment success does not justify immediate broad rollout. Controlled expansion beats premature enterprise-wide promises.</div>
+    </section>
+
+    <section id="field-to-product">
+      <h2>Field-to-product translation loop</h2>
+      <p>Field implementations produce tactical solutions first. Product teams then generalize those patterns into abstractions that can serve multiple customers and segments. This is the "gravel road to highway" transition.</p>
+      <div class="insight">Abstraction quality is the core compounding engine. Weak abstraction traps value in local custom code.</div>
+      <p>The transcript highlights involving FDEs from multiple accounts in design discussions to prevent overfitting product decisions to one account's local constraints.</p>
+      <div class="misconception">Product teams cannot infer generalization correctly in isolation. Cross-account field evidence is required.</div>
+    </section>
+
+    <section id="demo-discipline">
+      <h2>Demo-driven development as a control system</h2>
+      <p>Repeated customer-facing demos force coherent end-to-end value, not just isolated feature quality. They expose integration friction early and align teams on user-desired workflows.</p>
+      <div class="insight">A strong demo is not presentation polish; it is proof that multiple capabilities connect into meaningful customer progress.</div>
+      <p>Demo loops also create an internal quality bar: if field teams repeatedly choose to use a product capability, that capability is likely delivering true leverage.</p>
+      <div class="misconception">Demo-driven work is not superficial feature theater when it is tied to customer pain and measurable outcomes.</div>
+    </section>
+
+    <section id="flashcards">
+      <div class="head"><div class="sec-label">Flashcards - Guide 02</div><div class="counter"><span id="card-count">6</span> cards</div></div>
+      <div class="fc-grid">
+        <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div><span class="gtag">02 · Applied</span></div><div class="fc-term">Echo Team</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Embedded operators who understand user workflows, manage account context, and keep deployments tied to high-value customer problems.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+        <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div><span class="gtag">02 · Applied</span></div><div class="fc-term">Delta Engineer</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">High-velocity engineer focused on quickly building and deploying pragmatic software that proves outcomes under real constraints.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+        <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div><span class="gtag">02 · Applied</span></div><div class="fc-term">Land-and-Expand</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Go-to-market pattern that starts with one validated use case and systematically grows into additional, higher-value workflows.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+        <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div><span class="gtag">02 · Applied</span></div><div class="fc-term">Gravel Road Prototype</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Fast field-built implementation that solves immediate customer needs and informs later generalized product architecture.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+        <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div><span class="gtag">02 · Applied</span></div><div class="fc-term">Field-to-Product Loop</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Process where customer-specific delivery insights are translated into abstractions reusable across future accounts.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+        <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div><span class="gtag">02 · Applied</span></div><div class="fc-term">Demo-Driven Development</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Building and integrating features through repeatable customer-value demos that force coherent real-world usability.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+      </div>
+    </section>
+
+    <footer class="footer">Continue to <a href="guide-03-scaling-and-moats.html">Guide 03</a> or open the <a href="flashcards-index.html">full flashcard deck</a>. Source: https://www.youtube.com/watch?v=Zyw-YA0k3xo</footer>
+  </div>
+
+  <script>
+    function flip(card){ card.classList.toggle('flipped'); }
+    const countEl = document.getElementById('card-count');
+    if(countEl){ countEl.textContent = document.querySelectorAll('.fc').length; }
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        const t = document.querySelector(a.getAttribute('href'));
+        if(t){ t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      });
+    });
+  </script>
+</body>
+</html>

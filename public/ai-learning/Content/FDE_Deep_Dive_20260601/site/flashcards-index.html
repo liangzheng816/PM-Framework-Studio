@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FDE Best Practices - Flashcards</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root { --paper:#f4f1ea;--ink:#1b1a17;--ink-soft:#4a463d;--rule:#d8d2c4;--accent:#cc3b1d;--slate:#2f5d62;--amber:#9a6a00;--card:#fbf9f4;--g1:#2f5d62;--g2:#9a6a00;--g3:#cc3b1d; }
+    *,*::before,*::after{box-sizing:border-box}html{scroll-behavior:smooth}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased}
+    .wrap{max-width:1040px;margin:0 auto;padding:0 28px 100px}h1,h2,h3{font-family:"Fraunces",serif;margin:0}
+    .top{padding:32px 0 10px}.back,.kicker,.counter,.ftab,.cbtn,.gtag,.fc-tap{font-family:"JetBrains Mono",monospace}
+    .back{font-size:12px;color:var(--ink-soft);text-decoration:none}.kicker{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+    .hero h1{margin-top:8px;font-size:clamp(34px,5vw,56px);line-height:1.05}.dek{margin:10px 0 14px;color:var(--ink-soft);max-width:75ch}
+    .controls{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding:14px;border:1px solid var(--rule);border-radius:12px;background:var(--card);margin:16px 0 10px}
+    .filter-tabs,.ctrl-btns{display:flex;flex-wrap:wrap;gap:8px}
+    .ftab{font-size:12px;font-weight:600;padding:6px 14px;border-radius:6px;border:2px solid transparent;cursor:pointer;background:transparent;color:var(--ink-soft);transition:all .14s}
+    .ftab:hover{background:#ece7db}.ftab.active{color:#fff}
+    .ftab[data-f="all"].active{background:var(--ink)}.ftab[data-f="g1"].active{background:var(--g1)}.ftab[data-f="g2"].active{background:var(--g2)}.ftab[data-f="g3"].active{background:var(--g3)}
+    .cbtn{font-size:12px;font-weight:600;padding:7px 12px;border-radius:7px;border:1.5px solid var(--rule);background:transparent;cursor:pointer;color:var(--ink-soft)}
+    .counter{font-size:12px;color:var(--ink-soft);margin:8px 0 16px}
+
+    .fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+    .fc{perspective:900px;height:190px;cursor:pointer}.fc.hidden{display:none}
+    .fc-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1)}
+    .fc.flipped .fc-inner{transform:rotateY(180deg)}
+    .fc-front,.fc-back{position:absolute;inset:0;border-radius:13px;padding:22px 22px 18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;justify-content:space-between}
+    .fc-front{background:var(--card);border:1.5px solid var(--rule)}.fc-back{transform:rotateY(180deg);color:#fff}
+    .fc[data-g="g1"] .fc-back{background:var(--g1)}.fc[data-g="g2"] .fc-back{background:#7a5400}.fc[data-g="g3"] .fc-back{background:#3a1a10}
+    .fc-tags{display:flex;flex-wrap:wrap;gap:6px}.gtag{font-size:11px;border-radius:999px;padding:3px 8px;background:#ece7db;color:var(--ink-soft);border:1px solid var(--rule)}
+    .gtag.g1{background:#dde7e6;color:#18353a}.gtag.g2{background:#f4e9cf;color:#563b00}.gtag.g3{background:#f3ddd4;color:#5a1f12}
+    .fc-term{font-family:"Fraunces",serif;font-size:26px;line-height:1.08}.fc-def{font-size:16px;line-height:1.4}
+    .fc-tap{font-size:11px;letter-spacing:.04em;color:var(--ink-soft)}.fc-back .fc-tap{color:rgba(255,255,255,.85)}
+    .xbar{margin:20px 0 0;color:var(--ink-soft);font-size:15px}
+    @media (max-width:680px){.wrap{padding:0 18px 84px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top hero">
+      <a class="back" href="index.html">← Back to learning library</a>
+      <div class="kicker">Flashcard Deck · All Guides · 18 Unique Cards</div>
+      <h1>FDE Best Practices Flashcards</h1>
+      <p class="dek">Flat deck with deduplicated terms across foundations, operations, and scale economics. Filter by guide, shuffle visible cards, or flip all at once.</p>
+    </header>
+
+    <div class="controls">
+      <div class="filter-tabs">
+        <button class="ftab active" data-f="all" onclick="setFilter('all')">All 18</button>
+        <button class="ftab" data-f="g1" onclick="setFilter('g1')">01 · Foundations</button>
+        <button class="ftab" data-f="g2" onclick="setFilter('g2')">02 · Applied</button>
+        <button class="ftab" data-f="g3" onclick="setFilter('g3')">03 · Advanced</button>
+      </div>
+      <div class="ctrl-btns">
+        <button class="cbtn" onclick="shuffleCards()">⇄ Shuffle</button>
+        <button class="cbtn" id="flip-all-btn" onclick="flipAll()">↻ Flip All</button>
+        <button class="cbtn" onclick="resetAll()">↺ Reset</button>
+      </div>
+    </div>
+
+    <div class="counter">Showing <span id="visible-count">18</span> cards · <span id="flipped-count">0</span> flipped</div>
+
+    <div class="fc-grid" id="card-grid">
+      <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Adoption Gap</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">The gap between AI capability and real enterprise adoption due to workflow, process, and organizational constraints.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+      <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Authority to Operate</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Executive-backed permission for a startup to bypass incompatible IT defaults and deploy required technical components.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+      <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Contract Expansion</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Progressive increase in account value as teams prove outcomes and gain access to more strategic customer problems.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+      <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Delta Engineer</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Fast, pragmatic deployment engineer optimized for shipping working prototypes and iterating under customer pressure.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+      <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Demo-Driven Development</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Feature development process anchored to repeatable user-value demos that expose integration and usability issues early.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+      <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Echo Team</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Domain-attuned field operators who discover real workflows, shape account direction, and coordinate stakeholder relationships.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+      <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Field-to-Product Loop</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Cycle where field-built solutions are abstracted into reusable product capabilities for multiple future customers.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+      <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Forward Deployed Engineering</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Outcome-first model where technical teams embed with customers to close the gap between product and mission-critical needs.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+      <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Gravel Road Prototype</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Rapid, tactical customer solution built to achieve near-term outcomes and reveal what should be productized later.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+      <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Land-and-Expand</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Account strategy that starts with one proven use case and expands into additional high-value workflows over time.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+      <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Learning Company</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Organization that continuously updates strategy from live deployment evidence rather than relying on static playbooks.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+      <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Outcome Pricing</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Commercial model tying payments to delivered business impact instead of only seats, licenses, or implementation effort.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+      <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Product Leverage</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Degree to which reusable platform capability reduces marginal engineering effort while maintaining or improving outcomes.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+      <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Segment-by-Segment PMF</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Model where product-market fit is repeatedly established across workflow segments, not assumed from one initial deployment.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+      <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Services Trap</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">When high-touch account work fails to produce reusable software leverage, leaving growth dependent on continuous custom labor.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+      <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Top-Five Problem Test</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Check that a deployment maps to one of leadership's highest priorities, improving cross-functional alignment and speed.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+      <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Two-Speed Build</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Operating approach combining rapid field experimentation with deliberate product hardening for broad reuse.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+      <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Value Realization Curve</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Economic progression where deployment costs are initially high, then improve as account scope and product fit mature.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+    </div>
+
+    <div class="xbar">Return to <a href="index.html">library home</a>. Source: https://www.youtube.com/watch?v=Zyw-YA0k3xo</div>
+  </div>
+
+  <script>
+    let currentFilter = 'all';
+    let allFlipped = false;
+    const allCards = () => document.querySelectorAll('#card-grid .fc');
+    const visibleCards = () => document.querySelectorAll('#card-grid .fc:not(.hidden)');
+
+    function flip(card){ card.classList.toggle('flipped'); updateCounters(); }
+
+    function setFilter(f){
+      currentFilter = f;
+      document.querySelectorAll('.ftab').forEach(t => t.classList.toggle('active', t.dataset.f === f));
+      allCards().forEach(c => c.classList.toggle('hidden', f !== 'all' && c.dataset.g !== f));
+      updateCounters();
+    }
+
+    function flipAll(){
+      allFlipped = !allFlipped;
+      [...visibleCards()].forEach(c => c.classList.toggle('flipped', allFlipped));
+      document.getElementById('flip-all-btn').textContent = allFlipped ? '↺ Unflip All' : '↻ Flip All';
+      updateCounters();
+    }
+
+    function shuffleCards(){
+      allFlipped = false;
+      document.getElementById('flip-all-btn').textContent = '↻ Flip All';
+      const grid = document.getElementById('card-grid');
+      const visible = [...grid.querySelectorAll('.fc:not(.hidden)')];
+      const hidden = [...grid.querySelectorAll('.fc.hidden')];
+      visible.forEach(c => c.classList.remove('flipped'));
+      for(let i = visible.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [visible[i], visible[j]] = [visible[j], visible[i]];
+      }
+      [...visible, ...hidden].forEach(c => grid.appendChild(c));
+      updateCounters();
+    }
+
+    function resetAll(){
+      allCards().forEach(c => c.classList.remove('flipped'));
+      allFlipped = false;
+      document.getElementById('flip-all-btn').textContent = '↻ Flip All';
+      updateCounters();
+    }
+
+    function updateCounters(){
+      const vis = [...visibleCards()];
+      const flipped = vis.filter(c => c.classList.contains('flipped'));
+      document.getElementById('visible-count').textContent = vis.length;
+      document.getElementById('flipped-count').textContent = flipped.length;
+    }
+
+    updateCounters();
+  </script>
+</body>
+</html>
