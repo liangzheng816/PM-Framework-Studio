@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>03 · Roadmap — Demystifying Evals for AI Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--accent);
+}
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;counter-reset:slide;}
+.wrap{max-width:1040px;margin:0 auto;padding:0 28px 120px;}
+.back{font-family:"JetBrains Mono",monospace;font-size:12px;text-decoration:none;color:var(--ink-soft);display:inline-flex;align-items:center;gap:6px;margin:24px 0 22px;border:1px solid var(--rule);border-radius:6px;padding:5px 12px;transition:all .14s;}
+.back:hover{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:18px;}
+h1{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(36px,5vw,52px);line-height:1.05;letter-spacing:-.02em;margin:6px 0 18px;}
+.dek{font-family:"Newsreader",serif;font-style:italic;font-size:22px;line-height:1.45;color:var(--ink-soft);margin-bottom:30px;max-width:780px;}
+.snav{position:sticky;top:0;background:rgba(244,241,234,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);padding:12px 0;margin:0 -28px 38px;z-index:10;}
+.snav-inner{max-width:1040px;margin:0 auto;padding:0 28px;display:flex;flex-wrap:wrap;gap:6px 18px;}
+.snav a{font-family:"JetBrains Mono",monospace;font-size:11.5px;font-weight:600;color:var(--ink-soft);text-decoration:none;letter-spacing:.05em;text-transform:uppercase;padding:4px 0;border-bottom:2px solid transparent;transition:all .14s;}
+.snav a:hover{color:var(--guide-color);border-bottom-color:var(--guide-color);}
+.meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:30px 0 6px;}
+@media(max-width:760px){.meta-grid{grid-template-columns:1fr;}}
+.meta{background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--guide-color);border-radius:10px;padding:18px 20px;}
+.meta-label{font-family:"JetBrains Mono",monospace;font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--guide-color);margin-bottom:6px;}
+.meta-text{font-size:15.5px;line-height:1.45;color:var(--ink);}
+section:not(#quiz):not(#flashcards){counter-increment:slide;background:var(--card);border:1.5px solid color-mix(in srgb,var(--guide-color) 28%,var(--rule));border-radius:18px;box-shadow:0 8px 36px -10px rgba(27,26,23,.18),0 1px 0 rgba(27,26,23,.04);margin:48px 0;overflow:hidden;position:relative;}
+section:not(#quiz):not(#flashcards) h2{margin:0;padding:26px 36px 22px;background:var(--guide-color);color:#fff;font-family:"Fraunces",serif;font-weight:900;font-size:clamp(20px,2.8vw,26px);letter-spacing:-.015em;line-height:1.1;display:flex;align-items:flex-start;gap:14px;}
+section:not(#quiz):not(#flashcards) h2::before{content:counter(slide,decimal-leading-zero);font-family:"JetBrains Mono",monospace;font-weight:600;font-size:12px;letter-spacing:.1em;background:rgba(255,255,255,.16);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.28);padding:4px 10px;border-radius:5px;flex-shrink:0;margin-top:3px;white-space:nowrap;}
+section:not(#quiz):not(#flashcards) > p,section:not(#quiz):not(#flashcards) > .insight,section:not(#quiz):not(#flashcards) > .misconception,section:not(#quiz):not(#flashcards) > blockquote,section:not(#quiz):not(#flashcards) > pre,section:not(#quiz):not(#flashcards) > ul,section:not(#quiz):not(#flashcards) > ol{margin-left:36px;margin-right:36px;}
+section:not(#quiz):not(#flashcards) > p:first-of-type{margin-top:28px;}
+section:not(#quiz):not(#flashcards) > p:last-of-type,section:not(#quiz):not(#flashcards) > blockquote:last-child,section:not(#quiz):not(#flashcards) > .misconception:last-child{margin-bottom:34px;}
+section:not(#quiz):not(#flashcards)::after{content:"";display:block;height:4px;background:linear-gradient(90deg,var(--guide-color) 0%,color-mix(in srgb,var(--guide-color) 30%,transparent) 100%);margin-top:34px;opacity:.35;}
+.insight,.misconception{border-radius:10px;padding:18px 22px;margin:22px 36px;font-size:17px;line-height:1.5;}
+.insight{border-left:4px solid var(--slate);background:var(--slate-soft);}
+.misconception{border-left:4px solid var(--accent);background:var(--accent-soft);}
+.insight::before{content:"✦ Key insight — ";font-weight:600;color:var(--slate);}
+.misconception::before{content:"✕ Common misconception — ";font-weight:600;color:var(--accent);}
+ul,ol{font-size:17px;line-height:1.55;}
+ul li,ol li{margin:6px 0;}
+code,.mono{font-family:"JetBrains Mono",monospace;font-size:.82em;background:#ece7db;padding:.08em .38em;border-radius:4px;color:#3a382f;}
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;margin-top:18px;}
+.fc{perspective:900px;height:190px;cursor:pointer;}
+.fc-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1);}
+.fc.flipped .fc-inner{transform:rotateY(180deg);}
+.fc-front,.fc-back{position:absolute;inset:0;border-radius:13px;padding:22px 22px 18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;justify-content:space-between;}
+.fc-front{background:var(--card);border:1.5px solid var(--rule);border-left:4px solid var(--g3);}
+.fc-back{transform:rotateY(180deg);background:#3a1a10;}
+.fc-term{color:var(--g3);font-family:"JetBrains Mono",monospace;font-weight:600;font-size:14px;}
+.fc-def{color:#f5d6ce;font-size:13.5px;line-height:1.45;}
+.fc-tap{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);margin-top:auto;}
+.fc-back .fc-tap{color:rgba(255,255,255,.45);}
+.fc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;}
+.gtag{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:4px;border:1.5px solid;line-height:1.6;}
+.gtag.g1{color:var(--g1);border-color:color-mix(in srgb,var(--g1) 40%,transparent);background:color-mix(in srgb,var(--g1) 10%,transparent);}
+.gtag.g2{color:var(--g2);border-color:color-mix(in srgb,var(--g2) 40%,transparent);background:color-mix(in srgb,var(--g2) 10%,transparent);}
+.gtag.g3{color:var(--g3);border-color:color-mix(in srgb,var(--g3) 40%,transparent);background:color-mix(in srgb,var(--g3) 10%,transparent);}
+.sec-label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin:48px 0 6px;font-weight:600;}
+.footer{margin-top:60px;padding-top:28px;border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);}
+.footer a{color:var(--accent);text-decoration:none;font-weight:600;}
+.footer a:hover{text-decoration:underline;}
+@media(max-width:680px){section:not(#quiz):not(#flashcards) h2{padding:20px 22px 18px;font-size:20px;}section:not(#quiz):not(#flashcards) > p,section:not(#quiz):not(#flashcards) > .insight,section:not(#quiz):not(#flashcards) > .misconception,section:not(#quiz):not(#flashcards) > blockquote,section:not(#quiz):not(#flashcards) > ul,section:not(#quiz):not(#flashcards) > ol{margin-left:22px;margin-right:22px;}.insight,.misconception{margin-left:22px;margin-right:22px;}.fc-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:420px){.fc-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← Library</a>
+  <div class="kicker">03 · Advanced</div>
+  <h1>Zero to One: A Roadmap</h1>
+  <p class="dek">The eight-step playbook for building eval suites from scratch — collecting tasks, designing graders, maintaining them long-term, and the Swiss-cheese model of how evals fit with everything else.</p>
+
+  <nav class="snav"><div class="snav-inner">
+    <a href="#collect">01 · Collect Tasks</a>
+    <a href="#design">02 · Design Harness & Graders</a>
+    <a href="#transcripts">03 · Transcripts & Saturation</a>
+    <a href="#edd">04 · Eval-Driven Development</a>
+    <a href="#swiss">05 · Swiss Cheese Coverage</a>
+    <a href="#flashcards">↓ Flashcards</a>
+  </div></nav>
+
+  <div class="meta-grid">
+    <div class="meta"><div class="meta-label">Start Small</div><div class="meta-text">20–50 tasks from real failures is enough. Waiting for hundreds means waiting forever — and means reverse-engineering success later instead of designing it.</div></div>
+    <div class="meta"><div class="meta-label">Read the Transcripts</div><div class="meta-text">A score you don't understand isn't a signal. Open the actual run record before believing any number.</div></div>
+    <div class="meta"><div class="meta-label">Combine Methods</div><div class="meta-text">Automated evals plus production monitoring plus A/B tests plus user feedback plus human review. No single layer catches every issue.</div></div>
+  </div>
+
+  <section id="collect">
+    <h2>Collect Tasks: Steps 0–3</h2>
+    <p>The first hard problem is filling the suite with the right tasks. Anthropic's playbook compresses to four steps before you even think about graders.</p>
+    <p><strong>Step 0 — Start early.</strong> Teams delay evals waiting for hundreds of tasks. The reality: 20–50 simple tasks from real failures work well. Early agent development shows clear impact from small samples; mature agents need larger suites. Take the 80/20 approach.</p>
+    <p><strong>Step 1 — Start with manual checks.</strong> Begin with behaviors you already verify by hand before each release. Already in production? Mine the bug tracker and support queue. Converting real failures into test cases ensures the suite reflects actual usage.</p>
+    <p><strong>Step 2 — Write unambiguous tasks with reference solutions.</strong> A good task is one two domain experts can independently grade pass/fail and agree. Could you pass the task yourself? If not, the spec needs work. Build a <strong>reference solution</strong> — a known working output that passes every grader. This proves the task is solvable and that your graders are wired correctly.</p>
+    <div class="misconception">A 0% pass rate across many trials means the agent is too weak. With frontier models, it usually means a broken task or a misconfigured grader. Re-check the spec before re-training the model.</div>
+    <p><strong>Step 3 — Build balanced problem sets.</strong> Test cases where behavior <em>should</em> happen <em>and</em> cases where it shouldn't. Only testing the positive case creates overtriggering. Claude.ai web search took many rounds to balance: queries that need search (weather) plus queries that don't (Apple founder).</p>
+  </section>
+
+  <section id="design">
+    <h2>Design Harness and Graders: Steps 4–5</h2>
+    <p><strong>Step 4 — Build a robust harness with a stable environment.</strong> The agent should run roughly like production. The environment shouldn't introduce noise. Each trial starts clean — no shared state, no leftover files, no cached data. Shared state can artificially inflate performance: in internal evals, Claude once gained an unfair advantage by reading git history from previous trials.</p>
+    <p><strong>Step 5 — Design graders thoughtfully.</strong> Choose deterministic graders where possible, model-based where necessary for flexibility, human graders judiciously for validation.</p>
+    <ul>
+      <li><strong>Don't rigidly check tool-call order.</strong> Agents find valid unanticipated paths. Grade what they produced, not the trail they took.</li>
+      <li><strong>Build in partial credit.</strong> A support agent that identified the problem and verified the customer but failed the refund is meaningfully better than one that failed immediately. Score the success continuum.</li>
+      <li><strong>Calibrate model judges to humans.</strong> Compare LLM judge scores to a small expert-labeled set. Give the judge an out — "return Unknown if insufficient information." Score rubric dimensions separately rather than all at once.</li>
+      <li><strong>Resist bypasses.</strong> Tasks should require actually solving the problem, not exploiting loopholes.</li>
+    </ul>
+    <div class="insight">Subtle grader bugs cause apparent agent failures. CORE-Bench scored Opus 4.5 at 42% until researchers found rigid grading (penalizing "96.12" when "96.124991…" was expected), ambiguous specs, and unreproducible tasks. After fixes, scores jumped to 95%. Double-check the eval before doubting the model.</div>
+  </section>
+
+  <section id="transcripts">
+    <h2>Transcripts and Saturation: Steps 6–7</h2>
+    <p><strong>Step 6 — Read the transcripts.</strong> You can't know whether graders work without reading actual run records. When tasks fail, transcripts reveal whether the agent made a real mistake or the grader rejected a valid solution. Failures should feel fair: clear what the agent got wrong and why. When scores stop climbing, confirm it's the agent — not the eval — that's stuck.</p>
+    <div class="insight">Anthropic invested in transcript-viewing tooling and reads them regularly. This is the highest-leverage habit in eval work. Don't take any score at face value without understanding the underlying transcripts.</div>
+    <p><strong>Step 7 — Watch for eval saturation.</strong> <strong>Eval saturation</strong> happens when agents pass every solvable task. Evals at 100% protect against regressions but provide no improvement signal. SWE-Bench Verified started this year around 30%; frontier models now sit above 80% saturation. As evals saturate, big capability jumps look like small score gains.</p>
+    <p>Qodo was initially unimpressed by Opus 4.5 because their one-shot coding evals couldn't capture the longer, more complex task gains. They built new agentic eval frameworks and the real picture came back into focus. When your suite saturates, build a harder one — don't accept the score at face value.</p>
+  </section>
+
+  <section id="edd">
+    <h2>Eval-Driven Development: Step 8</h2>
+    <p><strong>Step 8 — Keep suites healthy long-term.</strong> Eval suites are living artifacts that need ongoing attention and clear ownership. Anthropic's most effective pattern: a dedicated evals team owning core infrastructure while domain experts and product teams contribute tasks and run evaluations.</p>
+    <p>For AI product teams, owning evals should be as routine as maintaining unit tests. Teams waste weeks on features that "work" in early testing but fail unstated expectations. Well-designed evals surface those expectations before launch. Defining tasks stress-tests whether requirements are concrete enough to build.</p>
+    <p>The strongest practice is <strong>eval-driven development</strong>: write the eval defining a planned capability <em>before</em> the agent can fulfill it. Iterate until pass rates climb. Build features that are bets on future model capabilities — low-pass capability evals make those bets visible. When new models drop, your suite reveals which bets paid off.</p>
+    <div class="insight">PMs, customer-success managers, and salespeople are closest to user requirements. With Claude Code, they can contribute eval tasks as PRs directly. Enable them — don't make eval ownership the engineering team's problem alone.</div>
+  </section>
+
+  <section id="swiss">
+    <h2>Swiss Cheese Coverage</h2>
+    <p>Automated evaluations run thousands of tasks before any user sees a deployment. But automated evals are only one slice of the picture. Complete coverage stacks several methods, each catching what the others miss.</p>
+    <ul>
+      <li><strong>Automated evals</strong> — fast iteration, fully reproducible, no user impact, run on every commit. Risk: false confidence if they don't match real usage.</li>
+      <li><strong>Production monitoring</strong> — reveals real user behavior at scale and catches issues synthetic evals miss. Risk: reactive; problems reach users first.</li>
+      <li><strong>A/B testing</strong> — measures actual user outcomes like retention or task completion. Risk: slow to reach significance; needs traffic.</li>
+      <li><strong>User feedback</strong> — surfaces unanticipated problems with real examples. Risk: sparse, self-selected, severity-skewed.</li>
+      <li><strong>Manual transcript review</strong> — builds intuition for failure modes, catches subtle quality issues. Risk: doesn't scale.</li>
+      <li><strong>Systematic human studies</strong> — gold-standard grading by trained raters. Risk: expensive and slow; reserve for calibration.</li>
+    </ul>
+    <p>The Swiss-cheese analogy from safety engineering: any single layer has holes, but stacked layers stop most failures. Most effective teams combine automated evals for fast iteration, production monitoring for ground truth, and periodic human review for calibration.</p>
+    <p>Several frameworks help teams skip the build-from-scratch work: <strong>Harbor</strong> for containerized agent environments and trial scaling (Terminal-Bench 2.0 ships through Harbor); <strong>Braintrust</strong> for offline eval plus observability plus experiment tracking; <strong>LangSmith</strong> for tracing and dataset management in the LangChain ecosystem; <strong>Langfuse</strong> as the open-source self-hosted alternative; <strong>Arize Phoenix</strong> (open-source) and <strong>AX</strong> (SaaS) for LLM tracing and online/offline evals. Frameworks accelerate the plumbing — they're only as good as the tasks and graders you run through them.</p>
+    <div class="insight">Read the transcripts. Start with 20 tasks. Build for the model you'll have, not just the one you have now. The rest is mechanics.</div>
+  </section>
+
+  <section id="flashcards">
+    <div class="sec-label">Flashcards — Guide 03</div>
+    <p style="color:var(--ink-soft);font-size:15px;margin:8px 0 18px;">Tap any card to reveal the definition. Or open the <a href="flashcards-index.html" style="color:var(--accent);font-weight:600;">full deck</a> to filter and shuffle across all guides.</p>
+    <div class="fc-grid">
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Reference solution</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">A known working output that passes all graders. Proves the task is solvable and verifies the graders are wired correctly.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Balanced problem set</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">An eval suite covering cases where a behavior should occur and cases where it shouldn't. Prevents one-sided over- or under-triggering.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Robust eval harness</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">A harness that runs the agent production-like with a clean environment per trial — no shared state, no leftover files, no infrastructure flakiness.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Partial credit grading</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">Scoring multi-step tasks on a success continuum rather than pass/fail. Distinguishes "did three steps right, failed the fourth" from "failed immediately."</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Transcript review</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">Reading actual run records to verify what the agent did and whether graders rejected valid work. The highest-leverage habit in eval maintenance.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Eval saturation</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">When agents pass nearly every solvable task. Large capability jumps look like small score gains; time to graduate this eval and write a harder one.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Eval-driven development</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">Writing the eval that defines a planned capability before the agent can pass it. Makes future-model bets visible and falsifiable.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Swiss cheese model</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">Stacking multiple eval methods so failures slipping through one layer are caught by another. From safety engineering — no single layer is enough.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Production monitoring</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">Tracking metrics and errors in live systems. Ground truth on real user behavior, but reactive — problems reach users first.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">A/B testing</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">Comparing variants with real user traffic. Measures actual outcomes (retention, completion) but slow to reach significance and needs traffic.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Systematic human study</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">Structured grading by trained raters across many examples. Gold standard for subjective tasks; reserve for calibrating LLM judges or final-call evaluation.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Eval framework</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">Off-the-shelf tooling that runs evals, manages datasets, and tracks results. Examples: Harbor, Braintrust, LangSmith, Langfuse, Arize Phoenix / AX.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+    </div>
+  </section>
+
+  <div class="footer">
+    <span>← <a href="guide-02-applied.html">02 · Applied</a></span>
+    <span><a href="flashcards-index.html">Full Flashcard Deck →</a></span>
+  </div>
+</div>
+<script>
+function flip(card){card.classList.toggle('flipped');}
+</script>
+</body>
+</html>

@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Agent Eval Rubric — 03 · Advanced</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,450;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4; --card:#fbf9f4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--g3);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;counter-reset:slide}
+.wrap{max-width:1040px;margin:0 auto;padding:0 28px 120px}
+.back{font-family:"JetBrains Mono",monospace;font-size:12px;text-decoration:none;color:var(--ink-soft);display:inline-flex;align-items:center;gap:6px;margin:28px 0 22px;border:1px solid var(--rule);border-radius:6px;padding:5px 12px;transition:all .14s}
+.back:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--g3);font-weight:600;margin-bottom:18px}
+h1{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(36px,5vw,56px);letter-spacing:-.02em;line-height:1.05;margin:0 0 18px}
+h1 em{font-family:"Fraunces",serif;font-style:italic;font-weight:400;color:var(--accent)}
+.dek{font-family:"Newsreader",serif;font-style:italic;font-size:22px;color:var(--ink-soft);max-width:720px;margin:0 0 38px}
+
+.topnav{position:sticky;top:0;background:rgba(244,241,234,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);margin:0 -28px 32px;padding:14px 28px;z-index:20;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.topnav a{color:var(--ink-soft);text-decoration:none;margin-right:18px;padding:4px 0;border-bottom:2px solid transparent;transition:all .14s}
+.topnav a:hover{color:var(--g3);border-bottom-color:var(--g3)}
+
+.takeaway-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:30px 0 50px}
+@media(max-width:760px){.takeaway-grid{grid-template-columns:1fr}}
+.tk{background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--g3);border-radius:10px;padding:20px 22px}
+.tk-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--g3);font-weight:600;margin-bottom:8px}
+.tk-text{font-size:16px;line-height:1.45;color:var(--ink)}
+
+section:not(#quiz):not(#flashcards){counter-increment:slide;background:var(--card);border:1.5px solid color-mix(in srgb, var(--guide-color) 28%, var(--rule));border-radius:18px;box-shadow:0 8px 36px -10px rgba(15,23,42,.18),0 1px 0 rgba(15,23,42,.04);margin:48px 0;overflow:hidden;position:relative}
+section:not(#quiz):not(#flashcards) h2{margin:0;padding:26px 36px 22px;background:var(--guide-color);color:#fff;font-family:"Fraunces",serif;font-weight:900;font-size:clamp(20px,2.8vw,26px);letter-spacing:-.015em;line-height:1.1;display:flex;align-items:flex-start;gap:14px}
+section:not(#quiz):not(#flashcards) h2::before{content:counter(slide,decimal-leading-zero);font-family:"JetBrains Mono",monospace;font-weight:600;font-size:12px;letter-spacing:.1em;background:rgba(255,255,255,.16);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.28);padding:4px 10px;border-radius:5px;flex-shrink:0;margin-top:3px;white-space:nowrap}
+section:not(#quiz):not(#flashcards)>p,section:not(#quiz):not(#flashcards)>.insight,section:not(#quiz):not(#flashcards)>.misconception,section:not(#quiz):not(#flashcards)>blockquote,section:not(#quiz):not(#flashcards)>pre,section:not(#quiz):not(#flashcards)>.dimtable,section:not(#quiz):not(#flashcards)>.flow,section:not(#quiz):not(#flashcards)>.pmbox,section:not(#quiz):not(#flashcards)>.codeblock{margin-left:36px;margin-right:36px}
+section:not(#quiz):not(#flashcards)>p:first-of-type{margin-top:28px}
+section:not(#quiz):not(#flashcards)>p:last-of-type,section:not(#quiz):not(#flashcards)>blockquote:last-child,section:not(#quiz):not(#flashcards)>.misconception:last-child{margin-bottom:34px}
+section:not(#quiz):not(#flashcards)::after{content:"";display:block;height:4px;background:linear-gradient(90deg,var(--guide-color) 0%,color-mix(in srgb, var(--guide-color) 30%, transparent) 100%);margin-top:34px;opacity:.35}
+@media(max-width:680px){section:not(#quiz):not(#flashcards) h2{padding:20px 22px 18px;font-size:20px}section:not(#quiz):not(#flashcards)>p,section:not(#quiz):not(#flashcards)>.insight,section:not(#quiz):not(#flashcards)>.misconception{margin-left:22px;margin-right:22px}}
+
+.insight,.misconception{border-radius:10px;padding:18px 22px;margin:22px 0;font-size:16.5px;line-height:1.5}
+.insight{border-left:4px solid var(--g3);background:var(--accent-soft)}
+.misconception{border-left:4px solid var(--g1);background:var(--slate-soft)}
+.insight::before{content:"✦ Key insight — ";font-weight:600;color:var(--g3)}
+.misconception::before{content:"✕ Common misconception — ";font-weight:600;color:var(--g1)}
+
+.dimtable{margin:24px 0;border:1px solid var(--rule);border-radius:10px;overflow:hidden;background:var(--card)}
+.dimtable .row{display:grid;grid-template-columns:200px 1fr 220px;gap:0;border-bottom:1px solid var(--rule);font-size:14.5px}
+.dimtable .row:last-child{border-bottom:none}
+.dimtable .row.head{background:#F8FAFC;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+.dimtable .row .c{padding:11px 16px;border-right:1px solid var(--rule)}
+.dimtable .row .c:last-child{border-right:none}
+.dimtable code{font-family:"JetBrains Mono",monospace;font-size:13px;background:#FFEDD5;color:var(--g3);padding:2px 6px;border-radius:4px;font-weight:600}
+@media(max-width:760px){.dimtable .row{grid-template-columns:1fr}.dimtable .row .c{border-right:none;border-bottom:1px solid var(--rule)}.dimtable .row .c:last-child{border-bottom:none}}
+
+.flow{margin:24px 0;padding:18px 22px;background:#F8FAFC;border:1px dashed var(--rule);border-radius:10px;font-family:"JetBrains Mono",monospace;font-size:13.5px;line-height:1.7;color:var(--ink)}
+.flow .step{display:inline-block;background:#fff;padding:4px 10px;border-radius:5px;border:1px solid var(--rule);margin:2px 0}
+.flow .arr{color:var(--g3);margin:0 6px;font-weight:600}
+.flow.vert{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.flow.vert .step{font-size:13px}
+.flow.vert .arr{display:block;margin:0;padding-left:12px}
+
+.pmbox{margin:22px 0;padding:18px 22px;background:#DBEAFE;border-left:4px solid var(--g1);border-radius:10px;font-size:16.5px}
+.pmbox::before{content:"📋 PM translation — ";font-weight:600;color:var(--g1);font-family:"Newsreader",serif}
+
+code,.mono{font-family:"JetBrains Mono",monospace;font-size:.82em;background:#FFEDD5;padding:.08em .42em;border-radius:4px;color:var(--g3)}
+
+.sec-label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin:48px 0 14px;font-weight:600}
+.q-item{margin:24px 0;padding:22px 26px;background:var(--card);border:1.5px solid var(--rule);border-radius:12px}
+.q-item.correct{border-color:#16A34A;background:#F0FDF4}
+.q-item.wrong{border-color:var(--accent);background:#FFF7ED}
+.q-text{font-size:17px;font-weight:600;margin-bottom:14px}
+.options{display:flex;flex-direction:column;gap:9px;margin-bottom:16px}
+.options label{display:flex;align-items:flex-start;gap:10px;font-size:16px;cursor:pointer;padding:8px 12px;border-radius:7px;border:1.5px solid var(--rule);background:var(--paper);transition:background .12s}
+.options label:hover{background:#F1F5F9}
+.q-item.correct label:has(input[data-correct]){background:#DCFCE7;border-color:#16A34A}
+.q-item.wrong label:has(input:checked:not([data-correct])){background:#FFEDD5;border-color:var(--accent)}
+.check-btn{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:8px 18px;border-radius:7px;border:1.5px solid var(--g3);background:transparent;color:var(--g3);cursor:pointer;transition:all .14s}
+.check-btn:hover:not(:disabled){background:var(--g3);color:#fff}
+.check-btn:disabled{opacity:.4;cursor:not-allowed}
+.explanation{margin-top:14px;padding:12px 16px;background:#FFEDD5;border-left:3px solid var(--g3);border-radius:6px;font-size:15px;color:var(--ink-soft);line-height:1.5}
+.score-btn{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:10px 22px;border-radius:8px;border:none;background:var(--ink);color:#fff;cursor:pointer;margin-top:20px}
+
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;margin-top:18px}
+.fc{perspective:900px;height:210px;cursor:pointer}
+.fc-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1)}
+.fc.flipped .fc-inner{transform:rotateY(180deg)}
+.fc-front,.fc-back{position:absolute;inset:0;border-radius:13px;padding:22px 22px 18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;justify-content:space-between}
+.fc-front{background:var(--card);border:1.5px solid var(--rule);border-left:4px solid var(--g3)}
+.fc-back{transform:rotateY(180deg);background:var(--g3);color:#fff}
+.fc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.gtag{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:4px;border:1.5px solid;line-height:1.6}
+.gtag.g1{color:var(--g1);border-color:color-mix(in srgb,var(--g1) 40%,transparent);background:color-mix(in srgb,var(--g1) 10%,transparent)}
+.gtag.g2{color:var(--g2);border-color:color-mix(in srgb,var(--g2) 40%,transparent);background:color-mix(in srgb,var(--g2) 10%,transparent)}
+.gtag.g3{color:var(--g3);border-color:color-mix(in srgb,var(--g3) 40%,transparent);background:color-mix(in srgb,var(--g3) 10%,transparent)}
+.fc-term{font-family:"JetBrains Mono",monospace;font-weight:600;font-size:14px;color:var(--g3)}
+.fc-def{font-size:13.5px;line-height:1.5;color:#fff}
+.fc-tap{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);margin-top:auto}
+.fc-back .fc-tap{color:rgba(255,255,255,.55)}
+
+.foot{margin-top:60px;padding-top:24px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.foot a{color:var(--g3);text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--g3) 30%,transparent)}
+.foot a:hover{border-bottom-color:var(--g3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="index.html">← Back to library</a>
+
+<div class="kicker">03 · Advanced</div>
+<h1>Operating the <em>Rubric</em></h1>
+<p class="dek">Rubrics age. Treat them as system assets, not scoring prompts. The discipline that separates a one-shot eval from a self-evolving system is the loop that keeps rubrics honest.</p>
+
+<nav class="topnav">
+  <a href="#generic-fails">01 Generic fails</a>
+  <a href="#context-chain">02 Context chain</a>
+  <a href="#agentic-rubrics">03 Agentic rubrics</a>
+  <a href="#aging">04 Aging signals</a>
+  <a href="#change-loop">05 Change loop</a>
+  <a href="#shadow">06 Shadow mode</a>
+  <a href="#conclusion">07 Conclusion</a>
+  <a href="#quiz">Quiz</a>
+  <a href="#flashcards">Cards</a>
+</nav>
+
+<div class="takeaway-grid">
+  <div class="tk"><div class="tk-label">Context before checklist</div><div class="tk-text">Generic rubrics pass dangerous solutions and fail valid ones. Build the rubric from each task's context first, then judge — pay one upfront cost, save downstream wrong fixes.</div></div>
+  <div class="tk"><div class="tk-label">Rubrics age</div><div class="tk-text">When humans keep overturning the Judge, when "unknown" rates climb, when a dimension goes perma-pass — the rubric is broken, not the Agent. Treat rubric changes like system changes.</div></div>
+  <div class="tk"><div class="tk-label">Judge → repairable signal</div><div class="tk-text">The Rubric's customer is system improvement, not the score. If a low score can't turn into a fix target, it's a quality review — not part of self-evolution.</div></div>
+</div>
+
+<section id="generic-fails">
+<h2>Generic checklists misjudge specific tasks</h2>
+
+<p>The reason "rate this Agent 1–5 on accuracy, helpfulness, clarity" doesn't survive contact with complex tasks is that the right judgment depends on context the rubric doesn't carry. A code Agent's "correct" depends on the repo structure, related functions, and test constraints. A business-flow Agent's "correct" depends on tool interfaces, state machines, and rule boundaries. A knowledge-task Agent's "correct" depends on the available sources and the user's specific goal.</p>
+
+<p>When the rubric runs without first collecting this context, two failure modes dominate:</p>
+
+<div class="dimtable">
+  <div class="row head"><div class="c">Failure</div><div class="c">What happens</div><div class="c">PM-visible symptom</div></div>
+  <div class="row"><div class="c">False positive</div><div class="c">A dangerous solution passes because the checklist didn't know about the missing edge case.</div><div class="c">Production incident — "the eval said pass."</div></div>
+  <div class="row"><div class="c">False negative</div><div class="c">A valid creative solution fails because it took a path the generic checklist didn't anticipate.</div><div class="c">Eng frustration — "the eval is brittle."</div></div>
+</div>
+
+<div class="misconception">
+"A bigger, more general checklist will catch more cases." It won't. Adding rows to a generic rubric adds noise without adding context-specific judgment. The only fix is to derive criteria from the task at hand.
+</div>
+</section>
+
+<section id="context-chain">
+<h2>The contextual rubric chain</h2>
+
+<p>High-quality Agentic Rubrics aren't templated. They grow from the context of each task before any scoring happens. The chain looks like:</p>
+
+<div class="flow">
+<span class="step">Context Gathering Agent</span><span class="arr">→</span><span class="step">Rubric Builder</span><span class="arr">→</span><span class="step">Trace Inspector</span><span class="arr">→</span><span class="step">Failure Attribution</span><span class="arr">→</span><span class="step">Eval Case Generator</span>
+</div>
+
+<p>The first half builds the evaluation basis — user goal, business rules, available tools, ground truth, end-state, similar historical failures, user preferences, known failure modes. The second half applies the Rubric to the current trace. This costs one extra upfront context-collection round per task, but it dramatically reduces the rate of incorrect "fixes" being written into your assets.</p>
+
+<div class="dimtable">
+  <div class="row head"><div class="c">Stage</div><div class="c">What it produces</div><div class="c">Why it exists</div></div>
+  <div class="row"><div class="c">Context Gathering Agent</div><div class="c">User goal, business rules, available tools, ground truth, end-state, historical failures.</div><div class="c">Without context, judgment is guessing.</div></div>
+  <div class="row"><div class="c">Rubric Builder</div><div class="c">Task-specific criteria with evidence prerequisites and remediation targets.</div><div class="c">Generic checklists misjudge — this is the cure.</div></div>
+  <div class="row"><div class="c">Trace Inspector</div><div class="c">Structured reading of the trace: tool calls, intermediates, end-state.</div><div class="c">Reads what the Judge needs to score.</div></div>
+  <div class="row"><div class="c">Failure Attribution</div><div class="c">Maps low scores to broken layer + remediation target.</div><div class="c">Turns "bad" into "fix this asset."</div></div>
+  <div class="row"><div class="c">Eval Case Generator</div><div class="c">Reusable replay sample + candidate fix sketch.</div><div class="c">Today's failure becomes tomorrow's regression test.</div></div>
+</div>
+
+<div class="pmbox">
+The tradeoff is not "spend more on one eval Agent or skip it." It's "spend once on understanding the task, or spend repeatedly on incorrect 'fixes' that don't stick." The upfront cost compounds in the opposite direction from the downstream cost.
+</div>
+</section>
+
+<section id="agentic-rubrics">
+<h2>Agentic Rubrics — context-built criteria for code Agents</h2>
+
+<p>The Agentic Rubrics for SWE Agents paper (Raghavendra et al., 2026) gave the contextual-rubric idea a concrete shape for software engineering tasks. Instead of a one-size checklist for "is this patch good," they generate per-instance rubrics from the repo plus the issue, scoring patches on:</p>
+
+<div class="dimtable">
+  <div class="row head"><div class="c">Rubric axis</div><div class="c">What it checks</div><div class="c">Why per-instance matters</div></div>
+  <div class="row"><div class="c">File / Method targeting</div><div class="c">Was the right code surface changed?</div><div class="c">Depends on the repo structure.</div></div>
+  <div class="row"><div class="c">Spec Alignment</div><div class="c">Does the patch match the issue's stated intent?</div><div class="c">Depends on the issue text.</div></div>
+  <div class="row"><div class="c">Integrity</div><div class="c">Does the change leave related invariants intact?</div><div class="c">Depends on the function neighborhood.</div></div>
+  <div class="row"><div class="c">Runtime</div><div class="c">Does it run cleanly under the project's test/build constraints?</div><div class="c">Depends on project-specific test setup.</div></div>
+</div>
+
+<p>One striking number from their flakiness study: when rubrics were generated by Sonnet-4.5 with atomic, self-contained criteria, only <strong>2%</strong> of rubric items were flaky across 5 independent Judge runs. Qwen3-32B-generated rubrics hit 9%. The paper attributes the gap to <em>atomic, self-contained instructions reducing the scope for Judge interpretation</em>.</p>
+
+<div class="insight">
+A well-built rubric is more reliable than a stronger Judge. The single biggest determinant of grading consistency in their experiments wasn't the Judge model — it was whether the rubric's items were atomic and self-contained. The same lesson as Guide 01's atomicity rule, measured in a SWE setting.
+</div>
+</section>
+
+<section id="aging">
+<h2>When the rubric itself is broken — aging signals</h2>
+
+<p>Run an Agent long enough and the bad samples will expose problems in your eval, not just your Agent. The Rubric is itself a system asset, and it's affected by business shifts, tool changes, model upgrades, and user-expectation drift. Four aging signals are worth setting alerts on:</p>
+
+<div class="dimtable">
+  <div class="row head"><div class="c">Signal</div><div class="c">What it tells you</div><div class="c">What to change</div></div>
+  <div class="row"><div class="c">Humans keep overturning the Judge</div><div class="c">Criteria are vague or mismatched with how humans actually grade now.</div><div class="c">Tighten criteria language; add atomic decomposition; recalibrate.</div></div>
+  <div class="row"><div class="c">Certain fields are always "unknown"</div><div class="c">Trace schema is incomplete — the system can't capture what the rubric needs.</div><div class="c">Extend the trace schema, not the rubric.</div></div>
+  <div class="row"><div class="c">A class of low scores can't map to a fix</div><div class="c">Failure taxonomy is too coarse for the new failure mode.</div><div class="c">Add a new failure type and remediation target.</div></div>
+  <div class="row"><div class="c">A dimension is perma-pass</div><div class="c">It's saturated; either the system genuinely solved it (turn into regression suite) or the dimension is too easy.</div><div class="c">Convert to regression suite OR raise difficulty / specificity.</div></div>
+</div>
+
+<div class="misconception">
+"Eval drift means the Agent is degrading." Not necessarily. Eval drift can also mean the rubric is what's stale — the business changed, the tool changed, or human standards moved. Always check the rubric's calibration before declaring an Agent regression.
+</div>
+</section>
+
+<section id="change-loop">
+<h2>Treat rubric changes like system changes</h2>
+
+<p>Once you accept that the Rubric is a system asset, the discipline that keeps it healthy mirrors what you already do for production code. Rubric changes shouldn't go straight to production any more than untested DB migrations should.</p>
+
+<div class="flow vert">
+<span class="step">Human correction / production incident / Judge disagreement</span>
+<span class="arr">↓</span>
+<span class="step">Rubric bug report</span>
+<span class="arr">↓</span>
+<span class="step">Candidate rubric patch</span>
+<span class="arr">↓</span>
+<span class="step">Calibration set replay</span>
+<span class="arr">↓</span>
+<span class="step">Bias tests (position swap, length attack, self-enhancement check)</span>
+<span class="arr">↓</span>
+<span class="step">Shadow evaluation (run in parallel with live rubric)</span>
+<span class="arr">↓</span>
+<span class="step">Rubric version release</span>
+</div>
+
+<div class="insight">
+Why this matters: a rubric that gets stricter overnight starts failing reasonable samples; one that gets looser starts passing bad ones; one with a shifted attribution starts pointing at the wrong team to fix things. Versioning the rubric and running it in shadow first is what prevents these regressions from being silent.
+</div>
+</section>
+
+<section id="shadow">
+<h2>Shadow evaluation — the safest way to ship a rubric change</h2>
+
+<p>Shadow mode runs the candidate rubric in parallel with the live rubric on real traffic for a fixed window. Both produce scores. Only the live rubric drives asset writebacks. The candidate's outputs are logged and compared.</p>
+
+<p>Before releasing the candidate as the new live rubric, four metrics must look better on the calibration set than the current rubric:</p>
+
+<div class="dimtable">
+  <div class="row head"><div class="c">Metric</div><div class="c">What it measures</div><div class="c">Direction</div></div>
+  <div class="row"><div class="c">Human-agreement rate</div><div class="c">% of judgments where the rubric agrees with the human gold label.</div><div class="c">↑ better</div></div>
+  <div class="row"><div class="c">False positive rate</div><div class="c">% of bad samples the rubric incorrectly let through.</div><div class="c">↓ better</div></div>
+  <div class="row"><div class="c">False negative rate</div><div class="c">% of good samples the rubric incorrectly flagged.</div><div class="c">↓ better</div></div>
+  <div class="row"><div class="c">Remediation-pointing accuracy</div><div class="c">% of failures where the named asset was actually the right one to fix.</div><div class="c">↑ better</div></div>
+</div>
+
+<div class="pmbox">
+This is the same pattern as feature flags + canary deploys for product features. The Rubric is the production code of your eval system. Shipping a Rubric change without shadow mode is shipping a DB migration without staging.
+</div>
+</section>
+
+<section id="conclusion">
+<h2>The conclusion — Judge → repairable signal</h2>
+
+<p>The Rubric's ultimate customer is not the score. It is system improvement. The Rubric that finds bad samples but can't explain which layer to fix is still just a quality review. The Rubric that compresses trace evidence into failure types, regression samples, and candidate patches becomes the hub of self-evolution.</p>
+
+<div class="insight">
+A useful test of any rubric you propose: when a sample fails, can a teammate use the rubric's output to file a ticket assigned to exactly one team, with exactly one suggested fix? If yes, the rubric is part of the self-evolution loop. If no, it's still just a scoreboard.
+</div>
+
+<p>Five chained "because → so" statements summarize the whole field — and they map back to everything in Guides 01–03:</p>
+
+<div class="dimtable">
+  <div class="row head"><div class="c">Because…</div><div class="c">So the rubric must…</div></div>
+  <div class="row"><div class="c">Agent failures happen in a system chain, not in text.</div><div class="c">Define evidence fields before judging.</div></div>
+  <div class="row"><div class="c">Evidence will be missing in real traces.</div><div class="c">Allow "unknown" as a first-class output.</div></div>
+  <div class="row"><div class="c">A low score has to drive a fix.</div><div class="c">Have dimensions that map to asset layers.</div></div>
+  <div class="row"><div class="c">Judges are biased; standards age.</div><div class="c">Run replays, bias tests, and shadow evaluations.</div></div>
+  <div class="row"><div class="c">Tasks are context-specific.</div><div class="c">Build per-instance criteria, not generic checklists.</div></div>
+</div>
+
+<p>Make that chain a protocol — not a prompt — and your eval Agent stops being a critic and starts being part of the engineering team.</p>
+</section>
+
+<section id="quiz">
+<div class="sec-label">Quiz — Advanced</div>
+
+<div class="q-item" id="q3_1">
+<div class="q-text">1. Your team uses one generic "rate this 1–5 on accuracy, completeness, helpfulness" rubric across three different Agents (code review, refund processing, customer Q&amp;A). Why is this likely producing bad fixes?</div>
+<div class="options">
+<label><input type="radio" name="q3_1" value="a"> Because the rubric is too long.</label>
+<label><input type="radio" name="q3_1" value="b"> Because "correct" for each Agent depends on context (repo / business rules / available sources) the generic rubric doesn't carry, leading to both false passes and false fails.</label>
+<label><input type="radio" name="q3_1" value="c"> Because LLM Judges only support one task.</label>
+<label><input type="radio" name="q3_1" value="d"> Because the score should be 1–10.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q3_1', 'g3', 8)">Check Answer</button>
+<div class="explanation">Generic checklists pass dangerous solutions (false positives) and fail valid ones (false negatives) because they don't carry task context. The fix is per-instance rubrics from a Context Gathering stage.</div>
+</div>
+
+<div class="q-item" id="q3_2">
+<div class="q-text">2. Which stage in the contextual rubric chain is missing from this list: Rubric Builder → Trace Inspector → Failure Attribution → Eval Case Generator?</div>
+<div class="options">
+<label><input type="radio" name="q3_2" value="a"> Context Gathering Agent</label>
+<label><input type="radio" name="q3_2" value="b"> Compliance Reviewer</label>
+<label><input type="radio" name="q3_2" value="c"> Marketing Approver</label>
+<label><input type="radio" name="q3_2" value="d"> Cost Analyzer</label>
+</div>
+<input type="hidden" data-correct="a">
+<button class="check-btn" onclick="checkQ('q3_2', 'g3', 8)">Check Answer</button>
+<div class="explanation">The chain starts with a Context Gathering Agent that collects user goal, rules, tools, ground truth, and known failures. Without it, the Rubric Builder works from generic templates.</div>
+</div>
+
+<div class="q-item" id="q3_3">
+<div class="q-text">3. In the Agentic Rubrics for SWE paper, Sonnet-4.5-generated rubrics showed only 2% flakiness across 5 independent Judge runs. The authors attribute the low flakiness to which property of the rubric items?</div>
+<div class="options">
+<label><input type="radio" name="q3_3" value="a"> Item length</label>
+<label><input type="radio" name="q3_3" value="b"> Atomic, self-contained instructions that reduce Judge interpretation scope</label>
+<label><input type="radio" name="q3_3" value="c"> Using GPT-5 as the Judge</label>
+<label><input type="radio" name="q3_3" value="d"> Higher temperature</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q3_3', 'g3', 8)">Check Answer</button>
+<div class="explanation">Atomicity wins again. Self-contained items leave less room for the Judge to interpret differently across runs, so grading determinism rises.</div>
+</div>
+
+<div class="q-item" id="q3_4">
+<div class="q-text">4. Humans keep overturning your Judge's verdicts on the same dimension. Which of these is the right first action?</div>
+<div class="options">
+<label><input type="radio" name="q3_4" value="a"> Switch to a different base model for the Judge.</label>
+<label><input type="radio" name="q3_4" value="b"> Treat it as a rubric aging signal — tighten the dimension's criteria, atomically decompose it, and recalibrate against humans.</label>
+<label><input type="radio" name="q3_4" value="c"> Add more samples and hope it averages out.</label>
+<label><input type="radio" name="q3_4" value="d"> Disable that dimension permanently.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q3_4', 'g3', 8)">Check Answer</button>
+<div class="explanation">Human-overrules-Judge is the canonical aging signal. The fix is in the rubric (criteria language + decomposition + calibration), not the model.</div>
+</div>
+
+<div class="q-item" id="q3_5">
+<div class="q-text">5. A rubric dimension has been at 100% pass for 6 weeks. What does this most likely mean, and what should you do?</div>
+<div class="options">
+<label><input type="radio" name="q3_5" value="a"> Everything is great — leave it.</label>
+<label><input type="radio" name="q3_5" value="b"> The dimension is saturated. Either move it to a regression suite (lock it in) or raise difficulty / add harder cases so it discriminates again.</label>
+<label><input type="radio" name="q3_5" value="c"> The Judge model is broken.</label>
+<label><input type="radio" name="q3_5" value="d"> Add another model as a second Judge.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q3_5', 'g3', 8)">Check Answer</button>
+<div class="explanation">A perma-pass dimension isn't discriminating anymore. The healthy responses are either to "lock in" the win as a regression test or to raise the bar so the dimension produces signal again.</div>
+</div>
+
+<div class="q-item" id="q3_6">
+<div class="q-text">6. You want to release a new version of a rubric criterion that you believe is stricter than the current one. What's the safest release process?</div>
+<div class="options">
+<label><input type="radio" name="q3_6" value="a"> Replace the live rubric immediately on Monday.</label>
+<label><input type="radio" name="q3_6" value="b"> Push the rubric change as a candidate patch → replay on calibration set → run bias tests → shadow evaluate alongside the live rubric → only release if human-agreement, FP, FN, and remediation-pointing all improve.</label>
+<label><input type="radio" name="q3_6" value="c"> Email the change to the team and ask for thumbs up.</label>
+<label><input type="radio" name="q3_6" value="d"> A/B test it in production silently.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q3_6', 'g3', 8)">Check Answer</button>
+<div class="explanation">Rubric changes are system changes. Replay + bias tests + shadow mode is the canary-deploy equivalent for eval systems.</div>
+</div>
+
+<div class="q-item" id="q3_7">
+<div class="q-text">7. Which of the following metrics is NOT one you'd track when running a shadow rubric evaluation against the live rubric?</div>
+<div class="options">
+<label><input type="radio" name="q3_7" value="a"> Human-agreement rate</label>
+<label><input type="radio" name="q3_7" value="b"> False-positive rate (bad samples that pass)</label>
+<label><input type="radio" name="q3_7" value="c"> Remediation-pointing accuracy</label>
+<label><input type="radio" name="q3_7" value="d"> Token cost per evaluation</label>
+</div>
+<input type="hidden" data-correct="d">
+<button class="check-btn" onclick="checkQ('q3_7', 'g3', 8)">Check Answer</button>
+<div class="explanation">Cost matters for budget but doesn't tell you whether the candidate rubric is a better judge. The four release-gate metrics are agreement, FP, FN, and remediation accuracy.</div>
+</div>
+
+<div class="q-item" id="q3_8">
+<div class="q-text">8. What is the single best test for whether a Rubric is part of the self-evolution loop vs. just a scoreboard?</div>
+<div class="options">
+<label><input type="radio" name="q3_8" value="a"> Whether the score is a number or a letter grade.</label>
+<label><input type="radio" name="q3_8" value="b"> Whether a teammate can use the Rubric's output to file a ticket assigned to one team with one suggested fix.</label>
+<label><input type="radio" name="q3_8" value="c"> Whether the dashboard is updated weekly.</label>
+<label><input type="radio" name="q3_8" value="d"> Whether the rubric uses GPT-4.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q3_8', 'g3', 8)">Check Answer</button>
+<div class="explanation">A repairable signal is the whole point. If the output routes to one team and one fix, the eval Agent has joined engineering. If it just produces scores, it's a quality review.</div>
+</div>
+
+<button class="score-btn" onclick="showScore()">See my score</button>
+<div id="score-panel" style="display:none;margin-top:18px;padding:18px 22px;background:var(--card);border:1.5px solid var(--g3);border-radius:10px;font-family:'JetBrains Mono',monospace">
+<div style="font-size:22px;font-weight:600;color:var(--g3)"><span id="score-correct">0</span> / <span id="score-total">8</span> correct</div>
+</div>
+</section>
+
+<section id="flashcards">
+<div class="sec-label">Flashcards — Advanced</div>
+<div class="fc-grid">
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Context Gathering Agent</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">First stage of the contextual rubric chain. Collects user goal, business rules, available tools, ground truth, end-state, and known failure modes before any judging happens.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Rubric Builder</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Generates task-specific criteria from gathered context. Each criterion comes with an evidence prerequisite and a remediation target. Replaces generic checklists.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Trace Inspector</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Structured reader of the trace: tool calls, intermediate states, end-state, costs. Feeds the Judge the evidence each rubric dimension needs.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Failure Attribution</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Maps a low score on a dimension to a broken layer (retrieval / tool / prompt / workflow / memory) and a specific remediation target. Turns "bad" into "fix this asset."</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Eval Case Generator</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Final stage. Packages today's failure into a reusable replay sample plus a candidate fix sketch. Today's incident becomes tomorrow's regression test.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Agentic Rubrics for SWE</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Raghavendra et al., 2026. Generates per-instance code rubrics from repo + issue. Scores patches on file targeting, spec alignment, integrity, runtime. Sonnet-4.5 rubrics had only 2% flakiness.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Rubric aging signals</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Four canonical signals that the rubric (not the Agent) is broken: humans overturning the Judge, persistent unknown rates, low scores that can't map to fixes, perma-pass dimensions.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Calibration set</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">A small, hand-graded set of representative samples (good + bad) used to measure whether a Judge or rubric matches human judgment. The "staging environment" for eval changes.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Bias tests</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Adversarial probes for known LLM Judge weaknesses: position swap, repetitive-list verbosity attack, self-enhancement probe. Run on every candidate rubric or Judge model change.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Shadow evaluation</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Run a candidate rubric in parallel with the live rubric on real traffic. Only release if human-agreement, false-positive rate, false-negative rate, and remediation-pointing accuracy all improve.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Rubric version release</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Treat each rubric change like a code release: bug report → candidate patch → calibration set replay → bias tests → shadow eval → version pin. Rolling forward and back become safe operations.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Repairable signal</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">The Rubric's actual output goal. Not a number; a failure type + asset target + candidate fix that a teammate can use to file a ticket with one owner and one suggested action.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+</div>
+</section>
+
+<div class="foot">
+<div>← <a href="guide-02-applied.html">02 · Applied</a> · <a href="index.html">Back to library</a></div>
+<div><a href="quiz-index.html">Full Quiz</a> · <a href="flashcards-index.html">All Flashcards</a></div>
+</div>
+
+</div>
+
+<script>
+const answers = {};
+function checkQ(id, group, total){
+  const item = document.getElementById(id);
+  const selected = item.querySelector('input[type=radio]:checked');
+  if(!selected){alert('Please select an answer first.');return}
+  const correctValue = item.querySelector('input[type=hidden][data-correct]').dataset.correct;
+  const isCorrect = selected.value === correctValue;
+  item.querySelectorAll('input[type=radio]').forEach(r => {
+    if(r.value === correctValue) r.setAttribute('data-correct','true');
+  });
+  item.classList.remove('correct','wrong');
+  item.classList.add(isCorrect ? 'correct' : 'wrong');
+  item.querySelector('.check-btn').disabled = true;
+  item.querySelectorAll('input[type=radio]').forEach(r => r.disabled = true);
+  const exp = item.querySelector('.explanation');
+  if(exp) exp.style.display = 'block';
+  answers[id] = isCorrect;
+}
+function showScore(){
+  const vals = Object.values(answers);
+  const total = document.querySelectorAll('.q-item').length;
+  document.getElementById('score-correct').textContent = vals.filter(Boolean).length;
+  document.getElementById('score-total').textContent = total;
+  document.getElementById('score-panel').style.display = 'block';
+  document.getElementById('score-panel').scrollIntoView({behavior:'smooth',block:'center'});
+}
+function flip(card){ card.classList.toggle('flipped'); }
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(a.getAttribute('href'));
+    if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+</script>
+</body>
+</html>

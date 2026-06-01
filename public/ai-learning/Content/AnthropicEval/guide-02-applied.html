@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>02 · Applied — Demystifying Evals for AI Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--amber);
+}
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;counter-reset:slide;}
+.wrap{max-width:1040px;margin:0 auto;padding:0 28px 120px;}
+.back{font-family:"JetBrains Mono",monospace;font-size:12px;text-decoration:none;color:var(--ink-soft);display:inline-flex;align-items:center;gap:6px;margin:24px 0 22px;border:1px solid var(--rule);border-radius:6px;padding:5px 12px;transition:all .14s;}
+.back:hover{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:18px;}
+h1{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(36px,5vw,52px);line-height:1.05;letter-spacing:-.02em;margin:6px 0 18px;}
+.dek{font-family:"Newsreader",serif;font-style:italic;font-size:22px;line-height:1.45;color:var(--ink-soft);margin-bottom:30px;max-width:780px;}
+.snav{position:sticky;top:0;background:rgba(244,241,234,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);padding:12px 0;margin:0 -28px 38px;z-index:10;}
+.snav-inner{max-width:1040px;margin:0 auto;padding:0 28px;display:flex;flex-wrap:wrap;gap:6px 18px;}
+.snav a{font-family:"JetBrains Mono",monospace;font-size:11.5px;font-weight:600;color:var(--ink-soft);text-decoration:none;letter-spacing:.05em;text-transform:uppercase;padding:4px 0;border-bottom:2px solid transparent;transition:all .14s;}
+.snav a:hover{color:var(--guide-color);border-bottom-color:var(--guide-color);}
+.meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:30px 0 6px;}
+@media(max-width:760px){.meta-grid{grid-template-columns:1fr;}}
+.meta{background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--guide-color);border-radius:10px;padding:18px 20px;}
+.meta-label{font-family:"JetBrains Mono",monospace;font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--guide-color);margin-bottom:6px;}
+.meta-text{font-size:15.5px;line-height:1.45;color:var(--ink);}
+section:not(#quiz):not(#flashcards){counter-increment:slide;background:var(--card);border:1.5px solid color-mix(in srgb,var(--guide-color) 28%,var(--rule));border-radius:18px;box-shadow:0 8px 36px -10px rgba(27,26,23,.18),0 1px 0 rgba(27,26,23,.04);margin:48px 0;overflow:hidden;position:relative;}
+section:not(#quiz):not(#flashcards) h2{margin:0;padding:26px 36px 22px;background:var(--guide-color);color:#fff;font-family:"Fraunces",serif;font-weight:900;font-size:clamp(20px,2.8vw,26px);letter-spacing:-.015em;line-height:1.1;display:flex;align-items:flex-start;gap:14px;}
+section:not(#quiz):not(#flashcards) h2::before{content:counter(slide,decimal-leading-zero);font-family:"JetBrains Mono",monospace;font-weight:600;font-size:12px;letter-spacing:.1em;background:rgba(255,255,255,.16);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.28);padding:4px 10px;border-radius:5px;flex-shrink:0;margin-top:3px;white-space:nowrap;}
+section:not(#quiz):not(#flashcards) > p,section:not(#quiz):not(#flashcards) > .insight,section:not(#quiz):not(#flashcards) > .misconception,section:not(#quiz):not(#flashcards) > blockquote,section:not(#quiz):not(#flashcards) > pre,section:not(#quiz):not(#flashcards) > ul,section:not(#quiz):not(#flashcards) > ol{margin-left:36px;margin-right:36px;}
+section:not(#quiz):not(#flashcards) > p:first-of-type{margin-top:28px;}
+section:not(#quiz):not(#flashcards) > p:last-of-type,section:not(#quiz):not(#flashcards) > blockquote:last-child,section:not(#quiz):not(#flashcards) > .misconception:last-child{margin-bottom:34px;}
+section:not(#quiz):not(#flashcards)::after{content:"";display:block;height:4px;background:linear-gradient(90deg,var(--guide-color) 0%,color-mix(in srgb,var(--guide-color) 30%,transparent) 100%);margin-top:34px;opacity:.35;}
+.insight,.misconception{border-radius:10px;padding:18px 22px;margin:22px 36px;font-size:17px;line-height:1.5;}
+.insight{border-left:4px solid var(--slate);background:var(--slate-soft);}
+.misconception{border-left:4px solid var(--accent);background:var(--accent-soft);}
+.insight::before{content:"✦ Key insight — ";font-weight:600;color:var(--slate);}
+.misconception::before{content:"✕ Common misconception — ";font-weight:600;color:var(--accent);}
+ul,ol{font-size:17px;line-height:1.55;}
+ul li,ol li{margin:6px 0;}
+code,.mono{font-family:"JetBrains Mono",monospace;font-size:.82em;background:#ece7db;padding:.08em .38em;border-radius:4px;color:#3a382f;}
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;margin-top:18px;}
+.fc{perspective:900px;height:190px;cursor:pointer;}
+.fc-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1);}
+.fc.flipped .fc-inner{transform:rotateY(180deg);}
+.fc-front,.fc-back{position:absolute;inset:0;border-radius:13px;padding:22px 22px 18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;justify-content:space-between;}
+.fc-front{background:var(--card);border:1.5px solid var(--rule);border-left:4px solid var(--g2);}
+.fc-back{transform:rotateY(180deg);background:#7a5400;}
+.fc-term{color:var(--g2);font-family:"JetBrains Mono",monospace;font-weight:600;font-size:14px;}
+.fc-def{color:#fff8e6;font-size:13.5px;line-height:1.45;}
+.fc-tap{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);margin-top:auto;}
+.fc-back .fc-tap{color:rgba(255,255,255,.45);}
+.fc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;}
+.gtag{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:4px;border:1.5px solid;line-height:1.6;}
+.gtag.g1{color:var(--g1);border-color:color-mix(in srgb,var(--g1) 40%,transparent);background:color-mix(in srgb,var(--g1) 10%,transparent);}
+.gtag.g2{color:var(--g2);border-color:color-mix(in srgb,var(--g2) 40%,transparent);background:color-mix(in srgb,var(--g2) 10%,transparent);}
+.gtag.g3{color:var(--g3);border-color:color-mix(in srgb,var(--g3) 40%,transparent);background:color-mix(in srgb,var(--g3) 10%,transparent);}
+.sec-label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin:48px 0 6px;font-weight:600;}
+.footer{margin-top:60px;padding-top:28px;border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);}
+.footer a{color:var(--accent);text-decoration:none;font-weight:600;}
+.footer a:hover{text-decoration:underline;}
+@media(max-width:680px){section:not(#quiz):not(#flashcards) h2{padding:20px 22px 18px;font-size:20px;}section:not(#quiz):not(#flashcards) > p,section:not(#quiz):not(#flashcards) > .insight,section:not(#quiz):not(#flashcards) > .misconception,section:not(#quiz):not(#flashcards) > blockquote,section:not(#quiz):not(#flashcards) > ul,section:not(#quiz):not(#flashcards) > ol{margin-left:22px;margin-right:22px;}.insight,.misconception{margin-left:22px;margin-right:22px;}.fc-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:420px){.fc-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← Library</a>
+  <div class="kicker">02 · Applied</div>
+  <h1>Four Agent Types, One Pattern</h1>
+  <p class="dek">How evaluation actually looks for coding, conversational, research, and computer-use agents — and how to think about non-determinism when the same agent runs many times.</p>
+
+  <nav class="snav"><div class="snav-inner">
+    <a href="#coding">01 · Coding Agents</a>
+    <a href="#conversational">02 · Conversational</a>
+    <a href="#research">03 · Research</a>
+    <a href="#computer-use">04 · Computer Use</a>
+    <a href="#nondeterminism">05 · pass@k & pass^k</a>
+    <a href="#flashcards">↓ Flashcards</a>
+  </div></nav>
+
+  <div class="meta-grid">
+    <div class="meta"><div class="meta-label">Same Fundamentals</div><div class="meta-text">Code-based, model-based, and human graders apply across all four agent types. What changes is the surface area being graded.</div></div>
+    <div class="meta"><div class="meta-label">Match Grader to Surface</div><div class="meta-text">Coding gets unit tests. Conversation gets state checks plus tone rubrics. Research gets groundedness. Computer-use gets sandboxed state.</div></div>
+    <div class="meta"><div class="meta-label">Measure the Distribution</div><div class="meta-text">Agents are non-deterministic. pass@k and pass^k tell different stories about reliability.</div></div>
+  </div>
+
+  <section id="coding">
+    <h2>Coding Agents</h2>
+    <p>Coding agents write, test, and debug code. Of the four agent types this is the most well-trodden ground because software evaluation is unusually clean: does the code run, and does it pass tests?</p>
+    <p>The canonical benchmark is <strong>SWE-bench Verified</strong> — GitHub issues from Python repositories, graded by the project's own test suite. A solution passes only if it fixes failing tests without breaking existing ones. The frontier moved from ~40% to over 80% in one year.</p>
+    <div class="insight">Deterministic graders shine here because the truth condition is concrete. Build them first, then layer model-based rubrics on top for quality dimensions tests can't see — readability, idiomatic style, sensible naming.</div>
+    <p>A production-grade coding eval typically stacks: <code>deterministic_tests</code> for required unit tests, <code>static_analysis</code> for lint/type/security, <code>state_check</code> for side effects (e.g. "did the security log entry get written?"), <code>tool_calls</code> verification, and a final <code>llm_rubric</code> on code quality. Tracked metrics include turns, tool calls, total tokens, and latency.</p>
+    <div class="misconception">A green test suite means the agent did the right thing. Not necessarily — the agent might have gamed the tests, deleted the failing case, or solved the problem in a way that breaks downstream consumers. Read transcripts to verify.</div>
+  </section>
+
+  <section id="conversational">
+    <h2>Conversational Agents</h2>
+    <p>Conversational agents work in support, sales, coaching, and similar domains. Unlike chatbots, they maintain state, use tools, and take mid-conversation actions like processing refunds or filing tickets.</p>
+    <p>Success here is multidimensional: did the ticket actually get resolved (state check)? Did the agent finish in under 10 turns (transcript constraint)? Was the tone appropriate (LLM rubric)? Each dimension uses a different grader type.</p>
+    <p>The trick most teams miss is the <strong>simulated user</strong>. A second LLM plays a customer persona, stress-testing the agent across extended, sometimes adversarial conversations. <strong>τ-Bench</strong> and <strong>τ2-Bench</strong> formalize this, simulating multi-turn interactions in realistic scenarios.</p>
+    <div class="insight">Most tasks here have multiple correct solutions. Lean on model-based graders for communication-quality dimensions; use state checks for the verifiable outcomes ("refund processed", "ticket marked resolved").</div>
+    <p>A typical conversational task layers <code>llm_rubric</code> assertions on empathy and clarity, <code>state_check</code> on backend outcomes, <code>tool_calls</code> required (verify identity → process refund → send confirmation), and a <code>max_turns</code> ceiling on the transcript.</p>
+  </section>
+
+  <section id="research">
+    <h2>Research Agents</h2>
+    <p>Research agents gather, synthesize, and analyze information, producing answers or reports. Unlike coding, there's no unit test to lean on — quality depends entirely on context. Market scans, due-diligence reports, and scientific syntheses each demand different standards.</p>
+    <p>Three problems make this hard. Experts disagree on what counts as comprehensive. Ground truth shifts as the web changes underneath you. Longer outputs create more opportunities for hidden mistakes.</p>
+    <p>The benchmark to know is <strong>BrowseComp</strong> — needle-in-a-haystack questions across the open web, easy to verify once found but hard to find. The grading strategy stacks layers:</p>
+    <ul>
+      <li><strong>Groundedness checks</strong> — does each claim trace to a retrieved source?</li>
+      <li><strong>Coverage checks</strong> — does the report mention the essential facts you defined up front?</li>
+      <li><strong>Source-quality checks</strong> — did it cite authoritative sources rather than random blogs?</li>
+      <li><strong>LLM rubrics</strong> — does the synthesis hang together?</li>
+      <li><strong>Exact match</strong> — for objectively correct fact questions ("Company X Q3 revenue?").</li>
+    </ul>
+    <div class="misconception">LLM judges can grade research output reliably without calibration. They drift fast on subjective domains like comprehensiveness. Calibrate frequently against expert human judgment, and structure rubrics so each dimension is graded separately rather than all at once.</div>
+  </section>
+
+  <section id="computer-use">
+    <h2>Computer-Use Agents</h2>
+    <p>Computer-use agents drive software through human interfaces — screenshots, clicks, keyboard, scrolling — rather than APIs. They work with anything that has a GUI, from design tools to legacy enterprise software.</p>
+    <p>Evaluation needs a real or sandboxed environment to check intended outcomes. <strong>WebArena</strong> tests browser tasks with URL and page-state checks, plus backend verification that the intended data modification actually happened. <strong>OSWorld</strong> extends this to full OS control, checking file-system state, application configs, database contents, and UI properties.</p>
+    <p>Browser agents face a tokens-vs-latency trade-off worth understanding. DOM-based interactions are fast but token-heavy. Screenshot-based interactions are slower but token-efficient. Summarizing a Wikipedia article benefits from DOM text extraction; finding a laptop case on Amazon benefits from screenshots, because the full DOM is huge.</p>
+    <div class="insight">Claude for Chrome built evals that check whether the agent chose the right tool for each context. Tool-choice eval is a category most teams miss — and it's the single biggest lever on browser-agent latency and accuracy.</div>
+  </section>
+
+  <section id="nondeterminism">
+    <h2>Non-Determinism: pass@k and pass^k</h2>
+    <p>Agent behavior varies between runs. Each task has its own success rate. What you actually measure is how often the agent succeeds — and there are two ways to summarize that.</p>
+    <p><strong>pass@k</strong> measures the probability of at least one success in <em>k</em> attempts. As <em>k</em> grows, pass@k rises. A 50% pass@1 means the model gets it right half the time on the first try. In coding, first-try success matters most. In other situations, multiple proposals are fine if any one of them works.</p>
+    <p><strong>pass^k</strong> measures the probability that <em>all k</em> trials succeed. As <em>k</em> grows, pass^k falls — demanding consistency across more trials is harder. A 75% per-trial success rate over 3 trials is (0.75)³ ≈ 42%. This is the metric you want for customer-facing agents where every call has to work.</p>
+    <div class="insight">Use pass@k when one success is enough — code generation, brainstorming, search-and-find. Use pass^k when you can't afford failures — customer support, financial workflows, anything users see every time.</div>
+    <div class="misconception">A high pass@1 means the agent is reliable. Not at all — a model could score 80% pass@1 but only 51% pass^k over 3 trials. If users hit the agent multiple times in a day, the failure rate they experience compounds.</div>
+  </section>
+
+  <section id="flashcards">
+    <div class="sec-label">Flashcards — Guide 02</div>
+    <p style="color:var(--ink-soft);font-size:15px;margin:8px 0 18px;">Tap any card to reveal the definition. Or open the <a href="flashcards-index.html" style="color:var(--accent);font-weight:600;">full deck</a> to filter and shuffle across all guides.</p>
+    <div class="fc-grid">
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">SWE-bench Verified</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">Canonical coding benchmark: real GitHub issues from Python repos, graded by the project's own tests. Frontier moved from ~40% to over 80% in a year.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">τ-Bench / τ2-Bench</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">Conversational benchmark where one LLM plays a user persona and the agent navigates realistic multi-turn scenarios.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">BrowseComp</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">Research benchmark of needle-in-haystack web questions — easy to verify once found, hard to find.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">WebArena</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">Browser-agent benchmark using URL and page-state checks plus backend verification that the intended data change actually happened.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">OSWorld</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">Computer-use benchmark covering full OS control. Checks file-system state, app configs, database contents, and UI properties.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Simulated user</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">A second LLM that plays a customer persona during evaluation. Stress-tests conversational agents across extended, adversarial dialogues.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Groundedness check</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">A grader that verifies each claim in an agent's output traces back to a retrieved source. Catches confident hallucination.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Coverage check</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">A grader that confirms an agent's report mentions the essential facts defined up front. Used heavily in research-agent evaluation.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Tool-choice eval</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">A check that the agent picked the right tool for the context — e.g. DOM extraction for Wikipedia vs screenshots for a busy shopping site.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">pass@k</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">Probability of at least one success in k trials. Rises with k. Use when one success is enough — code gen, brainstorming, search.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">pass^k</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">Probability all k trials succeed. Falls with k. Use for customer-facing agents where consistency is essential.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+    </div>
+  </section>
+
+  <div class="footer">
+    <span>← <a href="guide-01-foundations.html">01 · Foundations</a></span>
+    <span><a href="guide-03-roadmap.html">03 · Roadmap →</a></span>
+  </div>
+</div>
+<script>
+function flip(card){card.classList.toggle('flipped');}
+</script>
+</body>
+</html>

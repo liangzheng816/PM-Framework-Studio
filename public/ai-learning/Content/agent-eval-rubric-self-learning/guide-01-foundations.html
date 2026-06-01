@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Agent Eval Rubric — 01 · Foundations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,450;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4; --card:#fbf9f4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--g1);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;counter-reset:slide}
+.wrap{max-width:1040px;margin:0 auto;padding:0 28px 120px}
+.back{font-family:"JetBrains Mono",monospace;font-size:12px;text-decoration:none;color:var(--ink-soft);display:inline-flex;align-items:center;gap:6px;margin:28px 0 22px;border:1px solid var(--rule);border-radius:6px;padding:5px 12px;transition:all .14s}
+.back:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);font-weight:600;margin-bottom:18px}
+h1{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(36px,5vw,56px);letter-spacing:-.02em;line-height:1.05;margin:0 0 18px}
+h1 em{font-family:"Fraunces",serif;font-style:italic;font-weight:400;color:var(--accent)}
+.dek{font-family:"Newsreader",serif;font-style:italic;font-size:22px;color:var(--ink-soft);max-width:720px;margin:0 0 38px}
+
+/* Sticky nav */
+.topnav{position:sticky;top:0;background:rgba(244,241,234,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);margin:0 -28px 32px;padding:14px 28px;z-index:20;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.topnav a{color:var(--ink-soft);text-decoration:none;margin-right:18px;padding:4px 0;border-bottom:2px solid transparent;transition:all .14s}
+.topnav a:hover{color:var(--g1);border-bottom-color:var(--g1)}
+
+/* Takeaway grid */
+.takeaway-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:30px 0 50px}
+@media(max-width:760px){.takeaway-grid{grid-template-columns:1fr}}
+.tk{background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--g1);border-radius:10px;padding:20px 22px}
+.tk-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--g1);font-weight:600;margin-bottom:8px}
+.tk-text{font-size:16px;line-height:1.45;color:var(--ink)}
+
+/* ===== SLIDE PANELS ===== */
+section:not(#quiz):not(#flashcards){counter-increment:slide;background:var(--card);border:1.5px solid color-mix(in srgb, var(--guide-color) 28%, var(--rule));border-radius:18px;box-shadow:0 8px 36px -10px rgba(15,23,42,.18),0 1px 0 rgba(15,23,42,.04);margin:48px 0;overflow:hidden;position:relative}
+section:not(#quiz):not(#flashcards) h2{margin:0;padding:26px 36px 22px;background:var(--guide-color);color:#fff;font-family:"Fraunces",serif;font-weight:900;font-size:clamp(20px,2.8vw,26px);letter-spacing:-.015em;line-height:1.1;display:flex;align-items:flex-start;gap:14px}
+section:not(#quiz):not(#flashcards) h2::before{content:counter(slide,decimal-leading-zero);font-family:"JetBrains Mono",monospace;font-weight:600;font-size:12px;letter-spacing:.1em;background:rgba(255,255,255,.16);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.28);padding:4px 10px;border-radius:5px;flex-shrink:0;margin-top:3px;white-space:nowrap}
+section:not(#quiz):not(#flashcards)>p,section:not(#quiz):not(#flashcards)>.insight,section:not(#quiz):not(#flashcards)>.misconception,section:not(#quiz):not(#flashcards)>blockquote,section:not(#quiz):not(#flashcards)>pre,section:not(#quiz):not(#flashcards)>.dimtable,section:not(#quiz):not(#flashcards)>.flow{margin-left:36px;margin-right:36px}
+section:not(#quiz):not(#flashcards)>p:first-of-type{margin-top:28px}
+section:not(#quiz):not(#flashcards)>p:last-of-type,section:not(#quiz):not(#flashcards)>blockquote:last-child,section:not(#quiz):not(#flashcards)>.misconception:last-child{margin-bottom:34px}
+section:not(#quiz):not(#flashcards)::after{content:"";display:block;height:4px;background:linear-gradient(90deg,var(--guide-color) 0%,color-mix(in srgb, var(--guide-color) 30%, transparent) 100%);margin-top:34px;opacity:.35}
+@media(max-width:680px){section:not(#quiz):not(#flashcards) h2{padding:20px 22px 18px;font-size:20px}section:not(#quiz):not(#flashcards)>p,section:not(#quiz):not(#flashcards)>.insight,section:not(#quiz):not(#flashcards)>.misconception{margin-left:22px;margin-right:22px}}
+
+/* Insight / Misconception */
+.insight,.misconception{border-radius:10px;padding:18px 22px;margin:22px 0;font-size:16.5px;line-height:1.5}
+.insight{border-left:4px solid var(--g1);background:var(--slate-soft)}
+.misconception{border-left:4px solid var(--accent);background:var(--accent-soft)}
+.insight::before{content:"✦ Key insight — ";font-weight:600;color:var(--g1)}
+.misconception::before{content:"✕ Common misconception — ";font-weight:600;color:var(--accent)}
+
+/* Dimension table */
+.dimtable{margin:24px 0;border:1px solid var(--rule);border-radius:10px;overflow:hidden;background:var(--card)}
+.dimtable .row{display:grid;grid-template-columns:200px 1fr 200px;gap:0;border-bottom:1px solid var(--rule);font-size:14.5px}
+.dimtable .row:last-child{border-bottom:none}
+.dimtable .row.head{background:#F8FAFC;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+.dimtable .row .c{padding:11px 16px;border-right:1px solid var(--rule)}
+.dimtable .row .c:last-child{border-right:none}
+.dimtable code{font-family:"JetBrains Mono",monospace;font-size:13px;background:#EFF6FF;color:var(--g1);padding:2px 6px;border-radius:4px;font-weight:600}
+@media(max-width:760px){.dimtable .row{grid-template-columns:1fr}.dimtable .row .c{border-right:none;border-bottom:1px solid var(--rule)}.dimtable .row .c:last-child{border-bottom:none}}
+
+/* Flow diagram */
+.flow{margin:24px 0;padding:18px 22px;background:#F8FAFC;border:1px dashed var(--rule);border-radius:10px;font-family:"JetBrains Mono",monospace;font-size:13.5px;line-height:1.7;color:var(--ink)}
+.flow .step{display:inline-block;background:#fff;padding:4px 10px;border-radius:5px;border:1px solid var(--rule);margin:2px 0}
+.flow .arr{color:var(--g1);margin:0 6px;font-weight:600}
+
+/* PM box */
+.pmbox{margin:22px 0;padding:18px 22px;background:#FFF7ED;border-left:4px solid var(--accent);border-radius:10px;font-size:16.5px}
+.pmbox::before{content:"📋 PM translation — ";font-weight:600;color:var(--accent);font-family:"Newsreader",serif}
+
+code,.mono{font-family:"JetBrains Mono",monospace;font-size:.82em;background:#EFF6FF;padding:.08em .42em;border-radius:4px;color:var(--g1)}
+
+/* ===== QUIZ ===== */
+.sec-label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin:48px 0 14px;font-weight:600}
+.q-item{margin:24px 0;padding:22px 26px;background:var(--card);border:1.5px solid var(--rule);border-radius:12px}
+.q-item.correct{border-color:#16A34A;background:#F0FDF4}
+.q-item.wrong{border-color:var(--accent);background:#FFF7ED}
+.q-text{font-size:17px;font-weight:600;margin-bottom:14px}
+.options{display:flex;flex-direction:column;gap:9px;margin-bottom:16px}
+.options label{display:flex;align-items:flex-start;gap:10px;font-size:16px;cursor:pointer;padding:8px 12px;border-radius:7px;border:1.5px solid var(--rule);background:var(--paper);transition:background .12s}
+.options label:hover{background:#F1F5F9}
+.q-item.correct label:has(input[data-correct]){background:#DCFCE7;border-color:#16A34A}
+.q-item.wrong label:has(input:checked:not([data-correct])){background:#FFEDD5;border-color:var(--accent)}
+.check-btn{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:8px 18px;border-radius:7px;border:1.5px solid var(--g1);background:transparent;color:var(--g1);cursor:pointer;transition:all .14s}
+.check-btn:hover:not(:disabled){background:var(--g1);color:#fff}
+.check-btn:disabled{opacity:.4;cursor:not-allowed}
+.explanation{margin-top:14px;padding:12px 16px;background:#EFF6FF;border-left:3px solid var(--g1);border-radius:6px;font-size:15px;color:var(--ink-soft);line-height:1.5}
+.score-btn{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:10px 22px;border-radius:8px;border:none;background:var(--ink);color:#fff;cursor:pointer;margin-top:20px}
+
+/* ===== FLASHCARDS ===== */
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;margin-top:18px}
+.fc{perspective:900px;height:210px;cursor:pointer}
+.fc-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1)}
+.fc.flipped .fc-inner{transform:rotateY(180deg)}
+.fc-front,.fc-back{position:absolute;inset:0;border-radius:13px;padding:22px 22px 18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;justify-content:space-between}
+.fc-front{background:var(--card);border:1.5px solid var(--rule);border-left:4px solid var(--g1)}
+.fc-back{transform:rotateY(180deg);background:var(--g1);color:#fff}
+.fc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.gtag{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:4px;border:1.5px solid;line-height:1.6}
+.gtag.g1{color:var(--g1);border-color:color-mix(in srgb,var(--g1) 40%,transparent);background:color-mix(in srgb,var(--g1) 10%,transparent)}
+.gtag.g2{color:var(--g2);border-color:color-mix(in srgb,var(--g2) 40%,transparent);background:color-mix(in srgb,var(--g2) 10%,transparent)}
+.gtag.g3{color:var(--g3);border-color:color-mix(in srgb,var(--g3) 40%,transparent);background:color-mix(in srgb,var(--g3) 10%,transparent)}
+.fc-term{font-family:"JetBrains Mono",monospace;font-weight:600;font-size:14px;color:var(--g1)}
+.fc-def{font-size:13.5px;line-height:1.5;color:#fff}
+.fc-tap{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);margin-top:auto}
+.fc-back .fc-tap{color:rgba(255,255,255,.55)}
+
+.foot{margin-top:60px;padding-top:24px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.foot a{color:var(--g1);text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--g1) 30%,transparent)}
+.foot a:hover{border-bottom-color:var(--g1)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="index.html">← Back to library</a>
+
+<div class="kicker">01 · Foundations</div>
+<h1>Why Rubrics Are a Product <em>Decision</em></h1>
+<p class="dek">A bad answer is the symptom. The broken layer is the bug. Until your eval points at a layer, you're just rating quality — not driving fixes.</p>
+
+<nav class="topnav">
+  <a href="#protocol">01 Protocol</a>
+  <a href="#which-layer">02 Layers</a>
+  <a href="#total-score">03 Total score</a>
+  <a href="#atomic">04 Atomic table</a>
+  <a href="#g-eval">05 G-Eval</a>
+  <a href="#judge-bias">06 Judge bias</a>
+  <a href="#ragas">07 RAGAS split</a>
+  <a href="#quiz">Quiz</a>
+  <a href="#flashcards">Cards</a>
+</nav>
+
+<div class="takeaway-grid">
+  <div class="tk"><div class="tk-label">If you remember nothing else</div><div class="tk-text">A rubric isn't a scoring prompt — it's a five-step protocol that turns "user complained" into "team X ships fix Y."</div></div>
+  <div class="tk"><div class="tk-label">Why total scores fail</div><div class="tk-text">A 3-out-of-5 quality score routes nowhere. Atomic dimensions route the same complaint to retrieval, tools, prompts, workflow, or memory — five different fixes.</div></div>
+  <div class="tk"><div class="tk-label">Don't trust one LLM Judge</div><div class="tk-text">MT-Bench measured Claude-v1 favoring whichever answer came first 75% of the time. Judges are biased; calibrate them like you'd calibrate any production signal.</div></div>
+</div>
+
+<section id="protocol">
+<h2>Rubric is a system protocol, not a scoring prompt</h2>
+
+<p>Most teams treat a rubric as a prompt for the LLM Judge: "Rate this answer 1–5 on accuracy, completeness, and helpfulness." That works as a quality check. It does not work as a self-improvement loop.</p>
+
+<p>A rubric that drives system improvement binds five things together: what evidence the Judge is allowed to read, how scores are decomposed, how low scores are categorized into failure types, what asset each failure type points at, and how the rubric itself stays calibrated over time.</p>
+
+<div class="flow">
+<span class="step">Evidence Contract</span><span class="arr">→</span><span class="step">Score Dimensions</span><span class="arr">→</span><span class="step">Failure Taxonomy</span><span class="arr">→</span><span class="step">Remediation Target</span><span class="arr">→</span><span class="step">Calibration Loop</span>
+</div>
+
+<div class="insight">
+The Rubric's job is not to produce a number. It is to compress a messy trace into a labeled failure that points at exactly one asset to fix — a prompt, a tool description, a retrieval query, a workflow guardrail, or a human review queue.
+</div>
+
+<div class="pmbox">
+Picture a bug ticket without a repro step or a stack trace. You can rate it "high priority" all day; no one knows whose code to open. A rubric without these five parts is that ticket.
+</div>
+</section>
+
+<section id="which-layer">
+<h2>The same bad answer hides five different bugs</h2>
+
+<p>Agent failures look identical from the user's seat: the answer was wrong, the order didn't go through, the report was incomplete. But behind "wrong" sit five separate broken layers, each with its own owner and fix.</p>
+
+<div class="dimtable">
+  <div class="row head"><div class="c">Broken layer</div><div class="c">What it looks like in the trace</div><div class="c">Who fixes it</div></div>
+  <div class="row"><div class="c">Retrieval</div><div class="c">The answer cites nothing because the search returned nothing relevant.</div><div class="c">Retriever / chunking</div></div>
+  <div class="row"><div class="c">Tool</div><div class="c">The right material was found, but the model called the wrong API or filled bad arguments.</div><div class="c">Tool schema / validator</div></div>
+  <div class="row"><div class="c">Prompt</div><div class="c">Sources were found and read, but the model ignored them and ad-libbed.</div><div class="c">System prompt / output schema</div></div>
+  <div class="row"><div class="c">Workflow</div><div class="c">The high-risk step had no verification gate, so a hallucination flowed through.</div><div class="c">Workflow graph / planner</div></div>
+  <div class="row"><div class="c">Memory</div><div class="c">User preferences were re-asked or violated because nothing wrote them to long-term store.</div><div class="c">Memory / personalization</div></div>
+</div>
+
+<p>If your eval only says "the answer was wrong," all five owners shrug. If your eval names the broken layer, exactly one team picks it up.</p>
+
+<div class="misconception">
+Better prompts will fix it. Most reflexive responses to a bad eval are "let's adjust the system prompt." But if the failure was a tool argument or a missing memory write, the prompt is exactly the wrong place to look — and you'll keep losing the same case.
+</div>
+</section>
+
+<section id="total-score">
+<h2>A total score can't route a fix</h2>
+
+<p>The most common rubric mistake is collapsing many criteria into one number — "Rate this 1–5 on accuracy, completeness, clarity, and helpfulness." Humans do this naturally; a self-improving system can't.</p>
+
+<p>When the system reads back "3," it has no idea whether to change retrieval, tools, prompts, or workflow. So it does the cheapest thing: it tweaks the prompt. That's why most "AI quality" review cycles drift into prompt fiddling and the same failures keep coming back.</p>
+
+<div class="insight">
+Each rubric dimension should answer exactly one question, and each question should map to exactly one fix direction. The more you collapse dimensions, the more you collapse fixes into "change the prompt again."
+</div>
+
+<div class="pmbox">
+Imagine if your only bug-tracker field were "severity 1–5." Engineering would still ship fixes, but they'd be guessing at scope. The "component" field is what makes triage cheap. Atomic rubric dimensions are the component field of your eval system.
+</div>
+</section>
+
+<section id="atomic">
+<h2>The atomic dimension table</h2>
+
+<p>A practical knowledge-intensive Agent rubric breaks into at least ten atomic dimensions. Each is one binary or short scale, each maps to one asset.</p>
+
+<div class="dimtable">
+  <div class="row head"><div class="c">Dimension</div><div class="c">What it checks</div><div class="c">Fix points at</div></div>
+  <div class="row"><div class="c"><code>answer_relevance</code></div><div class="c">Does the response actually answer the user's goal?</div><div class="c">Intent routing, task router</div></div>
+  <div class="row"><div class="c"><code>groundedness</code></div><div class="c">Are key claims supported by retrieved context or tool results?</div><div class="c">Retrieval, citation, evidence constraint</div></div>
+  <div class="row"><div class="c"><code>context_recall</code></div><div class="c">Was the necessary information actually retrieved?</div><div class="c">Retriever, query rewrite, chunking</div></div>
+  <div class="row"><div class="c"><code>context_precision</code></div><div class="c">Is the retrieved context clean and well-ranked?</div><div class="c">Rerank, filter, context compression</div></div>
+  <div class="row"><div class="c"><code>instruction_following</code></div><div class="c">Were explicit constraints and format rules respected?</div><div class="c">Prompt, output schema</div></div>
+  <div class="row"><div class="c"><code>tool_selection</code></div><div class="c">Did the agent pick the right tool for the job?</div><div class="c">Tool descriptions, router</div></div>
+  <div class="row"><div class="c"><code>argument_correctness</code></div><div class="c">Are tool arguments complete, legal, and task-aligned?</div><div class="c">Schema, validator, parameter hints</div></div>
+  <div class="row"><div class="c"><code>dependency_order</code></div><div class="c">Did tool calls satisfy the required before/after order?</div><div class="c">Workflow graph, planner</div></div>
+  <div class="row"><div class="c"><code>outcome_state</code></div><div class="c">Did the end-state in the world actually become the target state?</div><div class="c">Verifier, sandbox, end-state check</div></div>
+  <div class="row"><div class="c"><code>interaction_efficiency</code></div><div class="c">Are turn count, tool calls, and cost in the normal range?</div><div class="c">Stopping rule, cost guardrail</div></div>
+</div>
+
+<p>You don't need all ten on day one. A useful starter set for a RAG-style Agent is <code>answer_relevance</code>, <code>groundedness</code>, <code>context_recall</code>, <code>context_precision</code>. For a tool-using Agent, add <code>tool_selection</code>, <code>argument_correctness</code>, <code>dependency_order</code>, <code>outcome_state</code>.</p>
+
+<div class="insight">
+Notice each row has a verb in the third column. "Fix points at" is the whole reason for atomicity. If a dimension can't point at a verb you'd actually do this sprint, drop it.
+</div>
+</section>
+
+<section id="g-eval">
+<h2>G-Eval — turn fuzzy criteria into structured evaluation</h2>
+
+<p>"Rate this answer 1–5 on coherence" is a famously bad prompt. The model's score collapses to the mode (everything gets 3), the variance is low, and the correlation with human judgments is weak. G-Eval (Yang Liu et al., 2023) gave the standard fix.</p>
+
+<p>The trick is two-stage. First, ask the model to generate its own chain-of-thought evaluation steps from the criteria — turning a one-line definition into a numbered procedure. Then have it score each criterion by form-filling against those steps. Final score uses token probabilities to make the output continuous rather than collapsing to a single integer.</p>
+
+<div class="flow">
+<span class="step">Evaluation criteria</span><span class="arr">→</span><span class="step">Auto chain-of-thought steps</span><span class="arr">→</span><span class="step">Form-filling against steps</span><span class="arr">→</span><span class="step">Probability-weighted score</span>
+</div>
+
+<div class="insight">
+G-Eval reached Spearman 0.514 with human summarization scores — a large jump over previous reference-free metrics. The reason is structure, not model power: the same model with "rate 1–5" loses on the same task.
+</div>
+
+<div class="misconception">
+"We need a smarter model to judge well." G-Eval's lesson is the opposite — the same model becomes a much better judge the moment you structure the criteria into explicit steps and let it form-fill rather than guess a number.
+</div>
+</section>
+
+<section id="judge-bias">
+<h2>LLM Judge biases you'll trip over</h2>
+
+<p>If you let one LLM grade your Agent in production with no calibration, you will ship the Judge's biases. The MT-Bench paper (Zheng et al., NeurIPS 2023) measured three that hit almost every team.</p>
+
+<div class="dimtable">
+  <div class="row head"><div class="c">Bias</div><div class="c">How big</div><div class="c">How to defend</div></div>
+  <div class="row"><div class="c">Position bias</div><div class="c">Claude-v1 favored the first answer 75% of the time. GPT-3.5 50%. GPT-4 only when consistency dropped to 65%.</div><div class="c">Swap A/B order; only count agreements across both orderings.</div></div>
+  <div class="row"><div class="c">Verbosity bias</div><div class="c">"Repetitive list" attack: Claude-v1 fooled 91.3% of the time, GPT-3.5 91.3%, GPT-4 only 8.7%.</div><div class="c">Length-normalize. Test with a known-padding attack in CI.</div></div>
+  <div class="row"><div class="c">Self-enhancement bias</div><div class="c">GPT-4 favored its own answers by +10% win rate. Claude-v1 by +25%.</div><div class="c">Never use the same model family as Judge and Generator in regression-critical lanes.</div></div>
+</div>
+
+<p>The good news from the same paper: GPT-4 as Judge reaches 80%+ agreement with human experts — about the same as expert-to-expert agreement. The bad news is the only way you know your Judge is in the safe regime is by running a calibration set against humans.</p>
+
+<div class="misconception">
+"LLM Judge is objective." It isn't. It has predictable, measurable, and large biases. Treating it as ground truth instead of an instrument-needing-calibration is how Judges drift unnoticed.
+</div>
+</section>
+
+<section id="ragas">
+<h2>The RAGAS split — retrieval vs. generation</h2>
+
+<p>For RAG-style Agents, the most useful pre-built dimension split is from RAGAS. It carves RAG quality into four numbers along two failure axes:</p>
+
+<div class="dimtable">
+  <div class="row head"><div class="c">Metric</div><div class="c">Owns which failure axis</div><div class="c">Routes the fix to</div></div>
+  <div class="row"><div class="c"><code>context_recall</code></div><div class="c">Was the necessary material in the retrieved set at all?</div><div class="c">Retrieval team</div></div>
+  <div class="row"><div class="c"><code>context_precision</code></div><div class="c">Is the retrieved set clean and well-ordered?</div><div class="c">Retrieval team</div></div>
+  <div class="row"><div class="c"><code>faithfulness</code></div><div class="c">Did the model use the retrieved material honestly?</div><div class="c">Generator team</div></div>
+  <div class="row"><div class="c"><code>answer_relevancy</code></div><div class="c">Does the answer address the user's actual question?</div><div class="c">Generator team</div></div>
+</div>
+
+<p>The reason RAGAS doesn't just publish "RAG score" is that retrieval failures and generation failures need different fixes. If you only know "RAG is at 3/5," you don't know whether to invest a sprint in your retriever or in your prompts. If you know <code>context_recall</code> is 0.4 but <code>faithfulness</code> is 0.95, the retriever is starved and the generator is doing its job — fix the retriever.</p>
+
+<div class="insight">
+Splitting one quality number into four metrics turns evaluation into diagnosis. A diagnosis tells you which doctor to call. A score tells you to feel bad.
+</div>
+</section>
+
+<section id="quiz">
+<div class="sec-label">Quiz — Foundations</div>
+
+<div class="q-item" id="q1_1">
+<div class="q-text">1. Your Agent gets a 2/5 from the eval Judge on a customer interaction. Which of the following is the most useful next action?</div>
+<div class="options">
+<label><input type="radio" name="q1_1" value="a"> Adjust the system prompt and re-test.</label>
+<label><input type="radio" name="q1_1" value="b"> Open the trace and check which atomic dimension dropped — retrieval, tool argument, dependency order, or outcome state.</label>
+<label><input type="radio" name="q1_1" value="c"> Switch to a more powerful base model.</label>
+<label><input type="radio" name="q1_1" value="d"> Lower the quality threshold so 2/5 stops counting as a regression.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q1_1', 'g1', 9)">Check Answer</button>
+<div class="explanation">A total score doesn't tell you which layer broke. The dimension breakdown is what routes the fix to retrieval, tools, prompt, workflow, or memory.</div>
+</div>
+
+<div class="q-item" id="q1_2">
+<div class="q-text">2. Which of these is NOT part of the minimum rubric closed loop?</div>
+<div class="options">
+<label><input type="radio" name="q1_2" value="a"> Evidence Contract</label>
+<label><input type="radio" name="q1_2" value="b"> Score Dimensions</label>
+<label><input type="radio" name="q1_2" value="c"> Marketing Narrative</label>
+<label><input type="radio" name="q1_2" value="d"> Calibration Loop</label>
+</div>
+<input type="hidden" data-correct="c">
+<button class="check-btn" onclick="checkQ('q1_2', 'g1', 9)">Check Answer</button>
+<div class="explanation">The five steps are Evidence Contract → Score Dimensions → Failure Taxonomy → Remediation Target → Calibration Loop. Each is a system protocol element, not a comms artifact.</div>
+</div>
+
+<div class="q-item" id="q1_3">
+<div class="q-text">3. Your RAG Agent's customer says the answer was wrong. Which atomic dimension would tell you the retriever failed to surface the source material at all?</div>
+<div class="options">
+<label><input type="radio" name="q1_3" value="a"> <code>answer_relevance</code></label>
+<label><input type="radio" name="q1_3" value="b"> <code>groundedness</code></label>
+<label><input type="radio" name="q1_3" value="c"> <code>context_recall</code></label>
+<label><input type="radio" name="q1_3" value="d"> <code>interaction_efficiency</code></label>
+</div>
+<input type="hidden" data-correct="c">
+<button class="check-btn" onclick="checkQ('q1_3', 'g1', 9)">Check Answer</button>
+<div class="explanation"><code>context_recall</code> asks "was the necessary information actually retrieved?" A low score routes to the retriever, query rewrite, or chunking — not to the prompt.</div>
+</div>
+
+<div class="q-item" id="q1_4">
+<div class="q-text">4. The material was retrieved correctly but the model ignored it and hallucinated. Which dimension catches this specifically?</div>
+<div class="options">
+<label><input type="radio" name="q1_4" value="a"> <code>context_precision</code></label>
+<label><input type="radio" name="q1_4" value="b"> <code>groundedness</code> (or RAGAS <code>faithfulness</code>)</label>
+<label><input type="radio" name="q1_4" value="c"> <code>dependency_order</code></label>
+<label><input type="radio" name="q1_4" value="d"> <code>tool_selection</code></label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q1_4', 'g1', 9)">Check Answer</button>
+<div class="explanation">Groundedness / faithfulness asks whether key claims are actually supported by the retrieved context. A retrieval hit + hallucinated answer is a classic faithfulness failure that routes to the generator team.</div>
+</div>
+
+<div class="q-item" id="q1_5">
+<div class="q-text">5. In the MT-Bench study, what was the measured position-bias rate for Claude-v1 — the percentage of cases where it favored whichever answer came first?</div>
+<div class="options">
+<label><input type="radio" name="q1_5" value="a"> About 30%</label>
+<label><input type="radio" name="q1_5" value="b"> About 50%</label>
+<label><input type="radio" name="q1_5" value="c"> About 75%</label>
+<label><input type="radio" name="q1_5" value="d"> About 95%</label>
+</div>
+<input type="hidden" data-correct="c">
+<button class="check-btn" onclick="checkQ('q1_5', 'g1', 9)">Check Answer</button>
+<div class="explanation">Claude-v1 was biased toward the first answer in 75% of pairs. GPT-3.5 was at 50%. GPT-4 was the only judge with greater than 60% consistency across both orderings.</div>
+</div>
+
+<div class="q-item" id="q1_6">
+<div class="q-text">6. Why do practitioners say you should not use the same model family as both the Judge and the Generator?</div>
+<div class="options">
+<label><input type="radio" name="q1_6" value="a"> It violates Anthropic's terms of service.</label>
+<label><input type="radio" name="q1_6" value="b"> Judges show measurable self-enhancement bias — GPT-4 favors GPT-4 outputs by +10% win rate, Claude-v1 favors itself by +25%.</label>
+<label><input type="radio" name="q1_6" value="c"> The token cost is double.</label>
+<label><input type="radio" name="q1_6" value="d"> The Judge will refuse to evaluate.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q1_6', 'g1', 9)">Check Answer</button>
+<div class="explanation">Self-enhancement bias is real and measurable. It biases the Judge toward its own generation patterns and silently inflates win-rate on regression suites.</div>
+</div>
+
+<div class="q-item" id="q1_7">
+<div class="q-text">7. What's G-Eval's main contribution over naive "rate this 1–5" prompts?</div>
+<div class="options">
+<label><input type="radio" name="q1_7" value="a"> It uses a larger context window.</label>
+<label><input type="radio" name="q1_7" value="b"> It turns evaluation criteria into auto-generated chain-of-thought steps and form-fills, with continuous probability-weighted scoring instead of an integer.</label>
+<label><input type="radio" name="q1_7" value="c"> It requires a human-labeled reference for every input.</label>
+<label><input type="radio" name="q1_7" value="d"> It scores faster.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q1_7', 'g1', 9)">Check Answer</button>
+<div class="explanation">G-Eval's value is structural: criteria → CoT steps → form-filling → token-probability scoring. The same model becomes a much more reliable judge when the procedure is structured.</div>
+</div>
+
+<div class="q-item" id="q1_8">
+<div class="q-text">8. Which of these is TRUE about LLM-as-a-Judge?</div>
+<div class="options">
+<label><input type="radio" name="q1_8" value="a"> A strong LLM Judge can reach ~80% agreement with human experts — the same level as expert-to-expert agreement.</label>
+<label><input type="radio" name="q1_8" value="b"> LLM Judges are unbiased by construction.</label>
+<label><input type="radio" name="q1_8" value="c"> LLM Judges produce identical scores on repeated runs.</label>
+<label><input type="radio" name="q1_8" value="d"> LLM Judges only work for English.</label>
+</div>
+<input type="hidden" data-correct="a">
+<button class="check-btn" onclick="checkQ('q1_8', 'g1', 9)">Check Answer</button>
+<div class="explanation">MT-Bench measured GPT-4 reaching 80%+ agreement with humans, matching human-to-human agreement. That's why LLM-as-a-Judge is viable — but only with bias mitigations layered on.</div>
+</div>
+
+<div class="q-item" id="q1_9">
+<div class="q-text">9. Your team proposes a single "Agent Quality Score" rolled up from 7 sub-criteria for the company dashboard. What's the main product risk?</div>
+<div class="options">
+<label><input type="radio" name="q1_9" value="a"> The number won't fit in a Slack message.</label>
+<label><input type="radio" name="q1_9" value="b"> When the score drops, no one knows which layer broke, so engineering will reflexively tweak the prompt — and the real bug (often retrieval, tool args, or workflow) keeps coming back.</label>
+<label><input type="radio" name="q1_9" value="c"> The score won't correlate with NPS.</label>
+<label><input type="radio" name="q1_9" value="d"> The compute cost is too high.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q1_9', 'g1', 9)">Check Answer</button>
+<div class="explanation">Total scores collapse routing. A dashboard number is fine as a top-line indicator, but the actionable layer is always the atomic dimension — that's the field that says "fix the retriever" instead of "fix the prompt for the 12th time."</div>
+</div>
+
+<button class="score-btn" onclick="showScore()">See my score</button>
+<div id="score-panel" style="display:none;margin-top:18px;padding:18px 22px;background:var(--card);border:1.5px solid var(--g1);border-radius:10px;font-family:'JetBrains Mono',monospace">
+<div style="font-size:22px;font-weight:600;color:var(--g1)"><span id="score-correct">0</span> / <span id="score-total">9</span> correct</div>
+</div>
+</section>
+
+<section id="flashcards">
+<div class="sec-label">Flashcards — Foundations</div>
+<div class="fc-grid">
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">answer_relevance</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Atomic rubric dimension. Does the response actually address the user's goal, or does it answer a different question? A low score routes to intent recognition and task routing.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">groundedness</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Are the key claims in the answer actually supported by retrieved context or tool results? A low score routes to retrieval, citation logic, or evidence constraints in the prompt.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">context_recall</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Was the necessary information actually retrieved at all? Low scores route to retriever, query rewrite, or chunking — never to the prompt.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">context_precision</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Is the retrieved context clean and ranked well? Low scores point at rerankers, filtering, and context compression — the noise side of retrieval, not the recall side.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">tool_selection</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Did the agent pick the right tool from a set with overlapping capabilities? Low scores route to tool descriptions and the router — not to the model's intelligence.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">argument_correctness</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Are tool arguments complete, legally formatted, and consistent with the task? Low scores route to schemas, validators, enums, and parameter examples in the tool description.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">dependency_order</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Did tool calls happen in the required before/after order? Low scores route to workflow graphs and the planner — the structural constraints between steps.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">outcome_state</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Did the end-state in the world actually become the target state — was the record updated, the file written, the test passing? Verified by code, not by LLM judgment.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">interaction_efficiency</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Are turn count, tool calls, and cost within normal range? An efficiency anomaly is often the first signal of a loop or redundant-call failure mode.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Evidence Contract</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Step 1 of the rubric closed loop. The rule that says which fields the Judge is allowed to read, and which fields force a return of "unknown" when missing.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Score Dimensions</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Step 2 of the rubric closed loop. Quality is broken into atomic, independently scorable dimensions so each low score can route to one fix direction.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Failure Taxonomy</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Step 3 of the rubric closed loop. Low scores get categorized into actionable failure types — not just "bad" but "retrieval miss" or "tool argument error."</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Remediation Target</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Step 4 of the rubric closed loop. Each failure type points at exactly one asset — prompt, tool, workflow, memory, retriever, model, or human review.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Calibration Loop</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Step 5 of the rubric closed loop. The mechanism that keeps the Judge honest — human spot-checks, calibration sets, bias attacks, drift alerts.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">G-Eval</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Structured LLM-as-Judge method (Liu et al., 2023). Auto-generates chain-of-thought evaluation steps from criteria, scores by form-filling, uses token probability for continuous output.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Position bias</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">LLM Judge bias toward whichever option appears first. MT-Bench: Claude-v1 75%, GPT-3.5 50%, GPT-4 lowest. Defend by swapping order and only counting answers stable across both.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Verbosity bias</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">LLM Judge bias toward longer answers. "Repetitive list" attack fooled Claude-v1 and GPT-3.5 91.3%, GPT-4 only 8.7%. Defend by length-normalizing and CI-attacking.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Self-enhancement bias</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">LLM Judges favor their own model family's outputs. GPT-4 +10% win-rate boost on its own. Claude-v1 +25%. Never let Judge and Generator share a family in regression-critical lanes.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span><span class="gtag g2">02 · Applied</span></div><div class="fc-term">faithfulness (RAGAS)</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">RAGAS metric. Did the generator faithfully use the retrieved context, or did it ignore/contradict it? The generator-side counterpart to context_recall — same symptom, different fix.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+</div>
+</section>
+
+<div class="foot">
+<div>← <a href="index.html">Library</a> · Next: <a href="guide-02-applied.html">02 · Applied →</a></div>
+<div><a href="quiz-index.html">Full Quiz</a> · <a href="flashcards-index.html">All Flashcards</a></div>
+</div>
+
+</div>
+
+<script>
+const answers = {};
+function checkQ(id, group, total){
+  const item = document.getElementById(id);
+  const selected = item.querySelector('input[type=radio]:checked');
+  if(!selected){alert('Please select an answer first.');return}
+  const correctValue = item.querySelector('input[type=hidden][data-correct]').dataset.correct;
+  const isCorrect = selected.value === correctValue;
+  // Mark the correct radio with data-correct for CSS
+  item.querySelectorAll('input[type=radio]').forEach(r => {
+    if(r.value === correctValue) r.setAttribute('data-correct','true');
+  });
+  item.classList.remove('correct','wrong');
+  item.classList.add(isCorrect ? 'correct' : 'wrong');
+  item.querySelector('.check-btn').disabled = true;
+  item.querySelectorAll('input[type=radio]').forEach(r => r.disabled = true);
+  const exp = item.querySelector('.explanation');
+  if(exp) exp.style.display = 'block';
+  answers[id] = isCorrect;
+}
+function showScore(){
+  const vals = Object.values(answers);
+  const total = document.querySelectorAll('.q-item').length;
+  document.getElementById('score-correct').textContent = vals.filter(Boolean).length;
+  document.getElementById('score-total').textContent = total;
+  document.getElementById('score-panel').style.display = 'block';
+  document.getElementById('score-panel').scrollIntoView({behavior:'smooth',block:'center'});
+}
+function flip(card){ card.classList.toggle('flipped'); }
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(a.getAttribute('href'));
+    if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+</script>
+</body>
+</html>

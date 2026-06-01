@@ -1,0 +1,50 @@
+{
+  "order": 5,
+  "category": "advanced",
+  "collectionLabel": "Agent Eval Rubric",
+  "date": "2026-06-01",
+  "title": "The Agent Eval <em>Rubric</em>",
+  "subtitle": "A five-step protocol that turns \"the user complained\" into \"team X ships fix Y\" — three guides grounded in ten research sources.",
+  "home": "index.html",
+  "quizQuestions": 25,
+  "flashcards": 47,
+  "pages": [
+    {
+      "num": "GUIDE 01",
+      "title": "Why Rubrics Are a Product Decision",
+      "desc": "Atomic dimensions, the five-step closed loop, G-Eval's structured judgment, and the LLM Judge biases — position, verbosity, self-enhancement — with the MT-Bench numbers behind them.",
+      "href": "guide-01-foundations.html",
+      "cta": "Open guide"
+    },
+    {
+      "num": "GUIDE 02",
+      "title": "Building Your Rubric",
+      "desc": "Anthropic's grader stratification. Outcome, Answer, and Trajectory rubrics. Evidence gates, UNKNOWN as a first-class output, and <code>pass@k</code> vs <code>pass^k</code> for non-deterministic flows.",
+      "href": "guide-02-applied.html",
+      "cta": "Open guide"
+    },
+    {
+      "num": "GUIDE 03",
+      "title": "Operating the Rubric",
+      "desc": "The contextual rubric chain, Agentic Rubrics for SWE agents, the four aging signals, and treating rubric changes like system changes — patch, calibrate, shadow, release.",
+      "href": "guide-03-advanced.html",
+      "cta": "Open guide"
+    },
+    {
+      "num": "PRACTICE",
+      "title": "Full Quiz · 25 Questions",
+      "desc": "All 25 multiple-choice questions in one sitting — live score tracks as you go, with a per-guide breakdown at the end.",
+      "href": "quiz-index.html",
+      "cta": "Open quiz",
+      "practice": true
+    },
+    {
+      "num": "PRACTICE",
+      "title": "All Flashcards · 47 Cards",
+      "desc": "47 unique flip cards across all three guides. Multi-tagged cards (like RAGAS <code>faithfulness</code>) appear once with every relevant guide pill.",
+      "href": "flashcards-index.html",
+      "cta": "Open flashcards",
+      "practice": true
+    }
+  ]
+}

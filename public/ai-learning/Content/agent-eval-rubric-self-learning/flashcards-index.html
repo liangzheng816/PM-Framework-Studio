@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Agent Eval Rubric — Flashcards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,450;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4; --card:#fbf9f4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px 120px}
+.back{font-family:"JetBrains Mono",monospace;font-size:12px;text-decoration:none;color:var(--ink-soft);display:inline-flex;align-items:center;gap:6px;margin:28px 0 22px;border:1px solid var(--rule);border-radius:6px;padding:5px 12px;transition:all .14s}
+.back:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);font-weight:600;margin-bottom:18px}
+h1{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(36px,5vw,56px);letter-spacing:-.02em;line-height:1.05;margin:0 0 18px}
+h1 em{font-family:"Fraunces",serif;font-style:italic;font-weight:400;color:var(--accent)}
+.dek{font-family:"Newsreader",serif;font-style:italic;font-size:22px;color:var(--ink-soft);max-width:720px;margin:0 0 32px}
+
+/* Controls */
+.controls{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin:24px 0 20px;padding:16px 22px;background:var(--card);border:1px solid var(--rule);border-radius:12px}
+.filter-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.ftab{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:7px 14px;border-radius:6px;border:2px solid transparent;cursor:pointer;background:transparent;color:var(--ink-soft);transition:all .14s}
+.ftab:hover{background:#F1F5F9}
+.ftab.active{color:#fff;border-color:transparent}
+.ftab[data-f="all"].active{background:var(--ink)}
+.ftab[data-f="g1"].active{background:var(--g1)}
+.ftab[data-f="g2"].active{background:var(--g2)}
+.ftab[data-f="g3"].active{background:var(--g3)}
+.ctrl-btns{display:flex;gap:8px}
+.cbtn{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:7px 14px;border-radius:6px;border:1.5px solid var(--rule);background:transparent;color:var(--ink-soft);cursor:pointer;transition:all .14s}
+.cbtn:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+.counter-bar{margin:0 0 24px;padding:14px 22px;background:#F8FAFC;border:1px solid var(--rule);border-radius:10px;font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+
+/* Flashcards */
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
+.fc{perspective:900px;height:215px;cursor:pointer}
+.fc.hidden{display:none}
+.fc-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1)}
+.fc.flipped .fc-inner{transform:rotateY(180deg)}
+.fc-front,.fc-back{position:absolute;inset:0;border-radius:13px;padding:22px 22px 18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;justify-content:space-between}
+.fc-front{background:var(--card);border:1.5px solid var(--rule)}
+.fc[data-g="g1"] .fc-front{border-left:4px solid var(--g1)}
+.fc[data-g="g2"] .fc-front{border-left:4px solid var(--g2)}
+.fc[data-g="g3"] .fc-front{border-left:4px solid var(--g3)}
+.fc-back{transform:rotateY(180deg);color:#fff}
+.fc[data-g="g1"] .fc-back{background:var(--g1)}
+.fc[data-g="g2"] .fc-back{background:var(--g2)}
+.fc[data-g="g3"] .fc-back{background:var(--g3)}
+.fc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.gtag{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:4px;border:1.5px solid;line-height:1.6}
+.gtag.g1{color:var(--g1);border-color:color-mix(in srgb,var(--g1) 40%,transparent);background:color-mix(in srgb,var(--g1) 10%,transparent)}
+.gtag.g2{color:var(--g2);border-color:color-mix(in srgb,var(--g2) 40%,transparent);background:color-mix(in srgb,var(--g2) 10%,transparent)}
+.gtag.g3{color:var(--g3);border-color:color-mix(in srgb,var(--g3) 40%,transparent);background:color-mix(in srgb,var(--g3) 10%,transparent)}
+.fc-term{font-family:"JetBrains Mono",monospace;font-weight:600;font-size:14px}
+.fc[data-g="g1"] .fc-term{color:var(--g1)}
+.fc[data-g="g2"] .fc-term{color:var(--g2)}
+.fc[data-g="g3"] .fc-term{color:var(--g3)}
+.fc-def{font-size:13.5px;line-height:1.5;color:#fff}
+.fc-tap{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);margin-top:auto}
+.fc-back .fc-tap{color:rgba(255,255,255,.55)}
+
+.crosslink{margin-top:60px;padding:22px 28px;background:var(--card);border:1px solid var(--rule);border-radius:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-family:"JetBrains Mono",monospace;font-size:13px}
+.crosslink a{color:var(--g1);text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--g1) 30%,transparent);font-weight:600}
+.foot{margin-top:40px;padding-top:24px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="index.html">← Back to library</a>
+
+<div class="kicker">Flashcard Deck · All Guides · 47 Unique Cards</div>
+<h1>Drill the <em>Atoms</em></h1>
+<p class="dek">Filter by guide, shuffle the deck, or flip them all at once. Multi-tagged cards (like RAGAS <code>faithfulness</code>) appear once with all relevant guide pills.</p>
+
+<div class="controls">
+  <div class="filter-tabs">
+    <button class="ftab active" data-f="all" onclick="setFilter('all')">All 47</button>
+    <button class="ftab" data-f="g1" onclick="setFilter('g1')">01 · Foundations</button>
+    <button class="ftab" data-f="g2" onclick="setFilter('g2')">02 · Applied</button>
+    <button class="ftab" data-f="g3" onclick="setFilter('g3')">03 · Advanced</button>
+  </div>
+  <div class="ctrl-btns">
+    <button class="cbtn" onclick="shuffleCards()">⇄ Shuffle</button>
+    <button class="cbtn" id="flip-all-btn" onclick="flipAll()">↻ Flip All</button>
+    <button class="cbtn" onclick="resetAll()">↺ Reset</button>
+  </div>
+</div>
+
+<div class="counter-bar">
+  <span>Showing <span id="visible-count">47</span> cards · <span id="flipped-count">0</span> flipped</span>
+  <span>Click any card to flip · Sorted A→Z</span>
+</div>
+
+<div class="fc-grid" id="card-grid">
+
+<div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Agentic Rubrics for SWE</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Raghavendra et al., 2026. Generates per-instance code rubrics from repo + issue. Scores patches on file targeting, spec alignment, integrity, runtime. Sonnet-4.5 rubrics had only 2% flakiness.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Answer Rubric</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Asks: was the final expression correct, complete, grounded, constraint-compliant? Catches hallucinations, missing citations, format violations, off-topic responses.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">answer_relevance</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Atomic rubric dimension. Does the response actually address the user's goal, or does it answer a different question? A low score routes to intent recognition and task routing.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">argument_correctness</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Are tool arguments complete, legally formatted, and consistent with the task? Low scores route to schemas, validators, enums, and parameter examples in the tool description.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Bias tests</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Adversarial probes for known LLM Judge weaknesses: position swap, repetitive-list verbosity attack, self-enhancement probe. Run on every candidate rubric or Judge model change.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Calibration Loop</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Step 5 of the rubric closed loop. The mechanism that keeps the Judge honest — human spot-checks, calibration sets, bias attacks, drift alerts.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Calibration set</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">A small, hand-graded set of representative samples (good + bad) used to measure whether a Judge or rubric matches human judgment. The "staging environment" for eval changes.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Code-based grader</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Deterministic check using rules, schemas, sandboxes, or DB queries. Cheap, fast, reproducible. Use whenever the question has a non-probabilistic oracle.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Context Gathering Agent</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">First stage of the contextual rubric chain. Collects user goal, business rules, available tools, ground truth, end-state, and known failure modes before any judging happens.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">context_precision</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Is the retrieved context clean and ranked well? Low scores point at rerankers, filtering, and context compression — the noise side of retrieval, not the recall side.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">context_recall</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Was the necessary information actually retrieved at all? Low scores route to retriever, query rewrite, or chunking — never to the prompt.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">dependency_order</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Did tool calls happen in the required before/after order? Low scores route to workflow graphs and the planner — the structural constraints between steps.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Eval Case Generator</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Final stage of the rubric chain. Packages today's failure into a reusable replay sample plus a candidate fix sketch. Today's incident becomes tomorrow's regression test.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Evidence Contract</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Step 1 of the rubric closed loop. The rule that says which fields the Judge is allowed to read, and which fields force a return of "unknown" when missing.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Evidence prerequisite</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Entry condition for an atomic dimension. Before scoring, check that the evidence needed exists in the trace; if not, return "unknown." Prevents Judge hallucination on missing data.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span><span class="gtag g2">02 · Applied</span></div><div class="fc-term">faithfulness (RAGAS)</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">RAGAS metric. Did the generator faithfully use the retrieved context, or did it ignore/contradict it? The generator-side counterpart to context_recall — same symptom, different fix.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Failure Attribution</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Maps a low score on a dimension to a broken layer (retrieval / tool / prompt / workflow / memory) and a specific remediation target. Turns "bad" into "fix this asset."</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Failure Taxonomy</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Step 3 of the rubric closed loop. Low scores get categorized into actionable failure types — not just "bad" but "retrieval miss" or "tool argument error."</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">G-Eval</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Structured LLM-as-Judge method (Liu et al., 2023). Auto-generates chain-of-thought evaluation steps from criteria, scores by form-filling, uses token probability for continuous output.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Grader stratification</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Anthropic's three-tier eval system: code-based for deterministic checks, model-based for semantic judgment, human for calibration. Each tier catches what the cheaper tier below it cannot.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">groundedness</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Are the key claims in the answer actually supported by retrieved context or tool results? A low score routes to retrieval, citation logic, or evidence constraints in the prompt.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Human grader</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Expert review or crowdsourced judgment. Expensive and slow but the gold standard. Reserved for calibration sets, gray-area cases, and taxonomy review — not bulk grading.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">interaction_efficiency</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Are turn count, tool calls, and cost within normal range? An efficiency anomaly is often the first signal of a loop or redundant-call failure mode.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Model-based grader</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">LLM-as-Judge. Flexible, handles open-ended quality and semantic claims. Non-deterministic and biased — requires human calibration to be trustworthy.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Must-pass assertion</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Hard-constraint check on a specific step that must happen. Reserve for safety / business hard-rules (auth, payment, data deletion) — never for full path lockdown.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Outcome Rubric</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Asks: did the end-state in the world actually match the target? Verifies files written, records updated, tests passing, reports containing required conclusions. The main judge.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">outcome_state</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Did the end-state in the world actually become the target state — was the record updated, the file written, the test passing? Verified by code, not by LLM judgment.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Parameter-blind selection</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">TRAJECT-Bench failure mode. Right tool, wrong arguments — wrong values, formats, or units. Fix: tighter schemas, validators, enums, parameter examples in tool descriptions.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">pass@k</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Probability of at least one success in k attempts. Use for creative or exploratory tasks where best-of-k retries are part of the product experience.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">pass^k</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Probability that ALL k attempts succeed. Use for reliability-critical flows like payments or data deletion — any single bad attempt is a real-world incident.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Position bias</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">LLM Judge bias toward whichever option appears first. MT-Bench: Claude-v1 75%, GPT-3.5 50%, GPT-4 lowest. Defend by swapping order and only counting answers stable across both.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Redundant tool calling</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">TRAJECT-Bench failure mode. Tool called more times than needed, or with unrelated hallucinated calls. Fix: stopping rules, cost guardrails, planner — also a training-data smell.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Remediation Target</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Step 4 of the rubric closed loop. Each failure type points at exactly one asset — prompt, tool, workflow, memory, retriever, model, or human review.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Repairable signal</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">The Rubric's actual output goal. Not a number; a failure type + asset target + candidate fix that a teammate can use to file a ticket with one owner and one suggested action.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Rubric aging signals</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Four canonical signals that the rubric (not the Agent) is broken: humans overturning the Judge, persistent unknown rates, low scores that can't map to fixes, perma-pass dimensions.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Rubric Builder</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Generates task-specific criteria from gathered context. Each criterion comes with an evidence prerequisite and a remediation target. Replaces generic checklists.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Rubric version release</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Treat each rubric change like a code release: bug report → candidate patch → calibration set replay → bias tests → shadow eval → version pin. Rolling forward and back become safe operations.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Score Dimensions</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Step 2 of the rubric closed loop. Quality is broken into atomic, independently scorable dimensions so each low score can route to one fix direction.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Self-enhancement bias</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">LLM Judges favor their own model family's outputs. GPT-4 +10% win-rate boost on its own. Claude-v1 +25%. Never let Judge and Generator share a family in regression-critical lanes.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Shadow evaluation</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Run a candidate rubric in parallel with the live rubric on real traffic. Only release if human-agreement, false-positive rate, false-negative rate, and remediation-pointing accuracy all improve.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Similar tool confusion</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">TRAJECT-Bench failure mode. Overlapping tool capabilities confuse the agent into picking the worse option. Fix: sharper tool descriptions, router improvements, disambiguation examples.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">tool_selection</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Did the agent pick the right tool from a set with overlapping capabilities? Low scores route to tool descriptions and the router — not to the model's intelligence.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Trace (transcript)</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">The complete record of a trial: outputs, tool calls, reasoning, intermediate results, costs. The substrate every rubric reads from. If the trace is incomplete, the Judge is forced to guess.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Trace Inspector</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Structured reader of the trace: tool calls, intermediate states, end-state, costs. Feeds the Judge the evidence each rubric dimension needs.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Trajectory Rubric</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Asks: were tool choice, parameters, dependency order, exception recovery, cost, and turn count reasonable? Catches risks invisible in the final answer. Acts as diagnostic evidence.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">UNKNOWN (insufficient evidence)</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">First-class rubric output for when the trace doesn't contain enough evidence to judge. The single most important defense against fabricated verdicts being written into asset fixes.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Verbosity bias</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">LLM Judge bias toward longer answers. "Repetitive list" attack fooled Claude-v1 and GPT-3.5 91.3%, GPT-4 only 8.7%. Defend by length-normalizing and CI-attacking.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+</div>
+
+<div class="crosslink">
+  <span>Ready to test the same concepts under pressure?</span>
+  <a href="quiz-index.html">Take the full quiz →</a>
+</div>
+
+<div class="foot">47 unique cards · Agent Eval Rubric · self-learning library</div>
+
+</div>
+
+<script>
+let currentFilter = 'all';
+let allFlipped = false;
+const allCards = () => document.querySelectorAll('#card-grid .fc');
+const visibleCards = () => document.querySelectorAll('#card-grid .fc:not(.hidden)');
+
+function flip(card){
+  card.classList.toggle('flipped');
+  updateCounters();
+}
+function setFilter(f){
+  currentFilter = f;
+  document.querySelectorAll('.ftab').forEach(t => t.classList.toggle('active', t.dataset.f === f));
+  allCards().forEach(c => c.classList.toggle('hidden', f !== 'all' && c.dataset.g !== f));
+  updateCounters();
+}
+function flipAll(){
+  allFlipped = !allFlipped;
+  [...visibleCards()].forEach(c => c.classList.toggle('flipped', allFlipped));
+  document.getElementById('flip-all-btn').textContent = allFlipped ? '↺ Unflip All' : '↻ Flip All';
+  updateCounters();
+}
+function shuffleCards(){
+  allFlipped = false;
+  document.getElementById('flip-all-btn').textContent = '↻ Flip All';
+  const grid = document.getElementById('card-grid');
+  const visible = [...grid.querySelectorAll('.fc:not(.hidden)')];
+  const hidden = [...grid.querySelectorAll('.fc.hidden')];
+  visible.forEach(c => c.classList.remove('flipped'));
+  for(let i = visible.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [visible[i], visible[j]] = [visible[j], visible[i]];
+  }
+  [...visible, ...hidden].forEach(c => grid.appendChild(c));
+  updateCounters();
+}
+function resetAll(){
+  allCards().forEach(c => c.classList.remove('flipped'));
+  allFlipped = false;
+  document.getElementById('flip-all-btn').textContent = '↻ Flip All';
+  updateCounters();
+}
+function updateCounters(){
+  const vis = [...visibleCards()];
+  const flipped = vis.filter(c => c.classList.contains('flipped'));
+  document.getElementById('visible-count').textContent = vis.length;
+  document.getElementById('flipped-count').textContent = flipped.length;
+}
+updateCounters();
+</script>
+</body>
+</html>

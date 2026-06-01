@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Agent Eval Rubric — 02 · Applied</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,450;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4; --card:#fbf9f4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--g2);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;counter-reset:slide}
+.wrap{max-width:1040px;margin:0 auto;padding:0 28px 120px}
+.back{font-family:"JetBrains Mono",monospace;font-size:12px;text-decoration:none;color:var(--ink-soft);display:inline-flex;align-items:center;gap:6px;margin:28px 0 22px;border:1px solid var(--rule);border-radius:6px;padding:5px 12px;transition:all .14s}
+.back:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--g2);font-weight:600;margin-bottom:18px}
+h1{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(36px,5vw,56px);letter-spacing:-.02em;line-height:1.05;margin:0 0 18px}
+h1 em{font-family:"Fraunces",serif;font-style:italic;font-weight:400;color:var(--accent)}
+.dek{font-family:"Newsreader",serif;font-style:italic;font-size:22px;color:var(--ink-soft);max-width:720px;margin:0 0 38px}
+
+.topnav{position:sticky;top:0;background:rgba(244,241,234,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);margin:0 -28px 32px;padding:14px 28px;z-index:20;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.topnav a{color:var(--ink-soft);text-decoration:none;margin-right:18px;padding:4px 0;border-bottom:2px solid transparent;transition:all .14s}
+.topnav a:hover{color:var(--g2);border-bottom-color:var(--g2)}
+
+.takeaway-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:30px 0 50px}
+@media(max-width:760px){.takeaway-grid{grid-template-columns:1fr}}
+.tk{background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--g2);border-radius:10px;padding:20px 22px}
+.tk-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--g2);font-weight:600;margin-bottom:8px}
+.tk-text{font-size:16px;line-height:1.45;color:var(--ink)}
+
+section:not(#quiz):not(#flashcards){counter-increment:slide;background:var(--card);border:1.5px solid color-mix(in srgb, var(--guide-color) 28%, var(--rule));border-radius:18px;box-shadow:0 8px 36px -10px rgba(15,23,42,.18),0 1px 0 rgba(15,23,42,.04);margin:48px 0;overflow:hidden;position:relative}
+section:not(#quiz):not(#flashcards) h2{margin:0;padding:26px 36px 22px;background:var(--guide-color);color:#fff;font-family:"Fraunces",serif;font-weight:900;font-size:clamp(20px,2.8vw,26px);letter-spacing:-.015em;line-height:1.1;display:flex;align-items:flex-start;gap:14px}
+section:not(#quiz):not(#flashcards) h2::before{content:counter(slide,decimal-leading-zero);font-family:"JetBrains Mono",monospace;font-weight:600;font-size:12px;letter-spacing:.1em;background:rgba(255,255,255,.16);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.28);padding:4px 10px;border-radius:5px;flex-shrink:0;margin-top:3px;white-space:nowrap}
+section:not(#quiz):not(#flashcards)>p,section:not(#quiz):not(#flashcards)>.insight,section:not(#quiz):not(#flashcards)>.misconception,section:not(#quiz):not(#flashcards)>blockquote,section:not(#quiz):not(#flashcards)>pre,section:not(#quiz):not(#flashcards)>.dimtable,section:not(#quiz):not(#flashcards)>.flow,section:not(#quiz):not(#flashcards)>.pmbox,section:not(#quiz):not(#flashcards)>.codeblock{margin-left:36px;margin-right:36px}
+section:not(#quiz):not(#flashcards)>p:first-of-type{margin-top:28px}
+section:not(#quiz):not(#flashcards)>p:last-of-type,section:not(#quiz):not(#flashcards)>blockquote:last-child,section:not(#quiz):not(#flashcards)>.misconception:last-child{margin-bottom:34px}
+section:not(#quiz):not(#flashcards)::after{content:"";display:block;height:4px;background:linear-gradient(90deg,var(--guide-color) 0%,color-mix(in srgb, var(--guide-color) 30%, transparent) 100%);margin-top:34px;opacity:.35}
+@media(max-width:680px){section:not(#quiz):not(#flashcards) h2{padding:20px 22px 18px;font-size:20px}section:not(#quiz):not(#flashcards)>p,section:not(#quiz):not(#flashcards)>.insight,section:not(#quiz):not(#flashcards)>.misconception{margin-left:22px;margin-right:22px}}
+
+.insight,.misconception{border-radius:10px;padding:18px 22px;margin:22px 0;font-size:16.5px;line-height:1.5}
+.insight{border-left:4px solid var(--g2);background:var(--amber-soft)}
+.misconception{border-left:4px solid var(--accent);background:var(--accent-soft)}
+.insight::before{content:"✦ Key insight — ";font-weight:600;color:var(--g2)}
+.misconception::before{content:"✕ Common misconception — ";font-weight:600;color:var(--accent)}
+
+.dimtable{margin:24px 0;border:1px solid var(--rule);border-radius:10px;overflow:hidden;background:var(--card)}
+.dimtable .row{display:grid;grid-template-columns:200px 1fr 220px;gap:0;border-bottom:1px solid var(--rule);font-size:14.5px}
+.dimtable .row:last-child{border-bottom:none}
+.dimtable .row.head{background:#F8FAFC;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+.dimtable .row .c{padding:11px 16px;border-right:1px solid var(--rule)}
+.dimtable .row .c:last-child{border-right:none}
+.dimtable code{font-family:"JetBrains Mono",monospace;font-size:13px;background:#F1F5F9;color:var(--g2);padding:2px 6px;border-radius:4px;font-weight:600}
+@media(max-width:760px){.dimtable .row{grid-template-columns:1fr}.dimtable .row .c{border-right:none;border-bottom:1px solid var(--rule)}.dimtable .row .c:last-child{border-bottom:none}}
+
+.flow{margin:24px 0;padding:18px 22px;background:#F8FAFC;border:1px dashed var(--rule);border-radius:10px;font-family:"JetBrains Mono",monospace;font-size:13.5px;line-height:1.7;color:var(--ink)}
+.flow .step{display:inline-block;background:#fff;padding:4px 10px;border-radius:5px;border:1px solid var(--rule);margin:2px 0}
+.flow .arr{color:var(--g2);margin:0 6px;font-weight:600}
+
+.pmbox{margin:22px 0;padding:18px 22px;background:#FFF7ED;border-left:4px solid var(--accent);border-radius:10px;font-size:16.5px}
+.pmbox::before{content:"📋 PM translation — ";font-weight:600;color:var(--accent);font-family:"Newsreader",serif}
+
+.codeblock{margin:24px 0;padding:18px 22px;background:#0F172A;color:#E2E8F0;border-radius:10px;font-family:"JetBrains Mono",monospace;font-size:13px;line-height:1.6;white-space:pre-wrap}
+.codeblock .com{color:#64748B}
+.codeblock .key{color:#60A5FA}
+.codeblock .str{color:#FCD34D}
+
+code,.mono{font-family:"JetBrains Mono",monospace;font-size:.82em;background:#F1F5F9;padding:.08em .42em;border-radius:4px;color:var(--g2)}
+
+.sec-label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin:48px 0 14px;font-weight:600}
+.q-item{margin:24px 0;padding:22px 26px;background:var(--card);border:1.5px solid var(--rule);border-radius:12px}
+.q-item.correct{border-color:#16A34A;background:#F0FDF4}
+.q-item.wrong{border-color:var(--accent);background:#FFF7ED}
+.q-text{font-size:17px;font-weight:600;margin-bottom:14px}
+.options{display:flex;flex-direction:column;gap:9px;margin-bottom:16px}
+.options label{display:flex;align-items:flex-start;gap:10px;font-size:16px;cursor:pointer;padding:8px 12px;border-radius:7px;border:1.5px solid var(--rule);background:var(--paper);transition:background .12s}
+.options label:hover{background:#F1F5F9}
+.q-item.correct label:has(input[data-correct]){background:#DCFCE7;border-color:#16A34A}
+.q-item.wrong label:has(input:checked:not([data-correct])){background:#FFEDD5;border-color:var(--accent)}
+.check-btn{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:8px 18px;border-radius:7px;border:1.5px solid var(--g2);background:transparent;color:var(--g2);cursor:pointer;transition:all .14s}
+.check-btn:hover:not(:disabled){background:var(--g2);color:#fff}
+.check-btn:disabled{opacity:.4;cursor:not-allowed}
+.explanation{margin-top:14px;padding:12px 16px;background:#F1F5F9;border-left:3px solid var(--g2);border-radius:6px;font-size:15px;color:var(--ink-soft);line-height:1.5}
+.score-btn{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:10px 22px;border-radius:8px;border:none;background:var(--ink);color:#fff;cursor:pointer;margin-top:20px}
+
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;margin-top:18px}
+.fc{perspective:900px;height:210px;cursor:pointer}
+.fc-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1)}
+.fc.flipped .fc-inner{transform:rotateY(180deg)}
+.fc-front,.fc-back{position:absolute;inset:0;border-radius:13px;padding:22px 22px 18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;justify-content:space-between}
+.fc-front{background:var(--card);border:1.5px solid var(--rule);border-left:4px solid var(--g2)}
+.fc-back{transform:rotateY(180deg);background:var(--g2);color:#fff}
+.fc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.gtag{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:4px;border:1.5px solid;line-height:1.6}
+.gtag.g1{color:var(--g1);border-color:color-mix(in srgb,var(--g1) 40%,transparent);background:color-mix(in srgb,var(--g1) 10%,transparent)}
+.gtag.g2{color:var(--g2);border-color:color-mix(in srgb,var(--g2) 40%,transparent);background:color-mix(in srgb,var(--g2) 10%,transparent)}
+.gtag.g3{color:var(--g3);border-color:color-mix(in srgb,var(--g3) 40%,transparent);background:color-mix(in srgb,var(--g3) 10%,transparent)}
+.fc-term{font-family:"JetBrains Mono",monospace;font-weight:600;font-size:14px;color:var(--g2)}
+.fc-def{font-size:13.5px;line-height:1.5;color:#fff}
+.fc-tap{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);margin-top:auto}
+.fc-back .fc-tap{color:rgba(255,255,255,.55)}
+
+.foot{margin-top:60px;padding-top:24px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.foot a{color:var(--g2);text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--g2) 30%,transparent)}
+.foot a:hover{border-bottom-color:var(--g2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="index.html">← Back to library</a>
+
+<div class="kicker">02 · Applied</div>
+<h1>Building Your <em>Rubric</em></h1>
+<p class="dek">Code first, model second, human last — and never trust one tier alone. The atoms in Guide 01 need stratified graders, evidence rules, and an "unknown" exit before they're production-ready.</p>
+
+<nav class="topnav">
+  <a href="#stratify">01 Stratify</a>
+  <a href="#deterministic">02 Deterministic</a>
+  <a href="#three-rubrics">03 Three rubrics</a>
+  <a href="#outcome-trace">04 Outcome vs Trace</a>
+  <a href="#traject-bench">05 Trajectory bugs</a>
+  <a href="#evidence-prereq">06 Evidence</a>
+  <a href="#unknown">07 UNKNOWN</a>
+  <a href="#pass-at-k">08 pass@k</a>
+  <a href="#quiz">Quiz</a>
+  <a href="#flashcards">Cards</a>
+</nav>
+
+<div class="takeaway-grid">
+  <div class="tk"><div class="tk-label">Stratify graders</div><div class="tk-text">Code-based blocks hard errors. Model-based handles semantics. Human calibrates the model. Anthropic's three-tier system is the cost/reliability backbone.</div></div>
+  <div class="tk"><div class="tk-label">Three rubric kinds</div><div class="tk-text">Outcome (did the world change?), Answer (was the response right?), Trajectory (were tools chosen and ordered right?). Outcome judges; Trace diagnoses.</div></div>
+  <div class="tk"><div class="tk-label">Allow "unknown"</div><div class="tk-text">If the trace is missing evidence, force the Judge to return unknown. Otherwise it hallucinates a "complete" verdict and writes a wrong fix into your assets.</div></div>
+</div>
+
+<section id="stratify">
+<h2>Grader stratification — code first, model second, human last</h2>
+
+<p>Anthropic's eval framework names three grader types, in this exact cost-and-reliability order:</p>
+
+<div class="dimtable">
+  <div class="row head"><div class="c">Grader type</div><div class="c">What it's good for</div><div class="c">Cost / reliability</div></div>
+  <div class="row"><div class="c">Code-based</div><div class="c">JSON validity, schema check, state assertions, unit tests, sandbox runs, exact string match.</div><div class="c">Cheap, fast, reproducible. Brittle to valid variation.</div></div>
+  <div class="row"><div class="c">Model-based (LLM-as-Judge)</div><div class="c">Semantic quality, claim support, user-goal completion, expressive completeness.</div><div class="c">Flexible. Biased. Needs human calibration to trust.</div></div>
+  <div class="row"><div class="c">Human</div><div class="c">High-value samples, gray-area judgments, calibration ground truth, taxonomy review.</div><div class="c">Expensive. Slow. The gold standard for everything else to align to.</div></div>
+</div>
+
+<p>The point of stratification is not "use all three." It's that each layer catches what the cheaper layer below it cannot, so you don't pay LLM costs to check what a regex could and you don't pay human-review costs on cases an LLM Judge already gets right.</p>
+
+<div class="insight">
+Stratification is a cost-and-reliability decision, not a sophistication contest. The cheapest grader that gives a trustworthy signal wins the slot. LLM Judge is reserved for what code can't enumerate.
+</div>
+</section>
+
+<section id="deterministic">
+<h2>Deterministic checks come before semantic judgment</h2>
+
+<p>If a question can be answered by a rule, an enum, a regex, a sandbox, or a database query, never let an LLM judge it. Turning a deterministic check into a probabilistic one is one of the most common rubric design mistakes — and the most expensive one.</p>
+
+<p>Examples that should always be code-based, not model-based:</p>
+
+<div class="dimtable">
+  <div class="row head"><div class="c">Question</div><div class="c">Should be answered by</div><div class="c">Why not LLM Judge</div></div>
+  <div class="row"><div class="c">Is the JSON valid?</div><div class="c">A JSON parser.</div><div class="c">It's a binary check with a free, perfect oracle.</div></div>
+  <div class="row"><div class="c">Did the order status actually update?</div><div class="c">A database query.</div><div class="c">The truth lives in the DB, not the trace.</div></div>
+  <div class="row"><div class="c">Did the code pass tests?</div><div class="c">A test runner.</div><div class="c">"Looks like it should pass" is not passing.</div></div>
+  <div class="row"><div class="c">Is the amount under the spend limit?</div><div class="c">A threshold comparison.</div><div class="c">Probabilistic check on a deterministic constraint is risky.</div></div>
+  <div class="row"><div class="c">Did the tool return an error?</div><div class="c">The tool result schema.</div><div class="c">The error field is right there.</div></div>
+</div>
+
+<div class="insight">
+LLM Judge's value is in places where rules can't enumerate — semantic quality, claim support, user-goal completion. Spend its budget there, not on checks a regex already handles.
+</div>
+
+<div class="misconception">
+"Let the LLM Judge do everything — it's smart enough." A smart Judge handling JSON validity is still a slow, expensive, non-deterministic judge handling JSON validity. You've replaced a parser with a coin flip.
+</div>
+</section>
+
+<section id="three-rubrics">
+<h2>Three rubric kinds — Outcome, Answer, Trajectory</h2>
+
+<p>An Agent product is harder to evaluate than a chatbot because the user only sees one final message, but the business risk lives in the middle steps. Three rubric kinds split this cleanly:</p>
+
+<div class="dimtable">
+  <div class="row head"><div class="c">Rubric kind</div><div class="c">Asks the question</div><div class="c">Catches</div></div>
+  <div class="row"><div class="c">Outcome Rubric</div><div class="c">Did the end-state in the world actually match the target?</div><div class="c">"Agent said done but record not updated"; missing files; failed tests; missing required conclusions.</div></div>
+  <div class="row"><div class="c">Answer Rubric</div><div class="c">Was the final expression correct, complete, grounded, and constraint-compliant?</div><div class="c">Hallucinations, missing citations, format violations, off-topic responses.</div></div>
+  <div class="row"><div class="c">Trajectory Rubric</div><div class="c">Were tool choice, parameters, dependency order, exception recovery, cost, and turn count reasonable?</div><div class="c">Tool misuse, parameter blindness, redundant calls, runaway cost — risks invisible in the final answer.</div></div>
+</div>
+
+<p>You don't need all three for every product. A pure RAG-style QA bot rarely needs a Trajectory Rubric. A multi-step bookings Agent rarely gets away without one.</p>
+
+<div class="pmbox">
+A user reporting "the answer was great" doesn't mean the trajectory was safe. The booking went through and the email looked nice — but the Agent also called the refund API twice while it was at it. Trajectory rubrics surface that.
+</div>
+</section>
+
+<section id="outcome-trace">
+<h2>Outcome is the main judge, Trace is the diagnostic</h2>
+
+<p>A common over-correction once teams add Trajectory Rubrics is to write the "correct path" as a must-pass assertion: <em>"the Agent must call A, then B, then C in this exact order."</em> This is almost always wrong.</p>
+
+<p>Hard-coded paths punish valid new approaches the model might find. They make the eval brittle, and they conflate "the Agent took a path I didn't expect" with "the Agent failed."</p>
+
+<div class="insight">
+The healthier relationship: Outcome is the main judge. Trace is the diagnostic evidence. Only paths that represent explicit safety or business-hard-constraints should be hard-coded as must-pass assertions — e.g., "must check inventory before charging the card."
+</div>
+
+<p>Anthropic states this directly in their agent eval guidance: <em>"There is a common instinct to check that agents followed very specific steps like a sequence of tool calls in the right order — it's often better to grade what the agent produced, not the path it took."</em></p>
+
+<div class="misconception">
+"If we don't lock the path, the agent will do something crazy." It can — but most "crazy" paths are actually better paths in disguise. The safety net is must-pass assertions on the few steps that actually matter (auth, payment, data deletion), plus Outcome verification — not a play-by-play script.
+</div>
+</section>
+
+<section id="traject-bench">
+<h2>The trajectory-level failure modes you'll see in production</h2>
+
+<p>TRAJECT-Bench (He et al., 2025) decomposed tool-use evaluation into three sub-dimensions — tool selection, argument correctness, dependency order — and identified four named failure patterns. Each maps to a different fix.</p>
+
+<div class="dimtable">
+  <div class="row head"><div class="c">Failure mode</div><div class="c">What you see in the trace</div><div class="c">Fix points at</div></div>
+  <div class="row"><div class="c">Similar tool confusion</div><div class="c">Two tools have overlapping capabilities; the Agent picks the worse one (e.g., "Spotify: Search" vs a sibling).</div><div class="c">Tool descriptions, router, disambiguation examples.</div></div>
+  <div class="row"><div class="c">Parameter-blind selection</div><div class="c">Right tool picked, but arguments use wrong values, formats, or units.</div><div class="c">Schema, validator, enum constraints, parameter examples.</div></div>
+  <div class="row"><div class="c">Redundant tool calling</div><div class="c">Tool called more times than needed — "related but unhelpful" calls, or unrelated hallucinated calls.</div><div class="c">Stopping rule, cost guardrail, planner — also a training-data smell.</div></div>
+  <div class="row"><div class="c">Intent inference failure</div><div class="c">Indirect user goal misread; Agent solves a different problem than asked.</div><div class="c">Prompt clarity, task router, intent classifier.</div></div>
+</div>
+
+<p>The paper also showed model performance dropping sharply at the transition from short to mid-length trajectories — across Claude-4, Gemini-2.5-pro, o4-mini, DeepSeek, Qwen3-235B-A22B, and Kimi-k2. <em>Scaling tool use is a universal challenge</em>, in the authors' words. If your Agent works on 3-step demos and breaks on 7-step real flows, you're looking at this transition.</p>
+
+<div class="insight">
+Tool-chain failures look identical to the user — the answer is just wrong. But the fix differs by failure mode. Naming the mode is what turns a "tool bug" into a routable engineering task.
+</div>
+</section>
+
+<section id="evidence-prereq">
+<h2>Every dimension needs an evidence prerequisite</h2>
+
+<p>The most dangerous failure mode in eval design isn't the Judge being wrong. It's the Judge being confidently wrong because evidence was missing and it filled the gap with a guess.</p>
+
+<p>Every atomic dimension should have an entry condition — a check that the evidence needed to judge it actually exists in the trace. If the evidence is missing, the dimension returns "unknown," not "pass" and not "fail."</p>
+
+<div class="dimtable">
+  <div class="row head"><div class="c">Dimension</div><div class="c">Evidence prerequisite</div><div class="c">If missing →</div></div>
+  <div class="row"><div class="c"><code>groundedness</code></div><div class="c"><code>retrieval_context</code> field present and non-empty</div><div class="c">return <code>unknown</code></div></div>
+  <div class="row"><div class="c"><code>outcome_state</code></div><div class="c"><code>expected_state</code> defined, or state-check tool result</div><div class="c">return <code>unknown</code></div></div>
+  <div class="row"><div class="c"><code>argument_correctness</code></div><div class="c">Tool call log with arguments captured</div><div class="c">return <code>unknown</code></div></div>
+  <div class="row"><div class="c"><code>answer_relevance</code></div><div class="c">Original user goal captured</div><div class="c">return <code>unknown</code></div></div>
+  <div class="row"><div class="c"><code>dependency_order</code></div><div class="c">Tool call sequence with timestamps; declared dependencies</div><div class="c">return <code>unknown</code></div></div>
+</div>
+
+<div class="pmbox">
+This is the same idea as "garbage in, garbage out." If your trace doesn't capture the user's original ask, no Judge can score "answer relevance" honestly — it can only guess what the user wanted. Force the system to say "I can't tell" instead of guessing.
+</div>
+</section>
+
+<section id="unknown">
+<h2>UNKNOWN is a first-class output</h2>
+
+<p>LLMs are extremely good at producing plausible-looking explanations. That's exactly the trait that makes them dangerous Judges when evidence is missing — they will fabricate a "complete" verdict instead of admitting the trace is incomplete.</p>
+
+<p>If your Rubric doesn't have <code>unknown</code> / <code>insufficient_evidence</code> as a first-class output, the Judge will paper over evidence gaps with common-sense judgments. Those judgments then get written into your asset layer as "fixes" for problems that didn't exist.</p>
+
+<div class="insight">
+An excellent eval Agent says "insufficient evidence, can't judge" often. The output looks less polished than one that always answers, but the rate of incorrect asset writebacks drops sharply. The self-evolution loop's worst enemy is not "missed bad samples" — it's "fabricated verdicts that became assets."
+</div>
+
+<div class="misconception">
+"An eval that says 'unknown' a lot looks unfinished — leadership won't accept it." That's a communication problem, not an eval problem. Reframe "unknown" as a coverage report — "X% of traces don't capture the evidence needed to judge groundedness" is the most actionable engineering ask you can hand to a team.
+</div>
+
+<div class="codeblock"><span class="com"># Sketch of an evidence-gated rubric check</span>
+<span class="key">if</span> retrieval_context <span class="key">is</span> <span class="key">None</span> <span class="key">or</span> len(retrieval_context) == 0:
+    <span class="key">return</span> {<span class="str">"groundedness"</span>: <span class="str">"unknown"</span>,
+            <span class="str">"reason"</span>: <span class="str">"no retrieval_context captured in trace"</span>}
+
+<span class="key">return</span> judge.score_groundedness(answer, retrieval_context)
+</div>
+</section>
+
+<section id="pass-at-k">
+<h2>pass@k vs pass^k — handling non-determinism</h2>
+
+<p>Agents are non-deterministic. The same task run twice can succeed once and fail once. Two metrics name the two product realities you'll need to choose between:</p>
+
+<div class="dimtable">
+  <div class="row head"><div class="c">Metric</div><div class="c">Asks</div><div class="c">Use when</div></div>
+  <div class="row"><div class="c"><code>pass@k</code></div><div class="c">Probability of at least one success in k attempts.</div><div class="c">Creative or exploratory tasks (e.g., code generation with retry; copywriting). Best-of-k is the product experience.</div></div>
+  <div class="row"><div class="c"><code>pass^k</code></div><div class="c">Probability ALL k attempts succeed.</div><div class="c">Reliability-critical tasks (payments, refunds, data deletion). A single bad attempt is a real-world incident.</div></div>
+</div>
+
+<p>The same Agent can look excellent on <code>pass@5</code> and disastrous on <code>pass^5</code>. Both are honest descriptions of the same model — they describe different product surfaces. Picking the wrong one will systematically over- or under-estimate ship-readiness.</p>
+
+<div class="insight">
+PMs working on reliability-critical flows (payments, account changes, anything an incident report would cover) should always report <code>pass^k</code> alongside <code>pass@k</code>. A 95% <code>pass@1</code> sounds great until you do the math on 1 in 20 bookings being wrong.
+</div>
+</section>
+
+<section id="quiz">
+<div class="sec-label">Quiz — Applied</div>
+
+<div class="q-item" id="q2_1">
+<div class="q-text">1. You're designing a rubric for an Agent that books appointments via a database. Which of these checks should be code-based, not LLM-Judge-based?</div>
+<div class="options">
+<label><input type="radio" name="q2_1" value="a"> Whether the appointment record actually exists in the database after the run.</label>
+<label><input type="radio" name="q2_1" value="b"> Whether the confirmation message sounded polite and helpful.</label>
+<label><input type="radio" name="q2_1" value="c"> Whether the Agent inferred an unstated user preference correctly.</label>
+<label><input type="radio" name="q2_1" value="d"> Whether the Agent's reasoning was complete.</label>
+</div>
+<input type="hidden" data-correct="a">
+<button class="check-btn" onclick="checkQ('q2_1', 'g2', 8)">Check Answer</button>
+<div class="explanation">Database state has a deterministic oracle. Letting an LLM judge whether a record exists is replacing a SELECT statement with a guess.</div>
+</div>
+
+<div class="q-item" id="q2_2">
+<div class="q-text">2. Your Agent runs a 7-step bookings flow. The user says it worked. Which rubric kind would still catch "called the refund API twice in the middle"?</div>
+<div class="options">
+<label><input type="radio" name="q2_2" value="a"> Answer Rubric</label>
+<label><input type="radio" name="q2_2" value="b"> Trajectory Rubric</label>
+<label><input type="radio" name="q2_2" value="c"> Outcome Rubric</label>
+<label><input type="radio" name="q2_2" value="d"> Customer satisfaction survey</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q2_2', 'g2', 8)">Check Answer</button>
+<div class="explanation">Outcome only sees the end-state ("booking made"). Answer only sees the user-facing text. Trajectory is the only rubric that inspects intermediate tool calls, which is where redundant or wrong middle-step calls show up.</div>
+</div>
+
+<div class="q-item" id="q2_3">
+<div class="q-text">3. The trace for a failed run is missing the original user goal. Your rubric scores groundedness=PASS and answer_relevance=PASS. What's the likely problem?</div>
+<div class="options">
+<label><input type="radio" name="q2_3" value="a"> Nothing — those dimensions don't need the user goal.</label>
+<label><input type="radio" name="q2_3" value="b"> The rubric is hallucinating verdicts because it doesn't have an evidence prerequisite that forces "unknown" when the goal is missing.</label>
+<label><input type="radio" name="q2_3" value="c"> The Judge model is too small.</label>
+<label><input type="radio" name="q2_3" value="d"> The trace format is unsupported.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q2_3', 'g2', 8)">Check Answer</button>
+<div class="explanation">Answer relevance cannot be honestly scored without knowing what the user asked. A well-designed rubric forces "unknown" in this case; one that returns "pass" is filling the gap with a guess.</div>
+</div>
+
+<div class="q-item" id="q2_4">
+<div class="q-text">4. You write a Trajectory Rubric assertion: "Agent must call check_inventory, then validate_payment, then create_order, in this exact order." What's the risk?</div>
+<div class="options">
+<label><input type="radio" name="q2_4" value="a"> No risk — strict paths are always safer.</label>
+<label><input type="radio" name="q2_4" value="b"> Penalizes valid alternative paths the model might find; the eval becomes brittle and silently fails new approaches. Use must-pass assertions only for true safety/business hard-constraints.</label>
+<label><input type="radio" name="q2_4" value="c"> It will slow down the Agent.</label>
+<label><input type="radio" name="q2_4" value="d"> It only works for OpenAI models.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q2_4', 'g2', 8)">Check Answer</button>
+<div class="explanation">Outcome is the main judge; Trace is the diagnostic. Hard-coded sequences punish valid alternatives. Only safety-critical steps (auth, payment, deletion) deserve must-pass assertions.</div>
+</div>
+
+<div class="q-item" id="q2_5">
+<div class="q-text">5. Two tools — "search_inventory" and "lookup_product" — have overlapping descriptions. The Agent keeps picking the wrong one. By TRAJECT-Bench's taxonomy, this is which failure mode?</div>
+<div class="options">
+<label><input type="radio" name="q2_5" value="a"> Parameter-blind selection</label>
+<label><input type="radio" name="q2_5" value="b"> Similar tool confusion</label>
+<label><input type="radio" name="q2_5" value="c"> Redundant tool calling</label>
+<label><input type="radio" name="q2_5" value="d"> Intent inference failure</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q2_5', 'g2', 8)">Check Answer</button>
+<div class="explanation">Similar tool confusion is overlapping/distinguishable-only-by-fine-print tools. The fix is sharper tool descriptions and a better router, not a smarter model.</div>
+</div>
+
+<div class="q-item" id="q2_6">
+<div class="q-text">6. Your payments Agent has 95% pass@1 in eval. Leadership wants to ship. What additional metric should you report?</div>
+<div class="options">
+<label><input type="radio" name="q2_6" value="a"> pass^k (probability ALL k attempts succeed) — for a reliability-critical flow like payments, 95% pass@1 means roughly 1 in 20 attempts is wrong, which is incident-level.</label>
+<label><input type="radio" name="q2_6" value="b"> Token cost per call</label>
+<label><input type="radio" name="q2_6" value="c"> Average latency</label>
+<label><input type="radio" name="q2_6" value="d"> Carbon footprint</label>
+</div>
+<input type="hidden" data-correct="a">
+<button class="check-btn" onclick="checkQ('q2_6', 'g2', 8)">Check Answer</button>
+<div class="explanation">pass@k metrics describe creative-task quality; pass^k describes reliability. For payments, the right framing is "what fraction of single attempts works perfectly" — which exposes the 1-in-20 problem.</div>
+</div>
+
+<div class="q-item" id="q2_7">
+<div class="q-text">7. Which of these is the WRONG argument for adding "unknown" as a first-class rubric output?</div>
+<div class="options">
+<label><input type="radio" name="q2_7" value="a"> It prevents the Judge from fabricating verdicts when evidence is missing.</label>
+<label><input type="radio" name="q2_7" value="b"> It surfaces trace-schema gaps as a coverage report, which is highly actionable for engineering.</label>
+<label><input type="radio" name="q2_7" value="c"> It improves the leadership-dashboard look by reducing the count of "complete" evaluations.</label>
+<label><input type="radio" name="q2_7" value="d"> It prevents wrong "fixes" from being written into the asset layer.</label>
+</div>
+<input type="hidden" data-correct="c">
+<button class="check-btn" onclick="checkQ('q2_7', 'g2', 8)">Check Answer</button>
+<div class="explanation">Three of these are real reasons. "Dashboard cosmetics" is the wrong reason — and the most common objection when introducing unknown. Reframe it as a coverage report.</div>
+</div>
+
+<div class="q-item" id="q2_8">
+<div class="q-text">8. The Agent calls the same lookup tool 4 times in a row with slightly different arguments before settling on the answer. By TRAJECT-Bench, this is which mode, and where does the fix go?</div>
+<div class="options">
+<label><input type="radio" name="q2_8" value="a"> Similar tool confusion — fix tool descriptions.</label>
+<label><input type="radio" name="q2_8" value="b"> Redundant tool calling — fix stopping rule, cost guardrail, and planner.</label>
+<label><input type="radio" name="q2_8" value="c"> Parameter-blind selection — fix schema.</label>
+<label><input type="radio" name="q2_8" value="d"> Intent inference — fix prompt.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q2_8', 'g2', 8)">Check Answer</button>
+<div class="explanation">Redundant calling is over-use of correct tools. The fix points at stopping conditions, cost guardrails, and the planner — and TRAJECT-Bench notes it's also a training-data smell that careful tool training can reduce.</div>
+</div>
+
+<button class="score-btn" onclick="showScore()">See my score</button>
+<div id="score-panel" style="display:none;margin-top:18px;padding:18px 22px;background:var(--card);border:1.5px solid var(--g2);border-radius:10px;font-family:'JetBrains Mono',monospace">
+<div style="font-size:22px;font-weight:600;color:var(--g2)"><span id="score-correct">0</span> / <span id="score-total">8</span> correct</div>
+</div>
+</section>
+
+<section id="flashcards">
+<div class="sec-label">Flashcards — Applied</div>
+<div class="fc-grid">
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Grader stratification</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Anthropic's three-tier eval system: code-based for deterministic checks, model-based for semantic judgment, human for calibration. Each tier catches what the cheaper tier below it cannot.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Code-based grader</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Deterministic check using rules, schemas, sandboxes, or DB queries. Cheap, fast, reproducible. Use whenever the question has a non-probabilistic oracle.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Model-based grader</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">LLM-as-Judge. Flexible, handles open-ended quality and semantic claims. Non-deterministic and biased — requires human calibration to be trustworthy.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Human grader</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Expert review or crowdsourced judgment. Expensive and slow but the gold standard. Reserved for calibration sets, gray-area cases, and taxonomy review — not bulk grading.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Outcome Rubric</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Asks: did the end-state in the world actually match the target? Verifies files written, records updated, tests passing, reports containing required conclusions. The main judge.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Answer Rubric</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Asks: was the final expression correct, complete, grounded, constraint-compliant? Catches hallucinations, missing citations, format violations, off-topic responses.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Trajectory Rubric</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Asks: were tool choice, parameters, dependency order, exception recovery, cost, and turn count reasonable? Catches risks invisible in the final answer. Acts as diagnostic evidence.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Trace (transcript)</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">The complete record of a trial: outputs, tool calls, reasoning, intermediate results, costs. The substrate every rubric reads from. If the trace is incomplete, the Judge is forced to guess.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Similar tool confusion</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">TRAJECT-Bench failure mode. Overlapping tool capabilities confuse the agent into picking the worse option. Fix: sharper tool descriptions, router improvements, disambiguation examples.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Parameter-blind selection</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">TRAJECT-Bench failure mode. Right tool, wrong arguments — wrong values, formats, or units. Fix: tighter schemas, validators, enums, parameter examples in tool descriptions.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Redundant tool calling</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">TRAJECT-Bench failure mode. Tool called more times than needed, or with unrelated hallucinated calls. Fix: stopping rules, cost guardrails, planner — also a training-data smell.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Evidence prerequisite</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Entry condition for an atomic dimension. Before scoring, check that the evidence needed exists in the trace; if not, return "unknown." Prevents Judge hallucination on missing data.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">UNKNOWN (insufficient evidence)</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">First-class rubric output for when the trace doesn't contain enough evidence to judge. The single most important defense against fabricated verdicts being written into asset fixes.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">pass@k</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Probability of at least one success in k attempts. Use for creative or exploratory tasks where best-of-k retries are part of the product experience.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">pass^k</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Probability that ALL k attempts succeed. Use for reliability-critical flows like payments or data deletion — any single bad attempt is a real-world incident.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner">
+<div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Must-pass assertion</div><div class="fc-tap">tap to reveal →</div></div>
+<div class="fc-back"><div class="fc-def">Hard-constraint check on a specific step that must happen. Reserve for safety / business hard-rules (auth, payment, data deletion) — never for full path lockdown.</div><div class="fc-tap">← tap to flip back</div></div>
+</div></div>
+
+</div>
+</section>
+
+<div class="foot">
+<div>← <a href="guide-01-foundations.html">01 · Foundations</a> · Next: <a href="guide-03-advanced.html">03 · Advanced →</a></div>
+<div><a href="quiz-index.html">Full Quiz</a> · <a href="flashcards-index.html">All Flashcards</a></div>
+</div>
+
+</div>
+
+<script>
+const answers = {};
+function checkQ(id, group, total){
+  const item = document.getElementById(id);
+  const selected = item.querySelector('input[type=radio]:checked');
+  if(!selected){alert('Please select an answer first.');return}
+  const correctValue = item.querySelector('input[type=hidden][data-correct]').dataset.correct;
+  const isCorrect = selected.value === correctValue;
+  item.querySelectorAll('input[type=radio]').forEach(r => {
+    if(r.value === correctValue) r.setAttribute('data-correct','true');
+  });
+  item.classList.remove('correct','wrong');
+  item.classList.add(isCorrect ? 'correct' : 'wrong');
+  item.querySelector('.check-btn').disabled = true;
+  item.querySelectorAll('input[type=radio]').forEach(r => r.disabled = true);
+  const exp = item.querySelector('.explanation');
+  if(exp) exp.style.display = 'block';
+  answers[id] = isCorrect;
+}
+function showScore(){
+  const vals = Object.values(answers);
+  const total = document.querySelectorAll('.q-item').length;
+  document.getElementById('score-correct').textContent = vals.filter(Boolean).length;
+  document.getElementById('score-total').textContent = total;
+  document.getElementById('score-panel').style.display = 'block';
+  document.getElementById('score-panel').scrollIntoView({behavior:'smooth',block:'center'});
+}
+function flip(card){ card.classList.toggle('flipped'); }
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(a.getAttribute('href'));
+    if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+</script>
+</body>
+</html>

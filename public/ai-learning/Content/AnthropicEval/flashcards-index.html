@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flashcard Deck — Demystifying Evals for AI Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+}
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:1240px;margin:0 auto;padding:0 28px 120px;}
+.back{font-family:"JetBrains Mono",monospace;font-size:12px;text-decoration:none;color:var(--ink-soft);display:inline-flex;align-items:center;gap:6px;margin:24px 0 22px;border:1px solid var(--rule);border-radius:6px;padding:5px 12px;transition:all .14s;}
+.back:hover{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:18px;}
+h1{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(36px,5vw,52px);line-height:1.05;letter-spacing:-.02em;margin:6px 0 18px;}
+.dek{font-family:"Newsreader",serif;font-style:italic;font-size:22px;line-height:1.45;color:var(--ink-soft);margin-bottom:30px;max-width:780px;}
+.controls{display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between;margin:30px 0 14px;padding:18px 22px;background:var(--card);border:1px solid var(--rule);border-radius:12px;}
+.filter-tabs{display:flex;flex-wrap:wrap;gap:8px;}
+.ftab{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:7px 14px;border-radius:6px;border:2px solid transparent;cursor:pointer;background:transparent;color:var(--ink-soft);transition:all .14s;}
+.ftab:hover{background:#ece7db;}
+.ftab.active{color:#fff;border-color:transparent;}
+.ftab[data-f="all"].active{background:var(--ink);}
+.ftab[data-f="g1"].active{background:var(--g1);}
+.ftab[data-f="g2"].active{background:var(--g2);}
+.ftab[data-f="g3"].active{background:var(--g3);}
+.ctrl-btns{display:flex;gap:8px;}
+.cbtn{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:7px 14px;border-radius:6px;border:1.5px solid var(--rule);background:var(--paper);color:var(--ink);cursor:pointer;transition:all .14s;}
+.cbtn:hover{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.counter-bar{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);text-align:center;margin:0 0 22px;letter-spacing:.05em;}
+.counter-bar strong{color:var(--accent);}
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;}
+.fc{perspective:900px;height:200px;cursor:pointer;}
+.fc.hidden{display:none;}
+.fc-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1);}
+.fc.flipped .fc-inner{transform:rotateY(180deg);}
+.fc-front,.fc-back{position:absolute;inset:0;border-radius:13px;padding:22px 22px 18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;justify-content:space-between;}
+.fc-front{background:var(--card);border:1.5px solid var(--rule);}
+.fc-back{transform:rotateY(180deg);}
+.fc[data-g="g1"] .fc-front{border-left:4px solid var(--g1);}
+.fc[data-g="g1"] .fc-back{background:var(--g1);}
+.fc[data-g="g1"] .fc-term{color:var(--g1);}
+.fc[data-g="g1"] .fc-def{color:#e8f0ef;}
+.fc[data-g="g2"] .fc-front{border-left:4px solid var(--g2);}
+.fc[data-g="g2"] .fc-back{background:#7a5400;}
+.fc[data-g="g2"] .fc-term{color:var(--g2);}
+.fc[data-g="g2"] .fc-def{color:#fff8e6;}
+.fc[data-g="g3"] .fc-front{border-left:4px solid var(--g3);}
+.fc[data-g="g3"] .fc-back{background:#3a1a10;}
+.fc[data-g="g3"] .fc-term{color:var(--g3);}
+.fc[data-g="g3"] .fc-def{color:#f5d6ce;}
+.fc-term{font-family:"JetBrains Mono",monospace;font-weight:600;font-size:14px;}
+.fc-def{font-size:13.5px;line-height:1.45;}
+.fc-tap{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);margin-top:auto;}
+.fc-back .fc-tap{color:rgba(255,255,255,.45);}
+.fc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;}
+.gtag{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:4px;border:1.5px solid;line-height:1.6;}
+.gtag.g1{color:var(--g1);border-color:color-mix(in srgb,var(--g1) 40%,transparent);background:color-mix(in srgb,var(--g1) 10%,transparent);}
+.gtag.g2{color:var(--g2);border-color:color-mix(in srgb,var(--g2) 40%,transparent);background:color-mix(in srgb,var(--g2) 10%,transparent);}
+.gtag.g3{color:var(--g3);border-color:color-mix(in srgb,var(--g3) 40%,transparent);background:color-mix(in srgb,var(--g3) 10%,transparent);}
+.cross-link{margin:50px 0 0;padding:24px 28px;background:var(--card);border:1px solid var(--rule);border-radius:12px;display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;}
+.cross-link a{color:var(--accent);text-decoration:none;font-family:"JetBrains Mono",monospace;font-weight:600;font-size:13px;}
+.footer{margin-top:30px;font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);text-align:center;}
+@media(max-width:760px){.fc-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:420px){.fc-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← Library</a>
+  <div class="kicker">Flashcard Deck · All Guides · 40 Unique Cards</div>
+  <h1>Flashcards</h1>
+  <p class="dek">Every concept from all three guides, deduplicated and alphabetized. Filter by guide, shuffle the deck, or flip everything at once.</p>
+
+  <div class="controls">
+    <div class="filter-tabs">
+      <button class="ftab active" data-f="all" onclick="setFilter('all')">All 40</button>
+      <button class="ftab" data-f="g1" onclick="setFilter('g1')">01 · Foundations</button>
+      <button class="ftab" data-f="g2" onclick="setFilter('g2')">02 · Applied</button>
+      <button class="ftab" data-f="g3" onclick="setFilter('g3')">03 · Roadmap</button>
+    </div>
+    <div class="ctrl-btns">
+      <button class="cbtn" onclick="shuffleCards()">⇄ Shuffle</button>
+      <button class="cbtn" id="flip-all-btn" onclick="flipAll()">↻ Flip All</button>
+      <button class="cbtn" onclick="resetAll()">↺ Reset</button>
+    </div>
+  </div>
+
+  <div class="counter-bar">Showing <strong id="visible-count">40</strong> cards · <strong id="flipped-count">0</strong> flipped</div>
+
+  <div class="fc-grid" id="card-grid">
+
+    <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Roadmap</span></div><div class="fc-term">A/B testing</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Comparing variants with real user traffic. Measures actual outcomes (retention, completion) but slow to reach significance and needs traffic.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Agent harness</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">The scaffold that turns a model into an agent: tool wiring, memory, planning loops. Evaluation tests the harness and model together.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Roadmap</span></div><div class="fc-term">Balanced problem set</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">An eval suite covering cases where a behavior should occur and cases where it shouldn't. Prevents one-sided over- or under-triggering.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">BrowseComp</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Research benchmark of needle-in-haystack web questions — easy to verify once found, hard to find.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Capability eval</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">"What can this agent do well?" Starts at low pass rates and targets struggling areas. Improvement moves the score upward.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Code-based grader</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A deterministic grader: string match, binary tests, static analysis, outcome or tool-call verification. Fast and cheap but brittle to valid variation.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Coverage check</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A grader that confirms an agent's report mentions the essential facts defined up front. Used heavily in research-agent evaluation.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Roadmap</span></div><div class="fc-term">Eval framework</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Off-the-shelf tooling that runs evals, manages datasets, and tracks results. Examples: Harbor, Braintrust, LangSmith, Langfuse, Arize Phoenix / AX.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Roadmap</span></div><div class="fc-term">Eval saturation</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">When agents pass nearly every solvable task. Large capability jumps look like small score gains; time to graduate this eval and write a harder one.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Roadmap</span></div><div class="fc-term">Eval-driven development</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Writing the eval that defines a planned capability before the agent can pass it. Makes future-model bets visible and falsifiable.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Evaluation (eval)</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A test that applies grading logic to an AI system's output to measure success. Automated evals run during development without real users.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Evaluation harness</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">The infrastructure that runs an evaluation suite end-to-end: spinning up environments, executing trials, aggregating scores.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Evaluation suite</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A collection of tasks measuring a specific capability or behavior. Suites are the unit of work in CI and model upgrades.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Grader</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Logic that scores agent performance on a task. A task can combine several graders with weighted, binary, or hybrid scoring.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Groundedness check</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A grader that verifies each claim in an agent's output traces back to a retrieved source. Catches confident hallucination.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Human grader</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Expert or crowd judgment. The gold standard for subjective tasks, but slow and expensive. Use to calibrate LLM judges, not for every trial.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Model-based grader</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">LLM-as-judge grader using rubrics, NL assertions, pairwise comparison, or multi-judge consensus. Flexible and scales but needs human calibration.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Multi-turn / agent eval</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Evaluation of an agent that uses tools across many turns and modifies state. Mistakes propagate, so the grader has to score the whole trajectory.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">OSWorld</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Computer-use benchmark covering full OS control. Checks file-system state, app configs, database contents, and UI properties.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Outcome</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">The final state of the environment at the end of a trial — e.g. "the refund was actually processed" or "the file was created."</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Roadmap</span></div><div class="fc-term">Partial credit grading</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Scoring multi-step tasks on a success continuum rather than pass/fail. Distinguishes "did three steps right, failed the fourth" from "failed immediately."</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">pass@k</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Probability of at least one success in k trials. Rises with k. Use when one success is enough — code gen, brainstorming, search.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">pass^k</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Probability all k trials succeed. Falls with k. Use for customer-facing agents where consistency is essential.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Roadmap</span></div><div class="fc-term">Production monitoring</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Tracking metrics and errors in live systems. Ground truth on real user behavior, but reactive — problems reach users first.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Reactive debugging</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">The pre-eval default mode: wait for user complaints, reproduce manually, fix, hope nothing else regresses. Doesn't scale past prototyping.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Roadmap</span></div><div class="fc-term">Reference solution</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A known working output that passes all graders. Proves the task is solvable and verifies the graders are wired correctly.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Regression eval</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">"Does the agent still handle previous tasks?" Sits near 100% pass and protects against backsliding when prompts, models, or harnesses change.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Roadmap</span></div><div class="fc-term">Robust eval harness</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A harness that runs the agent production-like with a clean environment per trial — no shared state, no leftover files, no infrastructure flakiness.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Simulated user</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A second LLM that plays a customer persona during evaluation. Stress-tests conversational agents across extended, adversarial dialogues.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Single-turn eval</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">The simplest shape: one prompt, one response, one grader. Straightforward to specify and run.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">SWE-bench Verified</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Canonical coding benchmark: real GitHub issues from Python repos, graded by the project's own tests. Frontier moved from ~40% to over 80% in a year.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Roadmap</span></div><div class="fc-term">Swiss cheese model</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Stacking multiple eval methods so failures slipping through one layer are caught by another. From safety engineering — no single layer is enough.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Roadmap</span></div><div class="fc-term">Systematic human study</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Structured grading by trained raters across many examples. Gold standard for subjective tasks; reserve for calibrating LLM judges or final-call evaluation.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Task</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A single test case with defined inputs and success criteria. Also called a problem.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">τ-Bench / τ2-Bench</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Conversational benchmark where one LLM plays a user persona and the agent navigates realistic multi-turn scenarios.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Tool-choice eval</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">A check that the agent picked the right tool for the context — e.g. DOM extraction for Wikipedia vs screenshots for a busy shopping site.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Transcript</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Complete record of a trial: outputs, tool calls, reasoning, interactions. Also called a trace or trajectory.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Roadmap</span></div><div class="fc-term">Transcript review</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Reading actual run records to verify what the agent did and whether graders rejected valid work. The highest-leverage habit in eval maintenance.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Trial</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">One attempt at a task. Multiple trials of the same task produce a success-rate distribution.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+    <div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner">
+      <div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">WebArena</div><div class="fc-tap">tap to reveal →</div></div>
+      <div class="fc-back"><div class="fc-def">Browser-agent benchmark using URL and page-state checks plus backend verification that the intended data change actually happened.</div><div class="fc-tap">← tap to flip back</div></div>
+    </div></div>
+
+  </div>
+
+  <div class="cross-link">
+    <span>Want the long-form reading?</span>
+    <span><a href="index.html">← Back to library</a></span>
+  </div>
+
+  <div class="footer">Demystifying Evals for AI Agents · Anthropic Engineering · Jan 2026</div>
+</div>
+
+<script>
+let currentFilter='all';
+let allFlipped=false;
+const allCards=()=>document.querySelectorAll('#card-grid .fc');
+const visibleCards=()=>document.querySelectorAll('#card-grid .fc:not(.hidden)');
+function flip(card){card.classList.toggle('flipped');updateCounters();}
+function setFilter(f){currentFilter=f;document.querySelectorAll('.ftab').forEach(t=>t.classList.toggle('active',t.dataset.f===f));allCards().forEach(c=>c.classList.toggle('hidden',f!=='all'&&c.dataset.g!==f));updateCounters();}
+function flipAll(){allFlipped=!allFlipped;[...visibleCards()].forEach(c=>c.classList.toggle('flipped',allFlipped));document.getElementById('flip-all-btn').textContent=allFlipped?'↺ Unflip All':'↻ Flip All';updateCounters();}
+function shuffleCards(){allFlipped=false;document.getElementById('flip-all-btn').textContent='↻ Flip All';const grid=document.getElementById('card-grid');const visible=[...grid.querySelectorAll('.fc:not(.hidden)')];const hidden=[...grid.querySelectorAll('.fc.hidden')];visible.forEach(c=>c.classList.remove('flipped'));for(let i=visible.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[visible[i],visible[j]]=[visible[j],visible[i]];}[...visible,...hidden].forEach(c=>grid.appendChild(c));updateCounters();}
+function resetAll(){allCards().forEach(c=>c.classList.remove('flipped'));allFlipped=false;document.getElementById('flip-all-btn').textContent='↻ Flip All';updateCounters();}
+function updateCounters(){const vis=[...visibleCards()];const flipped=vis.filter(c=>c.classList.contains('flipped'));document.getElementById('visible-count').textContent=vis.length;document.getElementById('flipped-count').textContent=flipped.length;}
+updateCounters();
+</script>
+</body>
+</html>

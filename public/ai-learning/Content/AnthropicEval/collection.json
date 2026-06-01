@@ -1,0 +1,42 @@
+{
+  "order": 4,
+  "category": "advanced",
+  "collectionLabel": "Anthropic Engineering",
+  "date": "2026-06-01",
+  "title": "Demystifying <em>Evals</em> for AI Agents",
+  "subtitle": "Anthropic's playbook for building eval suites — from \"what's an eval\" to a zero-to-one roadmap for shipping with confidence.",
+  "home": "index.html",
+  "quizQuestions": 0,
+  "flashcards": 40,
+  "pages": [
+    {
+      "num": "GUIDE 01",
+      "title": "The Anatomy of an Eval",
+      "desc": "Vocabulary first: task, trial, grader, transcript, harness, suite. Meet the three grader families and the split between capability and regression evals.",
+      "href": "guide-01-foundations.html",
+      "cta": "Open guide"
+    },
+    {
+      "num": "GUIDE 02",
+      "title": "Four Agent Types, One Pattern",
+      "desc": "How evaluation looks for coding, conversational, research, and computer-use agents — and why <code>pass^k</code> kills a 75% pass-rate agent for reliability work.",
+      "href": "guide-02-applied.html",
+      "cta": "Open guide"
+    },
+    {
+      "num": "GUIDE 03",
+      "title": "Zero to One: A Roadmap",
+      "desc": "The eight-step playbook: collect tasks from failures, design a stable harness, read transcripts, treat suites as living artifacts. Closes with the Swiss-cheese coverage model.",
+      "href": "guide-03-roadmap.html",
+      "cta": "Open guide"
+    },
+    {
+      "num": "PRACTICE",
+      "title": "All Flashcards · 40 Cards",
+      "desc": "Forty flip cards covering every concept across the three guides. Filter by guide, shuffle the deck, or flip everything at once.",
+      "href": "flashcards-index.html",
+      "cta": "Open flashcards",
+      "practice": true
+    }
+  ]
+}

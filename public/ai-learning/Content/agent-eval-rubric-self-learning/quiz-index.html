@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Agent Eval Rubric — Full Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,450;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4; --card:#fbf9f4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1040px;margin:0 auto;padding:0 28px 120px}
+.back{font-family:"JetBrains Mono",monospace;font-size:12px;text-decoration:none;color:var(--ink-soft);display:inline-flex;align-items:center;gap:6px;margin:28px 0 22px;border:1px solid var(--rule);border-radius:6px;padding:5px 12px;transition:all .14s}
+.back:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);font-weight:600;margin-bottom:18px}
+h1{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(36px,5vw,56px);letter-spacing:-.02em;line-height:1.05;margin:0 0 18px}
+h1 em{font-family:"Fraunces",serif;font-style:italic;font-weight:400;color:var(--accent)}
+.dek{font-family:"Newsreader",serif;font-style:italic;font-size:22px;color:var(--ink-soft);max-width:720px;margin:0 0 38px}
+
+/* Live dashboard */
+.dashboard{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:30px 0 50px;background:var(--ink);border-radius:14px;padding:24px;color:#fff}
+@media(max-width:680px){.dashboard{grid-template-columns:1fr}}
+.dash-stat{position:relative}
+.ds-v{font-family:"Fraunces",serif;font-weight:900;font-size:42px;line-height:1;color:#fff}
+.ds-l{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.7);margin-top:8px}
+.dbar{margin-top:14px;height:6px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden}
+.dbar-fill{height:100%;background:#10B981;width:0%;transition:width .35s ease}
+
+/* Guide section header */
+.guide-section-head{margin:48px 0 8px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.gsec-badge{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:5px 12px;border-radius:6px;color:#fff}
+.gsec-badge.g1{background:var(--g1)}
+.gsec-badge.g2{background:var(--g2)}
+.gsec-badge.g3{background:var(--g3)}
+.gsec-title{font-family:"Fraunces",serif;font-weight:600;font-size:22px;letter-spacing:-.01em}
+.gsec-score{margin-left:auto;font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);background:var(--card);border:1px solid var(--rule);padding:6px 12px;border-radius:6px}
+
+/* Question */
+.q-item{margin:18px 0;padding:22px 26px;background:var(--card);border:1.5px solid var(--rule);border-radius:12px}
+.q-item.correct{border-color:#16A34A;background:#F0FDF4}
+.q-item.wrong{border-color:var(--accent);background:#FFF7ED}
+.q-text{font-size:17px;font-weight:600;margin-bottom:14px}
+.options{display:flex;flex-direction:column;gap:9px;margin-bottom:16px}
+.options label{display:flex;align-items:flex-start;gap:10px;font-size:16px;cursor:pointer;padding:8px 12px;border-radius:7px;border:1.5px solid var(--rule);background:var(--paper);transition:background .12s}
+.options label:hover{background:#F1F5F9}
+.q-item.correct label:has(input[data-correct]){background:#DCFCE7;border-color:#16A34A}
+.q-item.wrong label:has(input:checked:not([data-correct])){background:#FFEDD5;border-color:var(--accent)}
+.check-btn{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:8px 18px;border-radius:7px;border:1.5px solid currentColor;background:transparent;cursor:pointer;transition:all .14s}
+.q-item[data-g="g1"] .check-btn{color:var(--g1)}.q-item[data-g="g1"] .check-btn:hover:not(:disabled){background:var(--g1);color:#fff}
+.q-item[data-g="g2"] .check-btn{color:var(--g2)}.q-item[data-g="g2"] .check-btn:hover:not(:disabled){background:var(--g2);color:#fff}
+.q-item[data-g="g3"] .check-btn{color:var(--g3)}.q-item[data-g="g3"] .check-btn:hover:not(:disabled){background:var(--g3);color:#fff}
+.check-btn:disabled{opacity:.4;cursor:not-allowed}
+.explanation{margin-top:14px;padding:12px 16px;border-left:3px solid currentColor;border-radius:6px;font-size:15px;color:var(--ink-soft);line-height:1.5;background:#F1F5F9}
+
+code,.mono{font-family:"JetBrains Mono",monospace;font-size:.82em;background:#F1F5F9;padding:.08em .42em;border-radius:4px;color:var(--g2)}
+
+/* Final score panel */
+.final-panel{margin-top:48px;padding:36px;background:var(--card);border:2px solid var(--g1);border-radius:16px;text-align:center}
+.fs-pct{font-family:"Fraunces",serif;font-weight:900;font-size:88px;line-height:1;color:var(--g1)}
+.fs-label{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-soft);margin-top:8px}
+.breakdown-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:28px 0 22px;text-align:left}
+@media(max-width:680px){.breakdown-grid{grid-template-columns:1fr}}
+.bk{padding:16px 20px;background:#F8FAFC;border-radius:10px;border-left:4px solid var(--g1)}
+.bk#bk2{border-left-color:var(--g2)}
+.bk#bk3{border-left-color:var(--g3)}
+.bk-label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+.bk-val{font-family:"Fraunces",serif;font-weight:900;font-size:28px;color:var(--ink);margin-top:6px}
+.retry-btn{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:10px 22px;border-radius:8px;border:none;background:var(--ink);color:#fff;cursor:pointer}
+
+.crosslink{margin-top:60px;padding:22px 28px;background:var(--card);border:1px solid var(--rule);border-radius:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-family:"JetBrains Mono",monospace;font-size:13px}
+.crosslink a{color:var(--g1);text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--g1) 30%,transparent);font-weight:600}
+.foot{margin-top:40px;padding-top:24px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="index.html">← Back to library</a>
+
+<div class="kicker">Full Quiz · All Guides</div>
+<h1>Test Your Rubric <em>Reflexes</em></h1>
+<p class="dek">25 multiple-choice questions covering the seven principles, the three rubric kinds, the LLM Judge biases, and the operating loop. Live score tracks as you go.</p>
+
+<div class="dashboard">
+  <div class="dash-stat"><div class="ds-v" id="d-answered">0</div><div class="ds-l">Answered</div></div>
+  <div class="dash-stat"><div class="ds-v" id="d-correct">0</div><div class="ds-l">Correct</div></div>
+  <div class="dash-stat"><div class="ds-v" id="d-pct">0%</div><div class="ds-l">Score</div><div class="dbar"><div class="dbar-fill" id="dbar-fill"></div></div></div>
+</div>
+
+<!-- ===================== GUIDE 1 ===================== -->
+<div class="guide-section-head">
+  <span class="gsec-badge g1">01 · Foundations</span>
+  <span class="gsec-title">Why Rubrics Are a Product Decision</span>
+  <span class="gsec-score" id="score-g1">0 / 9 correct</span>
+</div>
+
+<div class="q-item" data-g="g1" id="q1_1">
+<div class="q-text">1. Your Agent gets a 2/5 from the eval Judge on a customer interaction. Which of the following is the most useful next action?</div>
+<div class="options">
+<label><input type="radio" name="q1_1" value="a"> Adjust the system prompt and re-test.</label>
+<label><input type="radio" name="q1_1" value="b"> Open the trace and check which atomic dimension dropped — retrieval, tool argument, dependency order, or outcome state.</label>
+<label><input type="radio" name="q1_1" value="c"> Switch to a more powerful base model.</label>
+<label><input type="radio" name="q1_1" value="d"> Lower the quality threshold so 2/5 stops counting as a regression.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q1_1','g1',9)">Check Answer</button>
+<div class="explanation" style="display:none">A total score doesn't tell you which layer broke. The dimension breakdown is what routes the fix to retrieval, tools, prompt, workflow, or memory.</div>
+</div>
+
+<div class="q-item" data-g="g1" id="q1_2">
+<div class="q-text">2. Which of these is NOT part of the minimum rubric closed loop?</div>
+<div class="options">
+<label><input type="radio" name="q1_2" value="a"> Evidence Contract</label>
+<label><input type="radio" name="q1_2" value="b"> Score Dimensions</label>
+<label><input type="radio" name="q1_2" value="c"> Marketing Narrative</label>
+<label><input type="radio" name="q1_2" value="d"> Calibration Loop</label>
+</div>
+<input type="hidden" data-correct="c">
+<button class="check-btn" onclick="checkQ('q1_2','g1',9)">Check Answer</button>
+<div class="explanation" style="display:none">The five steps are Evidence Contract → Score Dimensions → Failure Taxonomy → Remediation Target → Calibration Loop.</div>
+</div>
+
+<div class="q-item" data-g="g1" id="q1_3">
+<div class="q-text">3. Your RAG Agent's customer says the answer was wrong. Which atomic dimension tells you the retriever failed to surface the source material at all?</div>
+<div class="options">
+<label><input type="radio" name="q1_3" value="a"> <code>answer_relevance</code></label>
+<label><input type="radio" name="q1_3" value="b"> <code>groundedness</code></label>
+<label><input type="radio" name="q1_3" value="c"> <code>context_recall</code></label>
+<label><input type="radio" name="q1_3" value="d"> <code>interaction_efficiency</code></label>
+</div>
+<input type="hidden" data-correct="c">
+<button class="check-btn" onclick="checkQ('q1_3','g1',9)">Check Answer</button>
+<div class="explanation" style="display:none"><code>context_recall</code> asks "was the necessary information actually retrieved?" Low scores route to retriever, query rewrite, or chunking.</div>
+</div>
+
+<div class="q-item" data-g="g1" id="q1_4">
+<div class="q-text">4. The material was retrieved correctly but the model ignored it and hallucinated. Which dimension catches this specifically?</div>
+<div class="options">
+<label><input type="radio" name="q1_4" value="a"> <code>context_precision</code></label>
+<label><input type="radio" name="q1_4" value="b"> <code>groundedness</code> (or RAGAS <code>faithfulness</code>)</label>
+<label><input type="radio" name="q1_4" value="c"> <code>dependency_order</code></label>
+<label><input type="radio" name="q1_4" value="d"> <code>tool_selection</code></label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q1_4','g1',9)">Check Answer</button>
+<div class="explanation" style="display:none">Groundedness / faithfulness asks whether key claims are supported by retrieved context. A retrieval hit + hallucinated answer is a classic faithfulness failure.</div>
+</div>
+
+<div class="q-item" data-g="g1" id="q1_5">
+<div class="q-text">5. In the MT-Bench study, what was the measured position-bias rate for Claude-v1 — the percentage of cases where it favored whichever answer came first?</div>
+<div class="options">
+<label><input type="radio" name="q1_5" value="a"> About 30%</label>
+<label><input type="radio" name="q1_5" value="b"> About 50%</label>
+<label><input type="radio" name="q1_5" value="c"> About 75%</label>
+<label><input type="radio" name="q1_5" value="d"> About 95%</label>
+</div>
+<input type="hidden" data-correct="c">
+<button class="check-btn" onclick="checkQ('q1_5','g1',9)">Check Answer</button>
+<div class="explanation" style="display:none">Claude-v1 was biased toward the first answer in 75% of pairs. GPT-3.5 was at 50%. GPT-4 was the only judge with >60% consistency.</div>
+</div>
+
+<div class="q-item" data-g="g1" id="q1_6">
+<div class="q-text">6. Why do practitioners say you should not use the same model family as both the Judge and the Generator?</div>
+<div class="options">
+<label><input type="radio" name="q1_6" value="a"> It violates Anthropic's terms of service.</label>
+<label><input type="radio" name="q1_6" value="b"> Judges show measurable self-enhancement bias — GPT-4 favors GPT-4 outputs by +10% win rate, Claude-v1 favors itself by +25%.</label>
+<label><input type="radio" name="q1_6" value="c"> The token cost is double.</label>
+<label><input type="radio" name="q1_6" value="d"> The Judge will refuse to evaluate.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q1_6','g1',9)">Check Answer</button>
+<div class="explanation" style="display:none">Self-enhancement bias is measurable. It biases the Judge toward its own generation patterns and silently inflates win-rate on regression suites.</div>
+</div>
+
+<div class="q-item" data-g="g1" id="q1_7">
+<div class="q-text">7. What's G-Eval's main contribution over naive "rate this 1–5" prompts?</div>
+<div class="options">
+<label><input type="radio" name="q1_7" value="a"> It uses a larger context window.</label>
+<label><input type="radio" name="q1_7" value="b"> It turns evaluation criteria into auto-generated chain-of-thought steps and form-fills, with continuous probability-weighted scoring instead of an integer.</label>
+<label><input type="radio" name="q1_7" value="c"> It requires a human-labeled reference for every input.</label>
+<label><input type="radio" name="q1_7" value="d"> It scores faster.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q1_7','g1',9)">Check Answer</button>
+<div class="explanation" style="display:none">G-Eval's value is structural: criteria → CoT steps → form-filling → token-probability scoring. The same model becomes a much more reliable judge with structure.</div>
+</div>
+
+<div class="q-item" data-g="g1" id="q1_8">
+<div class="q-text">8. Which of these is TRUE about LLM-as-a-Judge?</div>
+<div class="options">
+<label><input type="radio" name="q1_8" value="a"> A strong LLM Judge can reach ~80% agreement with human experts — the same level as expert-to-expert agreement.</label>
+<label><input type="radio" name="q1_8" value="b"> LLM Judges are unbiased by construction.</label>
+<label><input type="radio" name="q1_8" value="c"> LLM Judges produce identical scores on repeated runs.</label>
+<label><input type="radio" name="q1_8" value="d"> LLM Judges only work for English.</label>
+</div>
+<input type="hidden" data-correct="a">
+<button class="check-btn" onclick="checkQ('q1_8','g1',9)">Check Answer</button>
+<div class="explanation" style="display:none">MT-Bench measured GPT-4 at 80%+ agreement with humans — matching human-to-human. That's why LLM-as-a-Judge is viable, with bias mitigations layered on.</div>
+</div>
+
+<div class="q-item" data-g="g1" id="q1_9">
+<div class="q-text">9. Your team proposes a single "Agent Quality Score" rolled up from 7 sub-criteria for the company dashboard. What's the main product risk?</div>
+<div class="options">
+<label><input type="radio" name="q1_9" value="a"> The number won't fit in a Slack message.</label>
+<label><input type="radio" name="q1_9" value="b"> When the score drops, no one knows which layer broke, so engineering will reflexively tweak the prompt — and the real bug (often retrieval, tool args, or workflow) keeps coming back.</label>
+<label><input type="radio" name="q1_9" value="c"> The score won't correlate with NPS.</label>
+<label><input type="radio" name="q1_9" value="d"> The compute cost is too high.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q1_9','g1',9)">Check Answer</button>
+<div class="explanation" style="display:none">Total scores collapse routing. The actionable layer is always the atomic dimension — that's the field that says "fix the retriever" instead of "fix the prompt again."</div>
+</div>
+
+<!-- ===================== GUIDE 2 ===================== -->
+<div class="guide-section-head">
+  <span class="gsec-badge g2">02 · Applied</span>
+  <span class="gsec-title">Building Your Rubric</span>
+  <span class="gsec-score" id="score-g2">0 / 8 correct</span>
+</div>
+
+<div class="q-item" data-g="g2" id="q2_1">
+<div class="q-text">1. You're designing a rubric for an Agent that books appointments via a database. Which of these checks should be code-based, not LLM-Judge-based?</div>
+<div class="options">
+<label><input type="radio" name="q2_1" value="a"> Whether the appointment record actually exists in the database after the run.</label>
+<label><input type="radio" name="q2_1" value="b"> Whether the confirmation message sounded polite and helpful.</label>
+<label><input type="radio" name="q2_1" value="c"> Whether the Agent inferred an unstated user preference correctly.</label>
+<label><input type="radio" name="q2_1" value="d"> Whether the Agent's reasoning was complete.</label>
+</div>
+<input type="hidden" data-correct="a">
+<button class="check-btn" onclick="checkQ('q2_1','g2',8)">Check Answer</button>
+<div class="explanation" style="display:none">Database state has a deterministic oracle. Letting an LLM judge whether a record exists replaces a SELECT statement with a guess.</div>
+</div>
+
+<div class="q-item" data-g="g2" id="q2_2">
+<div class="q-text">2. Your Agent runs a 7-step bookings flow. The user says it worked. Which rubric kind would still catch "called the refund API twice in the middle"?</div>
+<div class="options">
+<label><input type="radio" name="q2_2" value="a"> Answer Rubric</label>
+<label><input type="radio" name="q2_2" value="b"> Trajectory Rubric</label>
+<label><input type="radio" name="q2_2" value="c"> Outcome Rubric</label>
+<label><input type="radio" name="q2_2" value="d"> Customer satisfaction survey</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q2_2','g2',8)">Check Answer</button>
+<div class="explanation" style="display:none">Outcome only sees the end-state. Answer only sees user-facing text. Trajectory is the only rubric that inspects intermediate tool calls.</div>
+</div>
+
+<div class="q-item" data-g="g2" id="q2_3">
+<div class="q-text">3. The trace for a failed run is missing the original user goal. Your rubric scores groundedness=PASS and answer_relevance=PASS. What's the likely problem?</div>
+<div class="options">
+<label><input type="radio" name="q2_3" value="a"> Nothing — those dimensions don't need the user goal.</label>
+<label><input type="radio" name="q2_3" value="b"> The rubric is hallucinating verdicts because it doesn't have an evidence prerequisite that forces "unknown" when the goal is missing.</label>
+<label><input type="radio" name="q2_3" value="c"> The Judge model is too small.</label>
+<label><input type="radio" name="q2_3" value="d"> The trace format is unsupported.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q2_3','g2',8)">Check Answer</button>
+<div class="explanation" style="display:none">Answer relevance cannot be honestly scored without knowing what the user asked. Without an evidence prerequisite, the Judge fills the gap with a guess.</div>
+</div>
+
+<div class="q-item" data-g="g2" id="q2_4">
+<div class="q-text">4. You write a Trajectory Rubric assertion: "Agent must call check_inventory, then validate_payment, then create_order, in this exact order." What's the risk?</div>
+<div class="options">
+<label><input type="radio" name="q2_4" value="a"> No risk — strict paths are always safer.</label>
+<label><input type="radio" name="q2_4" value="b"> Penalizes valid alternative paths the model might find; the eval becomes brittle and silently fails new approaches. Use must-pass assertions only for true safety/business hard-constraints.</label>
+<label><input type="radio" name="q2_4" value="c"> It will slow down the Agent.</label>
+<label><input type="radio" name="q2_4" value="d"> It only works for OpenAI models.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q2_4','g2',8)">Check Answer</button>
+<div class="explanation" style="display:none">Outcome is the main judge; Trace is the diagnostic. Hard-coded sequences punish valid alternatives. Only safety-critical steps deserve must-pass.</div>
+</div>
+
+<div class="q-item" data-g="g2" id="q2_5">
+<div class="q-text">5. Two tools — "search_inventory" and "lookup_product" — have overlapping descriptions. The Agent keeps picking the wrong one. By TRAJECT-Bench's taxonomy, this is which failure mode?</div>
+<div class="options">
+<label><input type="radio" name="q2_5" value="a"> Parameter-blind selection</label>
+<label><input type="radio" name="q2_5" value="b"> Similar tool confusion</label>
+<label><input type="radio" name="q2_5" value="c"> Redundant tool calling</label>
+<label><input type="radio" name="q2_5" value="d"> Intent inference failure</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q2_5','g2',8)">Check Answer</button>
+<div class="explanation" style="display:none">Similar tool confusion is overlapping tools distinguishable only by fine print. Fix: sharper descriptions, better router.</div>
+</div>
+
+<div class="q-item" data-g="g2" id="q2_6">
+<div class="q-text">6. Your payments Agent has 95% pass@1 in eval. Leadership wants to ship. What additional metric should you report?</div>
+<div class="options">
+<label><input type="radio" name="q2_6" value="a"> pass^k (probability ALL k attempts succeed) — for a reliability-critical flow like payments, 95% pass@1 means roughly 1 in 20 attempts is wrong, which is incident-level.</label>
+<label><input type="radio" name="q2_6" value="b"> Token cost per call</label>
+<label><input type="radio" name="q2_6" value="c"> Average latency</label>
+<label><input type="radio" name="q2_6" value="d"> Carbon footprint</label>
+</div>
+<input type="hidden" data-correct="a">
+<button class="check-btn" onclick="checkQ('q2_6','g2',8)">Check Answer</button>
+<div class="explanation" style="display:none">pass@k describes creative-task quality; pass^k describes reliability. Payments demand the stricter framing.</div>
+</div>
+
+<div class="q-item" data-g="g2" id="q2_7">
+<div class="q-text">7. Which of these is the WRONG argument for adding "unknown" as a first-class rubric output?</div>
+<div class="options">
+<label><input type="radio" name="q2_7" value="a"> It prevents the Judge from fabricating verdicts when evidence is missing.</label>
+<label><input type="radio" name="q2_7" value="b"> It surfaces trace-schema gaps as a coverage report, which is highly actionable for engineering.</label>
+<label><input type="radio" name="q2_7" value="c"> It improves the leadership-dashboard look by reducing the count of "complete" evaluations.</label>
+<label><input type="radio" name="q2_7" value="d"> It prevents wrong "fixes" from being written into the asset layer.</label>
+</div>
+<input type="hidden" data-correct="c">
+<button class="check-btn" onclick="checkQ('q2_7','g2',8)">Check Answer</button>
+<div class="explanation" style="display:none">Three of these are real reasons. "Dashboard cosmetics" is the wrong reason and the most common objection. Reframe unknown as a coverage report.</div>
+</div>
+
+<div class="q-item" data-g="g2" id="q2_8">
+<div class="q-text">8. The Agent calls the same lookup tool 4 times with slightly different arguments before settling. By TRAJECT-Bench, this is which mode, and where does the fix go?</div>
+<div class="options">
+<label><input type="radio" name="q2_8" value="a"> Similar tool confusion — fix tool descriptions.</label>
+<label><input type="radio" name="q2_8" value="b"> Redundant tool calling — fix stopping rule, cost guardrail, and planner.</label>
+<label><input type="radio" name="q2_8" value="c"> Parameter-blind selection — fix schema.</label>
+<label><input type="radio" name="q2_8" value="d"> Intent inference — fix prompt.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q2_8','g2',8)">Check Answer</button>
+<div class="explanation" style="display:none">Redundant calling is over-use of correct tools. The fix points at stopping conditions, cost guardrails, and the planner.</div>
+</div>
+
+<!-- ===================== GUIDE 3 ===================== -->
+<div class="guide-section-head">
+  <span class="gsec-badge g3">03 · Advanced</span>
+  <span class="gsec-title">Operating the Rubric</span>
+  <span class="gsec-score" id="score-g3">0 / 8 correct</span>
+</div>
+
+<div class="q-item" data-g="g3" id="q3_1">
+<div class="q-text">1. Your team uses one generic "rate this 1–5 on accuracy, completeness, helpfulness" rubric across three different Agents (code review, refund processing, customer Q&amp;A). Why is this likely producing bad fixes?</div>
+<div class="options">
+<label><input type="radio" name="q3_1" value="a"> Because the rubric is too long.</label>
+<label><input type="radio" name="q3_1" value="b"> Because "correct" for each Agent depends on context (repo / business rules / available sources) the generic rubric doesn't carry, leading to both false passes and false fails.</label>
+<label><input type="radio" name="q3_1" value="c"> Because LLM Judges only support one task.</label>
+<label><input type="radio" name="q3_1" value="d"> Because the score should be 1–10.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q3_1','g3',8)">Check Answer</button>
+<div class="explanation" style="display:none">Generic checklists both pass dangerous solutions and fail valid ones. The fix is per-instance rubrics from a Context Gathering stage.</div>
+</div>
+
+<div class="q-item" data-g="g3" id="q3_2">
+<div class="q-text">2. Which stage in the contextual rubric chain is missing from this list: Rubric Builder → Trace Inspector → Failure Attribution → Eval Case Generator?</div>
+<div class="options">
+<label><input type="radio" name="q3_2" value="a"> Context Gathering Agent</label>
+<label><input type="radio" name="q3_2" value="b"> Compliance Reviewer</label>
+<label><input type="radio" name="q3_2" value="c"> Marketing Approver</label>
+<label><input type="radio" name="q3_2" value="d"> Cost Analyzer</label>
+</div>
+<input type="hidden" data-correct="a">
+<button class="check-btn" onclick="checkQ('q3_2','g3',8)">Check Answer</button>
+<div class="explanation" style="display:none">The chain starts with a Context Gathering Agent. Without it, the Rubric Builder works from generic templates.</div>
+</div>
+
+<div class="q-item" data-g="g3" id="q3_3">
+<div class="q-text">3. In the Agentic Rubrics for SWE paper, Sonnet-4.5-generated rubrics showed only 2% flakiness across 5 independent Judge runs. The authors attribute the low flakiness to which property of the rubric items?</div>
+<div class="options">
+<label><input type="radio" name="q3_3" value="a"> Item length</label>
+<label><input type="radio" name="q3_3" value="b"> Atomic, self-contained instructions that reduce Judge interpretation scope</label>
+<label><input type="radio" name="q3_3" value="c"> Using GPT-5 as the Judge</label>
+<label><input type="radio" name="q3_3" value="d"> Higher temperature</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q3_3','g3',8)">Check Answer</button>
+<div class="explanation" style="display:none">Atomicity wins again. Self-contained items leave less room for the Judge to interpret differently across runs.</div>
+</div>
+
+<div class="q-item" data-g="g3" id="q3_4">
+<div class="q-text">4. Humans keep overturning your Judge's verdicts on the same dimension. Which of these is the right first action?</div>
+<div class="options">
+<label><input type="radio" name="q3_4" value="a"> Switch to a different base model for the Judge.</label>
+<label><input type="radio" name="q3_4" value="b"> Treat it as a rubric aging signal — tighten the dimension's criteria, atomically decompose it, and recalibrate against humans.</label>
+<label><input type="radio" name="q3_4" value="c"> Add more samples and hope it averages out.</label>
+<label><input type="radio" name="q3_4" value="d"> Disable that dimension permanently.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q3_4','g3',8)">Check Answer</button>
+<div class="explanation" style="display:none">Human-overrules-Judge is the canonical aging signal. The fix is in the rubric (criteria + decomposition + calibration), not the model.</div>
+</div>
+
+<div class="q-item" data-g="g3" id="q3_5">
+<div class="q-text">5. A rubric dimension has been at 100% pass for 6 weeks. What does this most likely mean, and what should you do?</div>
+<div class="options">
+<label><input type="radio" name="q3_5" value="a"> Everything is great — leave it.</label>
+<label><input type="radio" name="q3_5" value="b"> The dimension is saturated. Either move it to a regression suite or raise difficulty so it discriminates again.</label>
+<label><input type="radio" name="q3_5" value="c"> The Judge model is broken.</label>
+<label><input type="radio" name="q3_5" value="d"> Add another model as a second Judge.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q3_5','g3',8)">Check Answer</button>
+<div class="explanation" style="display:none">A perma-pass dimension stops discriminating. Lock it in as regression or raise the bar so it produces signal.</div>
+</div>
+
+<div class="q-item" data-g="g3" id="q3_6">
+<div class="q-text">6. You want to release a new version of a rubric criterion that you believe is stricter than the current one. What's the safest release process?</div>
+<div class="options">
+<label><input type="radio" name="q3_6" value="a"> Replace the live rubric immediately on Monday.</label>
+<label><input type="radio" name="q3_6" value="b"> Push the rubric change as a candidate patch → replay on calibration set → run bias tests → shadow evaluate alongside the live rubric → only release if human-agreement, FP, FN, and remediation-pointing all improve.</label>
+<label><input type="radio" name="q3_6" value="c"> Email the change to the team and ask for thumbs up.</label>
+<label><input type="radio" name="q3_6" value="d"> A/B test it in production silently.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q3_6','g3',8)">Check Answer</button>
+<div class="explanation" style="display:none">Rubric changes are system changes. Replay + bias tests + shadow mode is the canary-deploy equivalent.</div>
+</div>
+
+<div class="q-item" data-g="g3" id="q3_7">
+<div class="q-text">7. Which of the following metrics is NOT one you'd track when running a shadow rubric evaluation against the live rubric?</div>
+<div class="options">
+<label><input type="radio" name="q3_7" value="a"> Human-agreement rate</label>
+<label><input type="radio" name="q3_7" value="b"> False-positive rate (bad samples that pass)</label>
+<label><input type="radio" name="q3_7" value="c"> Remediation-pointing accuracy</label>
+<label><input type="radio" name="q3_7" value="d"> Token cost per evaluation</label>
+</div>
+<input type="hidden" data-correct="d">
+<button class="check-btn" onclick="checkQ('q3_7','g3',8)">Check Answer</button>
+<div class="explanation" style="display:none">Cost matters for budget but doesn't tell you whether the candidate is a better judge. The four release-gate metrics are agreement, FP, FN, and remediation accuracy.</div>
+</div>
+
+<div class="q-item" data-g="g3" id="q3_8">
+<div class="q-text">8. What is the single best test for whether a Rubric is part of the self-evolution loop vs. just a scoreboard?</div>
+<div class="options">
+<label><input type="radio" name="q3_8" value="a"> Whether the score is a number or a letter grade.</label>
+<label><input type="radio" name="q3_8" value="b"> Whether a teammate can use the Rubric's output to file a ticket assigned to one team with one suggested fix.</label>
+<label><input type="radio" name="q3_8" value="c"> Whether the dashboard is updated weekly.</label>
+<label><input type="radio" name="q3_8" value="d"> Whether the rubric uses GPT-4.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q3_8','g3',8)">Check Answer</button>
+<div class="explanation" style="display:none">A repairable signal is the whole point. One team, one fix — that's when the eval Agent has joined engineering.</div>
+</div>
+
+<!-- ===================== FINAL ===================== -->
+<div class="final-panel" id="final-panel" style="display:none">
+  <div class="fs-pct" id="fs-pct">—%</div>
+  <div class="fs-label">Final Score</div>
+  <div class="breakdown-grid">
+    <div class="bk" id="bk1"><div class="bk-label">Guide 1 · Foundations</div><div class="bk-val" id="bk1-val">—</div></div>
+    <div class="bk" id="bk2"><div class="bk-label">Guide 2 · Applied</div><div class="bk-val" id="bk2-val">—</div></div>
+    <div class="bk" id="bk3"><div class="bk-label">Guide 3 · Advanced</div><div class="bk-val" id="bk3-val">—</div></div>
+  </div>
+  <button class="retry-btn" onclick="resetAll()">↺ Try again</button>
+</div>
+
+<div class="crosslink">
+  <span>Done quizzing? Drill the concepts with flashcards.</span>
+  <a href="flashcards-index.html">All flashcards →</a>
+</div>
+
+<div class="foot">25 questions · Agent Eval Rubric · self-learning library</div>
+
+</div>
+
+<script>
+const answers = {};
+
+function checkQ(id, group, total){
+  const item = document.getElementById(id);
+  const selected = item.querySelector('input[type=radio]:checked');
+  if(!selected){alert('Please select an answer first.');return}
+  const correctValue = item.querySelector('input[type=hidden][data-correct]').dataset.correct;
+  const isCorrect = selected.value === correctValue;
+  item.querySelectorAll('input[type=radio]').forEach(r => {
+    if(r.value === correctValue) r.setAttribute('data-correct','true');
+  });
+  item.classList.remove('correct','wrong');
+  item.classList.add(isCorrect ? 'correct' : 'wrong');
+  item.querySelector('.check-btn').disabled = true;
+  item.querySelectorAll('input[type=radio]').forEach(r => r.disabled = true);
+  const exp = item.querySelector('.explanation');
+  if(exp) exp.style.display = 'block';
+  answers[id] = isCorrect;
+  updateDashboard();
+  updateSectionScore(group, total);
+  const totalQs = document.querySelectorAll('.q-item').length;
+  if(Object.keys(answers).length === totalQs) setTimeout(showFinal, 400);
+}
+
+function updateDashboard(){
+  const vals = Object.values(answers);
+  const answered = vals.length;
+  const correct = vals.filter(Boolean).length;
+  const pct = answered ? Math.round(correct/answered*100) : 0;
+  document.getElementById('d-answered').textContent = answered;
+  document.getElementById('d-correct').textContent = correct;
+  document.getElementById('d-pct').textContent = pct + '%';
+  document.getElementById('dbar-fill').style.width = pct + '%';
+}
+
+function updateSectionScore(group, total){
+  const prefix = group.replace('g','q');
+  const keys = Object.keys(answers).filter(k => k.startsWith(prefix + '_'));
+  const correct = keys.filter(k => answers[k]).length;
+  const el = document.getElementById('score-' + group);
+  if(el) el.textContent = correct + ' / ' + keys.length + ' correct';
+}
+
+function countGroup(group){
+  const prefix = group.replace('g','q');
+  const keys = Object.keys(answers).filter(k => k.startsWith(prefix + '_'));
+  return {answered: keys.length, correct: keys.filter(k => answers[k]).length};
+}
+
+function showFinal(){
+  const panel = document.getElementById('final-panel');
+  panel.style.display = 'block';
+  panel.scrollIntoView({behavior:'smooth',block:'center'});
+  const vals = Object.values(answers);
+  const pct = Math.round(vals.filter(Boolean).length / vals.length * 100);
+  document.getElementById('fs-pct').textContent = pct + '%';
+  ['g1','g2','g3'].forEach(g => {
+    const {answered, correct} = countGroup(g);
+    const el = document.getElementById('bk' + g.slice(1) + '-val');
+    if(el) el.textContent = answered ? correct + ' / ' + answered : '—';
+  });
+}
+
+function resetAll(){
+  Object.keys(answers).forEach(k => delete answers[k]);
+  document.querySelectorAll('.q-item').forEach(item => {
+    item.classList.remove('correct','wrong');
+    item.querySelectorAll('input[type=radio]').forEach(r => {r.checked = false; r.disabled = false});
+    const btn = item.querySelector('.check-btn');
+    if(btn) btn.disabled = false;
+    const exp = item.querySelector('.explanation');
+    if(exp) exp.style.display = 'none';
+  });
+  document.getElementById('d-answered').textContent = '0';
+  document.getElementById('d-correct').textContent = '0';
+  document.getElementById('d-pct').textContent = '0%';
+  document.getElementById('dbar-fill').style.width = '0%';
+  document.getElementById('final-panel').style.display = 'none';
+  ['g1','g2','g3'].forEach(g => {
+    const total = g === 'g1' ? 9 : 8;
+    const el = document.getElementById('score-' + g);
+    if(el) el.textContent = '0 / ' + total + ' correct';
+  });
+}
+</script>
+</body>
+</html>

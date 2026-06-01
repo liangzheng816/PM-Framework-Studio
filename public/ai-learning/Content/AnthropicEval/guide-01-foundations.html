@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>01 · Foundations — Demystifying Evals for AI Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--slate);
+}
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;counter-reset:slide;}
+.wrap{max-width:1040px;margin:0 auto;padding:0 28px 120px;}
+.back{font-family:"JetBrains Mono",monospace;font-size:12px;text-decoration:none;color:var(--ink-soft);display:inline-flex;align-items:center;gap:6px;margin:24px 0 22px;border:1px solid var(--rule);border-radius:6px;padding:5px 12px;transition:all .14s;}
+.back:hover{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:18px;}
+h1{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(36px,5vw,52px);line-height:1.05;letter-spacing:-.02em;margin:6px 0 18px;}
+.dek{font-family:"Newsreader",serif;font-style:italic;font-size:22px;line-height:1.45;color:var(--ink-soft);margin-bottom:30px;max-width:780px;}
+.snav{position:sticky;top:0;background:rgba(244,241,234,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);padding:12px 0;margin:0 -28px 38px;z-index:10;}
+.snav-inner{max-width:1040px;margin:0 auto;padding:0 28px;display:flex;flex-wrap:wrap;gap:6px 18px;}
+.snav a{font-family:"JetBrains Mono",monospace;font-size:11.5px;font-weight:600;color:var(--ink-soft);text-decoration:none;letter-spacing:.05em;text-transform:uppercase;padding:4px 0;border-bottom:2px solid transparent;transition:all .14s;}
+.snav a:hover{color:var(--guide-color);border-bottom-color:var(--guide-color);}
+.meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:30px 0 6px;}
+@media(max-width:760px){.meta-grid{grid-template-columns:1fr;}}
+.meta{background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--guide-color);border-radius:10px;padding:18px 20px;}
+.meta-label{font-family:"JetBrains Mono",monospace;font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--guide-color);margin-bottom:6px;}
+.meta-text{font-size:15.5px;line-height:1.45;color:var(--ink);}
+section:not(#quiz):not(#flashcards){counter-increment:slide;background:var(--card);border:1.5px solid color-mix(in srgb,var(--guide-color) 28%,var(--rule));border-radius:18px;box-shadow:0 8px 36px -10px rgba(27,26,23,.18),0 1px 0 rgba(27,26,23,.04);margin:48px 0;overflow:hidden;position:relative;}
+section:not(#quiz):not(#flashcards) h2{margin:0;padding:26px 36px 22px;background:var(--guide-color);color:#fff;font-family:"Fraunces",serif;font-weight:900;font-size:clamp(20px,2.8vw,26px);letter-spacing:-.015em;line-height:1.1;display:flex;align-items:flex-start;gap:14px;}
+section:not(#quiz):not(#flashcards) h2::before{content:counter(slide,decimal-leading-zero);font-family:"JetBrains Mono",monospace;font-weight:600;font-size:12px;letter-spacing:.1em;background:rgba(255,255,255,.16);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.28);padding:4px 10px;border-radius:5px;flex-shrink:0;margin-top:3px;white-space:nowrap;}
+section:not(#quiz):not(#flashcards) > p,section:not(#quiz):not(#flashcards) > .insight,section:not(#quiz):not(#flashcards) > .misconception,section:not(#quiz):not(#flashcards) > blockquote,section:not(#quiz):not(#flashcards) > pre,section:not(#quiz):not(#flashcards) > ul,section:not(#quiz):not(#flashcards) > ol{margin-left:36px;margin-right:36px;}
+section:not(#quiz):not(#flashcards) > p:first-of-type{margin-top:28px;}
+section:not(#quiz):not(#flashcards) > p:last-of-type,section:not(#quiz):not(#flashcards) > blockquote:last-child,section:not(#quiz):not(#flashcards) > .misconception:last-child{margin-bottom:34px;}
+section:not(#quiz):not(#flashcards)::after{content:"";display:block;height:4px;background:linear-gradient(90deg,var(--guide-color) 0%,color-mix(in srgb,var(--guide-color) 30%,transparent) 100%);margin-top:34px;opacity:.35;}
+.insight,.misconception{border-radius:10px;padding:18px 22px;margin:22px 36px;font-size:17px;line-height:1.5;}
+.insight{border-left:4px solid var(--slate);background:var(--slate-soft);}
+.misconception{border-left:4px solid var(--accent);background:var(--accent-soft);}
+.insight::before{content:"✦ Key insight — ";font-weight:600;color:var(--slate);}
+.misconception::before{content:"✕ Common misconception — ";font-weight:600;color:var(--accent);}
+ul,ol{font-size:17px;line-height:1.55;}
+ul li,ol li{margin:6px 0;}
+code,.mono{font-family:"JetBrains Mono",monospace;font-size:.82em;background:#ece7db;padding:.08em .38em;border-radius:4px;color:#3a382f;}
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;margin-top:18px;}
+.fc{perspective:900px;height:190px;cursor:pointer;}
+.fc-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1);}
+.fc.flipped .fc-inner{transform:rotateY(180deg);}
+.fc-front,.fc-back{position:absolute;inset:0;border-radius:13px;padding:22px 22px 18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;justify-content:space-between;}
+.fc-front{background:var(--card);border:1.5px solid var(--rule);border-left:4px solid var(--g1);}
+.fc-back{transform:rotateY(180deg);background:var(--g1);}
+.fc-term{color:var(--g1);font-family:"JetBrains Mono",monospace;font-weight:600;font-size:14px;}
+.fc-def{color:#e8f0ef;font-size:13.5px;line-height:1.45;}
+.fc-tap{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);margin-top:auto;}
+.fc-back .fc-tap{color:rgba(255,255,255,.45);}
+.fc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;}
+.gtag{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:4px;border:1.5px solid;line-height:1.6;}
+.gtag.g1{color:var(--g1);border-color:color-mix(in srgb,var(--g1) 40%,transparent);background:color-mix(in srgb,var(--g1) 10%,transparent);}
+.gtag.g2{color:var(--g2);border-color:color-mix(in srgb,var(--g2) 40%,transparent);background:color-mix(in srgb,var(--g2) 10%,transparent);}
+.gtag.g3{color:var(--g3);border-color:color-mix(in srgb,var(--g3) 40%,transparent);background:color-mix(in srgb,var(--g3) 10%,transparent);}
+.sec-label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin:48px 0 6px;font-weight:600;}
+.footer{margin-top:60px;padding-top:28px;border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);}
+.footer a{color:var(--accent);text-decoration:none;font-weight:600;}
+.footer a:hover{text-decoration:underline;}
+@media(max-width:680px){section:not(#quiz):not(#flashcards) h2{padding:20px 22px 18px;font-size:20px;}section:not(#quiz):not(#flashcards) > p,section:not(#quiz):not(#flashcards) > .insight,section:not(#quiz):not(#flashcards) > .misconception,section:not(#quiz):not(#flashcards) > blockquote,section:not(#quiz):not(#flashcards) > ul,section:not(#quiz):not(#flashcards) > ol{margin-left:22px;margin-right:22px;}.insight,.misconception{margin-left:22px;margin-right:22px;}.fc-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:420px){.fc-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← Library</a>
+  <div class="kicker">01 · Foundations</div>
+  <h1>The Anatomy of an Eval</h1>
+  <p class="dek">What an evaluation actually is, the vocabulary you need to discuss them, and the three families of graders that score agent behavior.</p>
+
+  <nav class="snav"><div class="snav-inner">
+    <a href="#what">01 · What an Eval Is</a>
+    <a href="#vocab">02 · Key Definitions</a>
+    <a href="#graders">03 · Three Grader Types</a>
+    <a href="#capability-regression">04 · Capability vs Regression</a>
+    <a href="#why">05 · Why Build Them</a>
+    <a href="#flashcards">↓ Flashcards</a>
+  </div></nav>
+
+  <div class="meta-grid">
+    <div class="meta"><div class="meta-label">Atomic Unit</div><div class="meta-text">An eval is one piece of grading logic applied to one output. Everything else is composition.</div></div>
+    <div class="meta"><div class="meta-label">Three Grader Families</div><div class="meta-text">Code-based, model-based, human. Most production suites combine all three.</div></div>
+    <div class="meta"><div class="meta-label">Two Roles</div><div class="meta-text">Capability evals tell you what's possible. Regression evals tell you what still works.</div></div>
+  </div>
+
+  <section id="what">
+    <h2>What an Eval Is</h2>
+    <p>An <strong>evaluation</strong> — an "eval" — is a test that applies grading logic to an AI system's output to measure success. This guide focuses on <em>automated</em> evals: tests that run during development without real users.</p>
+    <p>The simplest eval has three parts: a prompt, a response, and a grader. That's a <strong>single-turn eval</strong>. The moment your system uses tools, modifies state, or takes multiple turns to reach a goal, you've moved into <strong>multi-turn</strong> or <strong>agent</strong> evals — and the surface area for mistakes explodes.</p>
+    <div class="insight">Agents call tools, change environments, and adapt to what they find. Mistakes propagate. So evals on agents have to grade not just the final answer but the whole trajectory.</div>
+    <p>Frontier models also do unexpectedly creative things. Opus 4.5 once solved a τ2-Bench flight-booking problem by discovering a loophole in the policy — it failed the eval as written but delivered a better outcome for the user. Good eval design has to anticipate this.</p>
+    <div class="misconception">An eval is the same as a unit test. It isn't — unit tests assert deterministic input/output equality. Evals score behavior that's probabilistic, partially correct, and often qualitative. The grader has to handle that.</div>
+  </section>
+
+  <section id="vocab">
+    <h2>Key Definitions</h2>
+    <p>Every conversation about evals uses this vocabulary. Learn it once.</p>
+    <ul>
+      <li><strong>Task</strong> — a single test case with defined inputs and success criteria. Sometimes called a "problem."</li>
+      <li><strong>Trial</strong> — one attempt at a task. Multiple trials of the same task give you a success-rate distribution.</li>
+      <li><strong>Grader</strong> — the logic that scores agent performance. A task can have several graders combined.</li>
+      <li><strong>Transcript</strong> (also <em>trace</em> or <em>trajectory</em>) — the complete record of a trial: outputs, tool calls, reasoning, and interactions.</li>
+      <li><strong>Outcome</strong> — the final state of the environment at the end of a trial. For a support agent, "was the refund actually processed?"</li>
+      <li><strong>Evaluation harness</strong> — the infrastructure that runs the evals end-to-end.</li>
+      <li><strong>Agent harness</strong> (or <em>scaffold</em>) — the system that turns a model into an agent: tool use, memory, planning loops. Evaluation tests the harness and the model together.</li>
+      <li><strong>Evaluation suite</strong> — a collection of tasks measuring a specific capability or behavior.</li>
+    </ul>
+    <div class="insight">The model and the agent harness are evaluated together. A clever harness can lift a weaker model; a brittle harness can sandbag a stronger one.</div>
+  </section>
+
+  <section id="graders">
+    <h2>Three Grader Types</h2>
+    <p>Graders fall into three families. Most production suites use a mix.</p>
+    <p><strong>Code-based graders</strong> are deterministic checks: string match, regex, fuzzy match, binary tests (fail-to-pass, pass-to-pass), static analysis (lint, type, security), outcome verification, tool-call verification, transcript analysis (turns taken, tokens used).</p>
+    <ul>
+      <li><strong>Strengths:</strong> fast, cheap, objective, reproducible, easy to debug.</li>
+      <li><strong>Weaknesses:</strong> brittle to valid variations, weak on nuance, limited for subjective tasks.</li>
+    </ul>
+    <p><strong>Model-based graders</strong> (LLM-as-judge) score with rubrics, natural-language assertions, pairwise comparison, reference-based evaluation, or multi-judge consensus.</p>
+    <ul>
+      <li><strong>Strengths:</strong> flexible, scales, captures nuance, handles open-ended output.</li>
+      <li><strong>Weaknesses:</strong> non-deterministic, more expensive, requires human calibration to trust.</li>
+    </ul>
+    <p><strong>Human graders</strong> — SME review, crowdsourced judgment, spot-check sampling, A/B testing, inter-annotator agreement — are the gold standard. Reserve them for calibration and ambiguous domains.</p>
+    <div class="insight">Use deterministic graders wherever possible, model-based graders where flexibility matters, human graders judiciously for calibration. Combine all three and score with weighted, binary, or hybrid logic.</div>
+    <div class="misconception">An LLM judge will agree with experts out of the box. It usually won't — model judges drift from human judgment in subtle ways. Calibrate against a small expert-labeled set first and re-check periodically.</div>
+  </section>
+
+  <section id="capability-regression">
+    <h2>Capability vs Regression</h2>
+    <p>Evals serve two different roles in the development loop. Both are needed; confusing them will mislead you.</p>
+    <p><strong>Capability evals</strong> ask "what can this agent do well?" Their job is to surface what doesn't work yet. They should start at low pass rates — a hill to climb. A capability eval at 100% has nothing more to teach you.</p>
+    <p><strong>Regression evals</strong> ask "does this agent still handle the things it used to?" They should sit near 100% pass and protect you from backsliding when you change the prompt, swap the model, or tweak the harness.</p>
+    <div class="insight">A capability eval that hits 100% gets promoted to the regression suite. Then you write harder capability evals on what's still broken. The cycle never ends.</div>
+    <p>This is why you want both in CI. Capability evals tell you which optimization moves the frontier forward. Regression evals catch the side effects of those moves on everything else.</p>
+  </section>
+
+  <section id="why">
+    <h2>Why Build Them</h2>
+    <p>Early teams iterate by hand. You dogfood the agent, you fix bugs as users report them, and life is fine. The wheels come off at scale: users report regressions and you can't verify improvements except by trial and error. That's the inflection point.</p>
+    <p>Without evals, debugging is purely reactive: wait for complaints, reproduce manually, fix, hope nothing else regresses. With evals, the payoff compounds:</p>
+    <ul>
+      <li>You can specify what success means — two engineers reading the same spec resolve edge-case ambiguity through the eval suite.</li>
+      <li>You can adopt new models in days, not weeks. Teams without evals face weeks of vibes-testing.</li>
+      <li>Baselines and regression tests come free — latency, token usage, cost per task, error rates, all tracked on static tasks.</li>
+      <li>Evals become the highest-bandwidth channel between product and research — they define the metric researchers can optimize against.</li>
+    </ul>
+    <div class="insight">Claude Code added evals first for narrow behaviors (concision, file edits), then for messier things like over-engineering. The evals identified issues, guided improvements, and focused research-product collaboration. Bolt built a system running agents through static analysis, browser agents, and LLM judges within three months of starting.</div>
+  </section>
+
+  <section id="flashcards">
+    <div class="sec-label">Flashcards — Guide 01</div>
+    <p style="color:var(--ink-soft);font-size:15px;margin:8px 0 18px;">Tap any card to reveal the definition. Or open the <a href="flashcards-index.html" style="color:var(--accent);font-weight:600;">full deck</a> to filter and shuffle across all guides.</p>
+    <div class="fc-grid">
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Evaluation (eval)</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">A test that applies grading logic to an AI system's output to measure success. Automated evals run during development without real users.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Single-turn eval</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">The simplest shape: one prompt, one response, one grader. Straightforward to specify and run.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Multi-turn / agent eval</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">Evaluation of an agent that uses tools across many turns and modifies state. Mistakes propagate, so the grader has to score the whole trajectory.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Task</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">A single test case with defined inputs and success criteria. Also called a problem.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Trial</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">One attempt at a task. Multiple trials of the same task produce a success-rate distribution.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Grader</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">Logic that scores agent performance on a task. A task can combine several graders with weighted, binary, or hybrid scoring.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Transcript</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">Complete record of a trial: outputs, tool calls, reasoning, interactions. Also called a trace or trajectory.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Outcome</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">The final state of the environment at the end of a trial — e.g. "the refund was actually processed" or "the file was created."</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Evaluation harness</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">The infrastructure that runs an evaluation suite end-to-end: spinning up environments, executing trials, aggregating scores.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Agent harness</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">The scaffold that turns a model into an agent: tool wiring, memory, planning loops. Evaluation tests the harness and model together.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Evaluation suite</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">A collection of tasks measuring a specific capability or behavior. Suites are the unit of work in CI and model upgrades.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Code-based grader</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">A deterministic grader: string match, binary tests, static analysis, outcome or tool-call verification. Fast and cheap but brittle to valid variation.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Model-based grader</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">LLM-as-judge grader using rubrics, NL assertions, pairwise comparison, or multi-judge consensus. Flexible and scales but needs human calibration.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Human grader</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">Expert or crowd judgment. The gold standard for subjective tasks, but slow and expensive. Use to calibrate LLM judges, not for every trial.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Capability eval</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">"What can this agent do well?" Starts at low pass rates and targets struggling areas. Improvement moves the score upward.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Regression eval</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">"Does the agent still handle previous tasks?" Sits near 100% pass and protects against backsliding when prompts, models, or harnesses change.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+      <div class="fc" onclick="flip(this)"><div class="fc-inner">
+        <div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Reactive debugging</div><div class="fc-tap">tap to reveal →</div></div>
+        <div class="fc-back"><div class="fc-def">The pre-eval default mode: wait for user complaints, reproduce manually, fix, hope nothing else regresses. Doesn't scale past prototyping.</div><div class="fc-tap">← tap to flip back</div></div>
+      </div></div>
+    </div>
+  </section>
+
+  <div class="footer">
+    <span>01 · Foundations</span>
+    <span><a href="guide-02-applied.html">02 · Applied →</a></span>
+  </div>
+</div>
+<script>
+function flip(card){card.classList.toggle('flipped');}
+</script>
+</body>
+</html>

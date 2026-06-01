@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demystifying Evals for AI Agents — A Learning Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+}
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:1040px;margin:0 auto;padding:0 28px 120px;}
+.hero{padding:60px 0 18px;position:relative;}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:18px;}
+h1{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(44px,7vw,76px);line-height:1.02;letter-spacing:-.025em;margin:6px 0 18px;max-width:920px;}
+h1 em{font-family:"Fraunces",serif;font-style:italic;font-weight:400;color:var(--accent);}
+.dek{font-family:"Newsreader",serif;font-style:italic;font-size:24px;line-height:1.45;color:var(--ink-soft);margin-bottom:6px;max-width:780px;}
+.attribution{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);margin-top:18px;letter-spacing:.05em;}
+.stats{display:flex;flex-wrap:wrap;margin:40px 0 6px;border:1px solid var(--rule);border-radius:11px;overflow:hidden;background:var(--card);}
+.stats .s{flex:1 1 140px;padding:18px 22px;border-right:1px solid var(--rule);}
+.stats .s:last-child{border-right:none;}
+.stats .s .v{font-family:"Fraunces",serif;font-weight:900;font-size:30px;color:var(--accent);line-height:1;}
+.stats .s .l{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-top:7px;}
+.sec-label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin:48px 0 6px;font-weight:600;}
+.hub-card{display:block;text-decoration:none;color:inherit;border-radius:16px;padding:36px 36px;position:relative;overflow:hidden;transition:transform .18s ease,box-shadow .18s ease;background:#1b1a17;color:#fff;margin:18px 0;}
+.hub-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px -14px rgba(27,26,23,.32);}
+.hub-card .hc-wm{position:absolute;top:-30px;right:-10px;font-family:"Fraunces",serif;font-weight:900;font-size:240px;line-height:1;opacity:.07;pointer-events:none;color:#fff;}
+.hub-card .hc-type{font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;opacity:.78;margin-bottom:10px;}
+.hub-card .hub-stat{display:flex;gap:28px;margin:18px 0 18px;flex-wrap:wrap;}
+.hub-card .hs{display:flex;flex-direction:column;}
+.hub-card .hv{font-family:"Fraunces",serif;font-weight:900;font-size:32px;line-height:1;color:#fff;}
+.hub-card .hl{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.65);margin-top:6px;}
+.hub-card h2{font-family:"Fraunces",serif;font-weight:900;font-size:42px;line-height:1.05;margin:8px 0 14px;letter-spacing:-.018em;}
+.hub-card h2 em{font-family:"Fraunces",serif;font-style:italic;font-weight:400;color:var(--accent);}
+.hub-card p{font-size:17px;line-height:1.5;max-width:640px;color:rgba(255,255,255,.85);margin:0 0 22px;}
+.hub-cta{display:inline-flex;align-items:center;gap:8px;font-family:"JetBrains Mono",monospace;font-size:13px;font-weight:600;padding:11px 22px;border-radius:8px;background:var(--accent);color:#fff;transition:all .15s;}
+.card{display:block;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--rule);border-left:5px solid var(--c,var(--slate));border-radius:12px;padding:26px 30px 28px;margin:18px 0;position:relative;overflow:hidden;transition:transform .16s ease,box-shadow .16s ease;}
+.card:hover{transform:translateY(-3px);box-shadow:0 10px 30px -12px rgba(27,26,23,.28);}
+.card .wm{position:absolute;top:-22px;right:6px;font-family:"Fraunces",serif;font-weight:900;font-size:150px;line-height:1;color:var(--c,var(--slate));opacity:.06;pointer-events:none;}
+.card .lvl{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--c,var(--slate));font-weight:600;margin-bottom:8px;}
+.card h3{font-family:"Fraunces",serif;font-weight:900;font-size:30px;line-height:1.1;margin:0 0 12px;letter-spacing:-.015em;}
+.card h3 .en{font-family:"Newsreader",serif;font-style:italic;font-weight:400;color:var(--ink-soft);font-size:18px;display:block;margin-top:4px;}
+.card .d{font-size:16.5px;line-height:1.5;color:var(--ink);margin:0 0 16px;}
+.card .tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;}
+.card .tags span{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:.04em;padding:3px 9px;border-radius:5px;border:1.5px solid var(--c,var(--slate));color:var(--c,var(--slate));background:transparent;}
+.card .open{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:var(--c,var(--slate));}
+.card .open .arw{transition:transform .14s ease;display:inline-block;}
+.card:hover .arw{transform:translateX(4px);}
+.lvl-1{--c:var(--slate);}
+.lvl-2{--c:var(--amber);}
+.lvl-3{--c:var(--accent);}
+.howto{margin-top:48px;padding:24px 28px;background:var(--slate-soft);border-left:4px solid var(--slate);border-radius:10px;font-size:16.5px;line-height:1.55;}
+.howto strong{color:var(--slate);}
+.footer{margin-top:50px;padding-top:28px;border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);}
+.footer a{color:var(--accent);text-decoration:none;font-weight:600;}
+.footer a:hover{text-decoration:underline;}
+@media(max-width:760px){.card{padding:22px 22px 24px;}.card h3{font-size:24px;}.hub-card{padding:28px 26px;}.hub-card h2{font-size:30px;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div class="kicker">A Learning Library · Anthropic Engineering, Jan 2026</div>
+    <h1>Demystifying <em>Evals</em> for AI Agents</h1>
+    <p class="dek">Three guides distilling Anthropic's playbook for building eval suites — from "what's an eval" all the way to a zero-to-one roadmap for shipping agents with confidence.</p>
+    <div class="attribution">Source: anthropic.com/engineering · Authors: Grace · Hadfield · Olivares · De Jonghe</div>
+  </div>
+
+  <div class="stats">
+    <div class="s"><div class="v">3</div><div class="l">Learning Guides</div></div>
+    <div class="s"><div class="v">40+</div><div class="l">Concepts Covered</div></div>
+    <div class="s"><div class="v">40</div><div class="l">Flashcards</div></div>
+    <div class="s"><div class="v">8</div><div class="l">Roadmap Steps</div></div>
+  </div>
+
+  <div class="sec-label">Practice — drill the vocabulary</div>
+  <a class="hub-card" href="flashcards-index.html">
+    <div class="hc-wm">🃏</div>
+    <div class="hc-type">Flip Cards · All Guides</div>
+    <div class="hub-stat">
+      <div class="hs"><span class="hv">40</span><span class="hl">Cards</span></div>
+      <div class="hs"><span class="hv">3</span><span class="hl">Guides</span></div>
+      <div class="hs"><span class="hv">Shuffle</span><span class="hl">+ Filter</span></div>
+    </div>
+    <h2>All <em>Flashcards</em></h2>
+    <p>Forty flip cards covering every concept across the three guides. Filter by guide, shuffle the deck, or flip everything at once.</p>
+    <span class="hub-cta">Browse cards →</span>
+  </a>
+
+  <div class="sec-label">Curriculum — three guides, in learning order</div>
+
+  <a class="card lvl-1" href="guide-01-foundations.html">
+    <div class="wm">01</div>
+    <div class="lvl">01 · Foundations</div>
+    <h3>The Anatomy of an Eval<span class="en">What it is, what to call its parts, and how graders work</span></h3>
+    <p class="d">Start here. Build the vocabulary you'll need to read everything else: task, trial, grader, transcript, outcome, harness, suite. Then meet the three families of graders — code-based, model-based, human — and see why capability and regression evals are different jobs.</p>
+    <div class="tags"><span>Definitions</span><span>Graders</span><span>Single vs multi-turn</span><span>Capability vs regression</span><span>17 cards</span></div>
+    <span class="open">Read guide <span class="arw">→</span></span>
+  </a>
+
+  <a class="card lvl-2" href="guide-02-applied.html">
+    <div class="wm">02</div>
+    <div class="lvl">02 · Applied</div>
+    <h3>Four Agent Types, One Pattern<span class="en">Coding, conversational, research, computer-use — and non-determinism</span></h3>
+    <p class="d">How evaluation actually looks for the four common agent shapes, including the benchmarks that matter (SWE-bench Verified, τ2-Bench, BrowseComp, WebArena, OSWorld). Closes with pass@k and pass^k — why a 75% pass-rate agent fails for customer-facing reliability.</p>
+    <div class="tags"><span>Coding agents</span><span>Conversational</span><span>Research</span><span>Computer use</span><span>pass@k / pass^k</span><span>11 cards</span></div>
+    <span class="open">Read guide <span class="arw">→</span></span>
+  </a>
+
+  <a class="card lvl-3" href="guide-03-roadmap.html">
+    <div class="wm">03</div>
+    <div class="lvl">03 · Advanced</div>
+    <h3>Zero to One: A Roadmap<span class="en">The eight-step playbook plus Swiss-cheese coverage</span></h3>
+    <p class="d">The full eight-step roadmap: collect tasks from real failures, design a stable harness, sweat the grader details, read the transcripts, watch for saturation, and treat eval suites as living artifacts. Closes with the Swiss-cheese model of how automated evals stack with monitoring, A/B tests, and human review.</p>
+    <div class="tags"><span>Roadmap</span><span>Eval-driven dev</span><span>Saturation</span><span>Transcript review</span><span>Swiss cheese</span><span>Frameworks</span><span>12 cards</span></div>
+    <span class="open">Read guide <span class="arw">→</span></span>
+  </a>
+
+  <div class="howto">
+    <strong>How to use this library.</strong> Read Guide 01 cover-to-cover for the vocabulary, skim Guide 02 for the agent type you're building, and treat Guide 03 as a reference you come back to when planning a real suite. Drill the flashcards anytime you want to refresh terminology — the deck is shuffled across all three guides.
+  </div>
+
+  <div class="footer">
+    <span>Demystifying Evals for AI Agents · Anthropic Engineering, Jan 2026</span>
+    <span><a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents" target="_blank" rel="noopener">Original article →</a></span>
+  </div>
+</div>
+</body>
+</html>

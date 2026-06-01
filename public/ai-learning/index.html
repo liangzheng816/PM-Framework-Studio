@@ -129,10 +129,10 @@ footer{margin-top:80px;padding-top:28px;border-top:1px solid var(--rule);font-fa
 
 <!-- AUTO-INDEX:STATS:START -->
 <div class="stats">
-  <div class="s"><div class="v">3</div><div class="l">Collections</div></div>
-  <div class="s"><div class="v">27</div><div class="l">Pages · Sites &amp; Guides</div></div>
-  <div class="s"><div class="v">26</div><div class="l">Quiz Questions</div></div>
-  <div class="s"><div class="v">63</div><div class="l">Flashcards</div></div>
+  <div class="s"><div class="v">5</div><div class="l">Collections</div></div>
+  <div class="s"><div class="v">33</div><div class="l">Pages · Sites &amp; Guides</div></div>
+  <div class="s"><div class="v">51</div><div class="l">Quiz Questions</div></div>
+  <div class="s"><div class="v">150</div><div class="l">Flashcards</div></div>
 </div>
 <!-- AUTO-INDEX:STATS:END -->
 
@@ -371,6 +371,98 @@ footer{margin-top:80px;padding-top:28px;border-top:1px solid var(--rule);font-fa
       <div class="num">PRACTICE</div>
       <h3>All Flashcards · FDE Deep Dive</h3>
       <p>An 18-card deck across foundations, operating model, and scaling mechanics for rapid review and spaced repetition.</p>
+      <span class="open">Open flashcards <span class="arw">→</span></span>
+    </a>
+  </div>
+</section>
+
+<!-- ============ COLLECTION 04 ============ -->
+<section class="group cat-advanced">
+  <div class="group-head">
+    <div class="gh-l">
+      <div class="gh-meta">
+        <span>Collection 04</span><span class="dot"></span>
+        <span>Anthropic Engineering</span><span class="dot"></span>
+        <span class="date">2026 · 06 · 01</span>
+      </div>
+      <h2>Demystifying <em>Evals</em> for AI Agents</h2>
+      <p class="gh-sub">Anthropic's playbook for building eval suites — from "what's an eval" to a zero-to-one roadmap for shipping with confidence.</p>
+    </div>
+    <a class="gh-home" href="Content/AnthropicEval/index.html">Collection home <span class="arw">→</span></a>
+  </div>
+
+  <div class="grid">
+    <a class="site" href="Content/AnthropicEval/guide-01-foundations.html">
+      <div class="num">GUIDE 01</div>
+      <h3>The Anatomy of an Eval</h3>
+      <p>Vocabulary first: task, trial, grader, transcript, harness, suite. Meet the three grader families and the split between capability and regression evals.</p>
+      <span class="open">Open guide <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/AnthropicEval/guide-02-applied.html">
+      <div class="num">GUIDE 02</div>
+      <h3>Four Agent Types, One Pattern</h3>
+      <p>How evaluation looks for coding, conversational, research, and computer-use agents — and why <code>pass^k</code> kills a 75% pass-rate agent for reliability work.</p>
+      <span class="open">Open guide <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/AnthropicEval/guide-03-roadmap.html">
+      <div class="num">GUIDE 03</div>
+      <h3>Zero to One: A Roadmap</h3>
+      <p>The eight-step playbook: collect tasks from failures, design a stable harness, read transcripts, treat suites as living artifacts. Closes with the Swiss-cheese coverage model.</p>
+      <span class="open">Open guide <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/AnthropicEval/flashcards-index.html">
+      <div class="num">PRACTICE</div>
+      <h3>All Flashcards · 40 Cards</h3>
+      <p>Forty flip cards covering every concept across the three guides. Filter by guide, shuffle the deck, or flip everything at once.</p>
+      <span class="open">Open flashcards <span class="arw">→</span></span>
+    </a>
+  </div>
+</section>
+
+<!-- ============ COLLECTION 05 ============ -->
+<section class="group cat-advanced">
+  <div class="group-head">
+    <div class="gh-l">
+      <div class="gh-meta">
+        <span>Collection 05</span><span class="dot"></span>
+        <span>Agent Eval Rubric</span><span class="dot"></span>
+        <span class="date">2026 · 06 · 01</span>
+      </div>
+      <h2>The Agent Eval <em>Rubric</em></h2>
+      <p class="gh-sub">A five-step protocol that turns "the user complained" into "team X ships fix Y" — three guides grounded in ten research sources.</p>
+    </div>
+    <a class="gh-home" href="Content/agent-eval-rubric-self-learning/index.html">Collection home <span class="arw">→</span></a>
+  </div>
+
+  <div class="grid">
+    <a class="site" href="Content/agent-eval-rubric-self-learning/guide-01-foundations.html">
+      <div class="num">GUIDE 01</div>
+      <h3>Why Rubrics Are a Product Decision</h3>
+      <p>Atomic dimensions, the five-step closed loop, G-Eval's structured judgment, and the LLM Judge biases — position, verbosity, self-enhancement — with the MT-Bench numbers behind them.</p>
+      <span class="open">Open guide <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/agent-eval-rubric-self-learning/guide-02-applied.html">
+      <div class="num">GUIDE 02</div>
+      <h3>Building Your Rubric</h3>
+      <p>Anthropic's grader stratification. Outcome, Answer, and Trajectory rubrics. Evidence gates, UNKNOWN as a first-class output, and <code>pass@k</code> vs <code>pass^k</code> for non-deterministic flows.</p>
+      <span class="open">Open guide <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/agent-eval-rubric-self-learning/guide-03-advanced.html">
+      <div class="num">GUIDE 03</div>
+      <h3>Operating the Rubric</h3>
+      <p>The contextual rubric chain, Agentic Rubrics for SWE agents, the four aging signals, and treating rubric changes like system changes — patch, calibrate, shadow, release.</p>
+      <span class="open">Open guide <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/agent-eval-rubric-self-learning/quiz-index.html">
+      <div class="num">PRACTICE</div>
+      <h3>Full Quiz · 25 Questions</h3>
+      <p>All 25 multiple-choice questions in one sitting — live score tracks as you go, with a per-guide breakdown at the end.</p>
+      <span class="open">Open quiz <span class="arw">→</span></span>
+    </a>
+    <a class="site" href="Content/agent-eval-rubric-self-learning/flashcards-index.html">
+      <div class="num">PRACTICE</div>
+      <h3>All Flashcards · 47 Cards</h3>
+      <p>47 unique flip cards across all three guides. Multi-tagged cards (like RAGAS <code>faithfulness</code>) appear once with every relevant guide pill.</p>
       <span class="open">Open flashcards <span class="arw">→</span></span>
     </a>
   </div>
