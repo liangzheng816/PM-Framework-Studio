@@ -106,11 +106,6 @@ function renderStats(collections: { manifest: Manifest }[]): string {
   ].join("\n");
 }
 
-function formatDate(iso: string): string {
-  const [y, m, d] = iso.split("-");
-  return `${y} · ${m} · ${d}`;
-}
-
 function renderCard(prefix: string, page: Page): string {
   const cta = page.cta ?? "Open page";
   return [
@@ -139,8 +134,7 @@ function renderCollection(
     `    <div class="gh-l">`,
     `      <div class="gh-meta">`,
     `        <span>Collection ${num}</span><span class="dot"></span>`,
-    `        <span>${manifest.collectionLabel}</span><span class="dot"></span>`,
-    `        <span class="date">${formatDate(manifest.date)}</span>`,
+    `        <span>${manifest.collectionLabel}</span>`,
     `      </div>`,
     `      <h2>${manifest.title}</h2>`,
     `      <p class="gh-sub">${manifest.subtitle}</p>`,
