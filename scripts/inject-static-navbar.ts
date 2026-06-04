@@ -40,6 +40,11 @@ const GLOBS = [
   "ai-weekly/**/*.html",
 ];
 
+// Paths inside the public/ tree that must be left untouched. RAW/ holds
+// pristine source dashboards; the build:ai-weekly script injects the nav
+// itself when it copies a dashboard into pages/.
+const EXCLUDE_RE = /(^|\/)ai-weekly\/RAW\//;
+
 const BODY_OPEN_RE = /<body\b[^>]*>/i;
 
 function listFiles(): string[] {
@@ -47,6 +52,7 @@ function listFiles(): string[] {
   for (const g of GLOBS) {
     // Node 22's fs.globSync supports the same patterns we already use elsewhere.
     for (const rel of globSync(g, { cwd: PUBLIC })) {
+      if (EXCLUDE_RE.test(rel.replace(/\\/g, "/"))) continue;
       out.push(join(PUBLIC, rel));
     }
   }
