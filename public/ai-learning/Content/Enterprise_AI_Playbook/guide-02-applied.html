@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>02 · Applied — The PM Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,450;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4; --card:#fbf9f4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--g2);
+}
+h1 em{font-family:"Fraunces",serif;font-style:italic;font-weight:400;color:var(--accent)}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;counter-reset:slide}
+.wrap{max-width:1040px;margin:0 auto;padding:0 28px 120px}
+.back{font-family:"JetBrains Mono",monospace;font-size:12px;text-decoration:none;color:var(--ink-soft);display:inline-flex;align-items:center;gap:6px;margin:28px 0 22px;border:1px solid var(--rule);border-radius:6px;padding:5px 12px;transition:all .14s}
+.back:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--g2);font-weight:600;margin-bottom:18px}
+h1{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(36px,5vw,56px);letter-spacing:-.02em;line-height:1.05;margin:0 0 18px}
+.dek{font-family:"Newsreader",serif;font-style:italic;font-size:22px;color:var(--ink-soft);max-width:720px;margin:0 0 38px}
+.topnav{position:sticky;top:0;background:rgba(244,241,234,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);margin:0 -28px 32px;padding:14px 28px;z-index:20;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.topnav a{color:var(--ink-soft);text-decoration:none;margin-right:18px;padding:4px 0;border-bottom:2px solid transparent;transition:all .14s}
+.topnav a:hover{color:var(--g2);border-bottom-color:var(--g2)}
+.takeaway-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:30px 0 50px}
+@media(max-width:760px){.takeaway-grid{grid-template-columns:1fr}}
+.tk{background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--g2);border-radius:10px;padding:20px 22px}
+.tk-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--g2);font-weight:600;margin-bottom:8px}
+.tk-text{font-size:16px;line-height:1.45;color:var(--ink)}
+section:not(#quiz):not(#flashcards){counter-increment:slide;background:var(--card);border:1.5px solid color-mix(in srgb, var(--guide-color) 28%, var(--rule));border-radius:18px;box-shadow:0 8px 36px -10px rgba(15,23,42,.18),0 1px 0 rgba(15,23,42,.04);margin:48px 0;overflow:hidden;position:relative}
+section:not(#quiz):not(#flashcards) h2{margin:0;padding:26px 36px 22px;background:var(--guide-color);color:#fff;font-family:"Fraunces",serif;font-weight:900;font-size:clamp(20px,2.8vw,26px);letter-spacing:-.015em;line-height:1.1;display:flex;align-items:flex-start;gap:14px}
+section:not(#quiz):not(#flashcards) h2::before{content:counter(slide,decimal-leading-zero);font-family:"JetBrains Mono",monospace;font-weight:600;font-size:12px;letter-spacing:.1em;background:rgba(255,255,255,.16);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.28);padding:4px 10px;border-radius:5px;flex-shrink:0;margin-top:3px;white-space:nowrap}
+section:not(#quiz):not(#flashcards)>p,section:not(#quiz):not(#flashcards)>.insight,section:not(#quiz):not(#flashcards)>.misconception,section:not(#quiz):not(#flashcards)>blockquote,section:not(#quiz):not(#flashcards)>pre,section:not(#quiz):not(#flashcards)>.dimtable,section:not(#quiz):not(#flashcards)>.flow,section:not(#quiz):not(#flashcards)>.pmbox{margin-left:36px;margin-right:36px}
+section:not(#quiz):not(#flashcards)>p:first-of-type{margin-top:28px}
+section:not(#quiz):not(#flashcards)>p:last-of-type,section:not(#quiz):not(#flashcards)>blockquote:last-child,section:not(#quiz):not(#flashcards)>.misconception:last-child{margin-bottom:34px}
+section:not(#quiz):not(#flashcards)::after{content:"";display:block;height:4px;background:linear-gradient(90deg,var(--guide-color) 0%,color-mix(in srgb, var(--guide-color) 30%, transparent) 100%);margin-top:34px;opacity:.35}
+@media(max-width:680px){section:not(#quiz):not(#flashcards) h2{padding:20px 22px 18px;font-size:20px}section:not(#quiz):not(#flashcards)>p,section:not(#quiz):not(#flashcards)>.insight,section:not(#quiz):not(#flashcards)>.misconception{margin-left:22px;margin-right:22px}}
+.insight,.misconception{border-radius:10px;padding:18px 22px;margin:22px 0;font-size:16.5px;line-height:1.5}
+.insight{border-left:4px solid var(--g2);background:var(--amber-soft)}
+.misconception{border-left:4px solid var(--accent);background:var(--accent-soft)}
+.insight::before{content:"✦ Key insight — ";font-weight:600;color:var(--g2)}
+.misconception::before{content:"✕ Common misconception — ";font-weight:600;color:var(--accent)}
+.dimtable{margin:24px 0;border:1px solid var(--rule);border-radius:10px;overflow:hidden;background:var(--card)}
+.dimtable .row{display:grid;grid-template-columns:200px 1fr 220px;gap:0;border-bottom:1px solid var(--rule);font-size:14.5px}
+.dimtable .row:last-child{border-bottom:none}
+.dimtable .row.head{background:#F8FAFC;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+.dimtable .row .c{padding:11px 16px;border-right:1px solid var(--rule)}
+.dimtable .row .c:last-child{border-right:none}
+.dimtable code{font-family:"JetBrains Mono",monospace;font-size:13px;background:#F1F5F9;color:var(--g2);padding:2px 6px;border-radius:4px;font-weight:600}
+@media(max-width:760px){.dimtable .row{grid-template-columns:1fr}.dimtable .row .c{border-right:none;border-bottom:1px solid var(--rule)}.dimtable .row .c:last-child{border-bottom:none}}
+.pmbox{margin:22px 0;padding:18px 22px;background:#FFF7ED;border-left:4px solid var(--accent);border-radius:10px;font-size:16.5px}
+.pmbox::before{content:"📋 PM translation — ";font-weight:600;color:var(--accent);font-family:"Newsreader",serif}
+code,.mono{font-family:"JetBrains Mono",monospace;font-size:.82em;background:#F1F5F9;padding:.08em .42em;border-radius:4px;color:var(--g2)}
+.sec-label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin:48px 0 14px;font-weight:600}
+.q-item{margin:24px 0;padding:22px 26px;background:var(--card);border:1.5px solid var(--rule);border-radius:12px}
+.q-item.correct{border-color:#16A34A;background:#F0FDF4}
+.q-item.wrong{border-color:var(--accent);background:#FFF7ED}
+.q-text{font-size:17px;font-weight:600;margin-bottom:14px}
+.options{display:flex;flex-direction:column;gap:9px;margin-bottom:16px}
+.options label{display:flex;align-items:flex-start;gap:10px;font-size:16px;cursor:pointer;padding:8px 12px;border-radius:7px;border:1.5px solid var(--rule);background:var(--paper);transition:background .12s}
+.options label:hover{background:#F1F5F9}
+.q-item.correct label:has(input[data-correct]){background:#DCFCE7;border-color:#16A34A}
+.q-item.wrong label:has(input:checked:not([data-correct])){background:#FFEDD5;border-color:var(--accent)}
+.check-btn{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:8px 18px;border-radius:7px;border:1.5px solid var(--g2);background:transparent;color:var(--g2);cursor:pointer;transition:all .14s}
+.check-btn:hover:not(:disabled){background:var(--g2);color:#fff}
+.check-btn:disabled{opacity:.4;cursor:not-allowed}
+.explanation{margin-top:14px;padding:12px 16px;background:#F1F5F9;border-left:3px solid var(--g2);border-radius:6px;font-size:15px;color:var(--ink-soft);line-height:1.5}
+.score-btn{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:10px 22px;border-radius:8px;border:none;background:var(--ink);color:#fff;cursor:pointer;margin-top:20px}
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;margin-top:18px}
+.fc{perspective:900px;height:210px;cursor:pointer}
+.fc-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1)}
+.fc.flipped .fc-inner{transform:rotateY(180deg)}
+.fc-front,.fc-back{position:absolute;inset:0;border-radius:13px;padding:22px 22px 18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;justify-content:space-between}
+.fc-front{background:var(--card);border:1.5px solid var(--rule);border-left:4px solid var(--g2)}
+.fc-back{transform:rotateY(180deg);background:var(--g2);color:#fff}
+.fc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.gtag{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:4px;border:1.5px solid;line-height:1.6}
+.gtag.g1{color:var(--g1);border-color:color-mix(in srgb,var(--g1) 40%,transparent);background:color-mix(in srgb,var(--g1) 10%,transparent)}
+.gtag.g2{color:var(--g2);border-color:color-mix(in srgb,var(--g2) 40%,transparent);background:color-mix(in srgb,var(--g2) 10%,transparent)}
+.gtag.g3{color:var(--g3);border-color:color-mix(in srgb,var(--g3) 40%,transparent);background:color-mix(in srgb,var(--g3) 10%,transparent)}
+.fc-term{font-family:"JetBrains Mono",monospace;font-weight:600;font-size:14px;color:var(--g2)}
+.fc-def{font-size:13.5px;line-height:1.5;color:#fff}
+.fc-tap{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);margin-top:auto}
+.fc-back .fc-tap{color:rgba(255,255,255,.55)}
+.foot{margin-top:60px;padding-top:24px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.foot a{color:var(--g2);text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--g2) 30%,transparent)}
+</style>
+</head>
+<body>
+<!-- AUTO-NAV:START -->
+<style data-fs-nav>
+.fs-nav{position:sticky;top:0;left:0;right:0;z-index:200;background:rgba(244,241,234,.9);-webkit-backdrop-filter:saturate(180%) blur(14px);backdrop-filter:saturate(180%) blur(14px);border-bottom:1px solid #d8d2c4;font-family:"Newsreader",Georgia,serif;}
+.fs-nav *{box-sizing:border-box;}
+.fs-nav-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;height:64px;max-width:1280px;margin:0 auto;padding:0 24px;}
+.fs-nav a{text-decoration:none;color:inherit;}
+.fs-nav-brand{display:flex;align-items:center;gap:10px;color:#1b1a17;}
+.fs-nav-badge{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;background:#cc3b1d;color:#fff;font-family:"JetBrains Mono",ui-monospace,monospace;font-weight:700;font-size:12px;letter-spacing:.04em;}
+.fs-nav-name{font-family:"Fraunces",Georgia,serif;font-size:18px;font-weight:500;color:#1b1a17;letter-spacing:-.005em;}
+.fs-nav-links{display:flex;align-items:center;gap:2px;}
+.fs-nav-link{padding:8px 12px;font-size:14px;color:#4a463d;border-radius:8px;transition:background-color .15s ease,color .15s ease;line-height:1;}
+.fs-nav-link:hover{background:#ece7db;color:#1b1a17;}
+.fs-nav-link[aria-current="page"]{color:#cc3b1d;background:rgba(204,59,29,.10);}
+.fs-nav-right{display:flex;align-items:center;gap:12px;}
+.fs-nav-search{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 12px;border:1px solid #d8d2c4;border-radius:8px;background:#fbf9f4;color:#4a463d;font-size:13px;line-height:1;transition:border-color .15s ease;}
+.fs-nav-search:hover{border-color:#b8b0a0;}
+.fs-nav-search svg{flex:none;}
+.fs-nav-search kbd{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;background:rgba(27,26,23,.08);padding:1px 6px;border-radius:3px;color:#4a463d;}
+.fs-nav-burger{display:none;align-items:center;justify-content:center;width:36px;height:32px;border:1px solid #d8d2c4;border-radius:8px;background:transparent;color:#1b1a17;cursor:pointer;}
+.fs-nav-mobile{display:none;border-top:1px solid #d8d2c4;background:#f4f1ea;padding:8px 16px 14px;}
+.fs-nav-mobile a{display:block;padding:10px 12px;font-size:15px;color:#4a463d;border-radius:8px;}
+.fs-nav-mobile a[aria-current="page"]{color:#cc3b1d;background:rgba(204,59,29,.10);}
+.fs-nav.fs-open .fs-nav-mobile{display:block;}
+@media (max-width: 880px){
+  .fs-nav-links,.fs-nav-search{display:none;}
+  .fs-nav-burger{display:flex;}
+}
+</style>
+<header class="fs-nav" data-fs-nav>
+  <nav class="fs-nav-inner" aria-label="Primary">
+    <a class="fs-nav-brand" href="/">
+      <span class="fs-nav-badge">PM</span>
+      <span class="fs-nav-name">PM Studio</span>
+    </a>
+    <div class="fs-nav-links"><a class="fs-nav-link" href="/">Coach</a><a class="fs-nav-link" href="/discover">Discover</a><a class="fs-nav-link" href="/map">Map</a><a class="fs-nav-link" href="/compare">Compare</a><a class="fs-nav-link" href="/collections">Saved</a><a class="fs-nav-link" href="/ai-learning/" aria-current="page">AI Learning</a><a class="fs-nav-link" href="/ai-weekly/index.html">AI Weekly</a><a class="fs-nav-link" href="/about">About</a></div>
+    <div class="fs-nav-right">
+      <a class="fs-nav-search" href="/discover" aria-label="Search frameworks"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5.2-5.2"/></svg><span>Search...</span><kbd>/</kbd></a>
+      <button class="fs-nav-burger" type="button" aria-label="Toggle menu" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="fs-nav-mobile"><a class="fs-nav-mlink" href="/">Coach</a><a class="fs-nav-mlink" href="/discover">Discover</a><a class="fs-nav-mlink" href="/map">Map</a><a class="fs-nav-mlink" href="/compare">Compare</a><a class="fs-nav-mlink" href="/collections">Saved</a><a class="fs-nav-mlink" href="/ai-learning/" aria-current="page">AI Learning</a><a class="fs-nav-mlink" href="/ai-weekly/index.html">AI Weekly</a><a class="fs-nav-mlink" href="/about">About</a></div>
+</header>
+<script data-fs-nav>(function(){var n=document.currentScript&&document.currentScript.previousElementSibling;while(n&&!(n.classList&&n.classList.contains('fs-nav')))n=n.previousElementSibling;if(!n)return;var b=n.querySelector('.fs-nav-burger');if(!b)return;b.addEventListener('click',function(){n.classList.toggle('fs-open');b.setAttribute('aria-expanded',n.classList.contains('fs-open')?'true':'false');});})();</script>
+<!-- AUTO-NAV:END -->
+<div class="wrap">
+
+<a class="back" href="index.html">← Back to library</a>
+<div class="kicker">02 · Applied</div>
+<h1>The PM <em>Playbook</em></h1>
+<p class="dek">Six operating habits the high performers shared. Workflow first. Escalation default. Hidden costs in the Gantt chart. Gatekeepers triaged early. Executives on a weekly cadence. Failure as precursor.</p>
+
+<nav class="topnav">
+  <a href="#non-technical">01 77% non-tech</a>
+  <a href="#workflow">02 Workflow</a>
+  <a href="#escalation">03 Escalation</a>
+  <a href="#gatekeepers">04 Gatekeepers</a>
+  <a href="#exec-cadence">05 Sponsorship</a>
+  <a href="#failure">06 Failure</a>
+  <a href="#quiz">Quiz</a>
+  <a href="#flashcards">Cards</a>
+</nav>
+
+<div class="takeaway-grid">
+  <div class="tk"><div class="tk-label">77%</div><div class="tk-text">of implementation pain is non-technical. Change management, data quality, and process redesign — together — dominate the difficulty curve.</div></div>
+  <div class="tk"><div class="tk-label">71%</div><div class="tk-text">median productivity gain when AI runs the routine path and humans handle exceptions. Escalation beats both full autonomy and approval-gating.</div></div>
+  <div class="tk"><div class="tk-label">61%</div><div class="tk-text">of successful deployments had at least one prior failed attempt. Architect for second-attempt learning; the first stumble is the start, not the end.</div></div>
+</div>
+
+<section id="non-technical">
+<h2>77% of the pain is not technical</h2>
+<p>The single most important number in the playbook for project planning. <strong>77% of implementation challenges</strong> came from three non-technical sources: change management, data quality, and process redesign. Engineering and licensing got the budget; these three stole the schedule.</p>
+<div class="dimtable">
+  <div class="row head"><div class="c">Non-tech cost</div><div class="c">What it looks like</div><div class="c">Goes in the plan as</div></div>
+  <div class="row"><div class="c">Change management</div><div class="c">Role redefinition, retraining, performance-system rewrites, internal comms.</div><div class="c">Named owner, weekly cadence, milestones.</div></div>
+  <div class="row"><div class="c">Data quality</div><div class="c">Schema work, deduplication, lineage tracing, consent / access review.</div><div class="c">Engineering line items, NOT "data team will handle."</div></div>
+  <div class="row"><div class="c">Process redesign</div><div class="c">Mapping the as-is workflow, defining the to-be, validating with end users, rewriting SOPs.</div><div class="c">Discovery sprint + iterative redesign sprints.</div></div>
+</div>
+<div class="insight">If those three lines are missing from your project plan, they're hiding in your delays. Put them in the Gantt chart, give them named owners, and run them like engineering work.</div>
+<div class="misconception">"Once the model is integrated, the rest is rollout." The playbook's data says the opposite — the model integration is roughly the easy 23%; the rollout is where 77% of the pain lives.</div>
+</section>
+
+<section id="workflow">
+<h2>Redesign the workflow, don't bolt on the tool</h2>
+<p>The largest separator between high performers and everyone else: how aggressively they redesigned the workflow around what AI made cheap. The McKinsey signal embedded in the playbook is stark — <strong>55% of high performers</strong> fundamentally redesigned workflows as part of their AI efforts, versus <strong>only 20% of others</strong>.</p>
+<div class="dimtable">
+  <div class="row head"><div class="c">Approach</div><div class="c">What it produces</div><div class="c">Outcome</div></div>
+  <div class="row"><div class="c">Tool bolt-on</div><div class="c">"We added AI to step 3 of the existing process."</div><div class="c">Captures 10-20% of the available value. Most low performers stop here.</div></div>
+  <div class="row"><div class="c">Workflow redesign</div><div class="c">"We rebuilt the underwriting pipeline around AI-first triage. The whole shape of the work changed."</div><div class="c">Captures the productivity multiples seen in successful cases. 55% of high performers.</div></div>
+</div>
+<div class="insight">"We added Copilot" is not the unit of work. "We redesigned the underwriting pipeline around AI-first triage" is. If the post-AI process diagram looks the same as the pre-AI one with a sparkle icon added, you're bolting on, not redesigning.</div>
+<div class="pmbox">For PMs, this is the single highest-leverage decision you make on an AI project. Pick one workflow you'll redesign — not one tool you'll deploy.</div>
+</section>
+
+<section id="escalation">
+<h2>Default to escalation-based operating models</h2>
+<p>How the AI-human boundary is drawn turns out to matter a lot. The playbook compared three operating models and found one that consistently outperformed the others.</p>
+<div class="dimtable">
+  <div class="row head"><div class="c">Operating model</div><div class="c">How it works</div><div class="c">Productivity result</div></div>
+  <div class="row"><div class="c">Fully autonomous</div><div class="c">AI runs the path end-to-end without human checkpoints.</div><div class="c">Underperforms — risk surfaces too late.</div></div>
+  <div class="row"><div class="c">Approval-based</div><div class="c">AI proposes, human approves at every step.</div><div class="c">Underperforms — the human becomes the bottleneck.</div></div>
+  <div class="row"><div class="c">Escalation-based ★</div><div class="c">AI handles routine cases entirely; humans intervene only on exceptions.</div><div class="c"><strong>71% median productivity gain</strong> — the winner.</div></div>
+</div>
+<div class="insight">For most workflows, default to escalation-based. The AI runs the routine path; the human is the exception handler. Reserve approval-gating for safety-critical decisions where the cost of being wrong is genuinely high.</div>
+<div class="pmbox">When in your next AI design review someone says "but we should add human approval at each step," push back. Approval-gating sounds safer but in the playbook's data it consistently underperformed.</div>
+</section>
+
+<section id="gatekeepers">
+<h2>Triage the gatekeepers — legal, HR, compliance</h2>
+<p>One of the most counterintuitive findings in the playbook: resistance to AI deployment overwhelmingly came from <em>gatekeeper functions</em> — legal, HR, compliance — and not from end users. End users adopted; gatekeepers vetoed.</p>
+<div class="dimtable">
+  <div class="row head"><div class="c">Function</div><div class="c">Common concern</div><div class="c">Engagement strategy</div></div>
+  <div class="row"><div class="c">Legal</div><div class="c">IP, liability, contract terms, data sharing.</div><div class="c">Early review of vendor terms; standing office hours.</div></div>
+  <div class="row"><div class="c">HR</div><div class="c">Workforce impact, role redefinition, performance criteria.</div><div class="c">Co-design the role/process changes from day one.</div></div>
+  <div class="row"><div class="c">Compliance / Risk</div><div class="c">Audit trails, regulatory exposure, model governance.</div><div class="c">Surface eval rubrics + audit logs upfront, not at gate review.</div></div>
+</div>
+<div class="insight">A pilot that the end users love can still die at the legal sign-off. Build parallel adoption tracks for each gatekeeper function, with named owners and standing office-hours cadences. End-user enthusiasm doesn't unblock a compliance veto.</div>
+<div class="misconception">"If the users want it, the rollout will succeed." User adoption is necessary but not sufficient. The veto path runs through legal/HR/compliance, and they're harder to win than users.</div>
+</section>
+
+<section id="exec-cadence">
+<h2>Operational executive sponsorship</h2>
+<p>"Executive sponsor" is one of the most overloaded terms in enterprise software. The playbook found a sharp distinction between strategic and operational sponsorship — and only the operational kind correlated with successful outcomes.</p>
+<div class="dimtable">
+  <div class="row head"><div class="c">Sponsorship style</div><div class="c">What it looks like</div><div class="c">Outcome</div></div>
+  <div class="row"><div class="c">Strategic approval</div><div class="c">Signs the kickoff deck. Reappears at the QBR. Hears about blockers second-hand.</div><div class="c">Looks like sponsorship. Doesn't predict success.</div></div>
+  <div class="row"><div class="c">Operational involvement ★</div><div class="c">Weekly 30-min standing meeting with project lead. Explicit blocker list. OKR alignment.</div><div class="c">Strong correlation with successful deployment.</div></div>
+</div>
+<div class="insight">If you can't get a weekly standing 30-min with the executive sponsor, you don't have an executive sponsor — you have a name on a slide. Don't start the project until you have it.</div>
+<div class="pmbox">When recruiting an exec sponsor, negotiate the cadence first, not the title. "Will you trade me a standing weekly for the next quarter?" is a more useful question than "will you sponsor this?"</div>
+</section>
+
+<section id="failure">
+<h2>Failure as precursor — 61%</h2>
+<p>One of the most morale-relevant findings: <strong>61% of successful deployments had at least one prior failed attempt</strong>. The companies that ultimately succeeded treated failure as structured learning rather than terminal outcome. The first attempt is more often the start of the engagement than the end of it.</p>
+<div class="dimtable">
+  <div class="row head"><div class="c">After first attempt fails…</div><div class="c">Low performers do</div><div class="c">High performers do</div></div>
+  <div class="row"><div class="c">Initial response</div><div class="c">Treat as proof "AI doesn't work here."</div><div class="c">Treat as discovery of which specific assumption was wrong.</div></div>
+  <div class="row"><div class="c">Retro depth</div><div class="c">Surface-level postmortem.</div><div class="c">Structured retro mapping failure to layer (workflow / model / data / process / change).</div></div>
+  <div class="row"><div class="c">Second attempt</div><div class="c">Often never tried.</div><div class="c">Reframed around the specific finding from the first retro.</div></div>
+</div>
+<div class="insight">Architect the first attempt with the second attempt in mind. Capture failure traces in retros structured enough to reuse. If your retro template doesn't separate "the model was wrong" from "the workflow was wrong" from "the change management was wrong," you'll lose the most useful insight from each attempt.</div>
+<div class="pmbox">When pitching the first AI attempt internally, name the second attempt explicitly. "We expect to learn from this one and reshape; here are the three hypotheses we want to test" lands very differently from "this is the AI project."</div>
+</section>
+
+<section id="quiz">
+<div class="sec-label">Quiz — Applied</div>
+
+<div class="q-item" id="q2_1">
+<div class="q-text">1. What percentage of AI implementation challenges does the playbook attribute to non-technical sources?</div>
+<div class="options">
+<label><input type="radio" name="q2_1" value="a"> 27%</label>
+<label><input type="radio" name="q2_1" value="b"> 55%</label>
+<label><input type="radio" name="q2_1" value="c"> 77%</label>
+<label><input type="radio" name="q2_1" value="d"> 95%</label>
+</div>
+<input type="hidden" data-correct="c">
+<button class="check-btn" onclick="checkQ('q2_1','g2',7)">Check Answer</button>
+<div class="explanation">77% of implementation challenges came from change management, data quality, and process redesign — not from technology.</div>
+</div>
+
+<div class="q-item" id="q2_2">
+<div class="q-text">2. By the McKinsey figures cited in the playbook, what fraction of high performers redesigned workflows around AI vs. other companies?</div>
+<div class="options">
+<label><input type="radio" name="q2_2" value="a"> 30% vs 10%</label>
+<label><input type="radio" name="q2_2" value="b"> 55% vs 20%</label>
+<label><input type="radio" name="q2_2" value="c"> 80% vs 50%</label>
+<label><input type="radio" name="q2_2" value="d"> 100% vs 100%</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q2_2','g2',7)">Check Answer</button>
+<div class="explanation">55% of high performers redesigned workflows fundamentally; only 20% of others did. The largest single separator across performance tiers.</div>
+</div>
+
+<div class="q-item" id="q2_3">
+<div class="q-text">3. Among fully autonomous, approval-based, and escalation-based operating models, which produced the highest median productivity gain?</div>
+<div class="options">
+<label><input type="radio" name="q2_3" value="a"> Fully autonomous</label>
+<label><input type="radio" name="q2_3" value="b"> Approval-based</label>
+<label><input type="radio" name="q2_3" value="c"> Escalation-based — AI handles routine cases, humans handle exceptions (71% median productivity gain)</label>
+<label><input type="radio" name="q2_3" value="d"> They all produced similar gains</label>
+</div>
+<input type="hidden" data-correct="c">
+<button class="check-btn" onclick="checkQ('q2_3','g2',7)">Check Answer</button>
+<div class="explanation">Escalation-based won. Approval-based makes the human the bottleneck; fully autonomous surfaces risk too late.</div>
+</div>
+
+<div class="q-item" id="q2_4">
+<div class="q-text">4. Resistance to AI deployments overwhelmingly came from which group, per the playbook?</div>
+<div class="options">
+<label><input type="radio" name="q2_4" value="a"> End users</label>
+<label><input type="radio" name="q2_4" value="b"> Engineering teams</label>
+<label><input type="radio" name="q2_4" value="c"> Legal, HR, and compliance — the gatekeeper functions</label>
+<label><input type="radio" name="q2_4" value="d"> Marketing</label>
+</div>
+<input type="hidden" data-correct="c">
+<button class="check-btn" onclick="checkQ('q2_4','g2',7)">Check Answer</button>
+<div class="explanation">A counterintuitive finding. End users adopted; gatekeepers vetoed. Build parallel adoption tracks for each gatekeeper function.</div>
+</div>
+
+<div class="q-item" id="q2_5">
+<div class="q-text">5. What distinguishes "operational" executive sponsorship from "strategic approval" sponsorship in the playbook?</div>
+<div class="options">
+<label><input type="radio" name="q2_5" value="a"> The title of the executive.</label>
+<label><input type="radio" name="q2_5" value="b"> Weekly working cadence with the project lead, explicit blocker removal, OKR alignment — vs. signing the kickoff and reappearing at the QBR.</label>
+<label><input type="radio" name="q2_5" value="c"> Whether they're in the same building.</label>
+<label><input type="radio" name="q2_5" value="d"> Their tenure.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q2_5','g2',7)">Check Answer</button>
+<div class="explanation">Operational sponsorship is a recurring cadence + blocker list + OKR alignment. Strategic sponsorship is a signature on a slide. Only the first predicted success.</div>
+</div>
+
+<div class="q-item" id="q2_6">
+<div class="q-text">6. What percentage of successful deployments in the dataset had at least one prior failed attempt?</div>
+<div class="options">
+<label><input type="radio" name="q2_6" value="a"> About 10%</label>
+<label><input type="radio" name="q2_6" value="b"> About 25%</label>
+<label><input type="radio" name="q2_6" value="c"> About 61%</label>
+<label><input type="radio" name="q2_6" value="d"> About 90%</label>
+</div>
+<input type="hidden" data-correct="c">
+<button class="check-btn" onclick="checkQ('q2_6','g2',7)">Check Answer</button>
+<div class="explanation">61% of successful deployments followed at least one failed attempt. Failure-as-precursor is the norm, not the exception.</div>
+</div>
+
+<div class="q-item" id="q2_7">
+<div class="q-text">7. Your team's AI rollout is stalled. The end users love the tool but the rollout hasn't progressed in six weeks. Based on the playbook, where do you look first?</div>
+<div class="options">
+<label><input type="radio" name="q2_7" value="a"> Switch to a better model.</label>
+<label><input type="radio" name="q2_7" value="b"> Increase end-user training.</label>
+<label><input type="radio" name="q2_7" value="c"> Check whether legal, HR, or compliance has unspoken blockers — gatekeepers veto silently in the playbook's data.</label>
+<label><input type="radio" name="q2_7" value="d"> Add more sales enablement.</label>
+</div>
+<input type="hidden" data-correct="c">
+<button class="check-btn" onclick="checkQ('q2_7','g2',7)">Check Answer</button>
+<div class="explanation">A stalled rollout where end users are enthusiastic almost always points at a gatekeeper veto. End-user adoption is necessary but doesn't unblock legal/HR/compliance.</div>
+</div>
+
+<button class="score-btn" onclick="showScore()">See my score</button>
+<div id="score-panel" style="display:none;margin-top:18px;padding:18px 22px;background:var(--card);border:1.5px solid var(--g2);border-radius:10px;font-family:'JetBrains Mono',monospace"><div style="font-size:22px;font-weight:600;color:var(--g2)"><span id="score-correct">0</span> / <span id="score-total">7</span> correct</div></div>
+</section>
+
+<section id="flashcards">
+<div class="sec-label">Flashcards — Applied</div>
+<div class="fc-grid">
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">77% non-technical pain</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">77% of implementation challenges came from change management, data quality, and process redesign — not technology. Put them in the Gantt chart with named owners.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Change management cost</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Role redefinition, retraining, performance-system rewrites, internal comms. One of the three non-technical cost lines that eat 77% of project difficulty.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Data quality cost</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Schema work, dedup, lineage tracing, consent / access review. Treat as engineering line items with named owners, not as "the data team will handle."</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Process redesign cost</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Mapping the as-is workflow, defining to-be, validating with users, rewriting SOPs. Run as discovery + iterative redesign sprints, not as a memo.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Workflow redesign vs bolt-on</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Bolt-on captures 10-20% of value. Workflow redesign captures the productivity multiples. The largest single separator: 55% of high performers vs 20% of others.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Escalation-based operating model</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">AI handles routine cases end-to-end; humans intervene only on exceptions. 71% median productivity gain — the highest among the three operating-model types studied.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Approval-based operating model</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">AI proposes, human approves at every step. Sounds safe but the human becomes the bottleneck. Underperformed escalation-based in the playbook's data.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Fully autonomous operating model</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">AI runs end-to-end without human checkpoints. Underperformed escalation-based because risk surfaces too late, after damage is done.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Gatekeeper triage</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Legal, HR, and compliance are the silent veto. Build parallel adoption tracks with named owners and standing office hours — end-user enthusiasm doesn't unblock them.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Operational executive sponsorship</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Weekly standing cadence with the project lead + explicit blocker removal + OKR alignment. The kind of sponsorship that correlated with success — not signing a kickoff deck.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Failure-as-precursor (61%)</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">61% of successful deployments had at least one prior failed attempt. High performers treat failure as structured learning. Architect the first attempt with the second in mind.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Production-system framing</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">"This is a production system that uses AI" — not "this is an AI experiment." The reframe that distinguishes the 5% from the 95%, per the playbook.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+</div>
+</section>
+
+<div class="foot"><div>← <a href="guide-01-foundations.html">01 · Foundations</a> · Next: <a href="guide-03-advanced.html">03 · Advanced →</a></div><div><a href="quiz-index.html">Full Quiz</a> · <a href="flashcards-index.html">All Flashcards</a></div></div>
+
+</div>
+<script>
+const answers={};
+function checkQ(id,group,total){const item=document.getElementById(id);const selected=item.querySelector('input[type=radio]:checked');if(!selected){alert('Please select an answer first.');return}const correctValue=item.querySelector('input[type=hidden][data-correct]').dataset.correct;const isCorrect=selected.value===correctValue;item.querySelectorAll('input[type=radio]').forEach(r=>{if(r.value===correctValue)r.setAttribute('data-correct','true')});item.classList.remove('correct','wrong');item.classList.add(isCorrect?'correct':'wrong');item.querySelector('.check-btn').disabled=true;item.querySelectorAll('input[type=radio]').forEach(r=>r.disabled=true);const exp=item.querySelector('.explanation');if(exp)exp.style.display='block';answers[id]=isCorrect}
+function showScore(){const vals=Object.values(answers);const total=document.querySelectorAll('.q-item').length;document.getElementById('score-correct').textContent=vals.filter(Boolean).length;document.getElementById('score-total').textContent=total;document.getElementById('score-panel').style.display='block';document.getElementById('score-panel').scrollIntoView({behavior:'smooth',block:'center'})}
+function flip(card){card.classList.toggle('flipped')}
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'})})})
+</script>
+</body>
+</html>

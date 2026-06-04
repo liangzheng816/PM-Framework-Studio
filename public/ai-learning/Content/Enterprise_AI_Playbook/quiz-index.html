@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Full Quiz · Enterprise AI Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,450;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4; --card:#fbf9f4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+}
+h1 em{font-family:"Fraunces",serif;font-style:italic;font-weight:400;color:var(--accent)}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1040px;margin:0 auto;padding:0 28px 120px}
+.back{font-family:"JetBrains Mono",monospace;font-size:12px;text-decoration:none;color:var(--ink-soft);display:inline-flex;align-items:center;gap:6px;margin:28px 0 22px;border:1px solid var(--rule);border-radius:6px;padding:5px 12px;transition:all .14s}
+.back:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);font-weight:600;margin-bottom:18px}
+h1{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(36px,5vw,56px);letter-spacing:-.02em;line-height:1.05;margin:0 0 18px}
+.dek{font-family:"Newsreader",serif;font-style:italic;font-size:22px;color:var(--ink-soft);max-width:720px;margin:0 0 38px}
+.dashboard{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:30px 0 50px;background:var(--ink);border-radius:14px;padding:24px;color:#fff}
+@media(max-width:680px){.dashboard{grid-template-columns:1fr}}
+.ds-v{font-family:"Fraunces",serif;font-weight:900;font-size:42px;line-height:1;color:#fff}
+.ds-l{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.7);margin-top:8px}
+.dbar{margin-top:14px;height:6px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden}
+.dbar-fill{height:100%;background:#10B981;width:0%;transition:width .35s ease}
+.guide-section-head{margin:48px 0 8px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.gsec-badge{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:5px 12px;border-radius:6px;color:#fff}
+.gsec-badge.g1{background:var(--g1)}
+.gsec-badge.g2{background:var(--g2)}
+.gsec-badge.g3{background:var(--g3)}
+.gsec-title{font-family:"Fraunces",serif;font-weight:600;font-size:22px;letter-spacing:-.01em}
+.gsec-score{margin-left:auto;font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);background:var(--card);border:1px solid var(--rule);padding:6px 12px;border-radius:6px}
+.q-item{margin:18px 0;padding:22px 26px;background:var(--card);border:1.5px solid var(--rule);border-radius:12px}
+.q-item.correct{border-color:#16A34A;background:#F0FDF4}
+.q-item.wrong{border-color:var(--accent);background:#FFF7ED}
+.q-text{font-size:17px;font-weight:600;margin-bottom:14px}
+.options{display:flex;flex-direction:column;gap:9px;margin-bottom:16px}
+.options label{display:flex;align-items:flex-start;gap:10px;font-size:16px;cursor:pointer;padding:8px 12px;border-radius:7px;border:1.5px solid var(--rule);background:var(--paper);transition:background .12s}
+.options label:hover{background:#F1F5F9}
+.q-item.correct label:has(input[data-correct]){background:#DCFCE7;border-color:#16A34A}
+.q-item.wrong label:has(input:checked:not([data-correct])){background:#FFEDD5;border-color:var(--accent)}
+.check-btn{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:8px 18px;border-radius:7px;border:1.5px solid currentColor;background:transparent;cursor:pointer;transition:all .14s}
+.q-item[data-g="g1"] .check-btn{color:var(--g1)}.q-item[data-g="g1"] .check-btn:hover:not(:disabled){background:var(--g1);color:#fff}
+.q-item[data-g="g2"] .check-btn{color:var(--g2)}.q-item[data-g="g2"] .check-btn:hover:not(:disabled){background:var(--g2);color:#fff}
+.q-item[data-g="g3"] .check-btn{color:var(--g3)}.q-item[data-g="g3"] .check-btn:hover:not(:disabled){background:var(--g3);color:#fff}
+.check-btn:disabled{opacity:.4;cursor:not-allowed}
+.explanation{margin-top:14px;padding:12px 16px;border-left:3px solid currentColor;border-radius:6px;font-size:15px;color:var(--ink-soft);line-height:1.5;background:#F1F5F9}
+code{font-family:"JetBrains Mono",monospace;font-size:.82em;background:#F1F5F9;padding:.08em .42em;border-radius:4px;color:var(--g2)}
+.final-panel{margin-top:48px;padding:36px;background:var(--card);border:2px solid var(--g1);border-radius:16px;text-align:center}
+.fs-pct{font-family:"Fraunces",serif;font-weight:900;font-size:88px;line-height:1;color:var(--g1)}
+.fs-label{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-soft);margin-top:8px}
+.breakdown-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:28px 0 22px;text-align:left}
+@media(max-width:680px){.breakdown-grid{grid-template-columns:1fr}}
+.bk{padding:16px 20px;background:#F8FAFC;border-radius:10px;border-left:4px solid var(--g1)}
+.bk#bk2{border-left-color:var(--g2)}
+.bk#bk3{border-left-color:var(--g3)}
+.bk-label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+.bk-val{font-family:"Fraunces",serif;font-weight:900;font-size:28px;color:var(--ink);margin-top:6px}
+.retry-btn{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:10px 22px;border-radius:8px;border:none;background:var(--ink);color:#fff;cursor:pointer}
+.crosslink{margin-top:60px;padding:22px 28px;background:var(--card);border:1px solid var(--rule);border-radius:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-family:"JetBrains Mono",monospace;font-size:13px}
+.crosslink a{color:var(--g1);text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--g1) 30%,transparent);font-weight:600}
+.foot{margin-top:40px;padding-top:24px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);text-align:center}
+</style>
+</head>
+<body>
+<!-- AUTO-NAV:START -->
+<style data-fs-nav>
+.fs-nav{position:sticky;top:0;left:0;right:0;z-index:200;background:rgba(244,241,234,.9);-webkit-backdrop-filter:saturate(180%) blur(14px);backdrop-filter:saturate(180%) blur(14px);border-bottom:1px solid #d8d2c4;font-family:"Newsreader",Georgia,serif;}
+.fs-nav *{box-sizing:border-box;}
+.fs-nav-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;height:64px;max-width:1280px;margin:0 auto;padding:0 24px;}
+.fs-nav a{text-decoration:none;color:inherit;}
+.fs-nav-brand{display:flex;align-items:center;gap:10px;color:#1b1a17;}
+.fs-nav-badge{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;background:#cc3b1d;color:#fff;font-family:"JetBrains Mono",ui-monospace,monospace;font-weight:700;font-size:12px;letter-spacing:.04em;}
+.fs-nav-name{font-family:"Fraunces",Georgia,serif;font-size:18px;font-weight:500;color:#1b1a17;letter-spacing:-.005em;}
+.fs-nav-links{display:flex;align-items:center;gap:2px;}
+.fs-nav-link{padding:8px 12px;font-size:14px;color:#4a463d;border-radius:8px;transition:background-color .15s ease,color .15s ease;line-height:1;}
+.fs-nav-link:hover{background:#ece7db;color:#1b1a17;}
+.fs-nav-link[aria-current="page"]{color:#cc3b1d;background:rgba(204,59,29,.10);}
+.fs-nav-right{display:flex;align-items:center;gap:12px;}
+.fs-nav-search{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 12px;border:1px solid #d8d2c4;border-radius:8px;background:#fbf9f4;color:#4a463d;font-size:13px;line-height:1;transition:border-color .15s ease;}
+.fs-nav-search:hover{border-color:#b8b0a0;}
+.fs-nav-search svg{flex:none;}
+.fs-nav-search kbd{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;background:rgba(27,26,23,.08);padding:1px 6px;border-radius:3px;color:#4a463d;}
+.fs-nav-burger{display:none;align-items:center;justify-content:center;width:36px;height:32px;border:1px solid #d8d2c4;border-radius:8px;background:transparent;color:#1b1a17;cursor:pointer;}
+.fs-nav-mobile{display:none;border-top:1px solid #d8d2c4;background:#f4f1ea;padding:8px 16px 14px;}
+.fs-nav-mobile a{display:block;padding:10px 12px;font-size:15px;color:#4a463d;border-radius:8px;}
+.fs-nav-mobile a[aria-current="page"]{color:#cc3b1d;background:rgba(204,59,29,.10);}
+.fs-nav.fs-open .fs-nav-mobile{display:block;}
+@media (max-width: 880px){
+  .fs-nav-links,.fs-nav-search{display:none;}
+  .fs-nav-burger{display:flex;}
+}
+</style>
+<header class="fs-nav" data-fs-nav>
+  <nav class="fs-nav-inner" aria-label="Primary">
+    <a class="fs-nav-brand" href="/">
+      <span class="fs-nav-badge">PM</span>
+      <span class="fs-nav-name">PM Studio</span>
+    </a>
+    <div class="fs-nav-links"><a class="fs-nav-link" href="/">Coach</a><a class="fs-nav-link" href="/discover">Discover</a><a class="fs-nav-link" href="/map">Map</a><a class="fs-nav-link" href="/compare">Compare</a><a class="fs-nav-link" href="/collections">Saved</a><a class="fs-nav-link" href="/ai-learning/" aria-current="page">AI Learning</a><a class="fs-nav-link" href="/ai-weekly/index.html">AI Weekly</a><a class="fs-nav-link" href="/about">About</a></div>
+    <div class="fs-nav-right">
+      <a class="fs-nav-search" href="/discover" aria-label="Search frameworks"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5.2-5.2"/></svg><span>Search...</span><kbd>/</kbd></a>
+      <button class="fs-nav-burger" type="button" aria-label="Toggle menu" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="fs-nav-mobile"><a class="fs-nav-mlink" href="/">Coach</a><a class="fs-nav-mlink" href="/discover">Discover</a><a class="fs-nav-mlink" href="/map">Map</a><a class="fs-nav-mlink" href="/compare">Compare</a><a class="fs-nav-mlink" href="/collections">Saved</a><a class="fs-nav-mlink" href="/ai-learning/" aria-current="page">AI Learning</a><a class="fs-nav-mlink" href="/ai-weekly/index.html">AI Weekly</a><a class="fs-nav-mlink" href="/about">About</a></div>
+</header>
+<script data-fs-nav>(function(){var n=document.currentScript&&document.currentScript.previousElementSibling;while(n&&!(n.classList&&n.classList.contains('fs-nav')))n=n.previousElementSibling;if(!n)return;var b=n.querySelector('.fs-nav-burger');if(!b)return;b.addEventListener('click',function(){n.classList.toggle('fs-open');b.setAttribute('aria-expanded',n.classList.contains('fs-open')?'true':'false');});})();</script>
+<!-- AUTO-NAV:END -->
+<div class="wrap">
+
+<a class="back" href="index.html">← Back to library</a>
+<div class="kicker">Full Quiz · All Guides</div>
+<h1>Test Your Playbook <em>Reflexes</em></h1>
+<p class="dek">20 multiple-choice questions across the three guides — the inclusion bar, the 10 findings, the operating habits, and the transformation reframe. Live score tracks as you go.</p>
+
+<div class="dashboard">
+  <div><div class="ds-v" id="d-answered">0</div><div class="ds-l">Answered</div></div>
+  <div><div class="ds-v" id="d-correct">0</div><div class="ds-l">Correct</div></div>
+  <div><div class="ds-v" id="d-pct">0%</div><div class="ds-l">Score</div><div class="dbar"><div class="dbar-fill" id="dbar-fill"></div></div></div>
+</div>
+
+<div class="guide-section-head"><span class="gsec-badge g1">01 · Foundations</span><span class="gsec-title">What the Study Found</span><span class="gsec-score" id="score-g1">0 / 7 correct</span></div>
+
+<div class="q-item" data-g="g1" id="q1_1"><div class="q-text">1. Which of these does NOT belong in Stanford's four-part "successful deployment" bar?</div><div class="options"><label><input type="radio" name="q1_1" value="a"> Live in production</label><label><input type="radio" name="q1_1" value="b"> Used consistently</label><label><input type="radio" name="q1_1" value="c"> Featured in a company press release</label><label><input type="radio" name="q1_1" value="d"> Measurable business value</label></div><input type="hidden" data-correct="c"><button class="check-btn" onclick="checkQ('q1_1','g1',7)">Check Answer</button><div class="explanation" style="display:none">The four criteria: live in production, used consistently, measurable business value, capable of scaling. Marketing visibility is not on the list.</div></div>
+
+<div class="q-item" data-g="g1" id="q1_2"><div class="q-text">2. The dataset covered how many organizations and industries?</div><div class="options"><label><input type="radio" name="q1_2" value="a"> 51 organizations, 5 industries</label><label><input type="radio" name="q1_2" value="b"> 41 organizations, 9 industries</label><label><input type="radio" name="q1_2" value="c"> 100 organizations, 12 industries</label><label><input type="radio" name="q1_2" value="d"> 51 organizations, 51 industries</label></div><input type="hidden" data-correct="b"><button class="check-btn" onclick="checkQ('q1_2','g1',7)">Check Answer</button><div class="explanation" style="display:none">51 deployments × 41 orgs × 9 industries × 7 countries × 1M+ employees. Some orgs had multiple deployments.</div></div>
+
+<div class="q-item" data-g="g1" id="q1_3"><div class="q-text">3. The playbook's central thesis is best summarized as:</div><div class="options"><label><input type="radio" name="q1_3" value="a"> Bigger foundation models drive higher success rates.</label><label><input type="radio" name="q1_3" value="b"> The difference between winners and losers was the organization — readiness, processes, leadership, willingness to redesign — not the model.</label><label><input type="radio" name="q1_3" value="c"> Enterprise AI works best when fully autonomous.</label><label><input type="radio" name="q1_3" value="d"> Industries with cleaner data succeed faster.</label></div><input type="hidden" data-correct="b"><button class="check-btn" onclick="checkQ('q1_3','g1',7)">Check Answer</button><div class="explanation" style="display:none">"The difference was never the AI model. It was always the organization." 42% of cases had interchangeable models.</div></div>
+
+<div class="q-item" data-g="g1" id="q1_4"><div class="q-text">4. Why does the 95% pilot failure rate matter to the playbook's framing?</div><div class="options"><label><input type="radio" name="q1_4" value="a"> It proves the technology is broken.</label><label><input type="radio" name="q1_4" value="b"> It frames the 51 as the reverse-engineered profile of the 5% that actually produced measurable financial impact.</label><label><input type="radio" name="q1_4" value="c"> It's the cost of building AI.</label><label><input type="radio" name="q1_4" value="d"> It's why model quality matters most.</label></div><input type="hidden" data-correct="b"><button class="check-btn" onclick="checkQ('q1_4','g1',7)">Check Answer</button><div class="explanation" style="display:none">If most pilots fail, the useful question is what the small minority did differently. The 51 are an empirical answer.</div></div>
+
+<div class="q-item" data-g="g1" id="q1_5"><div class="q-text">5. Identical use cases took weeks in some companies and years in others. The biggest single determinant of that gap was:</div><div class="options"><label><input type="radio" name="q1_5" value="a"> Foundation model choice</label><label><input type="radio" name="q1_5" value="b"> Cloud provider</label><label><input type="radio" name="q1_5" value="c"> Executive sponsorship cadence and organizational readiness</label><label><input type="radio" name="q1_5" value="d"> Number of engineers assigned</label></div><input type="hidden" data-correct="c"><button class="check-btn" onclick="checkQ('q1_5','g1',7)">Check Answer</button><div class="explanation" style="display:none">Same use case, same technology, vastly different timelines — set by exec cadence, infrastructure readiness, user willingness, gatekeeper behavior.</div></div>
+
+<div class="q-item" data-g="g1" id="q1_6"><div class="q-text">6. In what fraction of studied cases was the model interchangeable?</div><div class="options"><label><input type="radio" name="q1_6" value="a"> About 5%</label><label><input type="radio" name="q1_6" value="b"> About 20%</label><label><input type="radio" name="q1_6" value="c"> About 42%</label><label><input type="radio" name="q1_6" value="d"> About 95%</label></div><input type="hidden" data-correct="c"><button class="check-btn" onclick="checkQ('q1_6','g1',7)">Check Answer</button><div class="explanation" style="display:none">42% — the empirical case for treating model choice as substitutable infrastructure.</div></div>
+
+<div class="q-item" data-g="g1" id="q1_7"><div class="q-text">7. Your VP says "let's pick the best foundation model first, then design the workflow." Based on the playbook, what's the most accurate response?</div><div class="options"><label><input type="radio" name="q1_7" value="a"> Agree — model choice drives success.</label><label><input type="radio" name="q1_7" value="b"> Counter — in 42% of cases models were interchangeable; the bigger separators were workflow redesign, operating model, and executive cadence. Decide the workflow first.</label><label><input type="radio" name="q1_7" value="c"> Suggest a Gartner Magic Quadrant review.</label><label><input type="radio" name="q1_7" value="d"> Skip the model decision entirely.</label></div><input type="hidden" data-correct="b"><button class="check-btn" onclick="checkQ('q1_7','g1',7)">Check Answer</button><div class="explanation" style="display:none">The playbook's clearest PM-facing implication. Model lock-in budget goes to workflow, integration, and UX — not provider choice.</div></div>
+
+<div class="guide-section-head"><span class="gsec-badge g2">02 · Applied</span><span class="gsec-title">The PM Playbook</span><span class="gsec-score" id="score-g2">0 / 7 correct</span></div>
+
+<div class="q-item" data-g="g2" id="q2_1"><div class="q-text">1. What percentage of AI implementation challenges does the playbook attribute to non-technical sources?</div><div class="options"><label><input type="radio" name="q2_1" value="a"> 27%</label><label><input type="radio" name="q2_1" value="b"> 55%</label><label><input type="radio" name="q2_1" value="c"> 77%</label><label><input type="radio" name="q2_1" value="d"> 95%</label></div><input type="hidden" data-correct="c"><button class="check-btn" onclick="checkQ('q2_1','g2',7)">Check Answer</button><div class="explanation" style="display:none">77% — change management, data quality, and process redesign. Not technology.</div></div>
+
+<div class="q-item" data-g="g2" id="q2_2"><div class="q-text">2. By the McKinsey figures cited in the playbook, what fraction of high performers redesigned workflows around AI vs. other companies?</div><div class="options"><label><input type="radio" name="q2_2" value="a"> 30% vs 10%</label><label><input type="radio" name="q2_2" value="b"> 55% vs 20%</label><label><input type="radio" name="q2_2" value="c"> 80% vs 50%</label><label><input type="radio" name="q2_2" value="d"> 100% vs 100%</label></div><input type="hidden" data-correct="b"><button class="check-btn" onclick="checkQ('q2_2','g2',7)">Check Answer</button><div class="explanation" style="display:none">55% vs 20% — the largest single separator across performance tiers.</div></div>
+
+<div class="q-item" data-g="g2" id="q2_3"><div class="q-text">3. Among fully autonomous, approval-based, and escalation-based operating models, which produced the highest median productivity gain?</div><div class="options"><label><input type="radio" name="q2_3" value="a"> Fully autonomous</label><label><input type="radio" name="q2_3" value="b"> Approval-based</label><label><input type="radio" name="q2_3" value="c"> Escalation-based — AI handles routine, humans handle exceptions (71% median productivity gain)</label><label><input type="radio" name="q2_3" value="d"> They all produced similar gains</label></div><input type="hidden" data-correct="c"><button class="check-btn" onclick="checkQ('q2_3','g2',7)">Check Answer</button><div class="explanation" style="display:none">Escalation-based won. Approval-based makes the human the bottleneck; fully autonomous surfaces risk too late.</div></div>
+
+<div class="q-item" data-g="g2" id="q2_4"><div class="q-text">4. Resistance to AI deployments overwhelmingly came from which group, per the playbook?</div><div class="options"><label><input type="radio" name="q2_4" value="a"> End users</label><label><input type="radio" name="q2_4" value="b"> Engineering teams</label><label><input type="radio" name="q2_4" value="c"> Legal, HR, and compliance — the gatekeeper functions</label><label><input type="radio" name="q2_4" value="d"> Marketing</label></div><input type="hidden" data-correct="c"><button class="check-btn" onclick="checkQ('q2_4','g2',7)">Check Answer</button><div class="explanation" style="display:none">Counterintuitive. End users adopted; gatekeepers vetoed.</div></div>
+
+<div class="q-item" data-g="g2" id="q2_5"><div class="q-text">5. What distinguishes "operational" executive sponsorship from "strategic approval" sponsorship?</div><div class="options"><label><input type="radio" name="q2_5" value="a"> The title of the executive.</label><label><input type="radio" name="q2_5" value="b"> Weekly working cadence with the project lead, explicit blocker removal, OKR alignment — vs. signing the kickoff and reappearing at the QBR.</label><label><input type="radio" name="q2_5" value="c"> Whether they're in the same building.</label><label><input type="radio" name="q2_5" value="d"> Their tenure.</label></div><input type="hidden" data-correct="b"><button class="check-btn" onclick="checkQ('q2_5','g2',7)">Check Answer</button><div class="explanation" style="display:none">Operational sponsorship is a recurring cadence + blocker list + OKR alignment. Strategic sponsorship is a signature.</div></div>
+
+<div class="q-item" data-g="g2" id="q2_6"><div class="q-text">6. What percentage of successful deployments in the dataset had at least one prior failed attempt?</div><div class="options"><label><input type="radio" name="q2_6" value="a"> About 10%</label><label><input type="radio" name="q2_6" value="b"> About 25%</label><label><input type="radio" name="q2_6" value="c"> About 61%</label><label><input type="radio" name="q2_6" value="d"> About 90%</label></div><input type="hidden" data-correct="c"><button class="check-btn" onclick="checkQ('q2_6','g2',7)">Check Answer</button><div class="explanation" style="display:none">61% — failure-as-precursor is the norm, not the exception.</div></div>
+
+<div class="q-item" data-g="g2" id="q2_7"><div class="q-text">7. Your team's AI rollout is stalled. The end users love the tool but the rollout hasn't progressed in six weeks. Where do you look first?</div><div class="options"><label><input type="radio" name="q2_7" value="a"> Switch to a better model.</label><label><input type="radio" name="q2_7" value="b"> Increase end-user training.</label><label><input type="radio" name="q2_7" value="c"> Check whether legal, HR, or compliance has unspoken blockers — gatekeepers veto silently.</label><label><input type="radio" name="q2_7" value="d"> Add more sales enablement.</label></div><input type="hidden" data-correct="c"><button class="check-btn" onclick="checkQ('q2_7','g2',7)">Check Answer</button><div class="explanation" style="display:none">A stalled rollout with enthusiastic users almost always points to a gatekeeper veto.</div></div>
+
+<div class="guide-section-head"><span class="gsec-badge g3">03 · Advanced</span><span class="gsec-title">Operating an AI Transformation</span><span class="gsec-score" id="score-g3">0 / 6 correct</span></div>
+
+<div class="q-item" data-g="g3" id="q3_1"><div class="q-text">1. The shift from "experiment mode" to "strategic integration" most affects which dimension first?</div><div class="options"><label><input type="radio" name="q3_1" value="a"> Model choice</label><label><input type="radio" name="q3_1" value="b"> Ownership, KPIs, and budget model — from innovation team / pilot KPIs / innovation budget to operating-unit owner / business KPIs / operating budget.</label><label><input type="radio" name="q3_1" value="c"> Cloud provider</label><label><input type="radio" name="q3_1" value="d"> Office location</label></div><input type="hidden" data-correct="b"><button class="check-btn" onclick="checkQ('q3_1','g3',6)">Check Answer</button><div class="explanation" style="display:none">The reframe is structural: ownership, KPIs, control systems, failure handling, funding.</div></div>
+
+<div class="q-item" data-g="g3" id="q3_2"><div class="q-text">2. Productivity gains automatically translate to layoffs in what proportion of deployments?</div><div class="options"><label><input type="radio" name="q3_2" value="a"> 100% — productivity always reduces headcount.</label><label><input type="radio" name="q3_2" value="b"> 45% — the rest redeployed or accelerated growth.</label><label><input type="radio" name="q3_2" value="c"> 0% — layoffs never happened.</label><label><input type="radio" name="q3_2" value="d"> Cannot be determined.</label></div><input type="hidden" data-correct="b"><button class="check-btn" onclick="checkQ('q3_2','g3',6)">Check Answer</button><div class="explanation" style="display:none">45% reduced headcount; the rest redeployed or grew. Workforce strategy is a deliberate choice.</div></div>
+
+<div class="q-item" data-g="g3" id="q3_3"><div class="q-text">3. Which of these is the highest-ceiling AI value type, per the playbook's pattern?</div><div class="options"><label><input type="radio" name="q3_3" value="a"> Cost savings via headcount reduction</label><label><input type="radio" name="q3_3" value="b"> Productized AI capabilities sold as features — new revenue creation has the largest ceiling.</label><label><input type="radio" name="q3_3" value="c"> Faster meetings</label><label><input type="radio" name="q3_3" value="d"> Improved morale</label></div><input type="hidden" data-correct="b"><button class="check-btn" onclick="checkQ('q3_3','g3',6)">Check Answer</button><div class="explanation" style="display:none">Cost savings are bounded by the cost line; productization creates net-new revenue with the largest ceiling.</div></div>
+
+<div class="q-item" data-g="g3" id="q3_4"><div class="q-text">4. A team says "we can't start the AI project until we clean our data." By the playbook, this is most likely:</div><div class="options"><label><input type="radio" name="q3_4" value="a"> Always the right call.</label><label><input type="radio" name="q3_4" value="b"> A stalling tactic — LLMs handle messy and unstructured inputs; "messy data" is often the polite version of organizational resistance.</label><label><input type="radio" name="q3_4" value="c"> A signal to switch models.</label><label><input type="radio" name="q3_4" value="d"> An indication of strong technical leadership.</label></div><input type="hidden" data-correct="b"><button class="check-btn" onclick="checkQ('q3_4','g3',6)">Check Answer</button><div class="explanation" style="display:none">LLMs handle messy data well enough that "we need to clean it first" is now usually a delay rationalization.</div></div>
+
+<div class="q-item" data-g="g3" id="q3_5"><div class="q-text">5. Given 42% model interchangeability, where should a PM steer the architectural lock-in budget?</div><div class="options"><label><input type="radio" name="q3_5" value="a"> Foundation model contract terms</label><label><input type="radio" name="q3_5" value="b"> Workflow orchestration, system integration, UX, evaluation rubrics — institutional knowledge that survives model swaps.</label><label><input type="radio" name="q3_5" value="c"> The largest vendor in the market</label><label><input type="radio" name="q3_5" value="d"> The cheapest provider</label></div><input type="hidden" data-correct="b"><button class="check-btn" onclick="checkQ('q3_5','g3',6)">Check Answer</button><div class="explanation" style="display:none">Keep the model layer thin and replaceable. Put institutional knowledge above it.</div></div>
+
+<div class="q-item" data-g="g3" id="q3_6"><div class="q-text">6. Which of these best summarizes the playbook's overall PM-facing message?</div><div class="options"><label><input type="radio" name="q3_6" value="a"> Better models will solve the enterprise adoption problem.</label><label><input type="radio" name="q3_6" value="b"> AI success is an organizational transformation problem. Workflow redesign, executive cadence, escalation design, gatekeeper triage determine outcomes — not model choice.</label><label><input type="radio" name="q3_6" value="c"> Wait for AGI.</label><label><input type="radio" name="q3_6" value="d"> Invest more in pilots.</label></div><input type="hidden" data-correct="b"><button class="check-btn" onclick="checkQ('q3_6','g3',6)">Check Answer</button><div class="explanation" style="display:none">The moats are organizational, not technological. Operating skills, not technology choices.</div></div>
+
+<div class="final-panel" id="final-panel" style="display:none">
+  <div class="fs-pct" id="fs-pct">—%</div>
+  <div class="fs-label">Final Score</div>
+  <div class="breakdown-grid">
+    <div class="bk" id="bk1"><div class="bk-label">Guide 1 · Foundations</div><div class="bk-val" id="bk1-val">—</div></div>
+    <div class="bk" id="bk2"><div class="bk-label">Guide 2 · Applied</div><div class="bk-val" id="bk2-val">—</div></div>
+    <div class="bk" id="bk3"><div class="bk-label">Guide 3 · Advanced</div><div class="bk-val" id="bk3-val">—</div></div>
+  </div>
+  <button class="retry-btn" onclick="resetAll()">↺ Try again</button>
+</div>
+
+<div class="crosslink"><span>Done quizzing? Drill the concepts with flashcards.</span><a href="flashcards-index.html">All flashcards →</a></div>
+<div class="foot">20 questions · The Enterprise AI Playbook · self-learning library</div>
+
+</div>
+<script>
+const answers={};
+function checkQ(id,group,total){const item=document.getElementById(id);const selected=item.querySelector('input[type=radio]:checked');if(!selected){alert('Please select an answer first.');return}const correctValue=item.querySelector('input[type=hidden][data-correct]').dataset.correct;const isCorrect=selected.value===correctValue;item.querySelectorAll('input[type=radio]').forEach(r=>{if(r.value===correctValue)r.setAttribute('data-correct','true')});item.classList.remove('correct','wrong');item.classList.add(isCorrect?'correct':'wrong');item.querySelector('.check-btn').disabled=true;item.querySelectorAll('input[type=radio]').forEach(r=>r.disabled=true);const exp=item.querySelector('.explanation');if(exp)exp.style.display='block';answers[id]=isCorrect;updateDashboard();updateSectionScore(group,total);const totalQs=document.querySelectorAll('.q-item').length;if(Object.keys(answers).length===totalQs)setTimeout(showFinal,400)}
+function updateDashboard(){const vals=Object.values(answers);const a=vals.length,c=vals.filter(Boolean).length,p=a?Math.round(c/a*100):0;document.getElementById('d-answered').textContent=a;document.getElementById('d-correct').textContent=c;document.getElementById('d-pct').textContent=p+'%';document.getElementById('dbar-fill').style.width=p+'%'}
+function updateSectionScore(group,total){const prefix=group.replace('g','q');const keys=Object.keys(answers).filter(k=>k.startsWith(prefix+'_'));const correct=keys.filter(k=>answers[k]).length;const el=document.getElementById('score-'+group);if(el)el.textContent=correct+' / '+keys.length+' correct'}
+function countGroup(group){const prefix=group.replace('g','q');const keys=Object.keys(answers).filter(k=>k.startsWith(prefix+'_'));return{answered:keys.length,correct:keys.filter(k=>answers[k]).length}}
+function showFinal(){const panel=document.getElementById('final-panel');panel.style.display='block';panel.scrollIntoView({behavior:'smooth',block:'center'});const vals=Object.values(answers);const pct=Math.round(vals.filter(Boolean).length/vals.length*100);document.getElementById('fs-pct').textContent=pct+'%';['g1','g2','g3'].forEach(g=>{const{answered,correct}=countGroup(g);const el=document.getElementById('bk'+g.slice(1)+'-val');if(el)el.textContent=answered?correct+' / '+answered:'—'})}
+function resetAll(){Object.keys(answers).forEach(k=>delete answers[k]);document.querySelectorAll('.q-item').forEach(item=>{item.classList.remove('correct','wrong');item.querySelectorAll('input[type=radio]').forEach(r=>{r.checked=false;r.disabled=false});const btn=item.querySelector('.check-btn');if(btn)btn.disabled=false;const exp=item.querySelector('.explanation');if(exp)exp.style.display='none'});document.getElementById('d-answered').textContent='0';document.getElementById('d-correct').textContent='0';document.getElementById('d-pct').textContent='0%';document.getElementById('dbar-fill').style.width='0%';document.getElementById('final-panel').style.display='none';['g1','g2','g3'].forEach(g=>{const total=g==='g1'?7:g==='g2'?7:6;const el=document.getElementById('score-'+g);if(el)el.textContent='0 / '+total+' correct'})}
+</script>
+</body>
+</html>

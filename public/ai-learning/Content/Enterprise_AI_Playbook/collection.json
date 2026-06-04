@@ -1,0 +1,50 @@
+{
+  "order": 6,
+  "category": "applied",
+  "collectionLabel": "Enterprise AI · Stanford Study",
+  "date": "2026-06-02",
+  "title": "The Enterprise AI <em>Playbook</em>",
+  "subtitle": "Stanford's reverse-engineered profile of the 5% of enterprise AI deployments that actually shipped — three guides on the operating habits, workforce choices, and lock-in budget behind every win.",
+  "home": "index.html",
+  "quizQuestions": 20,
+  "flashcards": 32,
+  "pages": [
+    {
+      "num": "GUIDE 01",
+      "title": "What the Stanford Study Found",
+      "desc": "The strict four-part inclusion bar. 51 deployments across 41 orgs, 9 industries, 7 countries. The central thesis — the model wasn't the moat — plus the 42% interchangeability finding and the \"weeks vs years\" gap.",
+      "href": "guide-01-foundations.html",
+      "cta": "Open guide"
+    },
+    {
+      "num": "GUIDE 02",
+      "title": "The PM Playbook",
+      "desc": "Six operating habits the high performers shared: 77% non-technical pain, workflow redesign (55% vs 20%), escalation-based operating models (71% productivity gain), gatekeeper triage, operational sponsorship, failure-as-precursor (61%).",
+      "href": "guide-02-applied.html",
+      "cta": "Open guide"
+    },
+    {
+      "num": "GUIDE 03",
+      "title": "Operating an AI Transformation",
+      "desc": "Strategic integration over experiment mode. Workforce strategy as a deliberate choice (45% reduced headcount, others redeployed). Cost-savings floor vs revenue ceiling. Where the lock-in budget goes when the model is interchangeable.",
+      "href": "guide-03-advanced.html",
+      "cta": "Open guide"
+    },
+    {
+      "num": "PRACTICE",
+      "title": "Full Quiz · 20 Questions",
+      "desc": "All 20 multiple-choice questions in one sitting — live score tracks as you go, with a per-guide breakdown at the end.",
+      "href": "quiz-index.html",
+      "cta": "Open quiz",
+      "practice": true
+    },
+    {
+      "num": "PRACTICE",
+      "title": "All Flashcards · 32 Cards",
+      "desc": "32 flip cards across all three guides. Multi-tagged cards (like <code>42% interchangeability</code>) appear once with every relevant guide pill.",
+      "href": "flashcards-index.html",
+      "cta": "Open flashcards",
+      "practice": true
+    }
+  ]
+}

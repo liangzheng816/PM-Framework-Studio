@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Enterprise AI Playbook — A Self-Learning Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,450;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --card:#fbf9f4;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+}
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:1040px;margin:0 auto;padding:0 28px 120px;}
+.hero{padding:60px 0 18px;position:relative;}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:18px;}
+h1{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(44px,7vw,76px);line-height:1.02;letter-spacing:-.025em;margin:6px 0 18px;max-width:920px;}
+h1 em{font-family:"Fraunces",serif;font-style:italic;font-weight:400;color:var(--accent);}
+.dek{font-family:"Newsreader",serif;font-style:italic;font-size:24px;line-height:1.45;color:var(--ink-soft);margin-bottom:6px;max-width:780px;}
+.attribution{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);margin-top:18px;letter-spacing:.05em;}
+.stats{display:flex;flex-wrap:wrap;margin:40px 0 6px;border:1px solid var(--rule);border-radius:11px;overflow:hidden;background:var(--card);}
+.stats .s{flex:1 1 140px;padding:18px 22px;border-right:1px solid var(--rule);}
+.stats .s:last-child{border-right:none;}
+.stats .s .v{font-family:"Fraunces",serif;font-weight:900;font-size:30px;color:var(--accent);line-height:1;}
+.stats .s .l{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-top:7px;}
+.sec-label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin:48px 0 6px;font-weight:600;}
+.practice-hub{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:18px 0 0;}
+@media(max-width:760px){.practice-hub{grid-template-columns:1fr;}}
+.hub-card{display:block;text-decoration:none;color:inherit;border-radius:16px;padding:36px 36px;position:relative;overflow:hidden;transition:transform .18s ease,box-shadow .18s ease;background:#1b1a17;color:#fff;}
+.hub-card.flash{background:var(--slate);}
+.hub-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px -14px rgba(27,26,23,.32);}
+.hub-card .hc-wm{position:absolute;top:-30px;right:-10px;font-family:"Fraunces",serif;font-weight:900;font-size:200px;line-height:1;opacity:.07;pointer-events:none;color:#fff;}
+.hub-card .hc-type{font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;opacity:.78;margin-bottom:10px;}
+.hub-card .hub-stat{display:flex;gap:28px;margin:18px 0 18px;flex-wrap:wrap;}
+.hub-card .hs{display:flex;flex-direction:column;}
+.hub-card .hv{font-family:"Fraunces",serif;font-weight:900;font-size:32px;line-height:1;color:#fff;}
+.hub-card .hl{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.65);margin-top:6px;}
+.hub-card h2{font-family:"Fraunces",serif;font-weight:900;font-size:38px;line-height:1.05;margin:8px 0 14px;letter-spacing:-.018em;}
+.hub-card h2 em{font-family:"Fraunces",serif;font-style:italic;font-weight:400;color:var(--accent);}
+.hub-card.flash h2 em{color:#fff;}
+.hub-card p{font-size:16.5px;line-height:1.5;max-width:420px;color:rgba(255,255,255,.85);margin:0 0 22px;}
+.hub-cta{display:inline-flex;align-items:center;gap:8px;font-family:"JetBrains Mono",monospace;font-size:13px;font-weight:600;padding:11px 22px;border-radius:8px;background:var(--accent);color:#fff;transition:all .15s;}
+.hub-card.flash .hub-cta{background:#fff;color:var(--slate);}
+.card{display:block;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--rule);border-left:5px solid var(--c,var(--slate));border-radius:12px;padding:26px 30px 28px;margin:18px 0;position:relative;overflow:hidden;transition:transform .16s ease,box-shadow .16s ease;}
+.card:hover{transform:translateY(-3px);box-shadow:0 10px 30px -12px rgba(27,26,23,.28);}
+.card .wm{position:absolute;top:-22px;right:6px;font-family:"Fraunces",serif;font-weight:900;font-size:150px;line-height:1;color:var(--c,var(--slate));opacity:.06;pointer-events:none;}
+.card .lvl{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--c,var(--slate));font-weight:600;margin-bottom:8px;}
+.card h3{font-family:"Fraunces",serif;font-weight:900;font-size:30px;line-height:1.1;margin:0 0 12px;letter-spacing:-.015em;}
+.card h3 .en{font-family:"Newsreader",serif;font-style:italic;font-weight:400;color:var(--ink-soft);font-size:18px;display:block;margin-top:4px;}
+.card .d{font-size:16.5px;line-height:1.5;color:var(--ink);margin:0 0 16px;}
+.card .tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;}
+.card .tags span{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:.04em;padding:3px 9px;border-radius:5px;border:1.5px solid var(--c,var(--slate));color:var(--c,var(--slate));background:transparent;}
+.card .open{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:var(--c,var(--slate));}
+.card .open .arw{transition:transform .14s ease;display:inline-block;}
+.card:hover .arw{transform:translateX(4px);}
+.lvl-1{--c:var(--slate);}
+.lvl-2{--c:var(--amber);}
+.lvl-3{--c:var(--accent);}
+.howto{margin-top:48px;padding:24px 28px;background:var(--slate-soft);border-left:4px solid var(--slate);border-radius:10px;font-size:16.5px;line-height:1.55;}
+.howto strong{color:var(--slate);}
+.howto ol{margin:0;padding-left:22px;}
+.howto li{margin:6px 0;}
+.sources{margin-top:36px;padding:24px 28px;background:var(--card);border:1px solid var(--rule);border-radius:12px;font-size:15px;line-height:1.55;}
+.sources h3{font-family:"Fraunces",serif;font-weight:900;font-size:20px;margin:0 0 14px;color:var(--ink);}
+.sources ol{margin:0;padding-left:22px;color:var(--ink-soft);}
+.sources li{margin:4px 0;}
+.sources li em{color:var(--ink);font-style:italic;}
+.sources a{color:var(--accent);text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--accent) 30%,transparent);}
+.footer{margin-top:50px;padding-top:28px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);letter-spacing:.05em;line-height:1.8;}
+code{font-family:"JetBrains Mono",monospace;font-size:.82em;background:color-mix(in srgb,var(--slate) 10%,transparent);padding:.08em .42em;border-radius:4px;color:var(--slate);}
+@media(max-width:760px){.card{padding:22px 22px 24px;}.card h3{font-size:24px;}.hub-card{padding:28px 26px;}.hub-card h2{font-size:30px;}}
+</style>
+</head>
+<body>
+<!-- AUTO-NAV:START -->
+<style data-fs-nav>
+.fs-nav{position:sticky;top:0;left:0;right:0;z-index:200;background:rgba(244,241,234,.9);-webkit-backdrop-filter:saturate(180%) blur(14px);backdrop-filter:saturate(180%) blur(14px);border-bottom:1px solid #d8d2c4;font-family:"Newsreader",Georgia,serif;}
+.fs-nav *{box-sizing:border-box;}
+.fs-nav-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;height:64px;max-width:1280px;margin:0 auto;padding:0 24px;}
+.fs-nav a{text-decoration:none;color:inherit;}
+.fs-nav-brand{display:flex;align-items:center;gap:10px;color:#1b1a17;}
+.fs-nav-badge{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;background:#cc3b1d;color:#fff;font-family:"JetBrains Mono",ui-monospace,monospace;font-weight:700;font-size:12px;letter-spacing:.04em;}
+.fs-nav-name{font-family:"Fraunces",Georgia,serif;font-size:18px;font-weight:500;color:#1b1a17;letter-spacing:-.005em;}
+.fs-nav-links{display:flex;align-items:center;gap:2px;}
+.fs-nav-link{padding:8px 12px;font-size:14px;color:#4a463d;border-radius:8px;transition:background-color .15s ease,color .15s ease;line-height:1;}
+.fs-nav-link:hover{background:#ece7db;color:#1b1a17;}
+.fs-nav-link[aria-current="page"]{color:#cc3b1d;background:rgba(204,59,29,.10);}
+.fs-nav-right{display:flex;align-items:center;gap:12px;}
+.fs-nav-search{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 12px;border:1px solid #d8d2c4;border-radius:8px;background:#fbf9f4;color:#4a463d;font-size:13px;line-height:1;transition:border-color .15s ease;}
+.fs-nav-search:hover{border-color:#b8b0a0;}
+.fs-nav-search svg{flex:none;}
+.fs-nav-search kbd{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;background:rgba(27,26,23,.08);padding:1px 6px;border-radius:3px;color:#4a463d;}
+.fs-nav-burger{display:none;align-items:center;justify-content:center;width:36px;height:32px;border:1px solid #d8d2c4;border-radius:8px;background:transparent;color:#1b1a17;cursor:pointer;}
+.fs-nav-mobile{display:none;border-top:1px solid #d8d2c4;background:#f4f1ea;padding:8px 16px 14px;}
+.fs-nav-mobile a{display:block;padding:10px 12px;font-size:15px;color:#4a463d;border-radius:8px;}
+.fs-nav-mobile a[aria-current="page"]{color:#cc3b1d;background:rgba(204,59,29,.10);}
+.fs-nav.fs-open .fs-nav-mobile{display:block;}
+@media (max-width: 880px){
+  .fs-nav-links,.fs-nav-search{display:none;}
+  .fs-nav-burger{display:flex;}
+}
+</style>
+<header class="fs-nav" data-fs-nav>
+  <nav class="fs-nav-inner" aria-label="Primary">
+    <a class="fs-nav-brand" href="/">
+      <span class="fs-nav-badge">PM</span>
+      <span class="fs-nav-name">PM Studio</span>
+    </a>
+    <div class="fs-nav-links"><a class="fs-nav-link" href="/">Coach</a><a class="fs-nav-link" href="/discover">Discover</a><a class="fs-nav-link" href="/map">Map</a><a class="fs-nav-link" href="/compare">Compare</a><a class="fs-nav-link" href="/collections">Saved</a><a class="fs-nav-link" href="/ai-learning/" aria-current="page">AI Learning</a><a class="fs-nav-link" href="/ai-weekly/index.html">AI Weekly</a><a class="fs-nav-link" href="/about">About</a></div>
+    <div class="fs-nav-right">
+      <a class="fs-nav-search" href="/discover" aria-label="Search frameworks"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5.2-5.2"/></svg><span>Search...</span><kbd>/</kbd></a>
+      <button class="fs-nav-burger" type="button" aria-label="Toggle menu" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="fs-nav-mobile"><a class="fs-nav-mlink" href="/">Coach</a><a class="fs-nav-mlink" href="/discover">Discover</a><a class="fs-nav-mlink" href="/map">Map</a><a class="fs-nav-mlink" href="/compare">Compare</a><a class="fs-nav-mlink" href="/collections">Saved</a><a class="fs-nav-mlink" href="/ai-learning/" aria-current="page">AI Learning</a><a class="fs-nav-mlink" href="/ai-weekly/index.html">AI Weekly</a><a class="fs-nav-mlink" href="/about">About</a></div>
+</header>
+<script data-fs-nav>(function(){var n=document.currentScript&&document.currentScript.previousElementSibling;while(n&&!(n.classList&&n.classList.contains('fs-nav')))n=n.previousElementSibling;if(!n)return;var b=n.querySelector('.fs-nav-burger');if(!b)return;b.addEventListener('click',function(){n.classList.toggle('fs-open');b.setAttribute('aria-expanded',n.classList.contains('fs-open')?'true':'false');});})();</script>
+<!-- AUTO-NAV:END -->
+<div class="wrap">
+  <div class="hero">
+    <div class="kicker">A Self-Learning Library · Stanford Digital Economy Lab, Apr 2026</div>
+    <h1>The Enterprise AI <em>Playbook</em></h1>
+    <p class="dek">51 enterprise AI deployments that cleared a strict production bar — the reverse-engineered profile of the 5% that worked. Three guides, twenty questions, thirty-two concepts, grounded in the original Stanford report and four cross-validating syntheses.</p>
+    <div class="attribution">Source: Stanford Digital Economy Lab · Authors: Pereira · Graylin · Brynjolfsson</div>
+  </div>
+
+  <div class="stats">
+    <div class="s"><div class="v">3</div><div class="l">Learning Guides</div></div>
+    <div class="s"><div class="v">32</div><div class="l">Concepts Covered</div></div>
+    <div class="s"><div class="v">20</div><div class="l">Quiz Questions</div></div>
+    <div class="s"><div class="v">51</div><div class="l">Deployments Studied</div></div>
+  </div>
+
+  <div class="sec-label">Practice — test &amp; drill what you've learned</div>
+  <div class="practice-hub">
+
+    <a class="hub-card" href="quiz-index.html">
+      <div class="hc-wm">?</div>
+      <div class="hc-type">Multiple Choice · All Guides</div>
+      <div class="hub-stat">
+        <div class="hs"><span class="hv">20</span><span class="hl">Questions</span></div>
+        <div class="hs"><span class="hv">3</span><span class="hl">Guides</span></div>
+        <div class="hs"><span class="hv">Live</span><span class="hl">Score</span></div>
+      </div>
+      <h2>Full <em>Quiz</em></h2>
+      <p>All 20 questions in one sitting — live score tracks as you go, with a per-guide breakdown at the end.</p>
+      <span class="hub-cta">Start quiz →</span>
+    </a>
+
+    <a class="hub-card flash" href="flashcards-index.html">
+      <div class="hc-wm">🃏</div>
+      <div class="hc-type">Flip Cards · All Guides</div>
+      <div class="hub-stat">
+        <div class="hs"><span class="hv">32</span><span class="hl">Cards</span></div>
+        <div class="hs"><span class="hv">3</span><span class="hl">Guides</span></div>
+        <div class="hs"><span class="hv">Shuffle</span><span class="hl">+ Filter</span></div>
+      </div>
+      <h2>All <em>Flashcards</em></h2>
+      <p>32 flip cards across all guides. Filter by topic, shuffle the deck, or flip everything at once.</p>
+      <span class="hub-cta">Browse cards →</span>
+    </a>
+
+  </div>
+
+  <div class="sec-label">Curriculum — three guides, in learning order</div>
+
+  <a class="card lvl-1" href="guide-01-foundations.html">
+    <div class="wm">01</div>
+    <div class="lvl">01 · Foundations</div>
+    <h3>What the Stanford Study Found<span class="en">Failure rarely lives where you think it does</span></h3>
+    <p class="d">The strict four-part inclusion bar. 51 deployments × 41 organizations × 9 industries × 7 countries. The 95/5 backdrop. The central thesis: the model wasn't the moat. The "weeks vs years" gap and the 10 findings at a glance.</p>
+    <div class="tags"><span>Inclusion bar</span><span>Methodology</span><span>Central thesis</span><span>42% interchangeability</span><span>10 findings</span><span>7 questions · 10 cards</span></div>
+    <span class="open">Read guide <span class="arw">→</span></span>
+  </a>
+
+  <a class="card lvl-2" href="guide-02-applied.html">
+    <div class="wm">02</div>
+    <div class="lvl">02 · Applied</div>
+    <h3>The PM Playbook<span class="en">Six operating habits the high performers shared</span></h3>
+    <p class="d">77% non-technical pain — plan for it. Workflow redesign (55% vs 20%). Default to escalation-based operating models (71% productivity gain). Triage legal / HR / compliance gatekeepers early. Operational executive sponsorship over strategic approval. Failure-as-precursor (61%).</p>
+    <div class="tags"><span>77% non-tech</span><span>Workflow redesign</span><span>Escalation model</span><span>Gatekeeper triage</span><span>Operational sponsorship</span><span>7 questions · 12 cards</span></div>
+    <span class="open">Read guide <span class="arw">→</span></span>
+  </a>
+
+  <a class="card lvl-3" href="guide-03-advanced.html">
+    <div class="wm">03</div>
+    <div class="lvl">03 · Advanced</div>
+    <h3>Operating an AI Transformation<span class="en">Rubrics, workforce, revenue, model choice</span></h3>
+    <p class="d">Strategic integration vs experiment mode (ownership, KPIs, control). Workforce strategy is a deliberate choice — 45% reduced headcount, others redeployed. From cost-savings floor to revenue ceiling. Messy data is no longer a blocker. Where to spend the lock-in budget when the model is interchangeable. AI as organizational transformation problem.</p>
+    <div class="tags"><span>Strategic integration</span><span>Workforce choice</span><span>Revenue upside</span><span>Lock-in budget</span><span>Transformation reframe</span><span>6 questions · 10 cards</span></div>
+    <span class="open">Read guide <span class="arw">→</span></span>
+  </a>
+
+  <div class="howto">
+    <strong>How to use this library.</strong>
+    <ol>
+      <li>Read the guides in order — Foundations sets the data, Applied is the operating habits, Advanced is the strategic reframe. Each takes 15–20 minutes.</li>
+      <li>Drill with flashcards while reading — the deck has a filter for the current guide, so you can lock in the atoms as you go.</li>
+      <li>Take the full quiz after all three — many questions are scenario judgments ("your VP says X…", "your rollout stalls…") that test whether the principles transfer.</li>
+      <li>Use the 10-findings table from Guide 01 as your reference card — print it, paste it in your team's AI strategy doc, or keep it open during the next steering review.</li>
+    </ol>
+  </div>
+
+  <div class="sources">
+    <h3>Grounded in the original report + 4 cross-validating sources</h3>
+    <ol>
+      <li>Pereira, Graylin, Brynjolfsson. <em>The Enterprise AI Playbook: Lessons from 51 Successful Deployments.</em> <a href="https://digitaleconomy.stanford.edu/publication/enterprise-ai-playbook/">Stanford Digital Economy Lab</a>, April 2026. (<a href="https://digitaleconomy.stanford.edu/app/uploads/2026/03/EnterpriseAIPlaybook_PereiraGraylinBrynjolfsson.pdf">PDF</a>)</li>
+      <li>Jayaram, A. <em>10 findings from the Enterprise AI Playbook by Stanford University.</em> <a href="https://sanctorum.io/10-findings-from-the-enterprise-ai-playbook-by-stanford-university/">Sanctorum</a>, April 2026.</li>
+      <li>Zhou, Y. <em>A Stanford Study of 51 Successful Enterprise AI Deployments.</em> <a href="https://medium.com/generative-ai-revolution-ai-native-transformation/a-stanford-study-of-51-successful-enterprise-ai-deployments-what-actually-separated-the-winners-d7fa0a506618">Medium</a>, April 2026.</li>
+      <li>Heger, B. <em>The Enterprise AI Playbook: Lessons from 51 Successful Deployments.</em> <a href="https://www.brianheger.com/the-enterprise-ai-playbook-lessons-from-51-successful-deployments-stanford-digital-economy-lab/">BrianHeger.com</a>, 2026.</li>
+      <li>McKinsey. <em>State of AI</em> (workflow-redesign 55% vs 20% figure cited in the playbook).</li>
+    </ol>
+  </div>
+
+  <div class="footer">
+    THE ENTERPRISE AI PLAYBOOK · PERSONAL LEARNING INDEX · 2026<br>
+    EACH COLLECTION IS SELF-CONTAINED — VERIFY FAST-MOVING SPECIFICS AGAINST CURRENT SOURCES BEFORE RELYING ON THEM.
+  </div>
+</div>
+</body>
+</html>

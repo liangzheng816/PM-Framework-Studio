@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>03 · Advanced — Operating an AI Transformation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,450;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4; --card:#fbf9f4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+  --guide-color: var(--g3);
+}
+h1 em{font-family:"Fraunces",serif;font-style:italic;font-weight:400;color:var(--accent)}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;counter-reset:slide}
+.wrap{max-width:1040px;margin:0 auto;padding:0 28px 120px}
+.back{font-family:"JetBrains Mono",monospace;font-size:12px;text-decoration:none;color:var(--ink-soft);display:inline-flex;align-items:center;gap:6px;margin:28px 0 22px;border:1px solid var(--rule);border-radius:6px;padding:5px 12px;transition:all .14s}
+.back:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--g3);font-weight:600;margin-bottom:18px}
+h1{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(36px,5vw,56px);letter-spacing:-.02em;line-height:1.05;margin:0 0 18px}
+.dek{font-family:"Newsreader",serif;font-style:italic;font-size:22px;color:var(--ink-soft);max-width:720px;margin:0 0 38px}
+.topnav{position:sticky;top:0;background:rgba(244,241,234,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);margin:0 -28px 32px;padding:14px 28px;z-index:20;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.topnav a{color:var(--ink-soft);text-decoration:none;margin-right:18px;padding:4px 0;border-bottom:2px solid transparent;transition:all .14s}
+.topnav a:hover{color:var(--g3);border-bottom-color:var(--g3)}
+.takeaway-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:30px 0 50px}
+@media(max-width:760px){.takeaway-grid{grid-template-columns:1fr}}
+.tk{background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--g3);border-radius:10px;padding:20px 22px}
+.tk-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--g3);font-weight:600;margin-bottom:8px}
+.tk-text{font-size:16px;line-height:1.45;color:var(--ink)}
+section:not(#quiz):not(#flashcards){counter-increment:slide;background:var(--card);border:1.5px solid color-mix(in srgb, var(--guide-color) 28%, var(--rule));border-radius:18px;box-shadow:0 8px 36px -10px rgba(15,23,42,.18),0 1px 0 rgba(15,23,42,.04);margin:48px 0;overflow:hidden;position:relative}
+section:not(#quiz):not(#flashcards) h2{margin:0;padding:26px 36px 22px;background:var(--guide-color);color:#fff;font-family:"Fraunces",serif;font-weight:900;font-size:clamp(20px,2.8vw,26px);letter-spacing:-.015em;line-height:1.1;display:flex;align-items:flex-start;gap:14px}
+section:not(#quiz):not(#flashcards) h2::before{content:counter(slide,decimal-leading-zero);font-family:"JetBrains Mono",monospace;font-weight:600;font-size:12px;letter-spacing:.1em;background:rgba(255,255,255,.16);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.28);padding:4px 10px;border-radius:5px;flex-shrink:0;margin-top:3px;white-space:nowrap}
+section:not(#quiz):not(#flashcards)>p,section:not(#quiz):not(#flashcards)>.insight,section:not(#quiz):not(#flashcards)>.misconception,section:not(#quiz):not(#flashcards)>blockquote,section:not(#quiz):not(#flashcards)>pre,section:not(#quiz):not(#flashcards)>.dimtable,section:not(#quiz):not(#flashcards)>.flow,section:not(#quiz):not(#flashcards)>.pmbox{margin-left:36px;margin-right:36px}
+section:not(#quiz):not(#flashcards)>p:first-of-type{margin-top:28px}
+section:not(#quiz):not(#flashcards)>p:last-of-type,section:not(#quiz):not(#flashcards)>blockquote:last-child,section:not(#quiz):not(#flashcards)>.misconception:last-child{margin-bottom:34px}
+section:not(#quiz):not(#flashcards)::after{content:"";display:block;height:4px;background:linear-gradient(90deg,var(--guide-color) 0%,color-mix(in srgb, var(--guide-color) 30%, transparent) 100%);margin-top:34px;opacity:.35}
+@media(max-width:680px){section:not(#quiz):not(#flashcards) h2{padding:20px 22px 18px;font-size:20px}section:not(#quiz):not(#flashcards)>p,section:not(#quiz):not(#flashcards)>.insight,section:not(#quiz):not(#flashcards)>.misconception{margin-left:22px;margin-right:22px}}
+.insight,.misconception{border-radius:10px;padding:18px 22px;margin:22px 0;font-size:16.5px;line-height:1.5}
+.insight{border-left:4px solid var(--g3);background:var(--accent-soft)}
+.misconception{border-left:4px solid var(--g1);background:var(--slate-soft)}
+.insight::before{content:"✦ Key insight — ";font-weight:600;color:var(--g3)}
+.misconception::before{content:"✕ Common misconception — ";font-weight:600;color:var(--g1)}
+.dimtable{margin:24px 0;border:1px solid var(--rule);border-radius:10px;overflow:hidden;background:var(--card)}
+.dimtable .row{display:grid;grid-template-columns:200px 1fr 220px;gap:0;border-bottom:1px solid var(--rule);font-size:14.5px}
+.dimtable .row:last-child{border-bottom:none}
+.dimtable .row.head{background:#F8FAFC;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+.dimtable .row .c{padding:11px 16px;border-right:1px solid var(--rule)}
+.dimtable .row .c:last-child{border-right:none}
+.dimtable code{font-family:"JetBrains Mono",monospace;font-size:13px;background:#FFEDD5;color:var(--g3);padding:2px 6px;border-radius:4px;font-weight:600}
+@media(max-width:760px){.dimtable .row{grid-template-columns:1fr}.dimtable .row .c{border-right:none;border-bottom:1px solid var(--rule)}.dimtable .row .c:last-child{border-bottom:none}}
+.pmbox{margin:22px 0;padding:18px 22px;background:#DBEAFE;border-left:4px solid var(--g1);border-radius:10px;font-size:16.5px}
+.pmbox::before{content:"📋 PM translation — ";font-weight:600;color:var(--g1);font-family:"Newsreader",serif}
+code,.mono{font-family:"JetBrains Mono",monospace;font-size:.82em;background:#FFEDD5;padding:.08em .42em;border-radius:4px;color:var(--g3)}
+.sec-label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin:48px 0 14px;font-weight:600}
+.q-item{margin:24px 0;padding:22px 26px;background:var(--card);border:1.5px solid var(--rule);border-radius:12px}
+.q-item.correct{border-color:#16A34A;background:#F0FDF4}
+.q-item.wrong{border-color:var(--accent);background:#FFF7ED}
+.q-text{font-size:17px;font-weight:600;margin-bottom:14px}
+.options{display:flex;flex-direction:column;gap:9px;margin-bottom:16px}
+.options label{display:flex;align-items:flex-start;gap:10px;font-size:16px;cursor:pointer;padding:8px 12px;border-radius:7px;border:1.5px solid var(--rule);background:var(--paper);transition:background .12s}
+.options label:hover{background:#F1F5F9}
+.q-item.correct label:has(input[data-correct]){background:#DCFCE7;border-color:#16A34A}
+.q-item.wrong label:has(input:checked:not([data-correct])){background:#FFEDD5;border-color:var(--accent)}
+.check-btn{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:8px 18px;border-radius:7px;border:1.5px solid var(--g3);background:transparent;color:var(--g3);cursor:pointer;transition:all .14s}
+.check-btn:hover:not(:disabled){background:var(--g3);color:#fff}
+.check-btn:disabled{opacity:.4;cursor:not-allowed}
+.explanation{margin-top:14px;padding:12px 16px;background:#FFEDD5;border-left:3px solid var(--g3);border-radius:6px;font-size:15px;color:var(--ink-soft);line-height:1.5}
+.score-btn{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:10px 22px;border-radius:8px;border:none;background:var(--ink);color:#fff;cursor:pointer;margin-top:20px}
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;margin-top:18px}
+.fc{perspective:900px;height:210px;cursor:pointer}
+.fc-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1)}
+.fc.flipped .fc-inner{transform:rotateY(180deg)}
+.fc-front,.fc-back{position:absolute;inset:0;border-radius:13px;padding:22px 22px 18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;justify-content:space-between}
+.fc-front{background:var(--card);border:1.5px solid var(--rule);border-left:4px solid var(--g3)}
+.fc-back{transform:rotateY(180deg);background:var(--g3);color:#fff}
+.fc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.gtag{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:4px;border:1.5px solid;line-height:1.6}
+.gtag.g1{color:var(--g1);border-color:color-mix(in srgb,var(--g1) 40%,transparent);background:color-mix(in srgb,var(--g1) 10%,transparent)}
+.gtag.g2{color:var(--g2);border-color:color-mix(in srgb,var(--g2) 40%,transparent);background:color-mix(in srgb,var(--g2) 10%,transparent)}
+.gtag.g3{color:var(--g3);border-color:color-mix(in srgb,var(--g3) 40%,transparent);background:color-mix(in srgb,var(--g3) 10%,transparent)}
+.fc-term{font-family:"JetBrains Mono",monospace;font-weight:600;font-size:14px;color:var(--g3)}
+.fc-def{font-size:13.5px;line-height:1.5;color:#fff}
+.fc-tap{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);margin-top:auto}
+.fc-back .fc-tap{color:rgba(255,255,255,.55)}
+.foot{margin-top:60px;padding-top:24px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.foot a{color:var(--g3);text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--g3) 30%,transparent)}
+</style>
+</head>
+<body>
+<!-- AUTO-NAV:START -->
+<style data-fs-nav>
+.fs-nav{position:sticky;top:0;left:0;right:0;z-index:200;background:rgba(244,241,234,.9);-webkit-backdrop-filter:saturate(180%) blur(14px);backdrop-filter:saturate(180%) blur(14px);border-bottom:1px solid #d8d2c4;font-family:"Newsreader",Georgia,serif;}
+.fs-nav *{box-sizing:border-box;}
+.fs-nav-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;height:64px;max-width:1280px;margin:0 auto;padding:0 24px;}
+.fs-nav a{text-decoration:none;color:inherit;}
+.fs-nav-brand{display:flex;align-items:center;gap:10px;color:#1b1a17;}
+.fs-nav-badge{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;background:#cc3b1d;color:#fff;font-family:"JetBrains Mono",ui-monospace,monospace;font-weight:700;font-size:12px;letter-spacing:.04em;}
+.fs-nav-name{font-family:"Fraunces",Georgia,serif;font-size:18px;font-weight:500;color:#1b1a17;letter-spacing:-.005em;}
+.fs-nav-links{display:flex;align-items:center;gap:2px;}
+.fs-nav-link{padding:8px 12px;font-size:14px;color:#4a463d;border-radius:8px;transition:background-color .15s ease,color .15s ease;line-height:1;}
+.fs-nav-link:hover{background:#ece7db;color:#1b1a17;}
+.fs-nav-link[aria-current="page"]{color:#cc3b1d;background:rgba(204,59,29,.10);}
+.fs-nav-right{display:flex;align-items:center;gap:12px;}
+.fs-nav-search{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 12px;border:1px solid #d8d2c4;border-radius:8px;background:#fbf9f4;color:#4a463d;font-size:13px;line-height:1;transition:border-color .15s ease;}
+.fs-nav-search:hover{border-color:#b8b0a0;}
+.fs-nav-search svg{flex:none;}
+.fs-nav-search kbd{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;background:rgba(27,26,23,.08);padding:1px 6px;border-radius:3px;color:#4a463d;}
+.fs-nav-burger{display:none;align-items:center;justify-content:center;width:36px;height:32px;border:1px solid #d8d2c4;border-radius:8px;background:transparent;color:#1b1a17;cursor:pointer;}
+.fs-nav-mobile{display:none;border-top:1px solid #d8d2c4;background:#f4f1ea;padding:8px 16px 14px;}
+.fs-nav-mobile a{display:block;padding:10px 12px;font-size:15px;color:#4a463d;border-radius:8px;}
+.fs-nav-mobile a[aria-current="page"]{color:#cc3b1d;background:rgba(204,59,29,.10);}
+.fs-nav.fs-open .fs-nav-mobile{display:block;}
+@media (max-width: 880px){
+  .fs-nav-links,.fs-nav-search{display:none;}
+  .fs-nav-burger{display:flex;}
+}
+</style>
+<header class="fs-nav" data-fs-nav>
+  <nav class="fs-nav-inner" aria-label="Primary">
+    <a class="fs-nav-brand" href="/">
+      <span class="fs-nav-badge">PM</span>
+      <span class="fs-nav-name">PM Studio</span>
+    </a>
+    <div class="fs-nav-links"><a class="fs-nav-link" href="/">Coach</a><a class="fs-nav-link" href="/discover">Discover</a><a class="fs-nav-link" href="/map">Map</a><a class="fs-nav-link" href="/compare">Compare</a><a class="fs-nav-link" href="/collections">Saved</a><a class="fs-nav-link" href="/ai-learning/" aria-current="page">AI Learning</a><a class="fs-nav-link" href="/ai-weekly/index.html">AI Weekly</a><a class="fs-nav-link" href="/about">About</a></div>
+    <div class="fs-nav-right">
+      <a class="fs-nav-search" href="/discover" aria-label="Search frameworks"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5.2-5.2"/></svg><span>Search...</span><kbd>/</kbd></a>
+      <button class="fs-nav-burger" type="button" aria-label="Toggle menu" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="fs-nav-mobile"><a class="fs-nav-mlink" href="/">Coach</a><a class="fs-nav-mlink" href="/discover">Discover</a><a class="fs-nav-mlink" href="/map">Map</a><a class="fs-nav-mlink" href="/compare">Compare</a><a class="fs-nav-mlink" href="/collections">Saved</a><a class="fs-nav-mlink" href="/ai-learning/" aria-current="page">AI Learning</a><a class="fs-nav-mlink" href="/ai-weekly/index.html">AI Weekly</a><a class="fs-nav-mlink" href="/about">About</a></div>
+</header>
+<script data-fs-nav>(function(){var n=document.currentScript&&document.currentScript.previousElementSibling;while(n&&!(n.classList&&n.classList.contains('fs-nav')))n=n.previousElementSibling;if(!n)return;var b=n.querySelector('.fs-nav-burger');if(!b)return;b.addEventListener('click',function(){n.classList.toggle('fs-open');b.setAttribute('aria-expanded',n.classList.contains('fs-open')?'true':'false');});})();</script>
+<!-- AUTO-NAV:END -->
+<div class="wrap">
+
+<a class="back" href="index.html">← Back to library</a>
+<div class="kicker">03 · Advanced</div>
+<h1>Operating an AI <em>Transformation</em></h1>
+<p class="dek">Strategic integration over experiment mode. Workforce strategy as a deliberate choice, not an emergent layoff. Cost-savings ceiling vs revenue upside. Where the lock-in budget actually goes.</p>
+
+<nav class="topnav">
+  <a href="#strategic-integration">01 Strategic</a>
+  <a href="#workforce">02 Workforce</a>
+  <a href="#revenue">03 Revenue</a>
+  <a href="#messy-data">04 Messy data</a>
+  <a href="#model-choice">05 Model choice</a>
+  <a href="#transformation">06 Transformation</a>
+  <a href="#quiz">Quiz</a>
+  <a href="#flashcards">Cards</a>
+</nav>
+
+<div class="takeaway-grid">
+  <div class="tk"><div class="tk-label">Workforce is a choice</div><div class="tk-text">45% of deployments reduced headcount. Others redeployed or accelerated growth. Productivity gains do NOT auto-trigger layoffs — pick a strategy explicitly.</div></div>
+  <div class="tk"><div class="tk-label">Cost ceiling, revenue upside</div><div class="tk-text">Most projects target cost savings. The highest-value cases drive growth via hyper-personalization, faster deal cycles, and productized tools.</div></div>
+  <div class="tk"><div class="tk-label">Where the lock-in budget goes</div><div class="tk-text">42% model interchangeability means foundation model is substitutable infrastructure. Spend lock-in on workflow orchestration, integration, UX.</div></div>
+</div>
+
+<section id="strategic-integration">
+<h2>From experiment to strategic integration</h2>
+<p>The most important mental shift the playbook documents is from <em>"AI project running next to production"</em> to <em>"production system that happens to use AI."</em> The reframe affects everything downstream — ownership, KPIs, control systems, risk management, and whether the project gets funded after the first failed attempt.</p>
+<div class="dimtable">
+  <div class="row head"><div class="c">Dimension</div><div class="c">Experiment mode</div><div class="c">Strategic integration</div></div>
+  <div class="row"><div class="c">Ownership</div><div class="c">Innovation team / "AI lab."</div><div class="c">Operating-unit leader with P&amp;L responsibility.</div></div>
+  <div class="row"><div class="c">KPIs</div><div class="c">"Pilot success metrics" — usage, NPS, engagement.</div><div class="c">Business KPIs of the workflow — throughput, cycle time, conversion.</div></div>
+  <div class="row"><div class="c">Control systems</div><div class="c">Ad-hoc monitoring.</div><div class="c">Integrated with existing incident management, audit, compliance.</div></div>
+  <div class="row"><div class="c">Failure handling</div><div class="c">"The experiment didn't work."</div><div class="c">Production incident; postmortem; structured retro; second attempt.</div></div>
+  <div class="row"><div class="c">Funding model</div><div class="c">Innovation budget.</div><div class="c">Operating budget — competes with normal cap-ex.</div></div>
+</div>
+<div class="insight">If your AI project is owned by "the innovation team" with "pilot KPIs" and "innovation budget," it's structurally an experiment regardless of what the slide deck says. Move it to operating-unit ownership before you measure it against the playbook's findings.</div>
+</section>
+
+<section id="workforce">
+<h2>Workforce strategy is a deliberate choice</h2>
+<p>Of the 51 deployments, <strong>45% reduced headcount</strong>. The other 55% either redeployed workers to higher-value tasks or accelerated growth fast enough that productivity gains translated into expansion instead of reductions. <em>Productivity gains do not automatically translate to layoffs</em> — they translate to whatever workforce strategy the leadership team picks explicitly.</p>
+<div class="dimtable">
+  <div class="row head"><div class="c">Strategy</div><div class="c">What happens</div><div class="c">When it fits</div></div>
+  <div class="row"><div class="c">Reduce headcount</div><div class="c">Roles replaced; workforce shrinks proportionally.</div><div class="c">Mature markets, cost-pressure businesses, replaceable role profiles.</div></div>
+  <div class="row"><div class="c">Redeploy</div><div class="c">Workers shift to higher-value tasks; total headcount stable.</div><div class="c">High-skill workforce, value ceiling above current scope.</div></div>
+  <div class="row"><div class="c">Accelerate growth</div><div class="c">Productivity gains absorbed by faster expansion.</div><div class="c">Growth markets, supply-constrained businesses.</div></div>
+</div>
+<div class="insight">If you don't pick the workforce strategy on day one, the default is "ad-hoc reduction over time" — which is usually the worst of the three on both organizational trust and recruiting brand. Pick deliberately.</div>
+<div class="misconception">"AI productivity gains naturally lead to layoffs." Not in this dataset — 55% of cases did not reduce headcount. The relationship is mediated entirely by deliberate workforce strategy, market context, and growth ambition.</div>
+</section>
+
+<section id="revenue">
+<h2>From cost savings to revenue impact</h2>
+<p>Most AI projects in the dataset targeted <em>cost savings</em>. That's the floor. The ceiling — and where the playbook's "highest-value cases" cluster — is on the revenue side: hyper-personalization, faster deal cycles, productized AI capabilities sold as features.</p>
+<div class="dimtable">
+  <div class="row head"><div class="c">Value type</div><div class="c">Where it shows up</div><div class="c">Ceiling</div></div>
+  <div class="row"><div class="c">Cost savings</div><div class="c">Headcount reduction, faster processing, lower error rates.</div><div class="c">Bounded by the size of the cost line you're attacking.</div></div>
+  <div class="row"><div class="c">Hyper-personalization</div><div class="c">Tailored offers, individualized journeys, segment-of-one customer service.</div><div class="c">Bounded by your customer base and ARPU lift.</div></div>
+  <div class="row"><div class="c">Faster deal cycles</div><div class="c">Compressed RFP responses, faster proposal generation, sharper qualification.</div><div class="c">Bounded by the size of your pipeline and conversion lift.</div></div>
+  <div class="row"><div class="c">Productized tooling</div><div class="c">AI features sold as part of the product offering itself.</div><div class="c">Bounded by new revenue you can create — typically the largest ceiling.</div></div>
+</div>
+<div class="insight">Cost savings are easier to scope and defend in a business case, which is why most projects target them. But the highest-multiple AI cases are on the revenue side — and the playbook is explicit that those are still rare. There's PM opportunity in that gap.</div>
+</section>
+
+<section id="messy-data">
+<h2>Messy data is no longer a blocker</h2>
+<p>One of the more counterintuitive findings: the historical objection <em>"we need to clean our data first"</em> has become outdated. Large language models are surprisingly good at interpreting unstructured inputs, connecting fragmented datasets, and filling in gaps — compensating for incomplete information in ways that traditional ML couldn't.</p>
+<div class="dimtable">
+  <div class="row head"><div class="c">Old objection</div><div class="c">Why it used to be true</div><div class="c">Why the playbook says it's now a stalling tactic</div></div>
+  <div class="row"><div class="c">"Data quality blocks AI"</div><div class="c">Classical ML required clean, structured, labeled data.</div><div class="c">LLMs handle messy and unstructured inputs natively.</div></div>
+  <div class="row"><div class="c">"We need a data lake first"</div><div class="c">Data infrastructure projects took years.</div><div class="c">LLMs can connect fragmented datasets on demand.</div></div>
+  <div class="row"><div class="c">"Our schema is too inconsistent"</div><div class="c">Required rigid integration.</div><div class="c">LLMs work across schema variation.</div></div>
+</div>
+<div class="insight">If a project is stalling on "we need to clean the data first," look harder at the underlying objection. It's often a proxy for organizational change resistance, IT control concerns, or compliance friction — and "messy data" is the polite version.</div>
+<div class="misconception">"This means data quality doesn't matter." It still matters — for audit, for downstream reporting, for non-AI processes. But it's no longer a prerequisite to start AI work, and the playbook treats projects that wait on it as projects that mostly never start.</div>
+</section>
+
+<section id="model-choice">
+<h2>Model choice — and where the lock-in budget goes</h2>
+<p>In <strong>42% of cases</strong> in the dataset, the foundation model was interchangeable without changing the outcome. The implication for product strategy: stop treating foundation model as a moat. Treat it as substitutable infrastructure.</p>
+<div class="dimtable">
+  <div class="row head"><div class="c">Spend the lock-in budget on</div><div class="c">Why it actually creates moat</div></div>
+  <div class="row"><div class="c">Workflow orchestration</div><div class="c">The specific sequence of model calls, tool invocations, escalation rules — encodes operational knowledge no competitor copies overnight.</div></div>
+  <div class="row"><div class="c">System integration</div><div class="c">Deep integration with internal systems (CRM, ERP, operational platforms) takes quarters and creates real switching cost.</div></div>
+  <div class="row"><div class="c">User experience design</div><div class="c">Workflow UX that fits how the user actually thinks. Harder to copy than a model call.</div></div>
+  <div class="row"><div class="c">Evaluation rubrics</div><div class="c">Your specific failure taxonomy + remediation targets is institutional learning that survives model swaps.</div></div>
+  <div class="row"><div class="c">Don't lock onto</div><div class="c">Foundation model choice. In 42% of cases it was substitutable; tying product strategy to one provider creates fragility, not advantage.</div></div>
+</div>
+<div class="insight">The architectural pattern that follows from "42% interchangeable" is to keep the model-call layer thin and replaceable, and put the institutional knowledge above it (workflow, integration, UX, evals). That's where real moat lives now.</div>
+<div class="pmbox">When the vendor pitch says "lock in long-term with us for the model," remember that in 42% of cases the model was substitutable. The vendor's pitch is structurally arguing against the playbook's data.</div>
+</section>
+
+<section id="transformation">
+<h2>The transformation is organizational, not technological</h2>
+<p>The playbook's final synthesis is uncomfortable for technology buyers and exhilarating for operating leaders: <em>AI success is not a technology problem. It is an organizational transformation problem.</em></p>
+<p>Every finding in the report reinforces this. The thesis (organization, not model). The 77% non-technical pain. The escalation-based operating model. The gatekeeper triage. The weekly executive cadence. The failure-as-precursor pattern. The workforce strategy choice. The 42% model interchangeability. The "messy data is not a blocker" reframe. Each one moves the locus of value from technology selection to organizational design.</p>
+<div class="insight">The PMs who do well with AI over the next few years won't be the ones who picked the best model. They'll be the ones who picked the right workflow, recruited operational sponsors, triaged the gatekeepers, designed for escalation, and treated each failure as the start of an engagement instead of the end of one. Those are operating skills, not technology choices.</div>
+<div class="dimtable">
+  <div class="row head"><div class="c">Old PM mental model</div><div class="c">New PM mental model</div></div>
+  <div class="row"><div class="c">"Which model should we use?"</div><div class="c">"Which workflow are we redesigning?"</div></div>
+  <div class="row"><div class="c">"How do we integrate AI?"</div><div class="c">"How do we change the operating model?"</div></div>
+  <div class="row"><div class="c">"Is the data ready?"</div><div class="c">"Is the organization ready?"</div></div>
+  <div class="row"><div class="c">"Will the executive approve it?"</div><div class="c">"Will the executive run weekly with us?"</div></div>
+  <div class="row"><div class="c">"What if the pilot fails?"</div><div class="c">"What did the first attempt teach us?"</div></div>
+</div>
+</section>
+
+<section id="quiz">
+<div class="sec-label">Quiz — Advanced</div>
+
+<div class="q-item" id="q3_1">
+<div class="q-text">1. The shift from "experiment mode" to "strategic integration" most affects which dimension first?</div>
+<div class="options">
+<label><input type="radio" name="q3_1" value="a"> Model choice</label>
+<label><input type="radio" name="q3_1" value="b"> Ownership, KPIs, and budget model — moving from innovation team / pilot KPIs / innovation budget to operating-unit owner / business KPIs / operating budget.</label>
+<label><input type="radio" name="q3_1" value="c"> Cloud provider</label>
+<label><input type="radio" name="q3_1" value="d"> Office location</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q3_1','g3',6)">Check Answer</button>
+<div class="explanation">The reframe is structural: ownership, KPIs, control systems, failure handling, funding. An "AI experiment" with pilot KPIs is structurally an experiment regardless of name.</div>
+</div>
+
+<div class="q-item" id="q3_2">
+<div class="q-text">2. The playbook found that productivity gains automatically translate to layoffs in what proportion of deployments?</div>
+<div class="options">
+<label><input type="radio" name="q3_2" value="a"> 100% — productivity always reduces headcount.</label>
+<label><input type="radio" name="q3_2" value="b"> 45% — the rest redeployed or accelerated growth.</label>
+<label><input type="radio" name="q3_2" value="c"> 0% — layoffs never happened.</label>
+<label><input type="radio" name="q3_2" value="d"> Cannot be determined.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q3_2','g3',6)">Check Answer</button>
+<div class="explanation">45% reduced headcount; the rest redeployed or grew. Workforce strategy is a deliberate choice, not an automatic consequence of productivity gains.</div>
+</div>
+
+<div class="q-item" id="q3_3">
+<div class="q-text">3. Which of these is the highest-ceiling AI value type, per the playbook's pattern?</div>
+<div class="options">
+<label><input type="radio" name="q3_3" value="a"> Cost savings via headcount reduction</label>
+<label><input type="radio" name="q3_3" value="b"> Productized AI capabilities sold as features — new revenue creation has the largest ceiling.</label>
+<label><input type="radio" name="q3_3" value="c"> Faster meetings</label>
+<label><input type="radio" name="q3_3" value="d"> Improved morale</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q3_3','g3',6)">Check Answer</button>
+<div class="explanation">Cost savings have a ceiling bounded by the cost line being attacked. Productization creates net-new revenue — the largest ceiling, and where the highest-value cases cluster.</div>
+</div>
+
+<div class="q-item" id="q3_4">
+<div class="q-text">4. A team says "we can't start the AI project until we clean our data." By the playbook, this is most likely:</div>
+<div class="options">
+<label><input type="radio" name="q3_4" value="a"> Always the right call.</label>
+<label><input type="radio" name="q3_4" value="b"> A stalling tactic — LLMs are surprisingly good at handling messy and unstructured inputs; "messy data" is often the polite version of organizational resistance.</label>
+<label><input type="radio" name="q3_4" value="c"> A signal to switch models.</label>
+<label><input type="radio" name="q3_4" value="d"> An indication of strong technical leadership.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q3_4','g3',6)">Check Answer</button>
+<div class="explanation">LLMs handle messy/unstructured data well enough that "we need to clean the data first" has become a delay rationalization. Look for the underlying organizational resistance.</div>
+</div>
+
+<div class="q-item" id="q3_5">
+<div class="q-text">5. Given 42% model interchangeability, where should a PM steer the architectural lock-in budget?</div>
+<div class="options">
+<label><input type="radio" name="q3_5" value="a"> Foundation model contract terms</label>
+<label><input type="radio" name="q3_5" value="b"> Workflow orchestration, system integration, UX, evaluation rubrics — institutional knowledge that survives model swaps.</label>
+<label><input type="radio" name="q3_5" value="c"> The largest vendor in the market</label>
+<label><input type="radio" name="q3_5" value="d"> The cheapest provider</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q3_5','g3',6)">Check Answer</button>
+<div class="explanation">Keep the model layer thin and replaceable. Put institutional knowledge above it — that's where real moat lives now, given high model substitutability.</div>
+</div>
+
+<div class="q-item" id="q3_6">
+<div class="q-text">6. Which of these best summarizes the playbook's overall PM-facing message?</div>
+<div class="options">
+<label><input type="radio" name="q3_6" value="a"> Better models will solve the enterprise adoption problem.</label>
+<label><input type="radio" name="q3_6" value="b"> AI success is an organizational transformation problem. Workflow redesign, executive cadence, escalation design, and gatekeeper triage determine outcomes — not model choice.</label>
+<label><input type="radio" name="q3_6" value="c"> Wait for AGI.</label>
+<label><input type="radio" name="q3_6" value="d"> Invest more in pilots.</label>
+</div>
+<input type="hidden" data-correct="b">
+<button class="check-btn" onclick="checkQ('q3_6','g3',6)">Check Answer</button>
+<div class="explanation">The playbook's final synthesis: the moats are organizational, not technological. The PMs who win with AI are the ones who can run organizational transformations, not the ones who picked the best model.</div>
+</div>
+
+<button class="score-btn" onclick="showScore()">See my score</button>
+<div id="score-panel" style="display:none;margin-top:18px;padding:18px 22px;background:var(--card);border:1.5px solid var(--g3);border-radius:10px;font-family:'JetBrains Mono',monospace"><div style="font-size:22px;font-weight:600;color:var(--g3)"><span id="score-correct">0</span> / <span id="score-total">6</span> correct</div></div>
+</section>
+
+<section id="flashcards">
+<div class="sec-label">Flashcards — Advanced</div>
+<div class="fc-grid">
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Strategic integration</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Owning AI as a production system embedded in the operating model — KPIs, P&L, control systems, audit. The opposite of "innovation team running an AI experiment."</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Workforce strategy choice</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Productivity gains do not auto-trigger layoffs. 45% of deployments reduced headcount; others redeployed or accelerated growth. Pick the strategy deliberately on day one.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Cost savings ceiling</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Most projects target cost savings — bounded by the size of the cost line attacked. Productization, personalization, and faster cycles have higher ceilings.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Hyper-personalization</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Tailored offers, individualized customer journeys, segment-of-one service. One of the high-value revenue use cases the playbook cites, though still rare overall.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Messy data resilience</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">LLMs interpret unstructured inputs, connect fragmented datasets, fill gaps. Treats "data isn't ready" as obsolete blocker — now usually polite framing of organizational resistance.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Foundation model as commodity</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">42% model interchangeability implies treating model as substitutable infrastructure. Architectural pattern: keep model layer thin and replaceable; put institutional knowledge above it.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Lock-in budget</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Spend it on workflow orchestration, system integration, UX, and evaluation rubrics — the layers that survive model swaps. Don't lock onto foundation model choice.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Productization (highest ceiling)</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Selling AI capabilities as part of the product offering creates net-new revenue. The largest value ceiling in the dataset, and where the highest-multiple cases cluster.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">"Organizational transformation problem"</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">The playbook's final synthesis. AI success is not a technology problem; it's an organizational transformation problem. The moats are operating skills, not model choices.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Operating-unit ownership</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Real AI projects are owned by the operating-unit leader with P&L responsibility — not by the "innovation team." Ownership shift is the first move from experiment to strategic integration.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+</div>
+</section>
+
+<div class="foot"><div>← <a href="guide-02-applied.html">02 · Applied</a> · <a href="index.html">Back to library</a></div><div><a href="quiz-index.html">Full Quiz</a> · <a href="flashcards-index.html">All Flashcards</a></div></div>
+
+</div>
+<script>
+const answers={};
+function checkQ(id,group,total){const item=document.getElementById(id);const selected=item.querySelector('input[type=radio]:checked');if(!selected){alert('Please select an answer first.');return}const correctValue=item.querySelector('input[type=hidden][data-correct]').dataset.correct;const isCorrect=selected.value===correctValue;item.querySelectorAll('input[type=radio]').forEach(r=>{if(r.value===correctValue)r.setAttribute('data-correct','true')});item.classList.remove('correct','wrong');item.classList.add(isCorrect?'correct':'wrong');item.querySelector('.check-btn').disabled=true;item.querySelectorAll('input[type=radio]').forEach(r=>r.disabled=true);const exp=item.querySelector('.explanation');if(exp)exp.style.display='block';answers[id]=isCorrect}
+function showScore(){const vals=Object.values(answers);const total=document.querySelectorAll('.q-item').length;document.getElementById('score-correct').textContent=vals.filter(Boolean).length;document.getElementById('score-total').textContent=total;document.getElementById('score-panel').style.display='block';document.getElementById('score-panel').scrollIntoView({behavior:'smooth',block:'center'})}
+function flip(card){card.classList.toggle('flipped')}
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'})})})
+</script>
+</body>
+</html>

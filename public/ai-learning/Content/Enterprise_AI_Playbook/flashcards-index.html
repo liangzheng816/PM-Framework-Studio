@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flashcards · Enterprise AI Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,450;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4f1ea; --ink:#1b1a17; --ink-soft:#4a463d; --rule:#d8d2c4; --card:#fbf9f4;
+  --accent:#cc3b1d; --accent-soft:#f3ddd4;
+  --slate:#2f5d62; --slate-soft:#dde7e6;
+  --amber:#9a6a00; --amber-soft:#f4e9cf;
+  --g1:#2f5d62; --g2:#9a6a00; --g3:#cc3b1d;
+}
+h1 em{font-family:"Fraunces",serif;font-style:italic;font-weight:400;color:var(--accent)}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px 120px}
+.back{font-family:"JetBrains Mono",monospace;font-size:12px;text-decoration:none;color:var(--ink-soft);display:inline-flex;align-items:center;gap:6px;margin:28px 0 22px;border:1px solid var(--rule);border-radius:6px;padding:5px 12px;transition:all .14s}
+.back:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);font-weight:600;margin-bottom:18px}
+h1{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(36px,5vw,56px);letter-spacing:-.02em;line-height:1.05;margin:0 0 18px}
+.dek{font-family:"Newsreader",serif;font-style:italic;font-size:22px;color:var(--ink-soft);max-width:720px;margin:0 0 32px}
+.controls{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin:24px 0 20px;padding:16px 22px;background:var(--card);border:1px solid var(--rule);border-radius:12px}
+.filter-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.ftab{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:7px 14px;border-radius:6px;border:2px solid transparent;cursor:pointer;background:transparent;color:var(--ink-soft);transition:all .14s}
+.ftab:hover{background:#F1F5F9}
+.ftab.active{color:#fff;border-color:transparent}
+.ftab[data-f="all"].active{background:var(--ink)}
+.ftab[data-f="g1"].active{background:var(--g1)}
+.ftab[data-f="g2"].active{background:var(--g2)}
+.ftab[data-f="g3"].active{background:var(--g3)}
+.ctrl-btns{display:flex;gap:8px}
+.cbtn{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:7px 14px;border-radius:6px;border:1.5px solid var(--rule);background:transparent;color:var(--ink-soft);cursor:pointer;transition:all .14s}
+.cbtn:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+.counter-bar{margin:0 0 24px;padding:14px 22px;background:#F8FAFC;border:1px solid var(--rule);border-radius:10px;font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
+.fc{perspective:900px;height:215px;cursor:pointer}
+.fc.hidden{display:none}
+.fc-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1)}
+.fc.flipped .fc-inner{transform:rotateY(180deg)}
+.fc-front,.fc-back{position:absolute;inset:0;border-radius:13px;padding:22px 22px 18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;justify-content:space-between}
+.fc-front{background:var(--card);border:1.5px solid var(--rule)}
+.fc[data-g="g1"] .fc-front{border-left:4px solid var(--g1)}
+.fc[data-g="g2"] .fc-front{border-left:4px solid var(--g2)}
+.fc[data-g="g3"] .fc-front{border-left:4px solid var(--g3)}
+.fc-back{transform:rotateY(180deg);color:#fff}
+.fc[data-g="g1"] .fc-back{background:var(--g1)}
+.fc[data-g="g2"] .fc-back{background:var(--g2)}
+.fc[data-g="g3"] .fc-back{background:var(--g3)}
+.fc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.gtag{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:4px;border:1.5px solid;line-height:1.6}
+.gtag.g1{color:var(--g1);border-color:color-mix(in srgb,var(--g1) 40%,transparent);background:color-mix(in srgb,var(--g1) 10%,transparent)}
+.gtag.g2{color:var(--g2);border-color:color-mix(in srgb,var(--g2) 40%,transparent);background:color-mix(in srgb,var(--g2) 10%,transparent)}
+.gtag.g3{color:var(--g3);border-color:color-mix(in srgb,var(--g3) 40%,transparent);background:color-mix(in srgb,var(--g3) 10%,transparent)}
+.fc-term{font-family:"JetBrains Mono",monospace;font-weight:600;font-size:14px}
+.fc[data-g="g1"] .fc-term{color:var(--g1)}
+.fc[data-g="g2"] .fc-term{color:var(--g2)}
+.fc[data-g="g3"] .fc-term{color:var(--g3)}
+.fc-def{font-size:13.5px;line-height:1.5;color:#fff}
+.fc-tap{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft);margin-top:auto}
+.fc-back .fc-tap{color:rgba(255,255,255,.55)}
+.crosslink{margin-top:60px;padding:22px 28px;background:var(--card);border:1px solid var(--rule);border-radius:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-family:"JetBrains Mono",monospace;font-size:13px}
+.crosslink a{color:var(--g1);text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--g1) 30%,transparent);font-weight:600}
+.foot{margin-top:40px;padding-top:24px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft);text-align:center}
+code{font-family:"JetBrains Mono",monospace;font-size:.82em;background:#F1F5F9;padding:.08em .42em;border-radius:4px;color:var(--g2)}
+</style>
+</head>
+<body>
+<!-- AUTO-NAV:START -->
+<style data-fs-nav>
+.fs-nav{position:sticky;top:0;left:0;right:0;z-index:200;background:rgba(244,241,234,.9);-webkit-backdrop-filter:saturate(180%) blur(14px);backdrop-filter:saturate(180%) blur(14px);border-bottom:1px solid #d8d2c4;font-family:"Newsreader",Georgia,serif;}
+.fs-nav *{box-sizing:border-box;}
+.fs-nav-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;height:64px;max-width:1280px;margin:0 auto;padding:0 24px;}
+.fs-nav a{text-decoration:none;color:inherit;}
+.fs-nav-brand{display:flex;align-items:center;gap:10px;color:#1b1a17;}
+.fs-nav-badge{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;background:#cc3b1d;color:#fff;font-family:"JetBrains Mono",ui-monospace,monospace;font-weight:700;font-size:12px;letter-spacing:.04em;}
+.fs-nav-name{font-family:"Fraunces",Georgia,serif;font-size:18px;font-weight:500;color:#1b1a17;letter-spacing:-.005em;}
+.fs-nav-links{display:flex;align-items:center;gap:2px;}
+.fs-nav-link{padding:8px 12px;font-size:14px;color:#4a463d;border-radius:8px;transition:background-color .15s ease,color .15s ease;line-height:1;}
+.fs-nav-link:hover{background:#ece7db;color:#1b1a17;}
+.fs-nav-link[aria-current="page"]{color:#cc3b1d;background:rgba(204,59,29,.10);}
+.fs-nav-right{display:flex;align-items:center;gap:12px;}
+.fs-nav-search{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 12px;border:1px solid #d8d2c4;border-radius:8px;background:#fbf9f4;color:#4a463d;font-size:13px;line-height:1;transition:border-color .15s ease;}
+.fs-nav-search:hover{border-color:#b8b0a0;}
+.fs-nav-search svg{flex:none;}
+.fs-nav-search kbd{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;background:rgba(27,26,23,.08);padding:1px 6px;border-radius:3px;color:#4a463d;}
+.fs-nav-burger{display:none;align-items:center;justify-content:center;width:36px;height:32px;border:1px solid #d8d2c4;border-radius:8px;background:transparent;color:#1b1a17;cursor:pointer;}
+.fs-nav-mobile{display:none;border-top:1px solid #d8d2c4;background:#f4f1ea;padding:8px 16px 14px;}
+.fs-nav-mobile a{display:block;padding:10px 12px;font-size:15px;color:#4a463d;border-radius:8px;}
+.fs-nav-mobile a[aria-current="page"]{color:#cc3b1d;background:rgba(204,59,29,.10);}
+.fs-nav.fs-open .fs-nav-mobile{display:block;}
+@media (max-width: 880px){
+  .fs-nav-links,.fs-nav-search{display:none;}
+  .fs-nav-burger{display:flex;}
+}
+</style>
+<header class="fs-nav" data-fs-nav>
+  <nav class="fs-nav-inner" aria-label="Primary">
+    <a class="fs-nav-brand" href="/">
+      <span class="fs-nav-badge">PM</span>
+      <span class="fs-nav-name">PM Studio</span>
+    </a>
+    <div class="fs-nav-links"><a class="fs-nav-link" href="/">Coach</a><a class="fs-nav-link" href="/discover">Discover</a><a class="fs-nav-link" href="/map">Map</a><a class="fs-nav-link" href="/compare">Compare</a><a class="fs-nav-link" href="/collections">Saved</a><a class="fs-nav-link" href="/ai-learning/" aria-current="page">AI Learning</a><a class="fs-nav-link" href="/ai-weekly/index.html">AI Weekly</a><a class="fs-nav-link" href="/about">About</a></div>
+    <div class="fs-nav-right">
+      <a class="fs-nav-search" href="/discover" aria-label="Search frameworks"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5.2-5.2"/></svg><span>Search...</span><kbd>/</kbd></a>
+      <button class="fs-nav-burger" type="button" aria-label="Toggle menu" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="fs-nav-mobile"><a class="fs-nav-mlink" href="/">Coach</a><a class="fs-nav-mlink" href="/discover">Discover</a><a class="fs-nav-mlink" href="/map">Map</a><a class="fs-nav-mlink" href="/compare">Compare</a><a class="fs-nav-mlink" href="/collections">Saved</a><a class="fs-nav-mlink" href="/ai-learning/" aria-current="page">AI Learning</a><a class="fs-nav-mlink" href="/ai-weekly/index.html">AI Weekly</a><a class="fs-nav-mlink" href="/about">About</a></div>
+</header>
+<script data-fs-nav>(function(){var n=document.currentScript&&document.currentScript.previousElementSibling;while(n&&!(n.classList&&n.classList.contains('fs-nav')))n=n.previousElementSibling;if(!n)return;var b=n.querySelector('.fs-nav-burger');if(!b)return;b.addEventListener('click',function(){n.classList.toggle('fs-open');b.setAttribute('aria-expanded',n.classList.contains('fs-open')?'true':'false');});})();</script>
+<!-- AUTO-NAV:END -->
+<div class="wrap">
+
+<a class="back" href="index.html">← Back to library</a>
+<div class="kicker">Flashcard Deck · All Guides · 32 Unique Cards</div>
+<h1>Drill the <em>Findings</em></h1>
+<p class="dek">Filter by guide, shuffle the deck, or flip them all at once. Multi-tagged cards appear once with all relevant guide pills.</p>
+
+<div class="controls">
+  <div class="filter-tabs">
+    <button class="ftab active" data-f="all" onclick="setFilter('all')">All 32</button>
+    <button class="ftab" data-f="g1" onclick="setFilter('g1')">01 · Foundations</button>
+    <button class="ftab" data-f="g2" onclick="setFilter('g2')">02 · Applied</button>
+    <button class="ftab" data-f="g3" onclick="setFilter('g3')">03 · Advanced</button>
+  </div>
+  <div class="ctrl-btns">
+    <button class="cbtn" onclick="shuffleCards()">⇄ Shuffle</button>
+    <button class="cbtn" id="flip-all-btn" onclick="flipAll()">↻ Flip All</button>
+    <button class="cbtn" onclick="resetAll()">↺ Reset</button>
+  </div>
+</div>
+
+<div class="counter-bar">
+  <span>Showing <span id="visible-count">32</span> cards · <span id="flipped-count">0</span> flipped</span>
+  <span>Click any card to flip · Sorted A→Z</span>
+</div>
+
+<div class="fc-grid" id="card-grid">
+
+<div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">"Organizational transformation problem"</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">The playbook's final synthesis. AI success is not a technology problem; it's an organizational transformation problem. The moats are operating skills, not model choices.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">77% non-technical pain</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">77% of implementation challenges came from change management, data quality, and process redesign — not technology. Put them in the Gantt chart with named owners.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">95/5 backdrop</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">~95% of generative AI pilots fail to produce measurable financial impact. The Stanford 51 are the reverse-engineered profile of the 5% that worked.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Approval-based operating model</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">AI proposes, human approves at every step. Sounds safe but the human becomes the bottleneck. Underperformed escalation-based in the playbook's data.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Central thesis</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">"The difference was never the AI model. It was always the organization." Readiness, processes, leadership, willingness to redesign workflows and absorb failure.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Change management cost</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Role redefinition, retraining, performance-system rewrites, internal comms. One of the three non-technical cost lines that eat 77% of project difficulty.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Cost savings ceiling</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Most projects target cost savings — bounded by the size of the cost line attacked. Productization, personalization, and faster cycles have higher ceilings.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Data quality cost</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Schema work, dedup, lineage tracing, consent / access review. Treat as engineering line items with named owners, not as "the data team will handle."</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Erik Brynjolfsson</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Stanford economist, co-author of the playbook. Leading researcher on technology and economic productivity (Second Machine Age, Race Against the Machine).</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Escalation-based operating model</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">AI handles routine cases end-to-end; humans intervene only on exceptions. 71% median productivity gain — the highest among the three operating-model types studied.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Experiment vs production framing</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">The most-cited failure pattern: teams treat AI projects as side-pocket experiments rather than production systems with control, integration, and operational ownership.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Failure-as-precursor (61%)</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">61% of successful deployments had at least one prior failed attempt. High performers treat failure as structured learning. Architect the first attempt with the second in mind.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Foundation model as commodity</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">42% model interchangeability implies treating model as substitutable infrastructure. Architectural pattern: keep model layer thin and replaceable; put institutional knowledge above it.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Four-part inclusion bar</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">A case counts as "successful" only if it's live in production, used consistently, delivering measurable business value, and capable of scaling. All four — or not in the dataset.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Fully autonomous operating model</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">AI runs end-to-end without human checkpoints. Underperformed escalation-based because risk surfaces too late, after damage is done.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Gatekeeper triage</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Legal, HR, and compliance are the silent veto. Build parallel adoption tracks with named owners and standing office hours — end-user enthusiasm doesn't unblock them.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Hyper-personalization</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Tailored offers, individualized customer journeys, segment-of-one service. One of the high-value revenue use cases the playbook cites, though still rare overall.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Lock-in budget</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Spend it on workflow orchestration, system integration, UX, and evaluation rubrics — the layers that survive model swaps. Don't lock onto foundation model choice.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Messy data resilience</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">LLMs interpret unstructured inputs, connect fragmented datasets, fill gaps. Treats "data isn't ready" as obsolete blocker — now usually polite framing of organizational resistance.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Model interchangeability (42%)</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">In 42% of studied cases, the foundation model was interchangeable without changing outcomes. The empirical case for treating model choice as substitutable infrastructure.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Operating-unit ownership</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Real AI projects are owned by the operating-unit leader with P&L responsibility — not by the "innovation team." Ownership shift is the first move from experiment to strategic integration.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Operational executive sponsorship</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Weekly standing cadence with the project lead + explicit blocker removal + OKR alignment. The kind of sponsorship that correlated with success — not signing a kickoff deck.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Process redesign cost</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Mapping the as-is workflow, defining to-be, validating with users, rewriting SOPs. Run as discovery + iterative redesign sprints, not as a memo.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Productization (highest ceiling)</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Selling AI capabilities as part of the product offering creates net-new revenue. The largest value ceiling in the dataset, and where the highest-multiple cases cluster.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Production-system framing</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">"This is a production system that uses AI" — not "this is an AI experiment." The reframe that distinguishes the 5% from the 95%, per the playbook.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Stanford Digital Economy Lab</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Research lab led by Erik Brynjolfsson studying how digital technology is reshaping the economy. Publisher of the Enterprise AI Playbook report.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Strategic integration</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Owning AI as a production system embedded in the operating model — KPIs, P&L, control systems, audit. The opposite of "innovation team running an AI experiment."</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">The Enterprise AI Playbook</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Stanford Digital Economy Lab report (April 2026, Pereira/Graylin/Brynjolfsson). 51 deployments × 41 orgs × 9 industries × 7 countries. Studies what survived to production.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span></div><div class="fc-term">Weeks vs years gap</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Identical use cases took weeks in some companies, years in others. Set by exec sponsorship cadence, infrastructure readiness, end-user willingness, and gatekeeper behavior.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g2" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Workflow redesign vs bolt-on</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Bolt-on captures 10-20% of value. Workflow redesign captures the productivity multiples. The largest single separator: 55% of high performers vs 20% of others.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g1" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g1">01 · Foundations</span><span class="gtag g2">02 · Applied</span></div><div class="fc-term">Workflow-redesign separator (55% vs 20%)</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">McKinsey signal cited in the playbook: 55% of high performers redesigned workflows around AI vs only 20% of other companies. The largest single separator.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+<div class="fc" data-g="g3" onclick="flip(this)"><div class="fc-inner"><div class="fc-front"><div class="fc-tags"><span class="gtag g3">03 · Advanced</span></div><div class="fc-term">Workforce strategy choice</div><div class="fc-tap">tap to reveal →</div></div><div class="fc-back"><div class="fc-def">Productivity gains do not auto-trigger layoffs. 45% of deployments reduced headcount; others redeployed or accelerated growth. Pick the strategy deliberately on day one.</div><div class="fc-tap">← tap to flip back</div></div></div></div>
+
+</div>
+
+<div class="crosslink"><span>Ready to test the same concepts under pressure?</span><a href="quiz-index.html">Take the full quiz →</a></div>
+<div class="foot">32 unique cards · The Enterprise AI Playbook · self-learning library</div>
+
+</div>
+<script>
+let currentFilter='all',allFlipped=false;
+const allCards=()=>document.querySelectorAll('#card-grid .fc');
+const visibleCards=()=>document.querySelectorAll('#card-grid .fc:not(.hidden)');
+function flip(card){card.classList.toggle('flipped');updateCounters()}
+function setFilter(f){currentFilter=f;document.querySelectorAll('.ftab').forEach(t=>t.classList.toggle('active',t.dataset.f===f));allCards().forEach(c=>c.classList.toggle('hidden',f!=='all'&&c.dataset.g!==f));updateCounters()}
+function flipAll(){allFlipped=!allFlipped;[...visibleCards()].forEach(c=>c.classList.toggle('flipped',allFlipped));document.getElementById('flip-all-btn').textContent=allFlipped?'↺ Unflip All':'↻ Flip All';updateCounters()}
+function shuffleCards(){allFlipped=false;document.getElementById('flip-all-btn').textContent='↻ Flip All';const grid=document.getElementById('card-grid');const visible=[...grid.querySelectorAll('.fc:not(.hidden)')];const hidden=[...grid.querySelectorAll('.fc.hidden')];visible.forEach(c=>c.classList.remove('flipped'));for(let i=visible.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[visible[i],visible[j]]=[visible[j],visible[i]]}[...visible,...hidden].forEach(c=>grid.appendChild(c));updateCounters()}
+function resetAll(){allCards().forEach(c=>c.classList.remove('flipped'));allFlipped=false;document.getElementById('flip-all-btn').textContent='↻ Flip All';updateCounters()}
+function updateCounters(){const vis=[...visibleCards()];const flipped=vis.filter(c=>c.classList.contains('flipped'));document.getElementById('visible-count').textContent=vis.length;document.getElementById('flipped-count').textContent=flipped.length}
+updateCounters();
+</script>
+</body>
+</html>
