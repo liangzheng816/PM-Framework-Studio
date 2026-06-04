@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "npm run build:ai-index && npm run build:ai-weekly",
+    "prebuild": "npm run build:ai-index && npm run build:ai-weekly && npm run build:nav",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -13,7 +13,9 @@
     "build:ai-index": "tsx scripts/build-ai-learning-index.ts",
     "check:ai-index": "tsx scripts/build-ai-learning-index.ts --check",
     "build:ai-weekly": "tsx scripts/build-ai-weekly-index.ts",
-    "check:ai-weekly": "tsx scripts/build-ai-weekly-index.ts --check"
+    "check:ai-weekly": "tsx scripts/build-ai-weekly-index.ts --check",
+    "build:nav": "tsx scripts/inject-static-navbar.ts",
+    "check:nav": "tsx scripts/inject-static-navbar.ts --check"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",

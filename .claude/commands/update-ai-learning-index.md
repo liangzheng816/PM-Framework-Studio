@@ -8,6 +8,21 @@ The AI Learning landing page at `public/ai-learning/index.html` is **generated**
 per-collection manifest files. You never hand-edit the collection cards or the stats bar —
 you edit a manifest and run the generator.
 
+## Global navbar (every page)
+
+Every static HTML page under `public/ai-learning/` carries the global PM Studio
+navbar, injected by `scripts/inject-static-navbar.ts`. The injector finds an
+`<!-- AUTO-NAV:START -->` / `<!-- AUTO-NAV:END -->` block right after the
+opening `<body>` and rewrites it; if the markers don't exist on a new page,
+they get inserted. **Never hand-author the navbar HTML and never delete the
+markers.** The injector runs as part of `npm run prebuild`, so a freshly
+deployed page always carries the current navbar. To refresh locally:
+
+```bash
+npm run build:nav     # write
+npm run check:nav     # CI guard, fails if any page is stale
+```
+
 ## How it works
 
 - Every collection lives in `public/ai-learning/Content/<Name_YYYYMMDD>/`.

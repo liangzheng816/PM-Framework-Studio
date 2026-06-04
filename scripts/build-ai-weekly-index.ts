@@ -32,6 +32,9 @@ import {
 } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { renderNavbarBlock } from "./lib/static-navbar.js";
+
+const NAV_BLOCK = renderNavbarBlock("/ai-weekly/");
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
@@ -174,10 +177,11 @@ function renderPage(d: Digest): string {
     `<!-- SITE-THEME:START -->\n${headBody}\n<!-- SITE-THEME:END -->\n</head>`,
   );
 
-  // 2) Site strip right after <body>.
+  // 2) Global navbar + site strip right after <body>.
   html = html.replace(
     /<body[^>]*>/i,
-    (m) => `${m}\n<!-- SITE-STRIP:START -->\n${SITE_STRIP}\n<!-- SITE-STRIP:END -->`,
+    (m) =>
+      `${m}\n${NAV_BLOCK}\n<!-- SITE-STRIP:START -->\n${SITE_STRIP}\n<!-- SITE-STRIP:END -->`,
   );
 
   return html;
@@ -304,6 +308,7 @@ footer{margin-top:80px;padding-top:28px;border-top:1px solid var(--rule);font-fa
 </style>
 </head>
 <body>
+${NAV_BLOCK}
 <div class="wrap">
 
 <header class="hero">

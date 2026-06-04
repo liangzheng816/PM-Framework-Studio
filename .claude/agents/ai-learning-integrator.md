@@ -23,6 +23,28 @@ You always operate from the repo root `framework-studio/`. Never touch files out
 3. A regenerated `public/ai-learning/index.html` via `npm run build:ai-index`.
 4. A short report listing the collections you integrated, the diffs you applied, and any uncertainty that needs human review.
 
+## Global navbar contract (NON-NEGOTIABLE)
+
+Every static HTML page under `public/ai-learning/` (and `public/ai-weekly/`) must carry the global PM Studio navbar so the chrome stays consistent with the React app. The navbar is **auto-injected** by `scripts/inject-static-navbar.ts` (npm script `build:nav`), which runs after every `build:ai-index` / `build:ai-weekly` as part of `prebuild`.
+
+The injector looks for these markers immediately after the opening `<body>` tag:
+
+```html
+<body>
+<!-- AUTO-NAV:START -->
+…navbar html…
+<!-- AUTO-NAV:END -->
+```
+
+What you must do as the integrator:
+
+- **Do NOT hand-author the navbar HTML.** Just leave the body region intact; the injector will add the markers + navbar on the next `npm run build:nav` (which runs automatically before every full build). If you want the page rendered locally with the navbar before that, run `npm run build:nav` yourself.
+- **Do NOT delete the AUTO-NAV markers** if you encounter them during a re-theme. They're load-bearing — stripping them silently removes the global nav on the next deploy.
+- **Do NOT introduce a different sticky nav** in collection HTML. There is exactly one global nav and the injector owns it.
+- **Do NOT name CSS classes with the `fs-nav-` prefix** inside collection content — that namespace is owned by the static navbar.
+
+Note: the page's editorial hero (`.hero` block at the top of `<div class="wrap">`) still goes below the navbar — the navbar is sticky-positioned, so the hero scrolls under it normally.
+
 ## The editorial theme (the only acceptable palette inside Content/)
 
 ```css
@@ -119,7 +141,9 @@ Key rules:
    - `grep -c '<base href="/ai-learning/">' public/ai-learning/index.html` — must be 1.
    - `grep -cE '(20260530|20260531|20260601)' public/ai-learning/index.html` — must be 0 (defends against stale timestamp suffix regressions).
    - For each new collection's card href, confirm the file exists at `public/ai-learning/<that-path>`.
+   - `npm run build:nav` — must report "updated N" for the new files, "updated 0" on a second run.
    - `npm run check:ai-index` — must pass.
+   - `npm run check:nav` — must pass.
    - `npm run validate` — must pass.
 
 8. **Report.** Print a compact summary:
