@@ -43,7 +43,12 @@ const RAW_DIR = join(AI_WEEKLY, "RAW");
 const PAGES_DIR = join(AI_WEEKLY, "pages");
 const INDEX_FILE = join(AI_WEEKLY, "index.html");
 
-const FILE_RE = /^ai-intel-dashboard-(\d{8})-(\d{6})\.html$/i;
+// Accepts both naming conventions for files dropped into RAW/:
+//   ai-intel-dashboard-YYYYMMDD-HHMMSS.html  (canonical input name)
+//   ai-weekly-digest-YYYYMMDD-HHMMSS.html    (output convention reused as input)
+// Group 1 is the prefix, groups 2 + 3 are the date and time.
+const FILE_RE =
+  /^(ai-intel-dashboard|ai-weekly-digest)-(\d{8})-(\d{6})\.html$/i;
 
 interface Digest {
   /** Source filename in RAW/, e.g. ai-intel-dashboard-20260530-225115.html. */
@@ -70,7 +75,7 @@ function match1(html: string, re: RegExp): string | null {
 function parseDigest(file: string): Digest | null {
   const m = file.match(FILE_RE);
   if (!m) return null;
-  const [, d, t] = m;
+  const [, , d, t] = m;
   const html = readFileSync(join(RAW_DIR, file), "utf8");
 
   const title =
@@ -369,14 +374,26 @@ function main(): void {
     throw new Error(`RAW directory not found: ${RAW_DIR}`);
   }
 
-  const digests = readdirSync(RAW_DIR)
+  // Both prefixes are accepted in RAW/. If both exist for the same timestamp,
+  // prefer the canonical `ai-intel-dashboard-…` source.
+  const parsed = readdirSync(RAW_DIR)
     .map(parseDigest)
-    .filter((d): d is Digest => d !== null)
-    .sort((a, b) => (a.stamp < b.stamp ? 1 : -1)); // newest first
+    .filter((d): d is Digest => d !== null);
+  const byStamp = new Map<string, Digest>();
+  for (const d of parsed) {
+    const prev = byStamp.get(d.stamp);
+    if (!prev || (d.file.startsWith("ai-intel-dashboard-") && !prev.file.startsWith("ai-intel-dashboard-"))) {
+      byStamp.set(d.stamp, d);
+    }
+  }
+  const digests = [...byStamp.values()].sort((a, b) =>
+    a.stamp < b.stamp ? 1 : -1, // newest first
+  );
 
   if (digests.length === 0) {
     throw new Error(
-      `No dashboards matching ai-intel-dashboard-YYYYMMDD-HHMMSS.html in ${RAW_DIR}`,
+      `No dashboards matching ai-intel-dashboard-YYYYMMDD-HHMMSS.html ` +
+        `or ai-weekly-digest-YYYYMMDD-HHMMSS.html in ${RAW_DIR}`,
     );
   }
 
