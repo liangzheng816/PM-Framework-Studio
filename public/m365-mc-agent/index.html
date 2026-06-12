@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>M365 MC Post Agent — Claude Code copilot for Message Center posts</title>
+  <meta name="description" content="Draft, review, critique, and publish Microsoft 365 Message Center posts grounded in real corpus evidence. Multi-vertical: SharePoint, Teams, OneDrive." />
+  <style>
+    :root {
+      --blue-900: #0a4a18;
+      --blue-800: #126b1c;
+      --blue-700: #1a8525;
+      --blue-600: #1a921a;
+      --blue-500: #36a832;
+      --blue-50:  #ebf5e6;
+      --ink-900:  #1a2533;
+      --ink-700:  #3b4a5a;
+      --ink-500:  #6b7785;
+      --ink-300:  #aab4c0;
+      --line:     #e2eae0;
+      --bg:       #ffffff;
+      --bg-soft:  #f6fbf4;
+      --tint-blue:   #e3f1de;
+      --tint-teal:   #e3f4f1;
+      --tint-green:  #d9efd0;
+      --tint-purple: #f0eaf7;
+      --tint-amber:  #fbf2dc;
+      --shadow-sm: 0 1px 2px rgba(20, 60, 25, 0.05), 0 1px 3px rgba(20, 60, 25, 0.04);
+      --shadow-md: 0 4px 14px rgba(20, 60, 25, 0.08), 0 2px 6px rgba(20, 60, 25, 0.05);
+      --radius:    12px;
+      --radius-lg: 16px;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: var(--ink-900);
+      background: var(--bg);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--blue-600); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Top bar ────────────────────────────────────────────────── */
+    .topbar {
+      background: var(--blue-900);
+      color: white;
+      padding: 14px 32px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 16px;
+    }
+    .topbar .brand {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 600; font-size: 16px;
+    }
+    .topbar .brand svg { opacity: 0.95; }
+
+    .topbar .repo-link {
+      justify-self: center;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 20px;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.32);
+      border-radius: 8px;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+    }
+    .topbar .repo-link:hover {
+      background: rgba(255, 255, 255, 0.24);
+      border-color: rgba(255, 255, 255, 0.55);
+      text-decoration: none;
+    }
+    .topbar .repo-link:active { transform: translateY(1px); }
+    .topbar .repo-link svg { flex-shrink: 0; }
+
+    /* ── Sub-nav ────────────────────────────────────────────────── */
+    .subnav {
+      background: var(--blue-600);
+      padding: 0 32px;
+      display: flex;
+      gap: 4px;
+    }
+    .subnav a {
+      color: white;
+      padding: 14px 18px;
+      font-size: 14px;
+      font-weight: 500;
+      display: inline-block;
+    }
+    .subnav a.active { font-weight: 700; box-shadow: inset 0 -3px 0 white; }
+    .subnav a:hover { background: rgba(255,255,255,0.08); text-decoration: none; }
+
+    /* ── Layout ─────────────────────────────────────────────────── */
+    .page {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+      display: grid;
+      grid-template-columns: 180px 1fr 40px;
+      gap: 24px;
+    }
+    .page .crumb { color: var(--blue-600); font-size: 14px; padding-top: 6px; }
+    .page .edit { color: var(--ink-300); padding-top: 6px; text-align: right; }
+
+    /* ── Hero card ──────────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      background:
+        radial-gradient(120% 80% at 100% 100%, rgba(255,255,255,0.06), transparent 60%),
+        linear-gradient(135deg, #0a4a18 0%, #126b1c 55%, #1a8525 100%);
+      color: white;
+      border-radius: var(--radius-lg);
+      padding: 56px 40px 56px;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 280px;
+    }
+    .hero h1 {
+      margin: 0 0 18px;
+      font-size: 42px;
+      line-height: 1.12;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      max-width: none;
+    }
+    .hero p {
+      margin: 0 0 28px;
+      font-size: 15px;
+      line-height: 1.6;
+      max-width: 560px;
+      color: rgba(255,255,255,0.92);
+    }
+    .hero .ctas { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.05s ease, background 0.15s ease, border-color 0.15s ease;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .btn:hover { text-decoration: none; }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary {
+      background: white;
+      color: var(--blue-800);
+    }
+    .btn-primary:hover { background: #f3faf3; }
+    .btn-ghost {
+      background: transparent;
+      color: white;
+      border-color: rgba(255,255,255,0.55);
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.1); border-color: white; }
+
+    .hero .icon-flair {
+      position: absolute;
+      right: 36px;
+      bottom: 28px;
+      width: 200px;
+      height: auto;
+      opacity: 0.85;
+      pointer-events: none;
+    }
+
+    /* ── Stats card (overlapping hero) ──────────────────────────── */
+    .stats {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      margin: -28px 32px 0;
+      padding: 22px 28px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      position: relative;
+      z-index: 2;
+    }
+    .stats .stat { text-align: center; padding: 4px 0; }
+    .stats .num {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--blue-600);
+      line-height: 1.1;
+    }
+    .stats .lbl {
+      margin-top: 4px;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-500);
+      font-weight: 600;
+    }
+
+    /* ── Section ────────────────────────────────────────────────── */
+    .section { margin-top: 56px; }
+    .section .head {
+      font-size: 19px;
+      font-weight: 600;
+      color: var(--ink-900);
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 22px;
+    }
+
+    /* ── Feature cards (What it can do) ─────────────────────────── */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .feature {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px 18px 20px;
+      transition: box-shadow 0.15s ease, transform 0.05s ease, border-color 0.15s ease;
+    }
+    .feature:hover {
+      box-shadow: var(--shadow-md);
+      border-color: #cfd9e3;
+    }
+    .feature .icon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+    .feature .icon.blue   { background: var(--tint-blue);   color: var(--blue-600); }
+    .feature .icon.teal   { background: var(--tint-teal);   color: #0a8c7a; }
+    .feature .icon.green  { background: var(--tint-green);  color: #2c8a3a; }
+    .feature .icon.purple { background: var(--tint-purple); color: #7340bd; }
+    .feature .icon.amber  { background: var(--tint-amber);  color: #a37310; }
+    .feature h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin: 0 0 6px;
+      color: var(--ink-900);
+    }
+    .feature p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--ink-700);
+      line-height: 1.5;
+    }
+
+    /* ── Table (Popular triggers) ───────────────────────────────── */
+    .triggers {
+      max-width: 720px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .triggers table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .triggers thead th {
+      background: var(--tint-blue);
+      color: var(--blue-800);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-align: left;
+      padding: 12px 16px;
+      font-weight: 700;
+    }
+    .triggers tbody td {
+      padding: 12px 16px;
+      border-top: 1px solid var(--line);
+      vertical-align: top;
+    }
+    .triggers tbody tr:nth-child(even) td { background: var(--bg-soft); }
+    .triggers code {
+      font-family: "Cascadia Code", Consolas, "SF Mono", Menlo, monospace;
+      font-size: 12.5px;
+      background: var(--bg-soft);
+      border: 1px solid var(--line);
+      padding: 3px 8px;
+      border-radius: 4px;
+      color: var(--ink-900);
+      white-space: nowrap;
+    }
+
+    /* ── Workflow cards ─────────────────────────────────────────── */
+    .workflow-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+    .workflow {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .workflow:hover { box-shadow: var(--shadow-sm); border-color: #cfd9e3; }
+    .workflow .num {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--blue-50);
+      color: var(--blue-700);
+      font-weight: 700;
+      font-size: 13px;
+      display: inline-flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .workflow h4 { margin: 0 0 4px; font-size: 14.5px; font-weight: 700; color: var(--ink-900); }
+    .workflow p  { margin: 0; font-size: 13px; color: var(--ink-700); line-height: 1.5; }
+
+    /* ── Vertical pills + persona row ───────────────────────────── */
+    .pill-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--bg-soft);
+      border: 1px solid var(--line);
+      font-size: 13px;
+      color: var(--ink-900);
+    }
+    .pill .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue-600); }
+    .pill .dot.teams { background: #6264a7; }
+    .pill .dot.odb   { background: #0364b8; }
+
+    .persona-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+    .persona {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .persona .role {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--blue-700);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .persona h4 { margin: 0 0 6px; font-size: 14px; font-weight: 700; color: var(--ink-900); }
+    .persona p  { margin: 0; font-size: 12px; color: var(--ink-700); line-height: 1.45; }
+
+    /* ── Setup table ────────────────────────────────────────────── */
+    .setup {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .setup table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    .setup thead th {
+      background: var(--tint-blue);
+      color: var(--blue-800);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-align: left;
+      padding: 10px 14px;
+    }
+    .setup tbody td {
+      padding: 11px 14px;
+      border-top: 1px solid var(--line);
+      vertical-align: top;
+      color: var(--ink-700);
+    }
+    .setup tbody td:first-child { color: var(--ink-900); font-weight: 600; white-space: nowrap; }
+    .setup tbody tr:nth-child(even) td { background: var(--bg-soft); }
+
+    /* ── Footer ─────────────────────────────────────────────────── */
+    footer {
+      margin-top: 64px;
+      padding: 28px 32px;
+      border-top: 1px solid var(--line);
+      color: var(--ink-500);
+      font-size: 13px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer .links { display: flex; gap: 18px; flex-wrap: wrap; }
+
+    /* ── Responsive ─────────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .page { grid-template-columns: 1fr; }
+      .page .crumb, .page .edit { display: none; }
+      .feature-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .persona-grid { grid-template-columns: repeat(2, 1fr); }
+      .workflow-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 820px) {
+      .hero .icon-flair { display: none; }
+    }
+    @media (max-width: 640px) {
+      .topbar {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        padding: 12px 16px;
+        gap: 10px;
+      }
+      .topbar .brand { justify-self: start; }
+      .topbar .repo-link { padding: 8px 14px; font-size: 13px; }
+      .topbar > div:empty { display: none; }
+      .subnav { padding: 0 16px; overflow-x: auto; }
+      .hero { padding: 28px 22px 44px; }
+      .hero h1 { font-size: 30px; }
+      .stats { margin: -24px 12px 0; padding: 16px; }
+      .stats .num { font-size: 24px; }
+      .feature-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Top bar ──────────────────────────────────────────────── -->
+  <header class="topbar">
+    <div class="brand">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 8a4 4 0 0 1 0 8H7a5 5 0 0 1-1-9.9V6a5 5 0 0 1 9.9-1"/></svg>
+      M365 MC Post Agent
+    </div>
+    <a class="repo-link" href="https://github.com/liangzheng_microsoft/M365-MC-Agent" target="_blank" rel="noopener" title="View on GitHub">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.1c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3"/></svg>
+      <span>View on GitHub — microsoft/M365-MC-Agent</span>
+    </a>
+    <div></div>
+  </header>
+
+  <!-- ── Sub-nav ──────────────────────────────────────────────── -->
+  <nav class="subnav">
+    <a class="active" href="#">Home</a>
+    <a href="#workflows">Workflows</a>
+    <a href="#verticals">Verticals</a>
+    <a href="#personas">Personas</a>
+    <a href="#setup">Setup</a>
+  </nav>
+
+  <main class="page">
+    <div class="crumb">Home</div>
+
+    <div>
+      <!-- ── Hero ────────────────────────────────────────────── -->
+      <section class="hero">
+        <h1>The expert agent that knows everything<br/>about the M365 MC Process</h1>
+        <p>Draft, review, and critique Microsoft 365 Message Center posts grounded in real prior MC posts — across SharePoint, Teams, and OneDrive. Opinionated about quality, strict about vertical isolation, and never invents facts.</p>
+        <div class="ctas">
+          <a class="btn btn-primary" href="#workflows">See workflows</a>
+          <a class="btn btn-ghost" href="https://github.com/liangzheng_microsoft/M365-MC-Agent" target="_blank" rel="noopener">View on GitHub</a>
+        </div>
+
+        <svg class="icon-flair" viewBox="0 0 180 150" aria-hidden="true" fill="none" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <!-- spiral notebook -->
+          <rect x="22" y="24" width="100" height="108" rx="4"/>
+          <line x1="22" y1="38" x2="122" y2="38"/>
+          <line x1="36" y1="20" x2="36" y2="28"/>
+          <line x1="52" y1="20" x2="52" y2="28"/>
+          <line x1="68" y1="20" x2="68" y2="28"/>
+          <line x1="84" y1="20" x2="84" y2="28"/>
+          <line x1="100" y1="20" x2="100" y2="28"/>
+          <line x1="116" y1="20" x2="116" y2="28"/>
+          <!-- text rows -->
+          <line x1="34" y1="58" x2="108" y2="58"/>
+          <line x1="34" y1="72" x2="100" y2="72"/>
+          <line x1="34" y1="86" x2="110" y2="86"/>
+          <line x1="34" y1="100" x2="92" y2="100"/>
+          <line x1="34" y1="114" x2="104" y2="114"/>
+          <!-- pen, diagonal -->
+          <line x1="95" y1="138" x2="160" y2="62" stroke-width="3.5"/>
+          <polygon points="160,62 153,58 156,51" fill="white" stroke="white"/>
+          <!-- AI sparkle near pen tip -->
+          <path d="M168 35 L170 41 L176 43 L170 45 L168 51 L166 45 L160 43 L166 41 Z" fill="white" stroke="white" stroke-width="0.6"/>
+          <circle cx="156" cy="28" r="1.5" fill="white"/>
+          <circle cx="178" cy="52" r="1.2" fill="white"/>
+        </svg>
+      </section>
+
+      <!-- ── Stats ───────────────────────────────────────────── -->
+      <div class="stats">
+        <div class="stat"><div class="num">8</div><div class="lbl">Workflows</div></div>
+        <div class="stat"><div class="num">3</div><div class="lbl">Verticals</div></div>
+        <div class="stat"><div class="num">5</div><div class="lbl">Critique Personas</div></div>
+        <div class="stat"><div class="num">1500+</div><div class="lbl">MC Posts Indexed</div></div>
+      </div>
+
+      <!-- ── What it can do ──────────────────────────────────── -->
+      <section class="section" id="capabilities">
+        <div class="head">What the agent can do</div>
+        <div class="feature-grid">
+          <div class="feature">
+            <div class="icon blue">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+            </div>
+            <h3>Draft</h3>
+            <p>Generate corpus-grounded MC post drafts in the right structure for the active vertical. Missing facts get <code>[TBD: …]</code>, never fabricated.</p>
+          </div>
+          <div class="feature">
+            <div class="icon teal">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            </div>
+            <h3>Review</h3>
+            <p>Final-reviewer pass on your draft — findings ordered <strong>Must Fix → Should Fix → Polish</strong>, calibrated to the active vertical's terminology.</p>
+          </div>
+          <div class="feature">
+            <div class="icon purple">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L15 9 L22 10 L17 15 L18 22 L12 19 L6 22 L7 15 L2 10 L9 9 Z"/></svg>
+            </div>
+            <h3>Critique</h3>
+            <p>Adversarial pre-publication gate — 7-dimension scorecard, named failure modes, ✅/⚠️/❌ verdict. Can speak as 5 stock personas or a named colleague.</p>
+          </div>
+          <div class="feature">
+            <div class="icon amber">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <h3>Publish</h3>
+            <p>Hand off the polished draft to the Change Communications Hub wizard, or publish the same content as a SharePoint News article for internal comms.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Workflows ───────────────────────────────────────── -->
+      <section class="section" id="workflows">
+        <div class="head">Eight workflows, one chat prompt away</div>
+        <div class="workflow-grid">
+          <div class="workflow"><div class="num">1</div><div><h4>Review an MC post draft</h4><p>Paste your draft or point at a <code>.docx</code> — the agent runs the structural compliance check against the active vertical's rubric and surfaces gaps in three buckets.</p></div></div>
+          <div class="workflow"><div class="num">2</div><div><h4>Critique (adversarial)</h4><p>Toughest possible read before publish. Scorecard, audience-modeled gap questions, logical-consistency check, top-3 priority fixes. Optional persona weighting.</p></div></div>
+          <div class="workflow"><div class="num">3</div><div><h4>Draft a new MC post</h4><p>Give it the PM spec; it picks the corpus structure, fills the vertical's terminology, and flags every missing fact with <code>[TBD]</code> markers.</p></div></div>
+          <div class="workflow"><div class="num">4</div><div><h4>Find similar prior posts</h4><p>TF-IDF search across one vertical or all of them — returns MC IDs, titles, snippets, matched terms, and links. Cross-vertical hits are pattern evidence, not authority.</p></div></div>
+          <div class="workflow"><div class="num">5</div><div><h4>Internal signal enrichment</h4><p>Opt-in mid-draft: pulls authoritative facts from your SharePoint + meeting decisions via WorkIQ. Informal chat is cited, never inlined as published prose.</p></div></div>
+          <div class="workflow"><div class="num">6</div><div><h4>Export as Word</h4><p>Markdown → <code>.docx</code> for emailing the draft to a PM lead or comms partner. <strong>Not</strong> the publish path — review-share only.</p></div></div>
+          <div class="workflow"><div class="num">7</div><div><h4>Publish to CCH</h4><p>Drives the Change Communications Hub wizard via Playwright MCP. Requires a Roadmap ID; if you don't have one, the upstream skill creates that first.</p></div></div>
+          <div class="workflow"><div class="num">8</div><div><h4>Publish as SharePoint News</h4><p>Same content, internal-facing employee announcement. Complementary to CCH, not a replacement — for most launches you'll do both.</p></div></div>
+        </div>
+      </section>
+
+      <!-- ── Verticals ───────────────────────────────────────── -->
+      <section class="section" id="verticals">
+        <div class="head">Vertical-isolated by default</div>
+        <p style="margin: 0 0 14px; font-size: 14px; color: var(--ink-700); max-width: 720px;">The agent confirms which service you're working on before any Review or Draft, and never silently mixes terminology across services. Cross-vertical lookup is opt-in.</p>
+        <div class="pill-row">
+          <span class="pill"><span class="dot"></span>SharePoint Online</span>
+          <span class="pill"><span class="dot teams"></span>Microsoft Teams</span>
+          <span class="pill"><span class="dot odb"></span>OneDrive for Business</span>
+          <span class="pill" style="background: var(--tint-amber); border-color: #f0d99d;">+ add a vertical (config-only)</span>
+        </div>
+      </section>
+
+      <!-- ── Popular triggers ────────────────────────────────── -->
+      <section class="section" id="triggers">
+        <div class="head">Popular triggers</div>
+        <div class="triggers">
+          <table>
+            <thead><tr><th style="width: 44%">SAY THIS</th><th>WHAT HAPPENS</th></tr></thead>
+            <tbody>
+              <tr><td><code>review this MC post</code></td><td>Final-reviewer pass with Must Fix / Should Fix / Polish bucketing.</td></tr>
+              <tr><td><code>critique as a compliance officer</code></td><td>Adversarial scorecard weighted by the compliance-officer archetype's heavy dimensions.</td></tr>
+              <tr><td><code>critique as Adam</code></td><td>Same as above but anchored on a colleague's profile + optional 30-day WorkIQ signal.</td></tr>
+              <tr><td><code>draft an MC post about &lt;feature&gt;</code></td><td>Corpus-grounded draft in the active vertical's template, with <code>[TBD]</code> for every missing fact.</td></tr>
+              <tr><td><code>find prior MC posts about &lt;topic&gt;</code></td><td>Ranked list with MC IDs, titles, dates, snippets, and matched-term highlights.</td></tr>
+              <tr><td><code>search across all M365 services for X</code></td><td>Cross-vertical lookup — each hit prefixed with <code>[&lt;vertical&gt;]</code>.</td></tr>
+              <tr><td><code>pull from WorkIQ</code></td><td>Mid-draft enrichment from your personal M365 signals (~1-3 min).</td></tr>
+              <tr><td><code>submit this to CCH</code></td><td>Hands off to the Change Communications Hub publication wizard.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ── Personas ────────────────────────────────────────── -->
+      <section class="section" id="personas">
+        <div class="head">Five stock critique personas</div>
+        <p style="margin: 0 0 18px; font-size: 14px; color: var(--ink-700); max-width: 720px;">Each persona reweights the scorecard and voices gap questions in their concerns. Add your own by dropping a new file into <code>references/critique-personas/</code>.</p>
+        <div class="persona-grid">
+          <div class="persona"><div class="role">Compliance</div><h4>Compliance Officer</h4><p>Hardest pushback on data-handling statements, retention language, default-state opt-outs.</p></div>
+          <div class="persona"><div class="role">CCH</div><h4>CCH Reviewer</h4><p>Rollout precision, environment vs. clouds match, publish-date sanity, Roadmap ID present.</p></div>
+          <div class="persona"><div class="role">Engineering</div><h4>Eng Manager</h4><p>Telemetry story, rollback path, compressed TR→GA windows, dependency risk.</p></div>
+          <div class="persona"><div class="role">Product</div><h4>Senior PM</h4><p>Customer-problem narrative, benefit clarity, framing — capability-first writing gets flagged.</p></div>
+          <div class="persona"><div class="role">Support</div><h4>Support Lead</h4><p>Help-desk readiness, default-state clarity, concrete user-visible behavior beats abstractions.</p></div>
+        </div>
+      </section>
+
+      <!-- ── Setup ───────────────────────────────────────────── -->
+      <section class="section" id="setup">
+        <div class="head">Setup</div>
+        <p style="margin: 0 0 18px; font-size: 14px; color: var(--ink-700); max-width: 720px;">Minimal — no <code>pip install</code>, no virtualenv, no API keys, no <code>.env</code>.</p>
+        <div class="setup">
+          <table>
+            <thead><tr><th>Requirement</th><th>Why</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td>Python 3.8+</td><td>Search, sync, corpus health</td><td>Stdlib mostly</td></tr>
+              <tr><td>Node 18+</td><td>Vendored prep-report (WorkIQ enrichment)</td><td>Required only for WorkIQ-grounded runs</td></tr>
+              <tr><td>beautifulsoup4</td><td>Upstream HTML parsing</td><td>Usually pre-installed</td></tr>
+              <tr><td>python-docx</td><td>Optional — <code>.docx</code> export</td><td>Pre-installed in most M365-dev envs</td></tr>
+              <tr><td>GitHub Copilot CLI + WorkIQ MCP</td><td>Optional — internal-signal enrichment</td><td>See the prep-report README</td></tr>
+              <tr><td>Playwright MCP</td><td>Optional — CCH + SharePoint News publishing</td><td>Used by the vendored fill-* skills</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+
+    <div class="edit" title="Edit page">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+    </div>
+  </main>
+
+  <footer>
+    <div>© Microsoft. Microsoft-internal use unless otherwise stated.</div>
+    <div class="links">
+      <a href="#workflows">Workflows</a>
+      <a href="#verticals">Verticals</a>
+      <a href="#personas">Personas</a>
+      <a href="#setup">Setup</a>
+      <a href="https://github.com/liangzheng_microsoft/M365-MC-Agent" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </footer>
+
+</body>
+</html>

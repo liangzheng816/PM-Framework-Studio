@@ -1,7 +1,7 @@
 {
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": ["/api/*", "/_next/*", "/*.ico", "/*.svg", "/*.png", "/*.webp"]
+    "exclude": ["/api/*", "/_next/*", "/*.ico", "/*.svg", "/*.png", "/*.webp", "/m365-mc-agent/*"]
   },
   "responseOverrides": {
     "404": { "rewrite": "/404.html" }
@@ -15,6 +15,10 @@
     "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://pmstudio-api.bluecliff-2f3ceb96.westus2.azurecontainerapps.io; frame-ancestors 'none'"
   },
   "routes": [
+    {
+      "route": "/m365-mc-agent",
+      "rewrite": "/m365-mc-agent/index.html"
+    },
     {
       "route": "/_next/static/*",
       "headers": {
