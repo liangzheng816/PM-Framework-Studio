@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SharePoint LMC Doc Agent — Review SharePoint docs like you've read every article</title>
+  <meta name="description" content="Review, critique, draft, and find SharePoint articles on Microsoft Learn — across SharePoint Online (cloud), SharePoint Server (on-premises), and SharePoint developer doc-sets. Grounded in the real public-docs corpus, never inventing facts." />
+  <style>
+    :root {
+      /* teal / slate / amber — deliberately distinct from the M365 agent's green */
+      --teal-900: #06363a;
+      --teal-800: #0a4c52;
+      --teal-700: #0d7377;
+      --teal-600: #109196;
+      --teal-500: #14b8bd;
+      --teal-50:  #e6f5f5;
+      --indigo-600: #5457d6;
+      --indigo-500: #6c6ff0;
+      --indigo-50:  #ececfb;
+      --amber-600: #c2710c;
+      --amber-500: #e08a16;
+      --amber-50:  #fbeed6;
+      --rose-600:  #c2185b;
+      --ink-900: #0e1a22;
+      --ink-700: #314550;
+      --ink-500: #5f7480;
+      --ink-400: #8497a1;
+      --ink-300: #aebcc4;
+      --line:    #dfeaeb;
+      --line-soft: #eaf2f2;
+      --bg:      #ffffff;
+      --bg-soft: #f3f9f9;
+      --bg-tint: #eef6f6;
+      --sidebar: #0b2027;
+      --sidebar-2: #0f2c34;
+      --sidebar-line: rgba(255,255,255,0.10);
+      --term-bg: #0a1f26;
+      --shadow-sm: 0 1px 2px rgba(8, 40, 44, 0.06), 0 1px 3px rgba(8, 40, 44, 0.05);
+      --shadow-md: 0 6px 22px rgba(8, 40, 44, 0.10), 0 2px 8px rgba(8, 40, 44, 0.06);
+      --radius: 12px;
+      --radius-lg: 18px;
+      --mono: "Cascadia Code", "JetBrains Mono", Consolas, "SF Mono", Menlo, ui-monospace, monospace;
+      --sans: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--sans);
+      color: var(--ink-900);
+      background: var(--bg);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--teal-700); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    code, .mono { font-family: var(--mono); }
+
+    /* ── Shell: fixed left rail + flowing main ─────────────────── */
+    .shell { display: grid; grid-template-columns: 264px 1fr; min-height: 100vh; }
+
+    /* ── Sidebar ───────────────────────────────────────────────── */
+    .sidebar {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      height: 100vh;
+      background: linear-gradient(180deg, var(--sidebar) 0%, var(--sidebar-2) 100%);
+      color: #cfe2e3;
+      display: flex;
+      flex-direction: column;
+      padding: 22px 20px;
+      border-right: 1px solid var(--sidebar-line);
+      overflow-y: auto;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; padding: 4px 6px 0; }
+    .brand .glyph {
+      width: 38px; height: 38px; flex-shrink: 0;
+      border-radius: 10px;
+      background: linear-gradient(140deg, var(--teal-500), var(--teal-700));
+      display: grid; place-items: center;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.18);
+    }
+    .brand .name {
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: #ffffff;
+      line-height: 1.25;
+    }
+    .brand .name small { display: block; color: var(--teal-500); font-size: 11px; font-weight: 500; letter-spacing: 0.04em; }
+
+    .rail-tag {
+      margin: 22px 6px 8px;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #5d8a8d;
+    }
+    .nav { display: flex; flex-direction: column; gap: 2px; }
+    .nav a {
+      display: flex; align-items: center; gap: 11px;
+      padding: 9px 12px;
+      border-radius: 9px;
+      color: #b6cfd0;
+      font-size: 13.5px;
+      font-weight: 500;
+      transition: background 0.14s ease, color 0.14s ease;
+    }
+    .nav a:hover { background: rgba(255,255,255,0.05); color: #ffffff; text-decoration: none; }
+    .nav a.active { background: rgba(20,184,189,0.16); color: #ffffff; box-shadow: inset 2px 0 0 var(--teal-500); }
+    .nav a .ix { font-family: var(--mono); font-size: 11px; color: #5d8a8d; width: 18px; }
+    .nav a.active .ix { color: var(--teal-500); }
+
+    .rail-spacer { flex: 1 1 auto; min-height: 18px; }
+    .rail-foot { border-top: 1px solid var(--sidebar-line); padding-top: 16px; }
+    .ghbtn {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px;
+      border-radius: 9px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.14);
+      color: #eaf5f5;
+      font-size: 12.5px;
+      font-weight: 600;
+      transition: background 0.14s ease, border-color 0.14s ease;
+    }
+    .ghbtn:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); text-decoration: none; }
+    .rail-note { margin-top: 12px; font-size: 11.5px; line-height: 1.5; color: #7da3a5; padding: 0 4px; }
+    .rail-note b { color: var(--amber-500); font-weight: 600; }
+
+    /* ── Main column ───────────────────────────────────────────── */
+    .main { min-width: 0; }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 40px; }
+
+    /* ── Hero ──────────────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      background:
+        radial-gradient(110% 130% at 100% 0%, rgba(20,184,189,0.10), transparent 55%),
+        radial-gradient(90% 120% at 0% 100%, rgba(84,87,214,0.07), transparent 50%),
+        var(--bg-soft);
+      border-bottom: 1px solid var(--line);
+    }
+    .hero-in {
+      max-width: 1080px; margin: 0 auto; padding: 60px 40px 56px;
+      display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 44px; align-items: center;
+    }
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 12px; letter-spacing: 0.04em;
+      color: var(--teal-700); font-weight: 600;
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-bottom: 16px;
+    }
+    .eyebrow::before { content: ""; width: 22px; height: 2px; background: var(--teal-600); border-radius: 2px; }
+    .hero h1 {
+      margin: 0 0 18px;
+      font-size: 40px; line-height: 1.1; letter-spacing: -0.02em; font-weight: 700;
+      color: var(--ink-900);
+    }
+    .hero h1 em { font-style: normal; color: var(--teal-700); }
+    .hero p { margin: 0 0 26px; font-size: 15.5px; line-height: 1.65; color: var(--ink-700); max-width: 540px; }
+    .ctas { display: flex; gap: 11px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 9px;
+      padding: 11px 20px; border-radius: 9px;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      border: 1px solid transparent; white-space: nowrap;
+      transition: transform 0.05s ease, background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .btn:hover { text-decoration: none; }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary { background: var(--teal-700); color: #fff; box-shadow: 0 4px 14px rgba(13,115,119,0.28); }
+    .btn-primary:hover { background: var(--teal-800); }
+    .btn-ghost { background: #fff; color: var(--ink-900); border-color: var(--line); }
+    .btn-ghost:hover { border-color: var(--teal-500); color: var(--teal-800); }
+
+    /* ── Terminal motif ────────────────────────────────────────── */
+    .terminal {
+      background: var(--term-bg);
+      border-radius: 14px;
+      box-shadow: var(--shadow-md), inset 0 0 0 1px rgba(255,255,255,0.05);
+      overflow: hidden;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      line-height: 1.7;
+    }
+    .terminal .bar {
+      display: flex; align-items: center; gap: 7px;
+      padding: 11px 14px;
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .terminal .bar i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+    .terminal .bar .r { background: #ff5f56; }
+    .terminal .bar .y { background: #ffbd2e; }
+    .terminal .bar .g { background: #27c93f; }
+    .terminal .bar span { margin-left: 8px; color: #6f9396; font-size: 11px; }
+    .terminal .body { padding: 16px 16px 18px; color: #bcd6d7; white-space: pre-wrap; word-break: break-word; }
+    .terminal .pr { color: var(--teal-500); }
+    .terminal .cmd { color: #eaf6f6; }
+    .terminal .ok { color: #41d6a3; }
+    .terminal .path { color: var(--amber-500); }
+    .terminal .dim { color: #6f9396; }
+    .terminal .cur { display: inline-block; width: 8px; height: 15px; background: var(--teal-500); vertical-align: -2px; animation: blink 1.1s steps(2) infinite; }
+    @keyframes blink { 0%,50% { opacity: 1; } 50.01%,100% { opacity: 0; } }
+
+    /* ── Principle strip ───────────────────────────────────────── */
+    .principle {
+      background: var(--ink-900);
+      color: #d7e6e6;
+    }
+    .principle-in {
+      max-width: 1080px; margin: 0 auto; padding: 18px 40px;
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+      font-size: 13.5px;
+    }
+    .principle .lead { color: var(--teal-500); font-family: var(--mono); font-weight: 600; letter-spacing: 0.02em; }
+    .principle b { color: #fff; font-weight: 600; }
+    .principle code { background: rgba(255,255,255,0.12); color: #ffd79a; padding: 2px 7px; border-radius: 5px; font-size: 12px; }
+
+    /* ── Stat strip ────────────────────────────────────────────── */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 38px 0 8px; }
+    .stat {
+      border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 18px 18px; background: #fff; position: relative; overflow: hidden;
+    }
+    .stat::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--teal-600); }
+    .stat:nth-child(2)::before { background: var(--indigo-500); }
+    .stat:nth-child(3)::before { background: var(--amber-500); }
+    .stat:nth-child(4)::before { background: var(--rose-600); }
+    .stat .num { font-family: var(--mono); font-size: 30px; font-weight: 700; color: var(--ink-900); line-height: 1; letter-spacing: -0.02em; }
+    .stat .lbl { margin-top: 7px; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-500); font-weight: 600; }
+    .stat .sub { margin-top: 2px; font-size: 11.5px; color: var(--ink-400); }
+
+    /* ── Sections ──────────────────────────────────────────────── */
+    .section { padding: 52px 0; border-top: 1px solid var(--line-soft); }
+    .section:first-of-type { border-top: none; }
+    .sec-eyebrow { font-family: var(--mono); font-size: 12px; color: var(--teal-700); font-weight: 600; letter-spacing: 0.02em; }
+    .sec-eyebrow::before { content: "// "; color: var(--ink-300); }
+    .sec-title { font-size: 25px; font-weight: 700; letter-spacing: -0.01em; margin: 8px 0 6px; color: var(--ink-900); }
+    .sec-lead { font-size: 14.5px; color: var(--ink-700); max-width: 680px; margin: 0 0 26px; }
+
+    /* ── Capability cards ──────────────────────────────────────── */
+    .cap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .cap {
+      background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 20px 20px 22px; position: relative;
+      transition: box-shadow 0.16s ease, transform 0.06s ease, border-color 0.16s ease;
+    }
+    .cap:hover { box-shadow: var(--shadow-md); border-color: #c8dcdc; transform: translateY(-2px); }
+    .cap .tag { font-family: var(--mono); font-size: 11px; color: var(--ink-400); position: absolute; top: 16px; right: 16px; }
+    .cap .ic { width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; margin-bottom: 15px; }
+    .ic.teal { background: var(--teal-50); color: var(--teal-700); }
+    .ic.indigo { background: var(--indigo-50); color: var(--indigo-600); }
+    .ic.amber { background: var(--amber-50); color: var(--amber-600); }
+    .cap h3 { margin: 0 0 7px; font-size: 16px; font-weight: 700; color: var(--ink-900); }
+    .cap p { margin: 0; font-size: 13.5px; color: var(--ink-700); line-height: 1.55; }
+    .cap p code { background: var(--bg-soft); border: 1px solid var(--line); padding: 1px 6px; border-radius: 4px; font-size: 12px; color: var(--ink-900); }
+
+    /* ── Doc-set cards ─────────────────────────────────────────── */
+    .ds-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .ds {
+      border: 1px solid var(--line); border-radius: var(--radius-lg); background: #fff; overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+    .ds .top { height: 5px; }
+    .ds.online .top { background: linear-gradient(90deg, var(--teal-500), var(--teal-700)); }
+    .ds.server .top { background: linear-gradient(90deg, var(--indigo-500), var(--indigo-600)); }
+    .ds.dev .top { background: linear-gradient(90deg, var(--amber-500), var(--amber-600)); }
+    .ds .pad { padding: 20px 20px 22px; display: flex; flex-direction: column; height: 100%; }
+    .ds .slug { font-family: var(--mono); font-size: 12.5px; font-weight: 600; }
+    .ds.online .slug { color: var(--teal-700); }
+    .ds.server .slug { color: var(--indigo-600); }
+    .ds.dev .slug { color: var(--amber-600); }
+    .ds .world { margin: 4px 0 14px; font-size: 18px; font-weight: 700; color: var(--ink-900); }
+    .ds dl { margin: 0 0 16px; display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; font-size: 12.5px; }
+    .ds dt { color: var(--ink-500); }
+    .ds dd { margin: 0; color: var(--ink-900); text-align: right; }
+    .ds dd.mono { font-family: var(--mono); font-size: 11.5px; color: var(--ink-700); }
+    .ds .count { margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--line); display: flex; align-items: baseline; gap: 8px; }
+    .ds .count b { font-family: var(--mono); font-size: 26px; font-weight: 700; color: var(--ink-900); letter-spacing: -0.02em; }
+    .ds .count span { font-size: 12px; color: var(--ink-500); text-transform: uppercase; letter-spacing: 0.1em; }
+
+    .isolation { margin-top: 18px; font-size: 13px; color: var(--ink-700); background: var(--bg-soft); border: 1px solid var(--line); border-radius: 10px; padding: 13px 16px; }
+    .isolation b { color: var(--ink-900); }
+
+    /* ── Workflow rows ─────────────────────────────────────────── */
+    .wf-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .wf {
+      display: flex; gap: 15px; align-items: flex-start;
+      background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 17px 18px;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .wf:hover { border-color: #c8dcdc; box-shadow: var(--shadow-sm); }
+    .wf .n {
+      width: 32px; height: 32px; flex-shrink: 0; border-radius: 9px;
+      background: var(--bg-tint); color: var(--teal-700);
+      font-family: var(--mono); font-weight: 700; font-size: 13px;
+      display: grid; place-items: center;
+    }
+    .wf h4 { margin: 1px 0 5px; font-size: 15px; font-weight: 700; color: var(--ink-900); }
+    .wf p { margin: 0; font-size: 13px; color: var(--ink-700); line-height: 1.5; }
+    .wf code { font-family: var(--mono); font-size: 11.5px; background: var(--bg-soft); border: 1px solid var(--line); padding: 1px 5px; border-radius: 4px; }
+
+    /* ── Scoring dimensions ────────────────────────────────────── */
+    .dim-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .dim {
+      border: 1px solid var(--line); border-radius: 10px; padding: 14px 15px; background: #fff;
+    }
+    .dim .ix { font-family: var(--mono); font-size: 11px; color: var(--teal-600); font-weight: 700; }
+    .dim h4 { margin: 5px 0 4px; font-size: 13.5px; font-weight: 700; color: var(--ink-900); }
+    .dim p { margin: 0; font-size: 12px; color: var(--ink-500); line-height: 1.45; }
+    .dim.span2 { grid-column: span 1; }
+    .verdict-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+    .vtag { font-size: 12.5px; font-weight: 600; padding: 7px 13px; border-radius: 999px; border: 1px solid var(--line); display: inline-flex; align-items: center; gap: 7px; }
+    .vtag.ok { background: #e6f7ef; border-color: #b6e6cf; color: #137a51; }
+    .vtag.warn { background: #fdf3df; border-color: #f1dda9; color: #9a6a08; }
+    .vtag.no { background: #fdeaea; border-color: #f3c5c5; color: #b53636; }
+
+    /* ── Persona cards ─────────────────────────────────────────── */
+    .pe-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .pe { border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 17px; background: #fff; position: relative; }
+    .pe.head { border-color: var(--teal-500); box-shadow: 0 0 0 1px var(--teal-500) inset, var(--shadow-sm); }
+    .pe .star { position: absolute; top: 14px; right: 15px; font-size: 11px; font-weight: 700; color: var(--amber-600); font-family: var(--mono); letter-spacing: 0.04em; }
+    .pe .role { font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; color: var(--ink-400); }
+    .pe h4 { margin: 5px 0 7px; font-size: 14.5px; font-weight: 700; color: var(--ink-900); }
+    .pe p { margin: 0; font-size: 12.5px; color: var(--ink-700); line-height: 1.5; }
+    .pe .heavy { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 5px; }
+    .pe .heavy span { font-size: 10.5px; background: var(--bg-tint); color: var(--teal-800); border-radius: 5px; padding: 2px 7px; }
+
+    /* ── Triggers table ────────────────────────────────────────── */
+    .tbl { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+    .tbl table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    .tbl thead th {
+      background: var(--bg-tint); color: var(--teal-800);
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700;
+      text-align: left; padding: 12px 16px;
+    }
+    .tbl tbody td { padding: 12px 16px; border-top: 1px solid var(--line); vertical-align: top; color: var(--ink-700); }
+    .tbl tbody tr:nth-child(even) td { background: var(--bg-soft); }
+    .tbl code { font-family: var(--mono); font-size: 12px; background: #fff; border: 1px solid var(--line); padding: 3px 8px; border-radius: 5px; color: var(--ink-900); display: inline-block; }
+    .tbl td:first-child { white-space: normal; }
+
+    /* ── Setup ─────────────────────────────────────────────────── */
+    .setup-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 22px; align-items: start; }
+    .setup-card { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+    .setup-card table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    .setup-card thead th { background: var(--bg-tint); color: var(--teal-800); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; text-align: left; padding: 11px 15px; }
+    .setup-card tbody td { padding: 12px 15px; border-top: 1px solid var(--line); color: var(--ink-700); vertical-align: top; }
+    .setup-card tbody td:first-child { font-family: var(--mono); font-size: 12.5px; color: var(--ink-900); white-space: nowrap; }
+    .setup-aside { background: var(--term-bg); border-radius: var(--radius); padding: 18px 18px 20px; font-family: var(--mono); font-size: 12px; color: #bcd6d7; }
+    .setup-aside .h { color: #6f9396; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 12px; }
+    .setup-aside .ln { line-height: 1.9; white-space: pre-wrap; }
+    .setup-aside .pr { color: var(--teal-500); }
+    .setup-aside .cm { color: #6f9396; }
+    .setup-aside .ok { color: #41d6a3; }
+
+    /* ── Footer ────────────────────────────────────────────────── */
+    footer { border-top: 1px solid var(--line); margin-top: 8px; }
+    .footer-in { max-width: 1080px; margin: 0 auto; padding: 26px 40px; display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; align-items: center; color: var(--ink-500); font-size: 13px; }
+    .footer-in .links { display: flex; gap: 18px; flex-wrap: wrap; }
+    .footer-in .mono { font-family: var(--mono); font-size: 12px; color: var(--ink-400); }
+
+    /* ── Responsive ────────────────────────────────────────────── */
+    @media (max-width: 1080px) {
+      .cap-grid, .ds-grid, .pe-grid { grid-template-columns: repeat(2, 1fr); }
+      .dim-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 920px) {
+      .shell { grid-template-columns: 1fr; }
+      .sidebar { position: static; height: auto; flex-direction: column; }
+      .rail-spacer { display: none; }
+      .nav { flex-direction: row; flex-wrap: wrap; gap: 4px; }
+      .nav a { padding: 7px 11px; }
+      .nav a .ix { display: none; }
+      .rail-tag { margin: 18px 6px 8px; }
+      .rail-foot { margin-top: 16px; }
+      .ghbtn { width: max-content; }
+      .hero-in { grid-template-columns: 1fr; padding: 44px 28px; gap: 30px; }
+      .wrap { padding: 0 28px; }
+      .principle-in, .footer-in { padding-left: 28px; padding-right: 28px; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .setup-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .cap-grid, .ds-grid, .pe-grid, .wf-grid, .dim-grid, .stats { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 31px; }
+      .sec-title { font-size: 21px; }
+      .wrap, .hero-in, .principle-in, .footer-in { padding-left: 18px; padding-right: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+
+    <!-- ── Sidebar ─────────────────────────────────────────────── -->
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="glyph" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 7.5 12 4l7 3.5-7 3.5-7-3.5Z"/>
+            <path d="M5 12l7 3.5L19 12"/>
+            <path d="M5 16.5 12 20l7-3.5"/>
+          </svg>
+        </span>
+        <span class="name">SPO-LMC-Agent<small>Microsoft Learn</small></span>
+      </div>
+
+      <div class="rail-tag">Navigate</div>
+      <nav class="nav" id="nav">
+        <a href="#overview" class="active"><span class="ix">00</span> Overview</a>
+        <a href="#capabilities"><span class="ix">01</span> Capabilities</a>
+        <a href="#docsets"><span class="ix">02</span> Doc-sets</a>
+        <a href="#workflows"><span class="ix">03</span> Workflows</a>
+        <a href="#scoring"><span class="ix">04</span> Scoring</a>
+        <a href="#personas"><span class="ix">05</span> Personas</a>
+        <a href="#triggers"><span class="ix">06</span> Triggers</a>
+        <a href="#setup"><span class="ix">07</span> Setup</a>
+      </nav>
+
+      <div class="rail-spacer"></div>
+
+      <div class="rail-foot">
+        <a class="ghbtn" href="https://github.com/liangzheng_microsoft/SPO-Doc-Agent" target="_blank" rel="noopener">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="#eaf5f5"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.1c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3"/></svg>
+          View on GitHub
+        </a>
+        <p class="rail-note">Grounded in the corpus. <b>Never invents facts</b> — unknowns are flagged <code style="font-family:var(--mono);font-size:11px;">[TBD]</code>.</p>
+      </div>
+    </aside>
+
+    <!-- ── Main ────────────────────────────────────────────────── -->
+    <main class="main">
+
+      <!-- Hero -->
+      <section class="hero" id="overview">
+        <div class="hero-in">
+          <div>
+            <div class="eyebrow">SharePoint documentation specialist</div>
+            <h1>Review SharePoint docs like you've <em>read every article</em>.</h1>
+            <p>An expert agent for SharePoint articles on Microsoft Learn — review, critique, draft, find-similar, and resolve a Learn URL to its local file. Across <strong>three doc-sets</strong>: cloud, on-premises, and developer — grounded in the real public-docs corpus.</p>
+            <div class="ctas">
+              <a class="btn btn-primary" href="#capabilities">Explore capabilities</a>
+              <a class="btn btn-ghost" href="#docsets">See the three doc-sets</a>
+            </div>
+          </div>
+
+          <div class="terminal" aria-hidden="true">
+            <div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>find_doc.py — resolve URL → local .md</span></div>
+            <div class="body"><span class="pr">~/LMC-Agent $</span> <span class="cmd">python scripts/find_doc.py \
+  "learn.microsoft.com/sharepoint/restricted-content-discovery"</span>
+
+  <span class="ok">✓ resolved</span>  <span class="dim">sharepoint-online · how-to · audience: Admin</span>
+  <span class="path">DocRepo/SharePoint/SharePointOnline/restricted-content-discovery.md</span>
+  <span class="dim">"Restrict who can find SharePoint content with Restricted
+   Content Discovery…"</span>
+
+<span class="pr">~/LMC-Agent $</span> <span class="cur"></span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Principle strip -->
+      <div class="principle">
+        <div class="principle-in">
+          <span class="lead">// the rule</span>
+          <span><b>Opinionated about quality, never about facts.</b> Missing UI paths, cmdlets, roles, versions, licenses, and limits are flagged <code>[TBD: …]</code> — never fabricated. And it never mixes the three doc-sets' conventions.</span>
+        </div>
+      </div>
+
+      <div class="wrap">
+
+        <!-- Stats -->
+        <div class="stats">
+          <div class="stat"><div class="num">3,869</div><div class="lbl">Articles indexed</div><div class="sub">324 · 953 · 2,592</div></div>
+          <div class="stat"><div class="num">3</div><div class="lbl">Doc-sets</div><div class="sub">cloud · on-prem · dev</div></div>
+          <div class="stat"><div class="num">5</div><div class="lbl">Capabilities</div><div class="sub">review → find doc</div></div>
+          <div class="stat"><div class="num">6</div><div class="lbl">Reviewer personas</div><div class="sub">2 headline readers</div></div>
+        </div>
+
+        <!-- Capabilities -->
+        <section class="section" id="capabilities">
+          <div class="sec-eyebrow">capabilities</div>
+          <h2 class="sec-title">Five things it does</h2>
+          <p class="sec-lead">Every Review, Critique, and Draft is calibrated against how the indexed corpus actually reads today — and grounded by the two search tools.</p>
+          <div class="cap-grid">
+            <div class="cap">
+              <span class="tag">01</span>
+              <div class="ic teal"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+              <h3>Review</h3>
+              <p>A final Learn content-reviewer pass — findings ordered <strong>Must Fix → Should Fix → Polish</strong>, calibrated to the active doc-set's corpus. Optional rewrite.</p>
+            </div>
+            <div class="cap">
+              <span class="tag">02</span>
+              <div class="ic amber"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 15 9l7 .6-5.3 4.6L18.3 21 12 17.3 5.7 21l1.6-6.8L2 9.6 9 9Z"/></svg></div>
+              <h3>Critique</h3>
+              <p>An adversarial pre-publication gate: a 7-dimension scorecard, reader-modeled gap questions, named failure modes, a logical-consistency check, and an explicit ✅/⚠️/❌ verdict.</p>
+            </div>
+            <div class="cap">
+              <span class="tag">03</span>
+              <div class="ic indigo"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
+              <h3>Draft</h3>
+              <p>A new Learn article in corpus-standard structure with frontmatter (and an applies-to banner for Server), <code>[TBD: …]</code> markers, and a <code>Needs confirmation</code> section.</p>
+            </div>
+            <div class="cap">
+              <span class="tag">04</span>
+              <div class="ic teal"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div>
+              <h3>Find similar</h3>
+              <p>Ranked corpus articles with title, an overall summary, <code>ms.topic</code>, audience, <code>ms.date</code>, the learn.microsoft.com URL, local path, matched terms, and a snippet.</p>
+            </div>
+            <div class="cap">
+              <span class="tag">05</span>
+              <div class="ic indigo"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></div>
+              <h3>Find Doc</h3>
+              <p>An exact lookup — resolve a Learn URL (or slug) to its precise local <code>.md</code> file, with doc-set, id, title, <code>ms.topic</code>, audience, and a short summary.</p>
+            </div>
+            <div class="cap">
+              <span class="tag">+</span>
+              <div class="ic amber"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></div>
+              <h3>Refresh corpus</h3>
+              <p>One command re-indexes <code>DocRepo</code> + <code>DevDocRepo</code> across all doc-sets and regenerates the corpus-derived pattern files — then verifies parity.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Doc-sets -->
+        <section class="section" id="docsets">
+          <div class="sec-eyebrow">doc-sets</div>
+          <h2 class="sec-title">Three worlds, never mixed</h2>
+          <p class="sec-lead">Doc-set routing is the entry point: every request first establishes the active doc-set from trigger keywords. Cloud and on-prem meet only in <em>hybrid</em> articles.</p>
+          <div class="ds-grid">
+            <div class="ds online">
+              <div class="top"></div>
+              <div class="pad">
+                <div class="slug">sharepoint-online</div>
+                <div class="world">Cloud</div>
+                <dl>
+                  <dt>Reader</dt><dd>Tenant admin</dd>
+                  <dt>Audience</dt><dd class="mono">Admin</dd>
+                  <dt>Corpus</dt><dd class="mono">SharePointOnline · flat</dd>
+                </dl>
+                <div class="count"><b>324</b><span>articles</span></div>
+              </div>
+            </div>
+            <div class="ds server">
+              <div class="top"></div>
+              <div class="pad">
+                <div class="slug">sharepoint-server</div>
+                <div class="world">On-premises</div>
+                <dl>
+                  <dt>Reader</dt><dd>Farm admin / ITPro</dd>
+                  <dt>Audience</dt><dd class="mono">ITPro</dd>
+                  <dt>Corpus</dt><dd class="mono">SharePointServer · nested</dd>
+                </dl>
+                <div class="count"><b>953</b><span>articles</span></div>
+              </div>
+            </div>
+            <div class="ds dev">
+              <div class="top"></div>
+              <div class="pad">
+                <div class="slug">sharepoint-dev</div>
+                <div class="world">Developer</div>
+                <dl>
+                  <dt>Reader</dt><dd>SPFx / PnP / API dev</dd>
+                  <dt>Base</dt><dd class="mono">/sharepoint/dev</dd>
+                  <dt>Corpus</dt><dd class="mono">DevDocRepo/docs · nested</dd>
+                </dl>
+                <div class="count"><b>2,592</b><span>articles</span></div>
+              </div>
+            </div>
+          </div>
+          <p class="isolation"><b>Strict isolation.</b> Cloud uses the SharePoint admin center, tenant, and <code class="mono">*-SPO*</code> cmdlets. On-prem uses Central Administration, farm, content database, <code class="mono">*-SP*</code> cmdlets, and PSConfig. Developer uses SPFx / PnP / REST / CSOM / Graph. <code class="mono">sharepoint-dev</code> comes from the separate <a href="https://github.com/SharePoint/sp-dev-docs" target="_blank" rel="noopener">sp-dev-docs</a> repo.</p>
+        </section>
+
+        <!-- Workflows -->
+        <section class="section" id="workflows">
+          <div class="sec-eyebrow">workflows</div>
+          <h2 class="sec-title">From a single chat prompt</h2>
+          <p class="sec-lead">Before any Review, Critique, or Draft, the agent locks the active doc-set. Cross-doc-set work is search-only via <code style="font-family:var(--mono);font-size:12px;">--all-docsets</code>.</p>
+          <div class="wf-grid">
+            <div class="wf"><div class="n">1</div><div><h4>Review an article</h4><p>Reads the doc-set's checklist + best-practices, searches the corpus for calibration, identifies the <code>ms.topic</code> shape, and returns Must / Should / Polish findings.</p></div></div>
+            <div class="wf"><div class="n">2</div><div><h4>Critique (adversarial)</h4><p>The toughest read before a PR. Scorecard, gap questions, failure modes, logical-consistency + cross-corpus checks, an explicit verdict, and the top-3 fixes. No flattery.</p></div></div>
+            <div class="wf"><div class="n">3</div><div><h4>Critique as a persona</h4><p>Voice the critique as the tenant admin, farm admin, technical editor, content PM, support engineer, or accessibility reviewer — or a real colleague's curated profile.</p></div></div>
+            <div class="wf"><div class="n">4</div><div><h4>Draft a new article</h4><p>Picks the closest template, reuses the corpus's canonical links, and writes in Learn style with frontmatter — flagging every missing fact as <code>[TBD]</code>.</p></div></div>
+            <div class="wf"><div class="n">5</div><div><h4>Find similar / Find Doc</h4><p>Fuzzy topic search scoped to one doc-set (or all), and an exact URL→local-file resolver with a short summary so you can confirm the article without opening it.</p></div></div>
+            <div class="wf"><div class="n">6</div><div><h4>Refresh the corpus</h4><p><code>distill_new_knowledge.py</code> rebuilds the indexes, regenerates the pattern files, and verifies parity in one shot — re-run after a <code>git pull</code>.</p></div></div>
+          </div>
+        </section>
+
+        <!-- Scoring -->
+        <section class="section" id="scoring">
+          <div class="sec-eyebrow">scoring</div>
+          <h2 class="sec-title">Seven dimensions, scored 0–5</h2>
+          <p class="sec-lead">Critique scores each article on seven dimensions; personas re-weight them. Each doc-set's terminology and corpus patterns define what "correct" means.</p>
+          <div class="dim-grid">
+            <div class="dim"><div class="ix">01</div><h4>Technical accuracy</h4><p>UI paths, cmdlets, roles, licenses, versions, limits, defaults — correct, not invented.</p></div>
+            <div class="dim"><div class="ix">02</div><h4>Completeness</h4><p>Every decision point, default, option, and limitation the reader needs is present or linked.</p></div>
+            <div class="dim"><div class="ix">03</div><h4>Task-orientation</h4><p>A reader can actually complete the task from the steps as written, in order.</p></div>
+            <div class="dim"><div class="ix">04</div><h4>Prerequisites &amp; setup</h4><p>Required role, license/version, module, and account stated before the first step.</p></div>
+            <div class="dim"><div class="ix">05</div><h4>Metadata &amp; frontmatter</h4><p><code style="font-family:var(--mono);font-size:11px;">title</code>, <code style="font-family:var(--mono);font-size:11px;">ms.topic</code>, <code style="font-family:var(--mono);font-size:11px;">ms.date</code>, audience, customer-intent — and the Server applies-to banner.</p></div>
+            <div class="dim"><div class="ix">06</div><h4>Terminology</h4><p>Canonical names used consistently per the doc-set; "Select", not "click"; no cross-world terms.</p></div>
+            <div class="dim"><div class="ix">07</div><h4>Findability &amp; structure</h4><p>One H1, no skipped levels, descriptive headings, coherent outline, next steps.</p></div>
+            <div class="dim" style="background:var(--bg-soft);border-style:dashed;"><div class="ix">∑</div><h4>Verdict</h4><p>All seven ≥ 4, no Risk-grade failure mode, no logical inconsistency → ready.</p></div>
+          </div>
+          <div class="verdict-row">
+            <span class="vtag ok">✅ Ready to publish</span>
+            <span class="vtag warn">⚠️ Needs revision</span>
+            <span class="vtag no">❌ Not ready</span>
+          </div>
+        </section>
+
+        <!-- Personas -->
+        <section class="section" id="personas">
+          <div class="sec-eyebrow">personas</div>
+          <h2 class="sec-title">Six reviewer archetypes</h2>
+          <p class="sec-lead">The two headline personas are the readers who matter most — the admin who actually reads the doc to get a job done. Add your own under <code style="font-family:var(--mono);font-size:12px;">references/critique-personas/</code>.</p>
+          <div class="pe-grid">
+            <div class="pe head">
+              <span class="star">★ HEADLINE</span>
+              <div class="role">cloud reader</div>
+              <h4>SharePoint Tenant Admin</h4>
+              <p>The cloud admin doing the task in a production tenant. Catches unstated roles/licenses, "by default" with no change path, and unstated blast radius on existing access.</p>
+              <div class="heavy"><span>Technical accuracy</span><span>Task-orientation</span><span>Prerequisites</span></div>
+            </div>
+            <div class="pe head">
+              <span class="star">★ HEADLINE</span>
+              <div class="role">on-prem reader</div>
+              <h4>SharePoint Farm Administrator</h4>
+              <p>The on-prem admin patching or upgrading a production farm. Catches missing applies-to banners, absent PSConfig steps, upgrades with no backup, and <code class="mono" style="font-size:11px;">*-SPO*</code> on-prem.</p>
+              <div class="heavy"><span>Technical accuracy</span><span>Task-orientation</span><span>Prerequisites</span></div>
+            </div>
+            <div class="pe">
+              <div class="role">style &amp; standards</div>
+              <h4>Technical Editor</h4>
+              <p>A Learn style editor — <code class="mono" style="font-size:11px;">ms.topic</code> mismatches, fragment descriptions, inconsistent names, heading jumps, "click here".</p>
+              <div class="heavy"><span>Terminology</span><span>Findability</span><span>Metadata</span></div>
+            </div>
+            <div class="pe">
+              <div class="role">doc-set owner</div>
+              <h4>Content PM</h4>
+              <p>Owner of the whole doc-set — duplicate or contradictory content, orphan articles, vague customer-intent, a missing next step.</p>
+              <div class="heavy"><span>Completeness</span><span>Findability</span><span>Task-orientation</span></div>
+            </div>
+            <div class="pe">
+              <div class="role">deflect tickets</div>
+              <h4>Support Engineer</h4>
+              <p>CSS preventing tickets — happy-path-only docs, no troubleshooting or verification, irreversible actions without recovery.</p>
+              <div class="heavy"><span>Task-orientation</span><span>Technical accuracy</span><span>Completeness</span></div>
+            </div>
+            <div class="pe">
+              <div class="role">a11y &amp; ESL</div>
+              <h4>Accessibility Reviewer</h4>
+              <p>A screen-reader / translation / ESL reader — fake headings, missing alt text, meaning-by-color, "simply / just / easy".</p>
+              <div class="heavy"><span>Findability</span><span>Terminology</span><span>Metadata</span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Triggers -->
+        <section class="section" id="triggers">
+          <div class="sec-eyebrow">triggers</div>
+          <h2 class="sec-title">Say this</h2>
+          <p class="sec-lead">No exact phrasing to memorize — talk like a colleague who has read every SharePoint Learn article, cloud, on-prem, and developer.</p>
+          <div class="tbl">
+            <table>
+              <thead><tr><th style="width:46%">Say this</th><th>What you get back</th></tr></thead>
+              <tbody>
+                <tr><td><code>find Server docs about content databases</code></td><td>Ranked corpus articles with title, summary, <code>ms.topic</code>, audience, date, URL, local path, matched terms, and a snippet.</td></tr>
+                <tr><td><code>which file is learn.microsoft.com/…/&lt;slug&gt;?</code></td><td>The exact local <code>.md</code> path the URL maps to, with doc-set, id, title, and a short summary.</td></tr>
+                <tr><td><code>review this Server upgrade article</code></td><td>Findings ordered Must Fix → Should Fix → Polish, calibrated to the active doc-set's corpus.</td></tr>
+                <tr><td><code>is this ready to publish?</code></td><td>A 7-dimension scorecard, gap questions, named failure modes, an explicit verdict, and the top-3 fixes.</td></tr>
+                <tr><td><code>critique as a SharePoint farm admin</code></td><td>Same scorecard, re-weighted to the persona's heavy dimensions and voiced in their concerns.</td></tr>
+                <tr><td><code>draft a how-to for restricting external sharing</code></td><td>A Learn article in corpus structure with frontmatter, the applies-to banner for Server, and <code>[TBD]</code> markers.</td></tr>
+                <tr><td><code>search across all doc-sets for external sharing</code></td><td>Cross-doc-set lookup spanning Online, Server, and Dev at once.</td></tr>
+                <tr><td><code>rebuild the index</code></td><td>Re-indexes <code>DocRepo</code> + <code>DevDocRepo</code> and regenerates the corpus-derived pattern files.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Setup -->
+        <section class="section" id="setup">
+          <div class="sec-eyebrow">setup</div>
+          <h2 class="sec-title">Minimal by design</h2>
+          <p class="sec-lead">No <code style="font-family:var(--mono);font-size:12px;">pip install</code>, no virtualenv, no API keys — every script is stdlib-only Python.</p>
+          <div class="setup-grid">
+            <div class="setup-card">
+              <table>
+                <thead><tr><th>Requirement</th><th>Why</th></tr></thead>
+                <tbody>
+                  <tr><td>Python 3.8+</td><td>All scripts (standard library only).</td></tr>
+                  <tr><td>../DocRepo</td><td>Admin + Server docs corpus — a git checkout of the public SharePoint docs.</td></tr>
+                  <tr><td>../DevDocRepo</td><td>Developer docs corpus — a git checkout of <a href="https://github.com/SharePoint/sp-dev-docs" target="_blank" rel="noopener">sp-dev-docs</a>.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="setup-aside" aria-hidden="true">
+              <div class="h">verify a clean install</div>
+              <div class="ln"><span class="cm"># build + analyze + verify (all doc-sets)</span>
+<span class="pr">$</span> python scripts/distill_new_knowledge.py
+<span class="pr">$</span> python scripts/check_bundle.py
+  <span class="ok">Overall: ok</span></div>
+            </div>
+          </div>
+        </section>
+
+      </div><!-- /wrap -->
+
+      <footer>
+        <div class="footer-in">
+          <div>© Microsoft. <span class="mono">Microsoft-internal use unless otherwise stated.</span></div>
+          <div class="links">
+            <a href="#capabilities">Capabilities</a>
+            <a href="#docsets">Doc-sets</a>
+            <a href="#workflows">Workflows</a>
+            <a href="#personas">Personas</a>
+            <a href="https://github.com/liangzheng_microsoft/SPO-Doc-Agent" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </footer>
+
+    </main>
+  </div>
+
+  <script>
+    // Lightweight scrollspy for the sidebar nav.
+    (function () {
+      var links = Array.prototype.slice.call(document.querySelectorAll('#nav a'));
+      var map = {};
+      links.forEach(function (a) {
+        var id = a.getAttribute('href').slice(1);
+        var sec = document.getElementById(id);
+        if (sec) map[id] = a;
+      });
+      var sections = Object.keys(map).map(function (id) { return document.getElementById(id); });
+      var spy = function () {
+        var y = window.scrollY + 120;
+        var current = sections[0];
+        for (var i = 0; i < sections.length; i++) {
+          if (sections[i].offsetTop <= y) current = sections[i];
+        }
+        // At the bottom of the page, force the last section active.
+        if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) {
+          current = sections[sections.length - 1];
+        }
+        links.forEach(function (a) { a.classList.remove('active'); });
+        if (current && map[current.id]) map[current.id].classList.add('active');
+      };
+      window.addEventListener('scroll', spy, { passive: true });
+      window.addEventListener('resize', spy);
+      spy();
+    })();
+  </script>
+</body>
+</html>
