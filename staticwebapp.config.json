@@ -1,7 +1,7 @@
 {
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": ["/api/*", "/_next/*", "/*.ico", "/*.svg", "/*.png", "/*.webp", "/m365-mc-agent/*", "/spo-lmc-agent/*"]
+    "exclude": ["/api/*", "/_next/*", "/*.ico", "/*.svg", "/*.png", "/*.webp", "/m365-mc-agent/*", "/spo-lmc-agent/*", "/myaipeer/*"]
   },
   "responseOverrides": {
     "404": { "rewrite": "/404.html" }
@@ -22,6 +22,10 @@
     {
       "route": "/spo-lmc-agent",
       "rewrite": "/spo-lmc-agent/index.html"
+    },
+    {
+      "route": "/myaipeer",
+      "rewrite": "/myaipeer/index.html"
     },
     {
       "route": "/_next/static/*",
