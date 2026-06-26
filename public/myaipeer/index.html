@@ -642,18 +642,18 @@
       <!-- ── Memory model ────────────────────────────────────── -->
       <section class="section" id="memory">
         <div class="head">The memory model</div>
-        <p class="lede">Memory lives as local Markdown + YAML frontmatter under <code>MyAIPeer/memory/</code>. MyAIPeer indexes ten entity types across your PM world — each captured from your own signals:</p>
+        <p class="lede">Memory lives as local Markdown + YAML frontmatter under <code>MyAIPeer/memory/</code> — plain files you own and can hand-edit. MyAIPeer distills your raw signals into ten typed entities that compound across your PM world:</p>
         <div class="entity-grid">
-          <div class="ent"><span class="dot"></span><div class="body"><h4>person</h4><p>People you work with — role, org, manager, and direct reports.</p></div></div>
-          <div class="ent"><span class="dot"></span><div class="body"><h4>project</h4><p>Initiatives you drive — status, stakeholders, and related work.</p></div></div>
-          <div class="ent"><span class="dot"></span><div class="body"><h4>customer</h4><p>Accounts you engage with.</p><div class="fields">relationship</div></div></div>
-          <div class="ent"><span class="dot"></span><div class="body"><h4>feedback</h4><p>Customer and product feedback you've captured.</p><div class="fields">customer · product · category · priority · status</div></div></div>
-          <div class="ent"><span class="dot"></span><div class="body"><h4>decision</h4><p>Decisions made — and who made them, at what level.</p><div class="fields">deciders[] · level</div></div></div>
-          <div class="ent"><span class="dot"></span><div class="body"><h4>meeting</h4><p>Meetings, attendees, and the outcomes that matter.</p></div></div>
-          <div class="ent"><span class="dot"></span><div class="body"><h4>risk</h4><p>Risks and blockers worth tracking.</p></div></div>
-          <div class="ent"><span class="dot"></span><div class="body"><h4>insight</h4><p>Learnings and observations worth keeping.</p></div></div>
-          <div class="ent"><span class="dot"></span><div class="body"><h4>commitment</h4><p>Promises made and received.</p><div class="fields">direction · counterparty · due · status</div></div></div>
-          <div class="ent"><span class="dot"></span><div class="body"><h4>document</h4><p>Files from SharePoint / OneDrive, deduped by URL → graph_id → title.</p></div></div>
+          <div class="ent"><span class="dot"></span><div class="body"><h4>person</h4><p>Colleagues and stakeholders — role, org, manager, and direct reports, enriched from Graph.</p></div></div>
+          <div class="ent"><span class="dot"></span><div class="body"><h4>project</h4><p>The initiatives you drive — status, stakeholders, and the work that hangs off them.</p></div></div>
+          <div class="ent"><span class="dot"></span><div class="body"><h4>customer</h4><p>The accounts you engage — and how you relate to each.</p><div class="fields">relationship</div></div></div>
+          <div class="ent"><span class="dot"></span><div class="body"><h4>feedback</h4><p>What customers and partners are telling you about the product.</p><div class="fields">customer · product · category · priority · status</div></div></div>
+          <div class="ent"><span class="dot"></span><div class="body"><h4>decision</h4><p>What got decided — by whom, and at what level.</p><div class="fields">deciders[] · level</div></div></div>
+          <div class="ent"><span class="dot"></span><div class="body"><h4>meeting</h4><p>Who met, who was there, and what came out of it.</p></div></div>
+          <div class="ent"><span class="dot"></span><div class="body"><h4>risk</h4><p>The risks and blockers worth keeping an eye on.</p></div></div>
+          <div class="ent"><span class="dot"></span><div class="body"><h4>insight</h4><p>Learnings and observations worth not losing.</p></div></div>
+          <div class="ent"><span class="dot"></span><div class="body"><h4>commitment</h4><p>Promises made and received — who owes whom, and by when.</p><div class="fields">direction · counterparty · due · status</div></div></div>
+          <div class="ent"><span class="dot"></span><div class="body"><h4>document</h4><p>The SharePoint / OneDrive files that matter — auto-deduped by URL → graph_id → title.</p></div></div>
         </div>
 
         <p class="lede" style="margin-bottom: 16px;">Fed by three classes of signal source — all flowing onto one <code>memory/.signals/</code> bus:</p>
