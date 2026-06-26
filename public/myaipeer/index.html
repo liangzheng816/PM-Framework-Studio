@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MyAIPeer — Your PM world, remembered</title>
-  <meta name="description" content="MyAIPeer is a WorkIQ-native personal memory + PM agents CLI. It builds a durable local memory of your PM world from your own Microsoft 365 signals, then runs brief, prep, write, and review agents grounded in that memory — and never invents facts." />
+  <meta name="description" content="MyAIPeer is a WorkIQ-native personal memory + PM agents CLI with a 27-type communications-grade ontology, provenance rail, typed-edge graph, and PM agents grounded in your own Microsoft 365 signals." />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
 
@@ -510,7 +510,7 @@
       <section class="hero">
         <p class="eyebrow">WorkIQ-native · personal memory + PM agents</p>
         <h1>Your PM world, remembered.</h1>
-        <p>MyAIPeer builds a durable, local memory of your PM world — people, projects, customers, decisions, meetings, risks, insights, commitments, documents — from <strong>your own</strong> Microsoft 365 signals, then runs PM agents that brief, prep, draft, and review on top of it. Grounded in real signals, never inventing facts.</p>
+        <p>MyAIPeer turns <strong>your own</strong> Microsoft 365 signals into a communications-grade PM ontology: 27 connected entity types spanning operational work, strategy, proof points, audience, narratives, launches, customer engagement, and reusable artifacts. Agents can brief, prep, draft, review, tell stories, and assemble context from real memory — grounded, sourced, and never invented.</p>
         <div class="ctas">
           <a class="btn btn-primary" href="#quickstart">Quickstart</a>
           <a class="btn btn-ghost" href="#pipeline">How it works</a>
@@ -543,16 +543,16 @@
 
       <!-- ── Stats ───────────────────────────────────────────── -->
       <div class="stats">
-        <div class="stat"><div class="num">10</div><div class="lbl">Entity types</div></div>
+        <div class="stat"><div class="num">27</div><div class="lbl">Ontology types</div></div>
         <div class="stat"><div class="num">4</div><div class="lbl">PM agents</div></div>
-        <div class="stat"><div class="num">4</div><div class="lbl">Stage pipeline</div></div>
+        <div class="stat"><div class="num">1</div><div class="lbl">Typed-edge graph</div></div>
         <div class="stat"><div class="num">0</div><div class="lbl">npm dependencies</div></div>
       </div>
 
       <!-- ── What it can do ──────────────────────────────────── -->
       <section class="section" id="capabilities">
         <div class="head">What MyAIPeer can do</div>
-        <p class="lede">One zero-dependency Node CLI (<code>node MyAIPeer/cli.mjs</code>) covers the whole loop: build a memory of your work, recall from it, and run four PM agents that synthesize on top of it. Every agent saves a Markdown artifact to <code>./Output/</code>.</p>
+        <p class="lede">One zero-dependency Node CLI (<code>node MyAIPeer/cli.mjs</code>) covers the whole loop: build a 27-type PM ontology from your work, recall connected atoms from it, and run four PM agents that synthesize on top of it. Every agent saves a Markdown artifact to <code>./Output/</code>.</p>
         <div class="feature-grid">
           <div class="feature">
             <div class="icon teal">
@@ -566,7 +566,7 @@
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
             </div>
             <h3>Recall <code>recall</code></h3>
-            <p>Query memory by person, project, or topic and get a grounded context block back — <code>who is X</code>, <code>what do I know about Y</code>.</p>
+            <p>Query memory by person, project, topic, message, audience, or proof point. Add <code>--assemble</code> to expand the top match through the typed-edge graph.</p>
           </div>
           <div class="feature">
             <div class="icon amber">
@@ -607,17 +607,17 @@
           <div class="pstep"><div class="pn">01 · HARVEST</div><h4>Harvest</h4><p>Pull WorkIQ signals plus file / mail / calendar activity into the local <code>.signals</code> cache.</p></div>
           <div class="pstep"><div class="pn">02 · EXTRACT</div><h4>Extract</h4><p>One local LLM pass turns raw signals into typed entities, prioritizing ingested <code>src-*</code> imports.</p></div>
           <div class="pstep"><div class="pn">03 · UPSERT</div><h4>Upsert</h4><p>Deterministic, idempotent merge into Markdown entity files — array union, document dedupe, Graph metadata wins.</p></div>
-          <div class="pstep"><div class="pn">04 · INDEX</div><h4>Index</h4><p>Rebuild per-collection <code>INDEX.md</code> and the global <code>MEMORY.md</code> hot cache.</p></div>
+          <div class="pstep"><div class="pn">04 · INDEX</div><h4>Index</h4><p>Rebuild per-collection <code>INDEX.md</code>, the global <code>MEMORY.md</code> hot cache, and <code>edges/INDEX.md</code>.</p></div>
         </div>
         <div class="note">
           <span class="ni"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 7v6c0 5 3.5 7.5 8 9 4.5-1.5 8-4 8-9V7Z"/><path d="m9 12 2 2 4-4"/></svg></span>
-          <p><strong>Grounded by design.</strong> When a critical fact is missing, MyAIPeer emits <code>[TBD: …]</code> rather than inventing a name, date, or URL. If the Graph broker isn't available, it degrades to <strong>WorkIQ-only</strong> — every agent still runs, just with less metadata precision.</p>
+          <p><strong>Grounded by design.</strong> Every ontology entity carries <code>sources</code>, <code>confidence</code>, <code>sensitivity</code>, and <code>as_of</code>. When a critical fact is missing, MyAIPeer emits <code>[TBD: …]</code> rather than inventing a name, date, or URL.</p>
         </div>
       </section>
 
       <!-- ── Agents ──────────────────────────────────────────── -->
       <section class="section" id="agents">
-        <div class="head">Four PM agents</div>
+        <div class="head">Five PM agents</div>
         <p class="lede">Packaged for Claude Code / VS Code Copilot as context-isolated sub-agents that wrap the matching CLI command, then read back the saved <code>Output/</code> artifact — keeping large generated drafts out of your main thread.</p>
         <div class="agent-grid">
           <div class="agent">
@@ -636,24 +636,24 @@
             <div class="ai"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
             <div><h4>Review <code>peer-review</code></h4><p>Multi-persona review over a draft file with prioritized gaps, risks, and revisions.</p></div>
           </div>
+          <div class="agent">
+            <div class="ai"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="13" rx="2"/><path d="M8 21h8"/><path d="M12 16v5"/><path d="m7 11 2.5-2.5L12 11l3-3"/></svg></div>
+            <div><h4>Story <code>peer-storytelling</code></h4><p>Executive summary, press release, strategic narrative, or customer / partner story — grounded in memory, as Markdown or a self-contained HTML deck. Asks audience, density, and style; ships a 14-theme deck kit.</p></div>
+          </div>
         </div>
       </section>
 
       <!-- ── Memory model ────────────────────────────────────── -->
       <section class="section" id="memory">
-        <div class="head">The memory model</div>
-        <p class="lede">Memory lives as local Markdown + YAML frontmatter under <code>MyAIPeer/memory/</code> — plain files you own and can hand-edit. MyAIPeer distills your raw signals into ten typed entities that compound across your PM world:</p>
+        <div class="head">The ontology system</div>
+        <p class="lede">Memory lives as local Markdown + YAML frontmatter under <code>MyAIPeer/memory/</code> — plain files you own and can hand-edit. The new v2 ontology turns raw work signals into reusable PM building blocks for briefs, PRDs, LT presentations, Message Center drafts, partner updates, and meeting recaps.</p>
         <div class="entity-grid">
-          <div class="ent"><span class="dot"></span><div class="body"><h4>person</h4><p>Colleagues and stakeholders — role, org, manager, and direct reports, enriched from Graph.</p></div></div>
-          <div class="ent"><span class="dot"></span><div class="body"><h4>project</h4><p>The initiatives you drive — status, stakeholders, and the work that hangs off them.</p></div></div>
-          <div class="ent"><span class="dot"></span><div class="body"><h4>customer</h4><p>The accounts you engage — and how you relate to each.</p><div class="fields">relationship</div></div></div>
-          <div class="ent"><span class="dot"></span><div class="body"><h4>feedback</h4><p>What customers and partners are telling you about the product.</p><div class="fields">customer · product · category · priority · status</div></div></div>
-          <div class="ent"><span class="dot"></span><div class="body"><h4>decision</h4><p>What got decided — by whom, and at what level.</p><div class="fields">deciders[] · level</div></div></div>
-          <div class="ent"><span class="dot"></span><div class="body"><h4>meeting</h4><p>Who met, who was there, and what came out of it.</p></div></div>
-          <div class="ent"><span class="dot"></span><div class="body"><h4>risk</h4><p>The risks and blockers worth keeping an eye on.</p></div></div>
-          <div class="ent"><span class="dot"></span><div class="body"><h4>insight</h4><p>Learnings and observations worth not losing.</p></div></div>
-          <div class="ent"><span class="dot"></span><div class="body"><h4>commitment</h4><p>Promises made and received — who owes whom, and by when.</p><div class="fields">direction · counterparty · due · status</div></div></div>
-          <div class="ent"><span class="dot"></span><div class="body"><h4>document</h4><p>The SharePoint / OneDrive files that matter — auto-deduped by URL → graph_id → title.</p></div></div>
+          <div class="ent"><span class="dot"></span><div class="body"><h4>Operational core</h4><p>People, projects, customers, feedback, decisions, meetings, risks, insights, commitments, and documents.</p><div class="fields">10 types · daily brief + prep substrate</div></div></div>
+          <div class="ent"><span class="dot"></span><div class="body"><h4>Strategy & outcomes</h4><p>Goals, metrics, milestones, releases, competitors, and initiatives connect work to business impact.</p><div class="fields">6 types · exec readouts + roadmap stories</div></div></div>
+          <div class="ent"><span class="dot"></span><div class="body"><h4>Communication atoms</h4><p>Messages, proof points, narratives, quotes, themes, audiences, objections, artifacts, engagements, playbooks, and references.</p><div class="fields">11 types · reusable persuasion blocks</div></div></div>
+          <div class="ent"><span class="dot"></span><div class="body"><h4>Provenance rail</h4><p>Every entity carries sources, confidence, sensitivity, and as-of metadata so agents can avoid stale or unsafe claims.</p><div class="fields">sources · confidence · sensitivity · as_of</div></div></div>
+          <div class="ent"><span class="dot"></span><div class="body"><h4>Typed-edge graph</h4><p>Frontmatter links become relationships like supports, targets, reuses, carries theme, yields commitment, and draws on metric.</p><div class="fields">memory/edges/INDEX.md</div></div></div>
+          <div class="ent"><span class="dot"></span><div class="body"><h4>Assembly recall</h4><p><code>recall --assemble</code> expands a topic into its connected messages, proof, audiences, quotes, risks, and commitments.</p><div class="fields">from lookup to reusable context graph</div></div></div>
         </div>
 
         <p class="lede" style="margin-bottom: 16px;">Fed by three classes of signal source — all flowing onto one <code>memory/.signals/</code> bus:</p>
@@ -704,6 +704,7 @@
               <tr><td><code>build my memory</code></td><td>Runs the Harvest → Extract → Upsert → Index build over your recent M365 signals.</td></tr>
               <tr><td><code>catch me up</code> / <code>what happened while I was out</code></td><td>The <code>peer-brief</code> sub-agent over a wider window (<code>--days 7</code>).</td></tr>
               <tr><td><code>what do I know about &lt;X&gt;</code> / <code>who is &lt;X&gt;</code></td><td><code>recall</code> / <code>person</code> / <code>project</code> — assembles a grounded context block.</td></tr>
+              <tr><td><code>recall &lt;X&gt; --assemble</code></td><td>Expands the top match through the ontology graph: connected messages, proof points, audiences, artifacts, and commitments.</td></tr>
               <tr><td><code>morning brief</code></td><td><code>peer-brief</code> — TL;DR, decisions, risks, customer signals, action items.</td></tr>
               <tr><td><code>prep me for my 1:1 with &lt;name&gt;</code></td><td><code>peer-prep</code> — context, open loops, and talking points.</td></tr>
               <tr><td><code>draft a &lt;prd|blog|mc|newsletter|faq|memo&gt; about &lt;X&gt;</code></td><td><code>peer-write</code> — memory-grounded draft with <code>[TBD]</code> for every missing fact.</td></tr>
