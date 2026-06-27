@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>M365 MC Post Agent — Write MC posts like you've read every MC post</title>
-  <meta name="description" content="Write MC posts like you've read every MC post. Draft, review, and critique Microsoft 365 Message Center posts across SharePoint, Teams, and OneDrive — grounded in real corpus evidence, never inventing facts." />
+  <title>M365 MC Post Agent — Claude Code copilot for Message Center posts</title>
+  <meta name="description" content="Draft, review, critique, and publish Microsoft 365 Message Center posts grounded in real corpus evidence and a tailored per-vertical ontology. Multi-vertical: SharePoint, Teams, OneDrive." />
   <style>
     :root {
       --blue-900: #0a4a18;
@@ -171,10 +171,10 @@
     .hero .icon-flair {
       position: absolute;
       right: 36px;
-      bottom: 28px;
-      width: 200px;
+      bottom: 32px;
+      width: 170px;
       height: auto;
-      opacity: 0.85;
+      opacity: 0.5;
       pointer-events: none;
     }
 
@@ -438,6 +438,7 @@
   <!-- ── Top bar ──────────────────────────────────────────────── -->
   <header class="topbar">
     <div class="brand">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 8a4 4 0 0 1 0 8H7a5 5 0 0 1-1-9.9V6a5 5 0 0 1 9.9-1"/></svg>
       M365 MC Post Agent
     </div>
     <a class="repo-link" href="https://github.com/liangzheng_microsoft/M365-MC-Agent" target="_blank" rel="noopener" title="View on GitHub">
@@ -452,6 +453,7 @@
     <a class="active" href="#">Home</a>
     <a href="#workflows">Workflows</a>
     <a href="#verticals">Verticals</a>
+    <a href="#ontology">Ontology</a>
     <a href="#personas">Personas</a>
     <a href="#setup">Setup</a>
   </nav>
@@ -462,7 +464,7 @@
     <div>
       <!-- ── Hero ────────────────────────────────────────────── -->
       <section class="hero">
-        <h1>Write MC posts like you've read every MC post.</h1>
+        <h1>The expert agent that knows everything<br/>about the M365 MC Process</h1>
         <p>Draft, review, and critique Microsoft 365 Message Center posts grounded in real prior MC posts — across SharePoint, Teams, and OneDrive. Opinionated about quality, strict about vertical isolation, and never invents facts.</p>
         <div class="ctas">
           <a class="btn btn-primary" href="#workflows">See workflows</a>
@@ -500,7 +502,7 @@
         <div class="stat"><div class="num">8</div><div class="lbl">Workflows</div></div>
         <div class="stat"><div class="num">3</div><div class="lbl">Verticals</div></div>
         <div class="stat"><div class="num">5</div><div class="lbl">Critique Personas</div></div>
-        <div class="stat"><div class="num">1500+</div><div class="lbl">MC Posts Indexed</div></div>
+        <div class="stat"><div class="num">1,677</div><div class="lbl">MC Posts Indexed</div></div>
       </div>
 
       <!-- ── What it can do ──────────────────────────────────── -->
@@ -543,9 +545,9 @@
         <div class="head">Eight workflows, one chat prompt away</div>
         <div class="workflow-grid">
           <div class="workflow"><div class="num">1</div><div><h4>Review an MC post draft</h4><p>Paste your draft or point at a <code>.docx</code> — the agent runs the structural compliance check against the active vertical's rubric and surfaces gaps in three buckets.</p></div></div>
-          <div class="workflow"><div class="num">2</div><div><h4>Critique (adversarial)</h4><p>Toughest possible read before publish. Scorecard, audience-modeled gap questions, logical-consistency check, top-3 priority fixes. Optional persona weighting.</p></div></div>
+          <div class="workflow"><div class="num">2</div><div><h4>Critique (adversarial)</h4><p>Toughest possible read before publish. Scorecard, audience-modeled gap questions, logical-consistency check, top-3 priority fixes — backed by corpus-grounded facet-completeness gaps. Optional persona weighting.</p></div></div>
           <div class="workflow"><div class="num">3</div><div><h4>Draft a new MC post</h4><p>Give it the PM spec; it picks the corpus structure, fills the vertical's terminology, and flags every missing fact with <code>[TBD]</code> markers.</p></div></div>
-          <div class="workflow"><div class="num">4</div><div><h4>Find similar prior posts</h4><p>TF-IDF search across one vertical or all of them — returns MC IDs, titles, snippets, matched terms, and links. Cross-vertical hits are pattern evidence, not authority.</p></div></div>
+          <div class="workflow"><div class="num">4</div><div><h4>Find similar prior posts</h4><p>TF-IDF search across one vertical or all of them — returns MC IDs, titles, snippets, matched terms, and links. Now facet-aware: filter by change-type / lifecycle / cloud ring and get a facet profile of the hits. Cross-vertical hits are pattern evidence, not authority.</p></div></div>
           <div class="workflow"><div class="num">5</div><div><h4>Internal signal enrichment</h4><p>Opt-in mid-draft: pulls authoritative facts from your SharePoint + meeting decisions via WorkIQ. Informal chat is cited, never inlined as published prose.</p></div></div>
           <div class="workflow"><div class="num">6</div><div><h4>Export as Word</h4><p>Markdown → <code>.docx</code> for emailing the draft to a PM lead or comms partner. <strong>Not</strong> the publish path — review-share only.</p></div></div>
           <div class="workflow"><div class="num">7</div><div><h4>Publish to CCH</h4><p>Drives the Change Communications Hub wizard via Playwright MCP. Requires a Roadmap ID; if you don't have one, the upstream skill creates that first.</p></div></div>
@@ -565,6 +567,18 @@
         </div>
       </section>
 
+      <!-- ── Ontology ────────────────────────────────────────── -->
+      <section class="section" id="ontology">
+        <div class="head">Grounded in a per-vertical ontology</div>
+        <p style="margin: 0 0 14px; font-size: 14px; color: var(--ink-700); max-width: 720px;">Each vertical's corpus is distilled into its own <strong>tailored ontology</strong> — canonical service names; change-type / lifecycle / cloud-ring / impact facets; and the baseline rate at which real posts include each section. The verticals are <strong>never mixed</strong>: Teams norms never leak into SharePoint. Review, Draft, and Critique use it to flag exactly what a draft is missing — with the corpus percentage to back it.</p>
+        <div class="pill-row">
+          <span class="pill"><span class="dot"></span>Facet completeness vs corpus norms</span>
+          <span class="pill"><span class="dot teams"></span>Facet-filtered precedent search</span>
+          <span class="pill"><span class="dot odb"></span>Change-type peer profiles</span>
+          <span class="pill" style="background: var(--tint-amber); border-color: #f0d99d;">Tailored per vertical · never mixed</span>
+        </div>
+      </section>
+
       <!-- ── Popular triggers ────────────────────────────────── -->
       <section class="section" id="triggers">
         <div class="head">Popular triggers</div>
@@ -573,17 +587,13 @@
             <thead><tr><th style="width: 44%">SAY THIS</th><th>WHAT HAPPENS</th></tr></thead>
             <tbody>
               <tr><td><code>review this MC post</code></td><td>Final-reviewer pass with Must Fix / Should Fix / Polish bucketing.</td></tr>
-              <tr><td><code>review this docx</code></td><td>Same review, with the <code>.docx</code> auto-converted to Markdown first via the vendored office-to-markdown skill.</td></tr>
               <tr><td><code>critique as a compliance officer</code></td><td>Adversarial scorecard weighted by the compliance-officer archetype's heavy dimensions.</td></tr>
               <tr><td><code>critique as Adam</code></td><td>Same as above but anchored on a colleague's profile + optional 30-day WorkIQ signal.</td></tr>
               <tr><td><code>draft an MC post about &lt;feature&gt;</code></td><td>Corpus-grounded draft in the active vertical's template, with <code>[TBD]</code> for every missing fact.</td></tr>
-              <tr><td><code>find prior MC posts about &lt;topic&gt;</code></td><td>Ranked list with MC IDs, titles, dates, snippets, and matched-term highlights.</td></tr>
+              <tr><td><code>find prior MC posts about &lt;topic&gt;</code></td><td>Ranked list with MC IDs, titles, dates, snippets, and matched-term highlights — plus an optional facet filter and a facet profile of the hits.</td></tr>
               <tr><td><code>search across all M365 services for X</code></td><td>Cross-vertical lookup — each hit prefixed with <code>[&lt;vertical&gt;]</code>.</td></tr>
               <tr><td><code>pull from WorkIQ</code></td><td>Mid-draft enrichment from your personal M365 signals (~1-3 min).</td></tr>
-              <tr><td><code>export as docx</code></td><td>Final Markdown → <code>.docx</code> for emailing the draft. Review-share only — <strong>not</strong> the publish path.</td></tr>
               <tr><td><code>submit this to CCH</code></td><td>Hands off to the Change Communications Hub publication wizard.</td></tr>
-              <tr><td><code>publish to SharePoint News</code></td><td>Internal-facing employee announcement via the SharePoint News creation flow. Complementary to CCH, not a replacement.</td></tr>
-              <tr><td><code>sync mc posts</code></td><td>Add-only pull of new MC + Roadmap entries from <code>mc.merill.net</code> into the per-vertical corpus.</td></tr>
             </tbody>
           </table>
         </div>
@@ -633,6 +643,7 @@
     <div class="links">
       <a href="#workflows">Workflows</a>
       <a href="#verticals">Verticals</a>
+      <a href="#ontology">Ontology</a>
       <a href="#personas">Personas</a>
       <a href="#setup">Setup</a>
       <a href="https://github.com/liangzheng_microsoft/M365-MC-Agent" target="_blank" rel="noopener">GitHub</a>
