@@ -431,6 +431,45 @@
       .stats .num { font-size: 24px; }
       .feature-grid { grid-template-columns: 1fr; }
     }
+
+    /* ── Ontology details (expandable) ──────────────────── */
+    .onto-details {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--bg-soft);
+      overflow: hidden;
+    }
+    .onto-details > summary {
+      cursor: pointer;
+      list-style: none;
+      padding: 14px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--blue-700);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      user-select: none;
+    }
+    .onto-details > summary::-webkit-details-marker { display: none; }
+    .onto-details > summary::before {
+      content: "\25B8";
+      font-size: 12px;
+      color: var(--ink-500);
+      transition: transform 0.15s ease;
+    }
+    .onto-details[open] > summary::before { transform: rotate(90deg); }
+    .onto-details > summary:hover { background: rgba(26, 133, 37, 0.05); }
+    .onto-body { padding: 4px 18px 20px; border-top: 1px solid var(--line); }
+    .onto-body p { font-size: 13.5px; color: var(--ink-700); margin: 14px 0 10px; max-width: 760px; }
+    .onto-body h4 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-500); margin: 20px 0 8px; }
+    .onto-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .onto-table th, .onto-table td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    .onto-table th { color: var(--ink-500); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .onto-table td:first-child { font-weight: 600; color: var(--ink-900); white-space: nowrap; }
+    .onto-body code { background: var(--tint-blue); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+    .onto-graph { font-size: 13px; color: var(--ink-700); background: var(--bg); border: 1px dashed var(--ink-300); border-radius: 8px; padding: 12px 14px; margin: 8px 0; line-height: 1.9; }
   </style>
 </head>
 <body>
@@ -577,6 +616,38 @@
           <span class="pill"><span class="dot odb"></span>Change-type peer profiles</span>
           <span class="pill" style="background: var(--tint-amber); border-color: #f0d99d;">Tailored per vertical · never mixed</span>
         </div>
+
+        <details class="onto-details">
+          <summary>Peek inside the ontology — entities, facets &amp; relations</summary>
+          <div class="onto-body">
+            <p>Every vertical gets its own <code>ontology.json</code>, built <strong>only</strong> from that vertical's archived MC&nbsp;/&nbsp;Roadmap posts. It's a lightweight knowledge model: a <strong>schema of entity types</strong> (the T-Box) plus a <strong>per-post facet record</strong> for every one of the ~1,677 posts (the A-Box). Nothing is shared across verticals — each file is standalone.</p>
+
+            <h4>Entity types (concept schemes)</h4>
+            <table class="onto-table">
+              <thead><tr><th>Entity</th><th>What it captures</th><th>Example values</th></tr></thead>
+              <tbody>
+                <tr><td>Service</td><td>The canonical product, with aliases folded in, plus adjacent services that co-occur</td><td><code>OneDrive for Business</code> &larr; {OneDrive, Microsoft OneDrive}</td></tr>
+                <tr><td>Feature / capability</td><td>The specific thing the post is about</td><td>“Recap app”, “Restricted SharePoint Search”</td></tr>
+                <tr><td>Change type</td><td>The nature of the change</td><td>New feature · Feature update · Retirement · Updated message</td></tr>
+                <tr><td>Lifecycle stage</td><td>Release phase, ordered earliest &rarr; latest</td><td>In development &rarr; Rolling out &rarr; Targeted Release &rarr; GA</td></tr>
+                <tr><td>Cloud ring</td><td>Which rollout instance is affected</td><td>Worldwide · GCC · GCC High · DoD</td></tr>
+                <tr><td>Impact type</td><td>Who feels the change</td><td>User impact · Admin impact</td></tr>
+                <tr><td>Category</td><td>Microsoft's own Message Center bucket</td><td>Stay informed · Plan for change · Prevent or fix issue · Roadmap</td></tr>
+                <tr><td>Rhetorical move</td><td>The post's section structure, normalized</td><td>Summary · When this will happen · How this affects your org · What you can do to prepare · Compliance</td></tr>
+              </tbody>
+            </table>
+
+            <h4>How they connect (rough shape)</h4>
+            <div class="onto-graph">
+              <code>MCPost</code> &mdash;announces&rarr; <code>Change</code> &mdash;to&rarr; <code>Feature</code> &mdash;belongsTo&rarr; <code>Service</code><br/>
+              <code>Change</code> &mdash;has&rarr; { change type · lifecycle stage · cloud ring · impact type }<br/>
+              <code>Change</code> &mdash;supersedes / retires&rarr; <code>Feature</code> &nbsp;&middot;&nbsp; <code>MCPost</code> &mdash;associatedWith&rarr; <code>Roadmap&nbsp;ID</code>
+            </div>
+
+            <h4>Per-post record (A-Box) &amp; coverage norms</h4>
+            <p>Each archived post becomes a facet record — its services, change type, lifecycle, rings, the sections it actually contains, and any Roadmap IDs. Rolling those up gives each vertical its <strong>coverage norms</strong>: the baseline rate at which real posts include a <em>When this will happen</em>, <em>What you can do to prepare</em>, or <em>Compliance</em> section, plus the admin-impact share, multi-service rate, and Roadmap-link rate. Those percentages are exactly what Review&nbsp;/&nbsp;Draft&nbsp;/&nbsp;Critique cite when flagging a gap — e.g. <em>“69% of this vertical's Retirement peers include a ‘When this will happen' section; this draft has none.”</em></p>
+          </div>
+        </details>
       </section>
 
       <!-- ── Popular triggers ────────────────────────────────── -->
