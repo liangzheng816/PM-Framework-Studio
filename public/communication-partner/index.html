@@ -1,0 +1,878 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PM Communication Partner — memory-grounded PM communications</title>
+  <meta name="description" content="PM Communication Partner turns your own Microsoft 365 signals into a 36-type, communications-grade memory, then runs five jobs on it: compose a story or HTML deck, draft a document, rewrite an artifact, adapt it into audience-tuned variants, and review a draft. Every fact is sourced; anything missing is marked [TBD] — never invented." />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
+    :root {
+      --teal-900: #06403b;
+      --teal-800: #0a5750;
+      --teal-700: #0f766e;
+      --teal-600: #0ea5a6;
+      --teal-500: #15b8b2;
+      --teal-50:  #e6f6f4;
+      --amber-600: #b45309;
+      --amber-500: #f59e0b;
+      --amber-50:  #fdf2dc;
+      --ink-900:  #0f172a;
+      --ink-700:  #334155;
+      --ink-500:  #64748b;
+      --ink-300:  #aab6c2;
+      --line:     #e2eaee;
+      --bg:       #ffffff;
+      --bg-soft:  #f5fafa;
+      --app-bg:   #eef5f4;
+      --tint-teal:   #def2f0;
+      --tint-amber:  #fbeed3;
+      --tint-blue:   #e3eefb;
+      --tint-violet: #efe9fa;
+      --tint-green:  #ddf0e0;
+      --shadow-sm: 0 1px 2px rgba(10, 60, 56, 0.05), 0 1px 3px rgba(10, 60, 56, 0.04);
+      --shadow-md: 0 6px 22px rgba(10, 60, 56, 0.10), 0 2px 8px rgba(10, 60, 56, 0.05);
+      --shadow-lg: 0 18px 44px rgba(10, 60, 56, 0.18);
+      --radius:    12px;
+      --radius-lg: 16px;
+      --sidebar-w: 268px;
+      --mono: "Cascadia Code", "JetBrains Mono", Consolas, "SF Mono", Menlo, ui-monospace, monospace;
+      --sans: "IBM Plex Sans", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
+      --display: "Space Grotesk", "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100%; }
+    body {
+      font-family: var(--sans);
+      color: var(--ink-900);
+      background: var(--app-bg);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+    a { color: var(--teal-700); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    code, .mono { font-family: var(--mono); }
+    h1, h2, h3, h4, h5 { font-family: var(--display); }
+
+    .app { display: grid; grid-template-columns: var(--sidebar-w) minmax(0, 1fr); height: 100vh; }
+
+    .sidebar {
+      position: sticky; top: 0; align-self: start;
+      height: 100vh; overflow-y: auto;
+      background: linear-gradient(185deg, var(--teal-900) 0%, #073f3a 55%, #0a524b 100%);
+      color: #fff;
+      display: flex; flex-direction: column;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      z-index: 40;
+    }
+    .sidebar::-webkit-scrollbar { width: 8px; }
+    .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.16); border-radius: 8px; }
+    .side-brand { display: flex; align-items: center; gap: 11px; padding: 20px 20px 16px; }
+    .side-brand .glyph { width: 34px; height: 34px; flex-shrink: 0; border-radius: 9px; background: linear-gradient(140deg, var(--teal-500), var(--teal-700)); display: grid; place-items: center; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.22); }
+    .side-brand .bt { font-family: var(--display); font-weight: 700; font-size: 15px; line-height: 1.15; letter-spacing: 0.01em; }
+    .side-brand .bs { font-size: 11px; color: rgba(255,255,255,0.62); margin-top: 2px; letter-spacing: 0.02em; }
+    .side-cta { margin: 0 16px 14px; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 12px; font-size: 13px; font-weight: 700; color: #25160a; background: linear-gradient(180deg, #fbb845, var(--amber-500)); border-radius: 9px; box-shadow: 0 6px 16px rgba(245,158,11,0.28); transition: transform 0.05s ease, box-shadow 0.15s ease, filter 0.15s ease; }
+    .side-cta:hover { text-decoration: none; filter: brightness(1.04); box-shadow: 0 8px 20px rgba(245,158,11,0.38); }
+    .side-cta:active { transform: translateY(1px); }
+    .side-nav { flex: 1; padding: 4px 12px 10px; }
+    .nav-group { margin-bottom: 14px; }
+    .nav-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.42); padding: 8px 12px 6px; }
+    .nav-link { display: flex; align-items: center; gap: 11px; padding: 9px 12px; margin: 1px 0; border-radius: 9px; color: rgba(255,255,255,0.82); font-size: 14px; font-weight: 500; border-left: 3px solid transparent; transition: background 0.13s ease, color 0.13s ease; }
+    .nav-link svg { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.85; }
+    .nav-link:hover { background: rgba(255,255,255,0.08); color: #fff; text-decoration: none; }
+    .nav-link.active { background: rgba(255,255,255,0.13); color: #fff; font-weight: 600; border-left-color: var(--amber-500); }
+    .nav-link.active svg { opacity: 1; color: var(--teal-500); }
+    .side-foot { padding: 14px 22px 20px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 11.5px; color: rgba(255,255,255,0.55); display: flex; flex-direction: column; gap: 7px; }
+    .side-foot a { color: rgba(255,255,255,0.8); display: inline-flex; align-items: center; gap: 7px; font-weight: 600; }
+    .side-foot a:hover { color: #fff; }
+
+    .main { min-width: 0; height: 100vh; display: flex; flex-direction: column; }
+    .ctxbar { position: sticky; top: 0; z-index: 30; background: rgba(255,255,255,0.86); backdrop-filter: saturate(140%) blur(8px); border-bottom: 1px solid var(--line); padding: 12px 30px; display: flex; align-items: center; gap: 14px; }
+    .menu-btn { display: none; width: 38px; height: 38px; flex-shrink: 0; border: 1px solid var(--line); border-radius: 9px; background: #fff; color: var(--ink-700); cursor: pointer; align-items: center; justify-content: center; }
+    .ctx-title { font-family: var(--display); font-weight: 700; font-size: 15px; color: var(--ink-900); }
+    .ctx-title .pre { color: var(--ink-300); font-weight: 600; }
+    .ctx-actions { margin-left: auto; display: flex; align-items: center; gap: 9px; }
+    .ctx-link { font-size: 12.5px; font-weight: 600; color: var(--ink-700); padding: 8px 13px; border-radius: 8px; border: 1px solid var(--line); background: #fff; display: inline-flex; align-items: center; gap: 7px; transition: border-color 0.15s ease, background 0.15s ease; }
+    .ctx-link:hover { text-decoration: none; border-color: #c8d8d6; background: var(--bg-soft); }
+    .ctx-link.studio { color: var(--teal-800); border-color: var(--teal-600); background: var(--tint-teal); }
+    .ctx-link.gh { color: #1b1f23; border-color: #1b1f23; background: #fff; padding: 8px 26px; letter-spacing: .2px; box-shadow: 0 2px 6px rgba(0,0,0,0.10); }
+    .ctx-link.gh:hover { color: #000; border-color: #000; background: #f3f5f4; }
+    .ctx-link.studio:hover { background: #cfeae7; }
+
+    .content { flex: 1 1 auto; min-height: 0; overflow: auto; padding: 22px 32px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
+    .content.fitcenter { justify-content: center; }
+    .wrap { width: 100%; max-width: min(1320px, 94%); }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .panel-inner { transform-origin: top center; will-change: transform; }
+    .panel.active .panel-inner { animation: fade 0.2s ease; }
+    @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+    .phead { margin-bottom: 16px; }
+    .phead .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--teal-700); margin: 0 0 7px; }
+    .phead h2 { font-size: 31px; font-weight: 700; margin: 0 0 8px; letter-spacing: -0.01em; color: var(--ink-900); }
+    .phead p { margin: 0; font-size: 17px; color: var(--ink-700); max-width: 1080px; line-height: 1.55; }
+
+    .block { margin-top: 16px; }
+    .block-title { font-family: var(--display); font-size: 19px; font-weight: 700; color: var(--ink-900); margin: 0 0 5px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .block-title .tagn { font-family: var(--mono); font-size: 11px; font-weight: 600; color: var(--teal-700); background: var(--tint-teal); padding: 2px 10px; border-radius: 999px; letter-spacing: 0.02em; }
+    .block-sub { margin: 0 0 14px; font-size: 15px; color: var(--ink-700); max-width: 1080px; line-height: 1.55; }
+
+    .hero { position: relative; overflow: hidden; border-radius: var(--radius-lg); color: #fff; padding: 30px 40px 28px; background: radial-gradient(120% 120% at 100% 0%, rgba(21,184,178,0.30), transparent 58%), linear-gradient(135deg, #06403b 0%, #0a5750 55%, #0f766e 100%); box-shadow: var(--shadow-md); }
+    .hero .eyebrow { font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--teal-500); margin: 0 0 11px; }
+    .hero h1 { font-size: 42px; line-height: 1.1; font-weight: 700; letter-spacing: -0.015em; margin: 0 0 12px; max-width: 920px; }
+    .hero p { font-size: 18px; color: rgba(255,255,255,0.92); max-width: 940px; margin: 0 0 20px; line-height: 1.55; }
+    .hero .ctas { display: flex; flex-wrap: wrap; gap: 11px; position: relative; z-index: 2; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px; border-radius: 9px; font-size: 14px; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: transform 0.05s ease, background 0.15s ease, border-color 0.15s ease; }
+    .btn:hover { text-decoration: none; }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary { background: var(--amber-500); color: #25160a; box-shadow: 0 6px 16px rgba(245,158,11,0.30); }
+    .btn-primary:hover { background: #ffb732; }
+    .btn-ghost { background: rgba(255,255,255,0.10); color: #fff; border-color: rgba(255,255,255,0.34); }
+    .btn-ghost:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.6); }
+    .btn-gh { background: #fff; color: #1b1f23; border-color: #fff; }
+    .btn-gh:hover { background: #f3f5f4; border-color: #f3f5f4; }
+    .hero .flair { position: absolute; right: 34px; top: 50%; transform: translateY(-50%); width: 300px; opacity: 0.5; z-index: 1; pointer-events: none; }
+
+    .stats { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-top: 10px; }
+    .stat { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 10px; text-align: center; box-shadow: var(--shadow-sm); }
+    .stat .num { font-family: var(--display); font-size: 34px; font-weight: 700; color: var(--teal-700); line-height: 1; }
+    .stat .lbl { margin-top: 6px; font-size: 12px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-500); font-weight: 600; }
+
+    .pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .pillar { position: relative; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 13px 15px; box-shadow: var(--shadow-sm); transition: box-shadow 0.15s ease, transform 0.05s ease, border-color 0.15s ease; cursor: pointer; }
+    .pillar:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: #c8d8d6; }
+    .pillar .pk { font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: var(--teal-600); }
+    .pillar h3 { font-size: 21px; margin: 8px 0 7px; color: var(--ink-900); }
+    .pillar p { margin: 0; font-size: 15px; color: var(--ink-700); line-height: 1.55; }
+    .pillar .arrow { position: absolute; right: -11px; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; border-radius: 50%; background: var(--tint-teal); color: var(--teal-700); display: grid; place-items: center; z-index: 2; }
+    .pillar:last-child .arrow { display: none; }
+
+    .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .feature-grid.two { grid-template-columns: repeat(2, 1fr); }
+    .feature-grid.four { grid-template-columns: repeat(4, 1fr); }
+    .feature { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 13px 14px 14px; box-shadow: var(--shadow-sm); transition: box-shadow 0.15s ease, transform 0.05s ease, border-color 0.15s ease; }
+    .feature:hover { box-shadow: var(--shadow-md); border-color: #c8d8d6; transform: translateY(-1px); }
+    a.feature:hover { text-decoration: none; }
+    .feature.flag { border-color: var(--teal-600); box-shadow: 0 0 0 1px var(--teal-600), var(--shadow-sm); }
+    .feature .icon { width: 36px; height: 36px; border-radius: 9px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 11px; }
+    .feature .icon.teal   { background: var(--tint-teal);   color: var(--teal-700); }
+    .feature .icon.amber  { background: var(--tint-amber);  color: var(--amber-600); }
+    .feature .icon.blue   { background: var(--tint-blue);   color: #1d4ed8; }
+    .feature .icon.violet { background: var(--tint-violet); color: #6d28d9; }
+    .feature .icon.green  { background: var(--tint-green);  color: #2c8a3a; }
+    .feature .icon.gray   { background: rgba(120,120,120,0.14); color: #6b7280; }
+    .feature h3 { font-size: 17px; font-weight: 700; margin: 0 0 6px; color: var(--ink-900); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .feature h3 .flagpill { font-family: var(--mono); font-size: 9.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #fff; background: var(--teal-700); padding: 2px 8px; border-radius: 999px; }
+    .feature h3 code { font-family: var(--mono); font-size: 11.5px; font-weight: 600; color: var(--teal-700); background: var(--bg-soft); border: 1px solid var(--line); padding: 1px 7px; border-radius: 5px; }
+    .feature p { margin: 0; font-size: 14.5px; color: var(--ink-700); line-height: 1.55; }
+    .feature p a { font-weight: 600; }
+    .feature .sig { margin-top: 10px; padding-top: 9px; border-top: 1px dashed var(--line); font-size: 12.5px; color: var(--ink-500); }
+    .feature .sig strong { color: var(--teal-700); font-weight: 600; }
+
+    .steps { display: flex; flex-direction: column; gap: 8px; }
+    .step { display: flex; gap: 14px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 11px 15px; box-shadow: var(--shadow-sm); }
+    .step .sn { flex-shrink: 0; width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; font-family: var(--display); font-weight: 700; font-size: 14px; background: var(--teal-900); color: #fff; }
+    .step .sb h4 { margin: 2px 0 4px; font-size: 16.5px; color: var(--ink-900); display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+    .step .sb h4 .lensbadge { font-family: var(--mono); font-size: 10.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--amber-600); background: var(--amber-50); border: 1px solid #f3d9a8; padding: 2px 8px; border-radius: 999px; }
+    .step .sb p { margin: 0; font-size: 14.5px; color: var(--ink-700); line-height: 1.55; }
+    .step .sb code { font-family: var(--mono); font-size: 12px; color: var(--teal-700); background: var(--bg-soft); border: 1px solid var(--line); padding: 1px 6px; border-radius: 5px; }
+
+    .pipeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; align-items: stretch; }
+    .pstep { position: relative; background: linear-gradient(180deg, #ffffff, var(--bg-soft)); border: 1px solid var(--line); border-radius: var(--radius); padding: 13px 14px; box-shadow: var(--shadow-sm); }
+    .pstep .pn { font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: 0.1em; color: var(--teal-600); margin-bottom: 8px; }
+    .pstep h4 { margin: 0 0 6px; font-size: 17px; color: var(--ink-900); }
+    .pstep p { margin: 0; font-size: 13.5px; color: var(--ink-700); line-height: 1.5; }
+    .pstep::after { content: "→"; position: absolute; right: -10px; top: 50%; transform: translateY(-50%); color: var(--teal-500); font-size: 18px; font-weight: 700; z-index: 1; }
+    .pstep:last-child::after { content: none; }
+
+    .entity-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .ent { display: flex; gap: 11px; align-items: flex-start; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 10px 13px; box-shadow: var(--shadow-sm); transition: box-shadow 0.15s ease, border-color 0.15s ease; }
+    .ent:hover { border-color: #c8d8d6; box-shadow: var(--shadow-md); }
+    .ent .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal-600); margin-top: 6px; flex-shrink: 0; }
+    .ent h4 { margin: 0 0 3px; font-size: 15px; font-weight: 700; color: var(--ink-900); }
+    .ent p { margin: 0; font-size: 13px; color: var(--ink-700); line-height: 1.45; }
+    .ent .fields { margin-top: 6px; font-family: var(--mono); font-size: 12px; color: var(--teal-700); line-height: 1.45; }
+
+    .layerblock { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 14px; margin-bottom: 8px; box-shadow: var(--shadow-sm); }
+    .layerblock .lh { display: flex; align-items: baseline; gap: 10px; margin-bottom: 7px; flex-wrap: wrap; }
+    .layerblock .lh h4 { margin: 0; font-size: 14px; color: var(--ink-900); }
+    .layerblock .lh .lc { font-family: var(--mono); font-size: 11px; color: var(--ink-500); }
+    .types { display: flex; flex-wrap: wrap; gap: 6px; }
+    .type { font-family: var(--mono); font-size: 12.5px; color: var(--ink-900); background: var(--bg-soft); border: 1px solid var(--line); padding: 4px 9px; border-radius: 6px; }
+    .type.prov { background: var(--amber-50); border-color: #f3d9a8; color: var(--amber-600); }
+
+    .source-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .source { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px 13px; box-shadow: var(--shadow-sm); }
+    .source .tag { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; color: var(--teal-700); margin-bottom: 7px; }
+    .source h4 { margin: 0 0 6px; font-size: 15px; color: var(--ink-900); }
+    .source ul { margin: 0; padding-left: 18px; }
+    .source li { font-size: 13px; color: var(--ink-700); margin: 3px 0; }
+    .source li code { font-size: 11.5px; }
+    .source .meta { margin-top: 10px; font-size: 12.5px; color: var(--ink-500); }
+
+    .factbar { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+    .factbar .fact { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 7px 13px; box-shadow: var(--shadow-sm); }
+    .factbar .fact b { font-family: var(--display); font-size: 18px; color: var(--teal-700); display: block; line-height: 1.05; }
+    .factbar .fact span { font-size: 10px; color: var(--ink-500); letter-spacing: 0.06em; text-transform: uppercase; }
+
+    .board-cta { display: flex; align-items: center; gap: 18px; justify-content: space-between; background: radial-gradient(120% 120% at 100% 0%, rgba(21,184,178,0.28), transparent 60%), linear-gradient(135deg, #06403b 0%, #0a5750 55%, #0f766e 100%); color: #fff; border-radius: var(--radius-lg); padding: 16px 22px; box-shadow: var(--shadow-md); transition: transform 0.05s ease, box-shadow 0.15s ease; }
+    .board-cta:hover { text-decoration: none; transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+    .board-cta .eyebrow2 { font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--teal-500); margin-bottom: 7px; }
+    .board-cta h3 { margin: 0 0 7px; font-size: 23px; font-weight: 700; letter-spacing: -0.01em; color: #fff; }
+    .board-cta p { margin: 0; font-size: 14.5px; color: rgba(255,255,255,0.9); }
+    .board-cta .arr { flex-shrink: 0; opacity: 0.9; }
+
+    .qsheet { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: #fff; box-shadow: var(--shadow-sm); }
+    .qrow { display: grid; grid-template-columns: 168px 1fr; gap: 16px; padding: 9px 16px; border-top: 1px solid var(--line); align-items: start; }
+    .qrow:first-child { border-top: none; }
+    .qrow .qlabel { font-family: var(--display); font-size: 15px; font-weight: 700; color: var(--ink-900); }
+    .qrow .qlabel .qn { font-family: var(--mono); font-size: 11px; font-weight: 600; color: var(--teal-700); display: block; margin-bottom: 2px; letter-spacing: 0.08em; }
+    .qrow .qopts { display: flex; flex-wrap: wrap; gap: 7px; }
+    .qopt { font-size: 13px; color: var(--ink-700); background: var(--bg-soft); border: 1px solid var(--line); padding: 4px 11px; border-radius: 999px; }
+    .qopt.rec { border-color: var(--teal-600); color: var(--teal-800); background: var(--tint-teal); font-weight: 600; }
+    .qopt.rec::before { content: "★ "; color: var(--amber-500); }
+
+    .swatch-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+    .swatch { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: #fff; box-shadow: var(--shadow-sm); transition: box-shadow 0.15s ease, transform 0.05s ease, border-color 0.15s ease; }
+    .swatch:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: #c8d8d6; }
+    .swatch .pal { height: 30px; display: flex; border-bottom: 1px solid var(--line); }
+    .swatch .pal span { flex: 1; }
+    .swatch .swmeta { padding: 6px 9px 7px; }
+    .swatch .swmeta h5 { font-size: 12px; font-weight: 700; margin: 0 0 2px; color: var(--ink-900); line-height: 1.2; }
+    .swatch .swmeta p { margin: 0; font-size: 10.5px; color: var(--ink-500); line-height: 1.3; }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+    .chip { font-family: var(--mono); font-size: 12.5px; color: var(--ink-700); background: #fff; border: 1px solid var(--line); padding: 5px 10px; border-radius: 6px; box-shadow: var(--shadow-sm); }
+
+    .grouplabel { margin: 0 0 7px; font-size: 12.5px; font-weight: 700; color: var(--teal-700); display: flex; align-items: center; gap: 8px; }
+    .grouplabel .gi { width: 22px; height: 22px; border-radius: 6px; background: var(--tint-teal); color: var(--teal-700); display: grid; place-items: center; }
+    .tablecard { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
+    .tablecard table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+    .tablecard thead th { background: var(--tint-teal); color: var(--teal-800); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; text-align: left; padding: 8px 14px; font-weight: 700; }
+    .tablecard tbody td { padding: 10px 16px; border-top: 1px solid var(--line); vertical-align: top; color: var(--ink-700); overflow-wrap: anywhere; }
+    .tablecard tbody tr:nth-child(even) td { background: var(--bg-soft); }
+    .tablecard tbody td:first-child { color: var(--ink-900); }
+    .tablecard code { font-family: var(--mono); font-size: 12.5px; background: var(--bg-soft); border: 1px solid var(--line); padding: 3px 8px; border-radius: 4px; color: var(--ink-900); white-space: normal; overflow-wrap: anywhere; word-break: break-word; }
+
+    .bundle { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .bcard { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 11px; box-shadow: var(--shadow-sm); }
+    .bcard .role { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--amber-600); font-weight: 600; margin-bottom: 6px; }
+    .bcard h4 { font-family: var(--mono); margin: 0 0 6px; font-size: 13.5px; font-weight: 600; color: var(--ink-900); }
+    .bcard p { margin: 0; font-size: 14px; color: var(--ink-700); line-height: 1.55; }
+
+    pre { margin: 0; padding: 12px 16px; border-radius: var(--radius); border: 1px solid #173b37; background: #0a1f1d; color: #cdeeea; overflow: auto; font-family: var(--mono); font-size: 12px; line-height: 1.55; }
+    pre .c { color: #5f8e88; }
+    pre .p { color: var(--teal-500); }
+    .codecap { font-size: 12px; color: var(--ink-700); margin: 10px 0 6px; }
+
+    .note { display: flex; gap: 12px; align-items: flex-start; margin-top: 12px; padding: 11px 15px; border-left: 4px solid var(--amber-500); background: var(--amber-50); border-radius: 0 10px 10px 0; }
+    .note .ni { color: var(--amber-600); flex-shrink: 0; margin-top: 1px; }
+    .note p { margin: 0; font-size: 13.5px; color: var(--ink-700); line-height: 1.5; }
+    .note strong { color: var(--ink-900); }
+
+    .scrim { display: none; position: fixed; inset: 0; background: rgba(6,40,36,0.5); backdrop-filter: blur(2px); z-index: 35; }
+    .scrim.show { display: block; }
+
+    @media (max-width: 1100px) {
+      .feature-grid { grid-template-columns: repeat(2, 1fr); }
+      .feature-grid.four { grid-template-columns: repeat(2, 1fr); }
+      .stats { grid-template-columns: repeat(3, 1fr); }
+      .swatch-grid { grid-template-columns: repeat(4, 1fr); }
+      .bundle { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 920px) {
+      body { overflow: auto; }
+      .app { grid-template-columns: 1fr; height: auto; min-height: 100vh; }
+      .main { height: auto; }
+      .content { overflow: visible; align-items: stretch; padding: 20px 16px 48px; }
+      .content.fitcenter { justify-content: flex-start; }
+      .wrap { max-width: none; }
+      .panel { height: auto !important; }
+      .panel-inner { transform: none !important; }
+      .sidebar { position: fixed; top: 0; left: 0; width: 280px; height: 100vh; transform: translateX(-100%); transition: transform 0.22s ease; box-shadow: var(--shadow-lg); }
+      .sidebar.open { transform: translateX(0); }
+      .menu-btn { display: inline-flex; }
+      .pillars { grid-template-columns: 1fr; }
+      .pillar .arrow { display: none; }
+      .pipeline { grid-template-columns: repeat(2, 1fr); }
+      .pstep:nth-child(2)::after { content: none; }
+      .entity-grid { grid-template-columns: 1fr; }
+      .source-grid { grid-template-columns: 1fr; }
+      .qrow { grid-template-columns: 1fr; gap: 8px; }
+    }
+    @media (max-width: 640px) {
+      .content { padding: 22px 16px 56px; }
+      .ctxbar { padding: 10px 16px; }
+      .ctx-link:not(.studio) { display: none; }
+      .hero { padding: 30px 22px; }
+      .hero h1 { font-size: 29px; }
+      .hero .flair { display: none; }
+      .feature-grid, .feature-grid.two, .feature-grid.four, .stats, .swatch-grid, .bundle, .pipeline { grid-template-columns: 1fr; }
+      .pstep::after { content: none; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="scrim" id="scrim"></div>
+
+  <div class="app">
+
+    <aside class="sidebar" id="sidebar">
+      <div class="side-brand">
+        <span class="glyph">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 6 0 3 3 0 0 0 2-5 3 3 0 0 0-2-5 3 3 0 0 0-3-3Z"/><path d="M12 6v12"/></svg>
+        </span>
+        <div>
+          <div class="bt">PM Communication&nbsp;Partner</div>
+          <div class="bs">memory-grounded PM comms</div>
+        </div>
+      </div>
+
+      <a class="side-cta" href="storytelling-studio.html">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="13" rx="2"/><path d="M8 21h8"/><path d="M12 16v5"/></svg>
+        Open Storytelling Studio ↗
+      </a>
+
+      <nav class="side-nav">
+        <div class="nav-group">
+          <div class="nav-label">Start</div>
+          <a class="nav-link" href="#overview" data-panel="overview" data-title="Overview">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg>Overview</a>
+          <a class="nav-link" href="#how" data-panel="how" data-title="How it works">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/></svg>How it works</a>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-label">Capabilities</div>
+          <a class="nav-link" href="#jobs" data-panel="jobs" data-title="Communication jobs">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Communication jobs</a>
+          <a class="nav-link" href="#harvest" data-panel="harvest" data-title="Harvest &amp; sources">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>Harvest &amp; sources</a>
+          <a class="nav-link" href="#memory" data-panel="memory" data-title="Memory &amp; ontology">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="M7 6h10M6 8l5 8m7-8-5 8"/></svg>Memory &amp; ontology</a>
+          <a class="nav-link" href="#substance" data-panel="substance" data-title="Substance — PM lenses">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><circle cx="11" cy="11" r="3"/><path d="m21 21-4.3-4.3"/></svg>Substance — PM lenses</a>
+          <a class="nav-link" href="#craft" data-panel="craft" data-title="Craft engine">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v4M3 5h4M6 17v4M4 19h4"/><path d="M13 3l2.5 6.5L22 12l-6.5 2.5L13 21l-2.5-6.5L4 12l6.5-2.5z"/></svg>Craft engine</a>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-label">Storytelling Studio</div>
+          <a class="nav-link" href="#studio" data-panel="studio" data-title="The Storytelling Studio">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M3 9h18M8 21h8"/></svg>The Studio</a>
+          <a class="nav-link" href="#deck" data-panel="deck" data-title="HTML deck kit">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M5 8l7-5 7 5"/><path d="M5 8v8l7 5 7-5V8"/></svg>HTML deck kit</a>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-label">Reference</div>
+          <a class="nav-link" href="#cli" data-panel="cli" data-title="CLI commands">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l6-6-6-6"/><path d="M12 19h8"/></svg>CLI commands</a>
+          <a class="nav-link" href="#triggers" data-panel="triggers" data-title="Popular triggers">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>Triggers</a>
+          <a class="nav-link" href="#setup" data-panel="setup" data-title="Setup &amp; quickstart">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-2.82 1.17V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 14a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 3.6 1.65 1.65 0 0 0 10 2.09V2a2 2 0 1 1 4 0v.09A1.65 1.65 0 0 0 15 3.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 20.4 8q.16.38.51.6"/></svg>Setup &amp; quickstart</a>
+        </div>
+      </nav>
+
+      <div class="side-foot">
+        <a href="https://github.com/gim-home/opg-sox-pm-agents/tree/main/agents/communication-partner" target="_blank" rel="noopener noreferrer">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+          View on GitHub
+        </a>
+        <span>© Microsoft · internal use</span>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="ctxbar">
+        <button class="menu-btn" id="menuBtn" aria-label="Toggle navigation">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+        </button>
+        <div class="ctx-title"><span class="pre">PM Communication Partner&nbsp;&nbsp;/&nbsp;&nbsp;</span><span id="ctxTitle">Overview</span></div>
+        <div class="ctx-actions">
+        <div class="ctx-actions">
+          <a class="ctx-link gh" href="https://github.com/gim-home/opg-sox-pm-agents/tree/main/agents/communication-partner" target="_blank" rel="noopener noreferrer"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a>
+        </div>
+      </header>
+
+      <main class="content">
+        <div class="wrap">
+
+          <section class="panel active" id="panel-overview">
+            <div class="hero">
+              <p class="eyebrow">WorkIQ-native · memory-grounded communication partner</p>
+              <h1>Your PM communications, grounded in your own memory.</h1>
+              <p>PM Communication Partner turns <strong>your own</strong> Microsoft 365 signals into a 36-type, communications-grade memory — then runs five jobs: <strong>compose</strong> a deck, <strong>draft</strong> a doc, <strong>rewrite</strong>, <strong>adapt</strong>, and <strong>review</strong>. Every output is shaped by storytelling craft distilled from high-stakes leadership decks and 100 PM frameworks — and every fact is sourced.</p>
+              <div class="ctas">
+                <a class="btn btn-primary" href="storytelling-studio.html">Open the Storytelling Studio ↗</a>
+                <a class="btn btn-gh" href="https://github.com/gim-home/opg-sox-pm-agents/tree/main/agents/communication-partner" target="_blank" rel="noopener noreferrer"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a>
+                <a class="btn btn-ghost" href="#jobs" data-goto="#jobs">See the five jobs</a>
+                <a class="btn btn-ghost" href="#setup" data-goto="#setup">Quickstart</a>
+              </div>
+              <svg class="flair" viewBox="0 0 200 150" aria-hidden="true" fill="none" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="60" y1="40" x2="105" y2="28"/><line x1="60" y1="40" x2="48" y2="86"/><line x1="60" y1="40" x2="112" y2="74"/><line x1="105" y1="28" x2="150" y2="52"/><line x1="112" y1="74" x2="150" y2="52"/><line x1="112" y1="74" x2="96" y2="116"/><line x1="48" y1="86" x2="96" y2="116"/><line x1="150" y1="52" x2="158" y2="104"/><line x1="96" y1="116" x2="158" y2="104"/>
+                <circle cx="60" cy="40" r="7" fill="rgba(255,255,255,0.16)"/><circle cx="105" cy="28" r="5.5" fill="rgba(255,255,255,0.12)"/><circle cx="150" cy="52" r="8.5" fill="rgba(255,255,255,0.20)"/><circle cx="48" cy="86" r="5" fill="rgba(255,255,255,0.12)"/><circle cx="112" cy="74" r="7" fill="rgba(255,255,255,0.16)"/><circle cx="96" cy="116" r="6" fill="rgba(255,255,255,0.14)"/><circle cx="158" cy="104" r="5" fill="rgba(255,255,255,0.12)"/>
+                <path d="M176 24 L179 32 L187 35 L179 38 L176 46 L173 38 L165 35 L173 32 Z" fill="#fff" stroke="#fff" stroke-width="0.6"/>
+              </svg>
+            </div>
+
+            <div class="stats">
+              <div class="stat"><div class="num">5</div><div class="lbl">Comms jobs</div></div>
+              <div class="stat"><div class="num">36</div><div class="lbl">Memory types</div></div>
+              <div class="stat"><div class="num">30</div><div class="lbl">Story scenarios</div></div>
+              <div class="stat"><div class="num">100</div><div class="lbl">PM frameworks</div></div>
+              <div class="stat"><div class="num">14</div><div class="lbl">Deck themes</div></div>
+              <div class="stat"><div class="num">0</div><div class="lbl">npm deps</div></div>
+            </div>
+
+            <div class="block">
+              <h3 class="block-title">The big idea — harvest, remember, tell <span class="tagn">reason first, then tell</span></h3>
+              <p class="block-sub">Three pillars turn scattered M365 signals into grounded, presentation-grade communication. Click any pillar to dive in.</p>
+              <div class="pillars">
+                <a class="pillar" href="#harvest" data-goto="#harvest">
+                  <div class="pk">01 · HARVEST</div><h3>Harvest</h3>
+                  <p>Fan out across your own M365 footprint — WorkIQ <strong>+ Microsoft Graph</strong> (your Sent mail is first-class) <strong>+ Teams chat</strong> — into a local signal cache.</p>
+                  <span class="arrow"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+                </a>
+                <a class="pillar" href="#memory" data-goto="#memory">
+                  <div class="pk">02 · REMEMBER</div><h3>Remember</h3>
+                  <p>Store it as a <strong>36-type, 5-layer ontology</strong> (operational · strategy · communication · operating · provenance) with a derived typed-edge graph you can join, not just list.</p>
+                  <span class="arrow"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+                </a>
+                <a class="pillar" href="#craft" data-goto="#craft">
+                  <div class="pk">03 · TELL</div><h3>Tell</h3>
+                  <p><strong>Reason</strong> with the right PM framework to sharpen the evidence, then <strong>assemble</strong> dozens of grounded atoms into an executive-grade story or deck.</p>
+                  <span class="arrow"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+                </a>
+              </div>
+            </div>
+
+            <div class="block">
+              <h3 class="block-title">What makes it different</h3>
+              <p class="block-sub">Four big things make the output board-ready, not generic: a memory of <em>your own</em> work, an ontology proven at leadership level, the PM rigor behind every claim, and presentation craft by default.</p>
+              <div class="feature-grid four">
+                <div class="feature"><div class="icon teal"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 6 0 3 3 0 0 0 2-5 3 3 0 0 0-2-5 3 3 0 0 0-3-3Z"/><path d="M12 6v12"/></svg></div><h3>A memory of all your work</h3><p>Every signal across your M365 footprint — WorkIQ, Graph, your Sent mail, private Teams — distilled into one sourced, communications-grade memory you own. Nothing scraped; gaps marked <code>[TBD]</code>, never invented.</p></div>
+                <div class="feature"><div class="icon blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="8"/><rect x="12" y="6" width="3" height="12"/><rect x="17" y="13" width="3" height="5"/></svg></div><h3>An ontology proven at LT</h3><p>The 36-type memory is distilled from <strong>84 real Product Day &amp; LT review decks</strong> (3,369 slides, FY24–FY27) — the structure leadership already reviews against, so your story lands at altitude.</p></div>
+                <div class="feature"><div class="icon violet"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></div><h3>100 PM frameworks built in</h3><p>A silent substance pass distilled from <strong>100 PM methods</strong> — RICE, JTBD, pre-mortem — makes the content <em>right</em> before pretty: the evidence a sharp audience expects.</p></div>
+                <div class="feature"><div class="icon amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="13" rx="2"/><path d="M8 21h8"/><path d="M12 16v5"/><path d="m7 11 2.5-2.5L12 11l3-3"/></svg></div><h3>Presentation-grade visuals</h3><p>Every output ships on a <strong>14-theme · 18-layout</strong> anti-slop 16:9 engine — board-ready decks with one accent, real data, exec craft. No clip-art, no slop.</p></div>
+              </div>
+            </div>
+
+            <div class="block">
+              <h3 class="block-title">Start here</h3>
+              <div class="feature-grid">
+                <a class="feature" href="#jobs" data-goto="#jobs"><div class="icon teal"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><h3>1 · Learn the five jobs</h3><p>Compose · draft · rewrite · adapt · review — the whole lifecycle of a PM communication on one shared memory.</p></a>
+                <a class="feature" href="#setup" data-goto="#setup"><div class="icon violet"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l6-6-6-6"/><path d="M12 19h8"/></svg></div><h3>2 · Build your memory</h3><p>Run <code>doctor</code>, then <code>build-memory</code> — and you're grounding communications in minutes.</p></a>
+                <a class="feature" href="storytelling-studio.html"><div class="icon amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M3 9h18M8 21h8"/></svg></div><h3>3 · Open the Studio</h3><p>Pick a scenario, get a grounded, copy-ready prompt, and compose a presentation-grade HTML deck.</p></a>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel" id="panel-how">
+            <div class="phead">
+              <p class="eyebrow">The mechanism</p>
+              <h2>How it works — reason first, then tell</h2>
+              <p>Composition is <strong>assembly, not authoring</strong>. The partner runs a six-step flow that grounds a topic in your memory, reasons with the product-management method that fits the decision, locks one narrative spine, assembles many grounded atoms, crafts the output to an executive bar, and checks its own work.</p>
+            </div>
+            <div class="block">
+              <h3 class="block-title">The six-step compose flow</h3>
+              <div class="steps">
+                <div class="step"><div class="sn">1</div><div class="sb"><h4>Ground</h4><p><code>recall --assemble</code> pulls the topic's atoms and expands the top match through the typed-edge graph. If memory is thin, it auto-runs a topic harvest (announced) before composing.</p></div></div>
+                <div class="step"><div class="sn">2</div><div class="sb"><h4>Reason with the PM lens <span class="lensbadge">silent substance pass</span></h4><p>Apply the product-management method that fits the decision the story carries — RICE to defend a priority, JTBD to prove demand, a pre-mortem for risk — to <em>author and pressure-test the evidence</em>. The framework is never named in the output.</p></div></div>
+                <div class="step"><div class="sn">3</div><div class="sb"><h4>Frame</h4><p>Lock exactly one narrative spine — Minto Pyramid, Working Backwards, StoryBrand, Pixar ABT, Golden Circle — and declare which beat each atom fills. One spine, never blended.</p></div></div>
+                <div class="step"><div class="sn">4</div><div class="sb"><h4>Assemble</h4><p>Bind each beat to its grounded atoms: numbers from <code>metric</code>&nbsp;/&nbsp;<code>proof_point</code>, voice from <code>quote</code>, spine from <code>message</code>&nbsp;/&nbsp;<code>narrative</code>, dates from <code>milestone</code>&nbsp;/&nbsp;<code>release</code>. Missing facts become <code>[TBD]</code>.</p></div></div>
+                <div class="step"><div class="sn">5</div><div class="sb"><h4>Craft</h4><p>The always-on <code>presentation-craft</code> engine renders the output to an executive bar — <strong>PRESENT</strong> (a self-contained 16:9 HTML deck) or <strong>WRITE</strong> (a narrative or document).</p></div></div>
+                <div class="step"><div class="sn">6</div><div class="sb"><h4>Check</h4><p>Report <strong>Proof used</strong>, <strong>Open <code>[TBD]</code></strong>, and any sensitivity to screen — so you always know what's grounded and what still needs a fact.</p></div></div>
+              </div>
+              <div class="note">
+                <span class="ni"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6"/><path d="m4.22 4.22 4.24 4.24m7.08 7.08 4.24 4.24"/><path d="M1 12h6m6 0h6"/></svg></span>
+                <p><strong>Silent · selective · grounded.</strong> The method's <em>thinking</em> is applied, never its <em>label</em>; simple pieces skip the substance pass; and a lens only structures analysis of real atoms — where a number is missing it becomes <code>[TBD]</code>, never invented.</p>
+              </div>
+            </div>
+            <div class="block">
+              <h3 class="block-title">Signal → memory → story</h3>
+              <p class="block-sub">The same lifecycle, end to end — from raw M365 signal to a grounded, sourced artifact saved to <code>PersonalSecondBrain/output/</code>.</p>
+              <div class="pipeline">
+                <div class="pstep"><div class="pn">A · HARVEST</div><h4>Signals</h4><p>WorkIQ + Graph + Teams stream onto one local <code>.signals</code> bus.</p></div>
+                <div class="pstep"><div class="pn">B · REMEMBER</div><h4>Memory</h4><p>Typed entities + a derived edge graph in plain Markdown you own.</p></div>
+                <div class="pstep"><div class="pn">C · REASON</div><h4>Substance</h4><p>A PM lens authors and pressure-tests the evidence.</p></div>
+                <div class="pstep"><div class="pn">D · TELL</div><h4>Story</h4><p>A grounded deck or document on the executive craft bar.</p></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel" id="panel-jobs">
+            <div class="phead">
+              <p class="eyebrow">Capabilities · the five verbs</p>
+              <h2>Five jobs, one grounded memory</h2>
+              <p>The communication partner runs the whole lifecycle of a PM communication on the same sourced memory. <strong>Compose</strong> is the flagship (the host LLM, via the Studio); <strong>draft · rewrite · adapt · review</strong> are zero-dependency CLI verbs you run and relay. Every job grounds numbers in <code>metric</code>&nbsp;/&nbsp;<code>proof_point</code>, voice in <code>quote</code>, spine in <code>message</code>, and marks gaps <code>[TBD]</code>.</p>
+            </div>
+            <div class="feature-grid">
+              <div class="feature flag"><div class="icon amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="13" rx="2"/><path d="M8 21h8"/><path d="M12 16v5"/><path d="m7 11 2.5-2.5L12 11l3-3"/></svg></div><h3>Compose <span class="flagpill">flagship</span></h3><p>A topic becomes a presentation-grade story or self-contained 16:9 HTML deck, via a chosen narrative framework + executive craft. <a href="storytelling-studio.html">Open the Studio ↗</a></p><div class="sig"><strong>Surface</strong> · host-LLM via the Storytelling Studio</div></div>
+              <div class="feature"><div class="icon teal"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 14h6"/><path d="M9 18h4"/></svg></div><h3>Draft <code>write</code></h3><p>A topic becomes a first document, grounded in memory: <code>prd · blog · mc · newsletter · faq · memo · email · one-pager · report · digest</code>.</p><div class="sig"><strong>CLI</strong> · <code>write &lt;type&gt; "&lt;topic&gt;"</code></div></div>
+              <div class="feature"><div class="icon violet"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div><h3>Rewrite <code>rewrite</code></h3><p>An artifact + a <code>--goal</code> becomes a revised version: tighten · re-tone · re-target · BLUF · convert · de-AI. Format-preserving, re-grounded.</p><div class="sig"><strong>CLI</strong> · <code>rewrite &lt;file&gt; --goal "…"</code></div></div>
+              <div class="feature"><div class="icon blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div><h3>Adapt <code>adapt</code></h3><p>One artifact becomes N audience-tuned variants in one run — <code>--to "memo:CVP, email:field, faq:customers"</code>. Each re-grounded per audience.</p><div class="sig"><strong>CLI</strong> · <code>adapt &lt;file&gt; --to "…"</code></div></div>
+              <div class="feature"><div class="icon green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><h3>Review <code>review</code></h3><p>A draft becomes a five-persona critique (Exec · Customer · PM peer · Comms · Devil's Advocate) + ranked top fixes. Read-only — apply with <code>rewrite</code>.</p><div class="sig"><strong>CLI</strong> · <code>review &lt;file&gt;</code> (read-only)</div></div>
+              <div class="feature"><div class="icon teal"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div><h3>Recall <code>recall</code></h3><p>Query memory by person, project, topic, message, audience, or proof point. Add <code>--assemble</code> to expand the top match through the typed-edge graph.</p><div class="sig"><strong>CLI</strong> · <code>recall "&lt;topic&gt;" --assemble</code></div></div>
+            </div>
+            <div class="note"><span class="ni"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><p><strong>Same memory, same guarantees.</strong> All five jobs read the one grounded ontology — so a deck, a memo, and a customer FAQ on the same topic stay consistent, sourced, and honest about gaps. Every output saves to <code>PersonalSecondBrain/output/</code>.</p></div>
+          </section>
+
+          <section class="panel" id="panel-harvest">
+            <div class="phead">
+              <p class="eyebrow">Capabilities · pillar 01</p>
+              <h2>Harvest &amp; sources</h2>
+              <p>The partner fans out across your own Microsoft 365 footprint and caches every raw signal locally. Three classes of source flow onto one <code>memory/.signals/</code> bus, and a durable four-stage pipeline turns them into memory.</p>
+            </div>
+            <div class="block">
+              <h3 class="block-title">Three signal sources</h3>
+              <div class="source-grid">
+                <div class="source"><div class="tag">In-process</div><h4>WorkIQ signals</h4><ul><li><code>personal_email</code> (incl. Sent)</li><li><code>personal_teams_chat</code></li><li><code>personal_meeting_notes</code></li><li><code>personal_sharepoint</code></li></ul><div class="meta">Via GitHub Copilot CLI + WorkIQ MCP.</div></div>
+                <div class="source"><div class="tag">Graph precision</div><h4>WAM broker (Windows)</h4><ul><li>Exact file metadata</li><li>Sent + Inbox → <code>graph_email</code> (Sent first)</li><li>Calendar → <code>graph_calendar</code></li><li>People / org enrichment</li></ul><div class="meta">Optional. Onboard with <code>graph-onboard</code>.</div></div>
+                <div class="source"><div class="tag">Required path</div><h4>Teams chat</h4><ul><li>Private 1:1 &amp; small-group chat</li><li><code>teams-indexeddb-chat</code></li><li><code>teams-read-chat-message</code></li><li>Planner / To&nbsp;Do producers</li></ul><div class="meta">Harvested <strong>every build</strong> via a browser MCP (Chrome DevTools / Playwright); <code>doctor</code> hard-gates it.</div></div>
+              </div>
+              <div class="note"><span class="ni"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span><p><strong>Your Sent mail is a first-class source of truth.</strong> <code>mail</code> harvests both Sent + Inbox (Sent first); your sent items are treated as your own first-person voice — authoritative for the commitments, decisions, and positions you've stated.</p></div>
+            </div>
+            <div class="block">
+              <h3 class="block-title">The build pipeline <span class="tagn">build-memory</span></h3>
+              <p class="block-sub">The core of <code>build-memory</code> is a four-stage pipeline. Each stage persists on its own, so a late failure never loses earlier work — recover with <code>build-memory --from-cache</code>.</p>
+              <div class="pipeline">
+                <div class="pstep"><div class="pn">01 · HARVEST</div><h4>Harvest</h4><p>Pull WorkIQ signals plus file / mail / calendar / Teams activity into the local <code>.signals</code> cache.</p></div>
+                <div class="pstep"><div class="pn">02 · EXTRACT</div><h4>Extract</h4><p>One local LLM pass turns raw signals into typed entities, prioritizing ingested <code>src-*</code> imports.</p></div>
+                <div class="pstep"><div class="pn">03 · UPSERT</div><h4>Upsert</h4><p>Deterministic, idempotent merge into Markdown entity files — array union, document dedupe, Graph metadata wins.</p></div>
+                <div class="pstep"><div class="pn">04 · INDEX</div><h4>Index</h4><p>Rebuild per-collection <code>INDEX.md</code>, the global <code>MEMORY.md</code> hot cache, and <code>edges/INDEX.md</code>.</p></div>
+              </div>
+            </div>
+            <div class="block">
+              <h3 class="block-title">Targeted topic harvest <span class="tagn">--topic</span></h3>
+              <p class="block-sub"><code>build-memory --topic "&lt;text&gt;" [--days 180]</code> gathers signals <em>about a topic</em> like <code>recall</code> — WorkIQ + Graph <code>$search</code> (mail/files) + Teams, ranked by relevance, not recency. The compose/draft flow auto-runs it (announced) when <code>recall</code> is thin.</p>
+            </div>
+          </section>
+
+          <section class="panel" id="panel-memory">
+            <div class="phead">
+              <p class="eyebrow">Capabilities · pillar 02</p>
+              <h2>Memory &amp; ontology</h2>
+              <p>Memory lives as local Markdown + YAML frontmatter under <code>PersonalSecondBrain/memory/</code> — plain files you own and can hand-edit. The <strong>36-type, 5-layer ontology</strong> turns raw work signals into reusable PM building blocks, joined by a derived typed-edge graph.</p>
+            </div>
+            <div class="block">
+              <h3 class="block-title">36 types in 5 layers</h3>
+              <div class="layerblock"><div class="lh"><h4>Operational core</h4><span class="lc">10 types · what's happening &amp; who owns it</span></div><div class="types"><span class="type">person</span><span class="type">project</span><span class="type">customer</span><span class="type">feedback</span><span class="type">decision</span><span class="type">meeting</span><span class="type">risk</span><span class="type">insight</span><span class="type">commitment</span><span class="type">document</span></div></div>
+              <div class="layerblock"><div class="lh"><h4>Strategy &amp; outcomes</h4><span class="lc">6 types · what the work ladders to</span></div><div class="types"><span class="type">goal</span><span class="type">metric</span><span class="type">milestone</span><span class="type">release</span><span class="type">competitor</span><span class="type">initiative</span></div></div>
+              <div class="layerblock"><div class="lh"><h4>Communication &amp; narrative</h4><span class="lc">11 types · the reusable atoms of persuasion</span></div><div class="types"><span class="type">message</span><span class="type">proof_point</span><span class="type">narrative</span><span class="type">quote</span><span class="type">theme</span><span class="type">audience</span><span class="type">objection</span><span class="type">artifact</span><span class="type">engagement</span><span class="type">playbook</span><span class="type">reference</span></div></div>
+              <div class="layerblock"><div class="lh"><h4>Operating model</h4><span class="lc">6 types · the review &amp; decision backbone</span></div><div class="types"><span class="type">key_result</span><span class="type">funding_decision</span><span class="type">investment_area</span><span class="type">open_question</span><span class="type">dependency</span><span class="type">readiness_gate</span></div></div>
+              <div class="layerblock"><div class="lh"><h4>Scenario &amp; journey</h4><span class="lc">3 types · the deck-archetype atoms</span></div><div class="types"><span class="type">scenario_context</span><span class="type">journey_arc</span><span class="type">customer_zero_signal</span></div></div>
+              <div class="layerblock"><div class="lh"><h4>Provenance &amp; sensitivity</h4><span class="lc">cross-cutting · on every atom</span></div><div class="types"><span class="type prov">sources[]</span><span class="type prov">as_of</span><span class="type prov">confidence</span><span class="type prov">sensitivity</span></div></div>
+            </div>
+            <div class="block">
+              <h3 class="block-title">How the memory thinks</h3>
+              <div class="entity-grid">
+                <div class="ent"><span class="dot"></span><div><h4>Typed-edge graph</h4><p>Frontmatter links become relationships — <code>proof_point —supports→ message</code>, <code>quote —voices→ narrative</code> — so atoms can be <em>joined</em>, not just listed.</p><div class="fields">memory/edges/INDEX.md</div></div></div>
+                <div class="ent"><span class="dot"></span><div><h4>Assembly recall</h4><p><code>recall --assemble</code> expands a topic into its connected messages, proof, audiences, quotes, risks, and commitments — from a lookup into a reusable context graph.</p><div class="fields">one topic → dozens of atoms</div></div></div>
+                <div class="ent"><span class="dot"></span><div><h4>Provenance rail</h4><p>Every entity carries <code>sources</code>, <code>confidence</code>, <code>as_of</code>, and a <code>sensitivity</code> tag, so the agent can avoid stale claims and flag what to screen.</p><div class="fields">grounded by design</div></div></div>
+                <div class="ent"><span class="dot"></span><div><h4>Yours to edit</h4><p>Plain Markdown with a preserved human <code>## Notes</code> area safe to hand-edit. Upsert is idempotent, so a re-build never clobbers your notes.</p><div class="fields">PersonalSecondBrain/memory/</div></div></div>
+              </div>
+              <div class="note"><span class="ni"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><p><strong>Sensitivity is an informational label.</strong> Every atom is tagged (<code>public → customer-nda</code>); when you compose for an external audience the agent <em>flags</em> the confidential / customer-NDA atoms it used so you can screen them before sharing. You stay in control of what leaves the room.</p></div>
+            </div>
+          </section>
+
+          <section class="panel" id="panel-substance">
+            <div class="phead">
+              <p class="eyebrow">Capabilities · the substance layer</p>
+              <h2>Substance — 100 PM frameworks behind every story</h2>
+              <p>A good skeleton isn't enough — a story has to say the <strong>right, well-reasoned things</strong>. Between grounding and storytelling, the partner runs a silent <strong>substance pass</strong>: it reasons with the product-management method that fits the decision, to <em>author and pressure-test the evidence</em> before a single slide is shaped. Distilled into <strong>7 runnable lenses</strong>. <em>Reason first, then tell.</em></p>
+            </div>
+            <div class="factbar">
+              <div class="fact"><b>100</b><span>PM frameworks</span></div>
+              <div class="fact"><b>7</b><span>silent lenses</span></div>
+              <div class="fact"><b>7</b><span>PM disciplines</span></div>
+              <div class="fact"><b>Step&nbsp;2</b><span>of the compose flow</span></div>
+              <div class="fact"><b>0</b><span>named in the output</span></div>
+            </div>
+            <div class="block">
+              <h3 class="block-title">Pick the lens that fits the decision <span class="tagn">situation → lens → evidence</span></h3>
+              <p class="block-sub">One or two lenses per story — the ones that match the call it makes. Each turns the atoms you recalled into the evidence a sharp audience expects.</p>
+              <div class="feature-grid">
+                <div class="feature"><div class="icon amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><h3>Prove demand</h3><p>JTBD · Value-Prop Canvas · Kano — name the job, the pains, the switching trigger.</p><div class="sig"><strong>Produces</strong> · requirement · message · proof_point</div></div>
+                <div class="feature"><div class="icon teal"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="8"/><rect x="12" y="6" width="3" height="12"/><rect x="17" y="13" width="3" height="5"/></svg></div><h3>Defend a priority</h3><p>RICE · Impact-Effort · MoSCoW — rank reach·impact·confidence·effort and show the cut-line.</p><div class="sig"><strong>Produces</strong> · tradeoff · recommendation</div></div>
+                <div class="feature"><div class="icon blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><h3>Land a metrics story</h3><p>North Star · AARRR · HEART — one headline metric that captures value + its inputs.</p><div class="sig"><strong>Produces</strong> · metric · goal</div></div>
+                <div class="feature"><div class="icon violet"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></div><h3>Frame the strategy</h3><p>Wardley · Blue Ocean · Porter — name the market shift and where the whitespace is.</p><div class="sig"><strong>Produces</strong> · market_signal · theme</div></div>
+                <div class="feature"><div class="icon amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><h3>Be candid about risk</h3><p>Pre-mortem · Theory of Constraints — top failure mode + the one bottleneck, each with a mitigation.</p><div class="sig"><strong>Produces</strong> · risk · dependency</div></div>
+                <div class="feature"><div class="icon green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div><h3>Sharpen the problem</h3><p>SCQA · 5&nbsp;Whys · Iceberg — root cause + the stakes, so the ask lands as an answer.</p><div class="sig"><strong>Produces</strong> · narrative · insight · message</div></div>
+              </div>
+            </div>
+            <div class="block">
+              <h3 class="block-title">Same skeleton, sharper substance <span class="tagn">leverage the method, never name it</span></h3>
+              <div class="feature-grid two">
+                <div class="feature"><div class="icon gray"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div><h3>Without the substance pass</h3><p>“We recommend investing in X. It's strategic, customers want it, and competitors are moving.” <em>Clean — but thin and generic.</em></p></div>
+                <div class="feature"><div class="icon green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><h3>With it — silent</h3><p>“X over Y and Z. ~40% of tenants hit this monthly; removes the #1 trust blocker; +6 pts projected on activation — one sprint, Y and Z fall below the line.” <em>No jargon. Same shape.</em></p></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel" id="panel-craft">
+            <div class="phead">
+              <p class="eyebrow">Capabilities · the delivery engine</p>
+              <h2>Presentation-craft — the always-on engine</h2>
+              <p>Every present/write output passes through <code>presentation-craft</code> — the always-on craft engine, in two modes with the same executive bar. The grammar is mined from <strong>84 FY24–FY27 Product Day &amp; senior-LT review decks</strong> (3,369 slides) plus the leading public storytelling skills. The ontology holds the proof, the PM lens sharpens the analysis, and the craft engine assembles it into a story.</p>
+            </div>
+            <div class="factbar">
+              <div class="fact"><b>84</b><span>Product Day decks</span></div>
+              <div class="fact"><b>3,369</b><span>slides distilled</span></div>
+              <div class="fact"><b>9</b><span>chapter grammar</span></div>
+              <div class="fact"><b>6</b><span>title formulas</span></div>
+              <div class="fact"><b>5</b><span>evidence tiers</span></div>
+              <div class="fact"><b>12</b><span>readiness dims</span></div>
+            </div>
+            <div class="block">
+              <h3 class="block-title">Two modes, one bar</h3>
+              <div class="feature-grid two">
+                <div class="feature"><div class="icon teal"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="13" rx="2"/><path d="M8 21h8"/><path d="M12 16v5"/><path d="m7 11 2.5-2.5L12 11l3-3"/></svg></div><h3>PRESENT <code>16:9 HTML deck</code></h3><p>A self-contained deck — the 9-chapter exec-review grammar, assertion titles, the right layout per slide on the anti-slop deck kit.</p><div class="sig"><strong>Output</strong> · self-contained .html → PDF / PPTX</div></div>
+                <div class="feature"><div class="icon violet"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 14h6"/><path d="M9 18h4"/></svg></div><h3>WRITE <code>narrative · doc</code></h3><p>A presentation-grade written narrative or executive document — BLUF, force-ranked, decisions visible, written for scanners.</p><div class="sig"><strong>Output</strong> · exec narrative · brief · memo · one-pager</div></div>
+              </div>
+            </div>
+            <div class="block">
+              <h3 class="block-title">The craft bar <span class="tagn">every output</span></h3>
+              <div class="feature-grid">
+                <div class="feature"><div class="icon amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></div><h3>Answer-first (BLUF)</h3><p>Lead with the conclusion and the ask; the audience knows it by slide 2–3 and again at the close.</p></div>
+                <div class="feature"><div class="icon teal"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg></div><h3>Slide = assertion</h3><p>Every title states a claim — “Adoption is up 62%, expand the wedge,” not “Adoption metrics.”</p></div>
+                <div class="feature"><div class="icon blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="8"/><rect x="12" y="6" width="3" height="12"/><rect x="17" y="13" width="3" height="5"/></svg></div><h3>Evidence tiers</h3><p>Privilege Tier 1–2 proof — baseline · current · target · trend · as-of; weaker claims labeled judgment.</p></div>
+                <div class="feature"><div class="icon green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><h3>One ask · fund vs. cut</h3><p>Exactly one decision; pair every investment with what is <em>not</em> funded, every risk with a mitigation + owner.</p></div>
+                <div class="feature"><div class="icon violet"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg></div><h3>One spine, never blended</h3><p>Minto, Golden Circle, StoryBrand, Pixar ABT, Hero's Journey, Working Backwards — pick exactly one.</p></div>
+                <div class="feature"><div class="icon amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 7v6c0 5 3.5 7.5 8 9 4.5-1.5 8-4 8-9V7Z"/><path d="m9 12 2 2 4-4"/></svg></div><h3>Anti-AI-slop</h3><p>One accent, real data, the theme's signature layout — no clip-art, no lorem, no reused generic slide.</p></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel" id="panel-studio">
+            <div class="phead">
+              <p class="eyebrow">Storytelling Studio</p>
+              <h2>The PM Storytelling Studio</h2>
+              <p>A <strong>memory-grounded storytelling studio</strong>. Pick a communication scenario and the agent routes it to the right narrative framework, grounds it in your 36-type ontology atoms, and emits a copy-ready prompt for the composer — which produces a self-contained, presentation-grade <strong>HTML deck</strong> (or Markdown).</p>
+            </div>
+            <a class="board-cta" href="storytelling-studio.html">
+              <div><div class="eyebrow2">Local · interactive</div><h3>Open the PM Storytelling Studio →</h3><p>30 scenarios · 12 narrative frameworks · 100 PM-framework lenses · live grounded-prompt builder</p></div>
+              <svg class="arr" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="13" rx="2"/><path d="M8 21h8"/><path d="M12 16v5"/><path d="m7 11 2.5-2.5L12 11l3-3"/></svg>
+            </a>
+            <div class="feature-grid" style="margin-top: 14px;">
+              <div class="feature"><div class="icon teal"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M3 9h18"/><path d="M8 21h8"/></svg></div><h3>30 scenarios</h3><p>Vision narratives, exec summaries, QBRs, board decks, customer EBRs, launches, analyst briefings, all-hands — each routed to the right skill, audience, and framework.</p><div class="sig"><strong>9 categories</strong> · Executive · Customer · Partner · Field · Team</div></div>
+              <div class="feature"><div class="icon violet"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg></div><h3>12 narrative frameworks</h3><p>Minto Pyramid, Working Backwards, StoryBrand, Pixar spine, Promised Land, SCQA, STAR, Message House — one spine per story.</p><div class="sig"><strong>Beat → atom map</strong> · each beat binds to grounding atoms</div></div>
+              <div class="feature"><div class="icon blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><circle cx="11" cy="11" r="3"/><path d="m21 21-4.3-4.3"/></svg></div><h3>100 PM-framework lenses</h3><p>RICE, JTBD, North Star, Kano, Wardley, pre-mortem — the analysis engines that <em>author missing evidence</em>.</p><div class="sig"><strong>7 disciplines</strong> · insight · framing · ideation · validation · growth</div></div>
+              <div class="feature"><div class="icon green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg></div><h3>3 author personas</h3><p>PM, Director of PM, VP of PM — each sets the altitude, what you can claim, and a default sensitivity ceiling.</p><div class="sig"><strong>Altitude</strong> · voice + clearance per author</div></div>
+              <div class="feature"><div class="icon amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M22 11h-6"/><path d="M19 8v6"/></svg></div><h3>12 audiences</h3><p>Board, CEO, exec LT, customers, partners, field, analysts, talent, end users — same facts re-tuned to each “so what.”</p><div class="sig"><strong>Audience-first</strong> · re-tune, never duplicate</div></div>
+              <div class="feature"><div class="icon teal"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v4M3 5h4M6 17v4M4 19h4"/><path d="M13 3l2.5 6.5L22 12l-6.5 2.5L13 21l-2.5-6.5L4 12l6.5-2.5z"/></svg></div><h3>Live prompt builder</h3><p>Free-text intent → matched scenario → a copy-ready prompt with slots filled from your atoms (missing → <code>[TBD]</code>) + readiness score.</p><div class="sig"><strong>Intent → deck</strong> · grounded generation flow</div></div>
+            </div>
+          </section>
+
+          <section class="panel" id="panel-deck">
+            <div class="phead">
+              <p class="eyebrow">Storytelling Studio</p>
+              <h2>The HTML presentation kit</h2>
+              <p>Every deck renders on one <strong>fixed-16:9, anti-slop</strong> engine — zero dependencies, keyboard nav, speaker notes, PDF / PPTX export. A theme is a complete design system (palette · type pairing · signature layout); the right layout fits each slide's job. <strong>14 themes · 18 layouts</strong>, gated by a hard always-ask brief so a deck is never silently defaulted.</p>
+            </div>
+            <div class="block">
+              <h3 class="block-title">Before it builds — the 5 questions <span class="tagn">always-ask gate</span></h3>
+              <div class="qsheet">
+                <div class="qrow"><div class="qlabel"><span class="qn">Q1</span>Audience</div><div class="qopts"><span class="qopt">Leadership</span><span class="qopt">Engineering &amp; XFN partners</span><span class="qopt">Field &amp; marketing</span><span class="qopt">Customers</span><span class="qopt">End users</span><span class="qopt">Analysts &amp; talent</span></div></div>
+                <div class="qrow"><div class="qlabel"><span class="qn">Q2</span>Author persona</div><div class="qopts"><span class="qopt">PM</span><span class="qopt">Director of PM</span><span class="qopt">VP of PM</span></div></div>
+                <div class="qrow"><div class="qlabel"><span class="qn">Q3</span>Info density</div><div class="qopts"><span class="qopt">Sparse · ~15–25 wds/slide</span><span class="qopt rec">Balanced · ~25–40</span><span class="qopt">Dense · tables/multi-col, 40+</span></div></div>
+                <div class="qrow"><div class="qlabel"><span class="qn">Q4</span>Style / theme</div><div class="qopts"><span class="qopt">1 of 14 themes (below)</span><span class="qopt">5 light</span><span class="qopt">4 dark</span><span class="qopt">5 specialty</span></div></div>
+                <div class="qrow"><div class="qlabel"><span class="qn">Q5</span>Slides / length</div><div class="qopts"><span class="qopt">Concise · ~7–8</span><span class="qopt rec">Standard · ~10–12</span><span class="qopt">Comprehensive · ~14–16</span><span class="qopt">exact number</span></div></div>
+              </div>
+            </div>
+            <div class="block">
+              <h3 class="block-title">14 themes <span class="tagn">5 light · 4 dark · 5 specialty</span></h3>
+              <div class="swatch-grid">
+                <div class="swatch"><div class="pal"><span style="background:#ffffff"></span><span style="background:#1f2937"></span><span style="background:#2563eb"></span></div><div class="swmeta"><h5>Executive Clean</h5><p>Crisp, board-ready</p></div></div>
+                <div class="swatch"><div class="pal"><span style="background:#ffffff"></span><span style="background:#111111"></span><span style="background:#e4002b"></span></div><div class="swmeta"><h5>Swiss Signal</h5><p>Grid-driven, bold</p></div></div>
+                <div class="swatch"><div class="pal"><span style="background:#faf6ef"></span><span style="background:#2b2b2b"></span><span style="background:#9b2d20"></span></div><div class="swmeta"><h5>Editorial Serif</h5><p>Magazine, literary</p></div></div>
+                <div class="swatch"><div class="pal"><span style="background:#ffffff"></span><span style="background:#0b2a4a"></span><span style="background:#1f6feb"></span></div><div class="swmeta"><h5>Consulting Blue</h5><p>Trusted, analytical</p></div></div>
+                <div class="swatch"><div class="pal"><span style="background:#f7f3ee"></span><span style="background:#2f2f2f"></span><span style="background:#e0794a"></span></div><div class="swmeta"><h5>Warm Paper</h5><p>Human, approachable</p></div></div>
+                <div class="swatch"><div class="pal"><span style="background:#0c0c0e"></span><span style="background:#f5f5f5"></span><span style="background:#c9a227"></span></div><div class="swmeta"><h5>Keynote Noir</h5><p>Stage-lit, premium</p></div></div>
+                <div class="swatch"><div class="pal"><span style="background:#0b1733"></span><span style="background:#eef2fb"></span><span style="background:#d8a657"></span></div><div class="swmeta"><h5>Midnight Editorial</h5><p>Deep navy, gold</p></div></div>
+                <div class="swatch"><div class="pal"><span style="background:#0a1020"></span><span style="background:#d7e6ff"></span><span style="background:#34d0d6"></span></div><div class="swmeta"><h5>Tech Glass</h5><p>Product, glassy</p></div></div>
+                <div class="swatch"><div class="pal"><span style="background:#0a0e0a"></span><span style="background:#c8f7c5"></span><span style="background:#36d399"></span></div><div class="swmeta"><h5>Terminal Mono</h5><p>Dev, monospace</p></div></div>
+                <div class="swatch"><div class="pal"><span style="background:#ffffff"></span><span style="background:#1b1a19"></span><span style="background:#0f6cbd"></span></div><div class="swmeta"><h5>Product Brand</h5><p>Microsoft Fluent</p></div></div>
+                <div class="swatch"><div class="pal"><span style="background:#0e3a5f"></span><span style="background:#dbeafe"></span><span style="background:#7cc4ff"></span></div><div class="swmeta"><h5>Blueprint</h5><p>Schematic, technical</p></div></div>
+                <div class="swatch"><div class="pal"><span style="background:#ffffff"></span><span style="background:#111111"></span><span style="background:#8a8a8a"></span></div><div class="swmeta"><h5>Minimal Mono</h5><p>Quiet, restrained</p></div></div>
+                <div class="swatch"><div class="pal"><span style="background:#fbf7f4"></span><span style="background:#3a3a3a"></span><span style="background:#b08968"></span></div><div class="swmeta"><h5>Soft Editorial</h5><p>Gentle, warm</p></div></div>
+                <div class="swatch"><div class="pal"><span style="background:#fde047"></span><span style="background:#18181b"></span><span style="background:#db2777"></span></div><div class="swmeta"><h5>Bold Poster</h5><p>High-impact, loud</p></div></div>
+              </div>
+            </div>
+            <div class="block">
+              <h3 class="block-title">18 slide layouts <span class="tagn">one per slide's job</span></h3>
+              <div class="chips">
+                <span class="chip">cover</span><span class="chip">section</span><span class="chip">statement</span><span class="chip">big-number</span><span class="chip">bullets</span><span class="chip">two-col</span><span class="chip">image-left</span><span class="chip">image-right</span><span class="chip">image-full</span><span class="chip">quote</span><span class="chip">comparison</span><span class="chip">kpi-grid</span><span class="chip">timeline</span><span class="chip">process</span><span class="chip">table</span><span class="chip">matrix</span><span class="chip">bento</span><span class="chip">CTA</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel" id="panel-cli">
+            <div class="phead">
+              <p class="eyebrow">Reference</p>
+              <h2>CLI commands — every capability, one surface</h2>
+              <p>One zero-dependency Node CLI — <code>node skill/scripts/cli.mjs &lt;command&gt;</code> — exposes the whole agent in three groups: <strong>Setup</strong>, <strong>Memory</strong>, and <strong>Communicate</strong>. <strong>Compose</strong> is the flagship, host-LLM-driven through the Storytelling Studio.</p>
+            </div>
+            <div class="block">
+              <div class="grouplabel"><span class="gi"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M3 12h2m14 0h2M12 3v2m0 14v2"/></svg></span>Setup — get ready</div>
+              <div class="tablecard"><table><thead><tr><th style="width: 26%">COMMAND</th><th>WHAT IT DOES</th></tr></thead><tbody>
+                <tr><td><code>doctor</code></td><td>Verify the toolchain — Node, Copilot CLI, WorkIQ MCP, Graph broker, the Teams browser MCP, and the memory store.</td></tr>
+                <tr><td><code>sources</code></td><td>List the configured signal sources and producer paths.</td></tr>
+                <tr><td><code>graph-onboard</code></td><td>One-time consent for the optional Microsoft Graph WAM broker (exact files / mail / calendar / people).</td></tr>
+              </tbody></table></div>
+            </div>
+            <div class="block">
+              <div class="grouplabel"><span class="gi"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/></svg></span>Memory — build &amp; recall</div>
+              <div class="tablecard"><table><thead><tr><th style="width: 26%">COMMAND</th><th>WHAT IT DOES</th></tr></thead><tbody>
+                <tr><td><code>build-memory</code></td><td>The full <strong>Harvest → Extract → Upsert → Index</strong> build (<code>--days N</code> · <code>--topic "…"</code> · <code>--from-cache</code>).</td></tr>
+                <tr><td><code>harvest</code></td><td>Fan out across WorkIQ + Graph + Teams into the local <code>.signals</code> cache (no extract).</td></tr>
+                <tr><td><code>mail</code></td><td>Harvest <strong>Sent + Inbox</strong> mail via Graph — Sent first, your authoritative first-person voice.</td></tr>
+                <tr><td><code>files</code> · <code>calendar</code> · <code>enrich</code></td><td>Graph precision for SharePoint / OneDrive, calendar events, and people / org enrichment.</td></tr>
+                <tr><td><code>ingest</code></td><td>Land an external producer JSON export (e.g. a Teams chat capture) onto the signal bus.</td></tr>
+                <tr><td><code>recall</code></td><td>Ranked recall by person / project / topic / atom; add <code>--assemble</code> to expand the typed-edge graph.</td></tr>
+                <tr><td><code>memory-status</code> · <code>person</code> · <code>project</code></td><td>Per-type counts &amp; staleness, plus quick single-person / single-project dossiers.</td></tr>
+              </tbody></table></div>
+            </div>
+            <div class="block">
+              <div class="grouplabel"><span class="gi"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>Communicate — the five jobs</div>
+              <div class="tablecard"><table><thead><tr><th style="width: 26%">JOB</th><th>WHAT IT DOES</th></tr></thead><tbody>
+                <tr><td><code>compose</code> · <strong>flagship</strong></td><td>Topic → a grounded story or self-contained 16:9 HTML deck (host-LLM via the Studio + <code>presentation-craft</code>).</td></tr>
+                <tr><td><code>write</code></td><td>Draft a document — <code>prd · blog · mc · newsletter · faq · memo · email · one-pager · report · digest</code>.</td></tr>
+                <tr><td><code>rewrite</code></td><td>Revise an artifact toward a <code>--goal</code> (tighten · re-tone · re-target · BLUF · convert · de-AI).</td></tr>
+                <tr><td><code>adapt</code></td><td>One artifact → N audience-tuned variants — <code>--to "memo:CVP, email:field, faq:customers"</code>.</td></tr>
+                <tr><td><code>review</code></td><td>Five-persona critique (Exec · Customer · PM peer · Comms · Devil's Advocate) + ranked fixes (read-only).</td></tr>
+              </tbody></table></div>
+            </div>
+          </section>
+
+          <section class="panel" id="panel-triggers">
+            <div class="phead">
+              <p class="eyebrow">Reference</p>
+              <h2>Popular triggers</h2>
+              <p>Say it in plain language in a Copilot session with the skill installed — here's what each phrase kicks off.</p>
+            </div>
+            <div class="tablecard"><table><thead><tr><th style="width: 44%">SAY THIS</th><th>WHAT HAPPENS</th></tr></thead><tbody>
+              <tr><td><code>build my memory</code> / <code>build-memory --days 14</code></td><td>Runs the Harvest → Extract → Upsert → Index build over your recent M365 signals.</td></tr>
+              <tr><td><code>recall &lt;X&gt; --assemble</code></td><td>Expands the top match: connected messages, proof points, audiences, quotes, and commitments.</td></tr>
+              <tr><td><code>write an exec summary of &lt;X&gt; as a deck</code></td><td>Compose — a Minto / BLUF exec summary, grounded in memory, as a self-contained HTML deck.</td></tr>
+              <tr><td><code>press release for &lt;X&gt;</code></td><td>Compose — an Amazon Working-Backwards narrative with a leader + customer quote.</td></tr>
+              <tr><td><code>tell the customer story for &lt;X&gt;</code></td><td>Compose — a StoryBrand customer narrative; explore all scenarios in the <a href="storytelling-studio.html">Studio</a>.</td></tr>
+              <tr><td><code>draft a memo / exec email / FAQ for &lt;X&gt;</code></td><td><code>write</code> — a grounded document; gaps marked <code>[TBD]</code>.</td></tr>
+              <tr><td><code>rewrite this for a CVP</code></td><td><code>rewrite &lt;file&gt; --goal "…"</code> — revises an artifact, re-grounded, format preserved.</td></tr>
+              <tr><td><code>adapt this deck into a memo, email &amp; FAQ</code></td><td><code>adapt &lt;file&gt; --to "memo:CVP, email:field, faq:customers"</code> — one source → N variants.</td></tr>
+              <tr><td><code>review this draft before I send it</code></td><td><code>review &lt;file&gt;</code> — a five-persona critique + ranked top fixes (read-only).</td></tr>
+              <tr><td><code>is my setup healthy</code></td><td><code>doctor</code> — checks Node, Copilot CLI, WorkIQ MCP, Graph broker, the Teams MCP, and the store.</td></tr>
+            </tbody></table></div>
+          </section>
+
+          <section class="panel" id="panel-setup">
+            <div class="phead">
+              <p class="eyebrow">Reference</p>
+              <h2>Setup &amp; quickstart</h2>
+              <p>Minimal — no <code>npm install</code>, no virtualenv, no API keys, no <code>.env</code>. One required toolchain, one optional precision upgrade. Ships as a single, self-contained Copilot CLI skill.</p>
+            </div>
+            <div class="block">
+              <h3 class="block-title">Prerequisites</h3>
+              <div class="tablecard"><table><thead><tr><th>Requirement</th><th>Why</th><th>Notes</th></tr></thead><tbody>
+                <tr><td><code>Node.js ≥ 18</code></td><td>Communication Partner runtime</td><td>Zero npm dependencies</td></tr>
+                <tr><td>GitHub Copilot CLI + WorkIQ MCP</td><td>Signal harvesting + local LLM extract</td><td><strong>Required.</strong> <code>cli.mjs doctor</code> verifies</td></tr>
+                <tr><td>Browser MCP — Chrome DevTools <em>or</em> Playwright</td><td>The required Teams-chat harvest path</td><td><strong>Required for Teams.</strong> <code>doctor</code> hard-gates it</td></tr>
+                <tr><td>Microsoft Graph (WAM broker)</td><td>Exact files / mail / calendar / people</td><td>Optional, Windows — <code>graph-onboard</code></td></tr>
+              </tbody></table></div>
+            </div>
+            <div class="block">
+              <h3 class="block-title">Quickstart</h3>
+              <p class="codecap">From the agent folder (<code>agents/communication-partner</code>):</p>
+              <pre><span class="c"># verify the toolchain, then build memory</span>
+node skill/scripts/cli.mjs doctor
+node skill/scripts/cli.mjs build-memory <span class="p">--days 14</span>
+node skill/scripts/cli.mjs recall <span class="p">"&lt;topic&gt;" --assemble</span></pre>
+              <p class="codecap">Then run any communication job:</p>
+              <pre>node skill/scripts/cli.mjs write memo <span class="p">"&lt;topic&gt;"</span>
+node skill/scripts/cli.mjs rewrite <span class="p">&lt;file&gt; --goal "tighten + BLUF for a CVP"</span>
+node skill/scripts/cli.mjs adapt <span class="p">&lt;file&gt; --to "memo:CVP, email:field"</span>
+node skill/scripts/cli.mjs review <span class="p">&lt;file&gt;</span></pre>
+            </div>
+            <div class="block">
+              <h3 class="block-title">Ships as a Copilot CLI skill</h3>
+              <div class="bundle">
+                <div class="bcard"><div class="role">Skill</div><h4>communication-partner</h4><p>The partner the host LLM follows — clarify · ground · compose / draft / rewrite / adapt / review.</p></div>
+                <div class="bcard"><div class="role">Craft engine</div><h4>presentation-craft</h4><p>Always-on craft engine — PRESENT (16:9 HTML deck) &amp; WRITE (narrative / doc).</p></div>
+                <div class="bcard"><div class="role">Composer</div><h4>peer-storytelling</h4><p>The flagship storytelling contract — scenario → framework spine → grounded prompt.</p></div>
+                <div class="bcard"><div class="role">Engine</div><h4>skill/scripts</h4><p>Zero-dep Node CLI — memory + the communication verbs.</p></div>
+                <div class="bcard"><div class="role">Deck kit</div><h4>html-deck-kit</h4><p>Fixed-16:9 anti-slop engine — 18 layouts, 14 themes, PDF / PPTX.</p></div>
+                <div class="bcard"><div class="role">Producers</div><h4>teams-* harvest</h4><p>Browser producers pull private Teams chat into memory every build.</p></div>
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
+      var links = Array.prototype.slice.call(document.querySelectorAll('.nav-link'));
+      var ctxTitle = document.getElementById('ctxTitle');
+      var sidebar = document.getElementById('sidebar');
+      var scrim = document.getElementById('scrim');
+      var content = document.querySelector('.content');
+      var valid = {};
+      panels.forEach(function (p) {
+        valid[p.id.replace('panel-', '')] = true;
+        var inner = document.createElement('div');
+        inner.className = 'panel-inner';
+        while (p.firstChild) inner.appendChild(p.firstChild);
+        p.appendChild(inner);
+      });
+      function fitActive() {
+        var panel = document.querySelector('.panel.active');
+        if (!panel) return;
+        var inner = panel.firstElementChild;
+        if (!inner) return;
+        inner.style.transform = 'none';
+        panel.style.height = 'auto';
+        // Every tab renders at full width and consistent type size; scroll when content is tall.
+        content.classList.toggle('fitcenter', inner.scrollHeight <= content.clientHeight + 1);
+      }
+      function show(id) {
+        if (!valid[id]) id = 'overview';
+        panels.forEach(function (p) { p.classList.toggle('active', p.id === 'panel-' + id); });
+        var active = null;
+        links.forEach(function (a) { var on = a.getAttribute('data-panel') === id; a.classList.toggle('active', on); if (on) active = a; });
+        var title = active ? active.getAttribute('data-title') : 'Overview';
+        ctxTitle.textContent = title;
+        document.title = 'PM Communication Partner — ' + title;
+        closeMenu();
+        if (content) content.scrollTop = 0;
+        requestAnimationFrame(fitActive);
+      }
+      function fromHash() { show((location.hash || '#overview').slice(1)); }
+      function openMenu() { sidebar.classList.add('open'); scrim.classList.add('show'); }
+      function closeMenu() { sidebar.classList.remove('open'); scrim.classList.remove('show'); }
+      window.addEventListener('hashchange', fromHash);
+      document.querySelectorAll('[data-goto]').forEach(function (el) {
+        el.addEventListener('click', function (e) { e.preventDefault(); location.hash = el.getAttribute('data-goto'); });
+      });
+      var menuBtn = document.getElementById('menuBtn');
+      if (menuBtn) menuBtn.addEventListener('click', function () { if (sidebar.classList.contains('open')) closeMenu(); else openMenu(); });
+      scrim.addEventListener('click', closeMenu);
+      var raf;
+      window.addEventListener('resize', function () { cancelAnimationFrame(raf); raf = requestAnimationFrame(fitActive); });
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitActive);
+      fromHash();
+      requestAnimationFrame(fitActive);
+    })();
+  </script>
+
+</body>
+</html>
