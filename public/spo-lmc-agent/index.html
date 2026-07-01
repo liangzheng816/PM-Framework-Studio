@@ -454,7 +454,7 @@
       <div class="principle">
         <div class="principle-in">
           <span class="lead">// the rule</span>
-          <span><b>Opinionated about quality, never about facts.</b> Missing UI paths, cmdlets, roles, versions, licenses, and limits are flagged <code>[TBD: …]</code> — never fabricated. And it never mixes the three doc-sets' conventions.</span>
+          <span><b>Opinionated about quality, never about facts.</b> Missing UI paths, cmdlets, roles, versions, licenses, and limits are flagged <code>[TBD: …]</code> — never fabricated. But a genuinely <b>new feature isn't an invented fact</b>: a setting, cmdlet, audit event, or rollout date the corpus doesn't cover <em>because it's new</em> becomes a <code>Verify</code> item, not a Must Fix — absence from the corpus alone is never proof of invention. And it never mixes the three doc-sets' conventions.</span>
         </div>
       </div>
 
@@ -478,31 +478,31 @@
               <span class="tag">01</span>
               <div class="ic teal"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
               <h3>Review</h3>
-              <p>A final Learn content-reviewer pass — findings ordered <strong>Must Fix → Should Fix → Polish</strong>, calibrated to the active doc-set's corpus. Optional rewrite.</p>
+              <p>A final Learn content-reviewer pass — findings ordered <strong>Must Fix → Should Fix → Polish</strong>, calibrated to the active doc-set's corpus. Catches an unstated role, a governance feature missing its license, <em>“by default”</em> with no change path, a stale admin-center path, or PowerShell missing <code>Connect-SPOService</code>. Optional rewrite at the end.</p>
             </div>
             <div class="cap">
               <span class="tag">02</span>
               <div class="ic amber"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 15 9l7 .6-5.3 4.6L18.3 21 12 17.3 5.7 21l1.6-6.8L2 9.6 9 9Z"/></svg></div>
               <h3>Critique</h3>
-              <p>An adversarial pre-publication gate: a 7-dimension scorecard, reader-modeled gap questions, named failure modes, a logical-consistency check, and an explicit ✅/⚠️/❌ verdict.</p>
+              <p>An adversarial pre-publication gate: a 7-dimension scorecard, reader-modeled gap questions, named failure modes, a logical-consistency and cross-corpus check, and an explicit ✅/⚠️/❌ verdict with the top-3 fixes. It never flatters, never rewrites, and never softens a 2/5.</p>
             </div>
             <div class="cap">
               <span class="tag">03</span>
               <div class="ic indigo"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
               <h3>Draft</h3>
-              <p>A new Learn article in corpus-standard structure with frontmatter (and an applies-to banner for Server), <code>[TBD: …]</code> markers, and a <code>Needs confirmation</code> section.</p>
+              <p>Turn a PM spec, feature notes, or admin steps into a new Learn article in corpus-standard structure — frontmatter (and an applies-to banner for Server), reused canonical hub links, <code>[TBD: …]</code> markers, and a <code>Needs confirmation</code> section for every fact it can't verify.</p>
             </div>
             <div class="cap">
               <span class="tag">04</span>
               <div class="ic teal"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div>
               <h3>Find similar</h3>
-              <p>Ranked corpus articles with title, an overall summary, <code>ms.topic</code>, audience, <code>ms.date</code>, the learn.microsoft.com URL, local path, matched terms, and a snippet.</p>
+              <p>Ranked corpus articles with title, an overall summary, <code>ms.topic</code>, audience, <code>ms.date</code>, the learn.microsoft.com URL, local path, matched terms, and a snippet. Scope to the active doc-set, or span cloud, on-prem, and dev at once with <code>--all-docsets</code>.</p>
             </div>
             <div class="cap">
               <span class="tag">05</span>
               <div class="ic indigo"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></div>
               <h3>Find Doc</h3>
-              <p>An exact lookup — resolve a Learn URL (or slug) to its precise local <code>.md</code> file, with doc-set, id, title, <code>ms.topic</code>, audience, and a short summary.</p>
+              <p>An exact lookup — resolve a Learn URL (or slug) to its precise local <code>.md</code> file, with doc-set, id, title, <code>ms.topic</code>, audience, and a short summary. Index-first, with a filesystem fallback for brand-new files and closest-slug suggestions when nothing resolves.</p>
             </div>
             <div class="cap">
               <span class="tag">+</span>
@@ -560,6 +560,7 @@
             </div>
           </div>
           <p class="isolation"><b>Strict isolation.</b> Cloud uses the SharePoint admin center, tenant, and <code class="mono">*-SPO*</code> cmdlets. On-prem uses Central Administration, farm, content database, <code class="mono">*-SP*</code> cmdlets, and PSConfig. Developer uses SPFx / PnP / REST / CSOM / Graph. <code class="mono">sharepoint-dev</code> comes from the separate <a href="https://github.com/SharePoint/sp-dev-docs" target="_blank" rel="noopener">sp-dev-docs</a> repo.</p>
+          <p class="isolation" style="margin-top:12px;"><b>Multi-doc-set by design.</b> Each doc-set carries its own corpus, references, terminology, and <code class="mono">learn_base_url</code>. Add another product area or locale by adding a key to <code class="mono">config/docsets.json</code> and a terminology file, then re-indexing — <b>no code changes</b>.</p>
         </section>
 
         <!-- Workflows -->
@@ -597,13 +598,14 @@
             <span class="vtag warn">⚠️ Needs revision</span>
             <span class="vtag no">❌ Not ready</span>
           </div>
+          <p class="sec-lead" style="margin:18px 0 0;">Under an admin persona the bar is stricter: any single heavily weighted dimension — <b>Technical accuracy</b>, <b>Task-orientation</b>, or <b>Prerequisites</b> — scoring low <b>solo-fails</b> the verdict, however polished the rest is. A doc a real admin can't safely follow isn't ready.</p>
         </section>
 
         <!-- Personas -->
         <section class="section" id="personas">
           <div class="sec-eyebrow">personas</div>
           <h2 class="sec-title">Six reviewer archetypes</h2>
-          <p class="sec-lead">The two headline personas are the readers who matter most — the admin who actually reads the doc to get a job done. Add your own under <code style="font-family:var(--mono);font-size:12px;">references/critique-personas/</code>.</p>
+          <p class="sec-lead">The two headline personas are the readers who matter most — the admin who actually reads the doc to get a job done. Critique can also be voiced as a <b>real colleague</b>, modeled on a curated profile in <code style="font-family:var(--mono);font-size:12px;">references/people/</code> — framed as their known concerns, never as words put in their mouth. Add your own archetype under <code style="font-family:var(--mono);font-size:12px;">references/critique-personas/</code>.</p>
           <div class="pe-grid">
             <div class="pe head">
               <span class="star">★ HEADLINE</span>
